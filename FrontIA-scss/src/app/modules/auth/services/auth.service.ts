@@ -18,7 +18,7 @@ export class AuthService {
       // rol:        'Invitado'
       // rol: 'Usuario',
       // rol: 'Autorizador',
-      rol: 'Administr ador'
+      rol: 'Administrador'
     };
   }
 

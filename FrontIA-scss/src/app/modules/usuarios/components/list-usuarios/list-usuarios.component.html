@@ -1,0 +1,41 @@
+<section class="flex mt-3">
+    <h1 class="inline text-5xl my-0 ">Lista de Usuarios</h1>
+</section>
+<section class="mt-4">
+    <div class="card">
+        <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem'}" [lazy]="true" >
+            <ng-template pTemplate="header">
+                <tr>
+                    <th *ngFor="let col of columns">
+                        {{ col }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-user let-index="rowIndex">
+                <tr [ngClass]="{'deleting': isDeleting && user.usernumber === idToDelete}">
+                    <td>{{ user.usernumber }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.rol }}</td>
+                    <td>
+                        <a (click)="onEdit(user.usernumber)"
+                            class="c-pointer icon-edit mr-3">
+                                <i class="pi pi-user-edit" style="font-size: 1.6rem"></i>
+                        </a>
+                        <a  (click)="onDeleteUsuario(user)"
+                            class="c-pointer icon-del">
+                                <i class="pi pi-trash" style="font-size: 1.6rem"></i>
+                        </a>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+    <p-paginator 
+        (onPageChange)="onPageChange($event)" 
+        [first]="0"
+        [rows]="5" 
+        [totalRecords]="totalItems" 
+    />
+</section>
+<p-toast />
+<p-confirmDialog/>
