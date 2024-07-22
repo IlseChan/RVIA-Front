@@ -107,14 +107,7 @@ export class ListAppsComponent implements OnInit {
     });
   }
 
-  // { page = 0 }: PaginatorState
   onPageChange({ page = 0 }: PaginatorState) {
-    // console.log('hola');
-    // console.log((event.first! / 5) + 1);
-    
-
-    // console.log(event);
-    
     const newPage = page + 1;
     if(newPage === this.currentPage) return;
     this.currentPage = newPage;
