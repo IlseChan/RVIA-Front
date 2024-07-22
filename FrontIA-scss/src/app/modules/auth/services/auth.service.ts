@@ -17,8 +17,8 @@ export class AuthService {
       token:      'esteesuntokencomodequeno',
       // rol:        'Invitado'
       // rol: 'Usuario',
-      rol: 'Autorizador',
-      // rol: 'Administrador'
+      // rol: 'Autorizador',
+      rol: 'Administr ador'
     };
   }
 

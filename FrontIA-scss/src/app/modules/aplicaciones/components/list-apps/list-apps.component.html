@@ -1,7 +1,7 @@
 <section class="flex mt-3">
     <h1 class="inline text-5xl my-0 ">Lista de Aplicaciones</h1>
-    <a 
-        routerLink="/" 
+    <a  pRipple 
+        routerLink="apps/home" 
         class="p-button font-bold ml-auto bnt-new">
         <span class="pi pi-plus-circle mr-2" style="font-size: 1.4rem"></span>
         Nueva
@@ -10,7 +10,7 @@
 
 <section class="mt-4">
     <div class="card">
-        <p-table [value]="aplications" [tableStyle]="{ 'min-width': '50rem' }">
+        <p-table [value]="aplications" [tableStyle]="{ 'min-width': '50rem'}" [lazy]="true" >
             <ng-template pTemplate="header">
                 <tr>
                     <th *ngFor="let col of colums">
@@ -18,13 +18,31 @@
                     </th>
                 </tr>
             </ng-template>
-            <ng-template pTemplate="body" let-app>
-                <tr>
+            <ng-template pTemplate="body" let-app let-index="rowIndex">
+                <tr >
                     <td>{{ app.id }}</td>
                     <td>{{ app.name }}</td>
                     <td *ngIf="user!.rol !== 'Invitado' && user!.rol !== 'Usuario'">{{ app.user }}</td>
-                    <td *ngIf="user!.rol === 'Autorizador' || user!.rol === 'Administrador'; else authStatus">
-                        Select
+                    <td      *ngIf="user!.rol === 'Autorizador' || user!.rol === 'Administrador'; else authStatus">
+                        <p-dropdown
+                            *ngIf="app.status === 1; else selectStatus"
+                            [options]="[{name: 'Finalizado', code: 1}]"
+                            [ngModel]="app.status"
+                            optionLabel="name"
+                            optionValue="code"
+                            [disabled]="true"
+                        />
+                        <ng-template #selectStatus>
+                            <p-dropdown
+                                [options]="statusOpcs"
+                                [ngModel]="app.status"
+                                optionLabel="name"  
+                                optionValue="code"
+                                placeholder="Select a status"
+                                (onChange)="onChangeStatus($event, app,index)"
+                            />  
+                        </ng-template>
+                        
                      </td>
                      <ng-template #authStatus>
                          <td>{{ app.status | statusApp}}</td>
@@ -41,11 +59,12 @@
                 </tr>
             </ng-template>
         </p-table>
-        <p-paginator 
-            (onPageChange)="onPageChange($event)" 
-            [first]="0"
-            [rows]="5" 
-            [totalRecords]="totalItems" 
-        />
     </div>
 </section>
+<p-paginator 
+    (onPageChange)="onPageChange($event)" 
+    [first]="0"
+    [rows]="5" 
+    [totalRecords]="totalItems" 
+/>
+<p-confirmDialog/>

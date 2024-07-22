@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { GetAplicacionesResponse } from '../interfaces/aplicaciones.interfaces';
+import { Aplication, GetAplicacionesResponse } from '../interfaces/aplicaciones.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -108,7 +108,13 @@ export class AplicacionesService {
     })
   }
 
-  setStatusAplicacion(id: number, newStatus: number){
-    console.log('Aqui hacer la llamada');    
+  setNewStatus(app: Aplication, newStatus: number): Observable<any> {
+    app.status = newStatus;
+
+    return of({
+      ok: true,
+      message: 'Se hizo',
+      app
+    });
   }
 }

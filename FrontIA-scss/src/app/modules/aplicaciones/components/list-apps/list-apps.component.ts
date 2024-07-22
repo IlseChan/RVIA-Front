@@ -1,41 +1,48 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { TableModule } from 'primeng/table';
+import { TableLazyLoadEvent, TableModule } from 'primeng/table';
 
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { UserLogged } from '@modules/auth/interfaces/userLogged.interface';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
+import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'list-apps',
   standalone: true,
-  imports: [ButtonModule, TableModule, CommonModule, PaginatorModule, StatusAppPipe,RouterLink],
+  imports: [ButtonModule, TableModule, CommonModule, PaginatorModule, StatusAppPipe,RouterLink,DropdownModule,ConfirmDialogModule],
   templateUrl: './list-apps.component.html',
-  styleUrl: './list-apps.component.scss'
+  styleUrl: './list-apps.component.scss',
+  providers: [ConfirmationService],
 })
-export class ListAppsComponent implements OnInit, OnDestroy{
+export class ListAppsComponent implements OnInit {
   user!: UserLogged | null;
   aplications: Aplication[] = [];
   
   currentPage: number = 1;
   totalItems: number = 0;
 
-  colums: string[] = ['ID','Nombre','Estatus']
+  colums: string[] = ['ID','Nombre','Estatus'];
 
-
-  appsSub!: Subscription;
-  listSubs: Subscription[] = [this.appsSub];
+  statusOpcs = [
+    { name: 'En proceso', code : 2 },
+    { name: 'Rechazado',  code : 3 },
+    { name: 'En espera',  code : 4 },
+  ];
 
   constructor(
     private aplicacionService: AplicacionesService,
-    private authService: AuthService ){}
+    private authService: AuthService,
+    private confirmationService: ConfirmationService ){}
   
   ngOnInit(): void {
     this.user = this.authService.userLogged;
@@ -54,21 +61,63 @@ export class ListAppsComponent implements OnInit, OnDestroy{
   }
 
   onGetAplicaciones(): void {
-    this.appsSub = this.aplicacionService.getAplicaciones(this.currentPage)
+    this.aplicacionService.getAplicaciones(this.currentPage)
     .subscribe(({data,total}) => {
-      this.aplications = data;
+      this.aplications = [...data];
       this.totalItems  = total;
     });
   }
 
+  onChangeStatus({value}: DropdownChangeEvent, app: Aplication, index: number){
+    if(value === 3){
+      this.dialogConfirmation(app,index,value);
+    }else{
+      this.aplicacionService.setNewStatus({...app},value)
+        .subscribe( resp => {
+          this.updateValue(value,index);
+        })
+    }
+  }
+
+  updateValue(value: number, index:number): void{ 
+    const temp = { ... this.aplications[index] };
+    temp.status = value;
+
+    this.aplications[index] = {...temp};
+  }
+
+  dialogConfirmation(app: Aplication, index: number, newValue: number){
+    const message = `¿Deseas rechazar la aplicación ${app.name}?`;
+    this.confirmationService.confirm({
+      message,
+      header: 'Confirmación de rechazo',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger',
+      acceptLabel: 'Sí, rechazar',
+      rejectLabel: 'No, cancelar',
+      accept: () => {
+        this.aplicacionService.setNewStatus({...app},newValue)
+          .subscribe( resp => {
+            this.updateValue(newValue,index);
+          })
+      },
+      reject: () => {
+        this.updateValue(app.status,index);
+      }
+    });
+  }
+
+  // { page = 0 }: PaginatorState
   onPageChange({ page = 0 }: PaginatorState) {
+    // console.log('hola');
+    // console.log((event.first! / 5) + 1);
+    
+
+    // console.log(event);
+    
     const newPage = page + 1;
     if(newPage === this.currentPage) return;
     this.currentPage = newPage;
     this.onGetAplicaciones(); 
-  }
-  
-  ngOnDestroy(): void {
-    this.listSubs.forEach(s => s.unsubscribe());
   }
 }
