@@ -1,0 +1,27 @@
+<div class="register-container">
+    <h2>Registro</h2>
+    <form (ngSubmit)="onRegister()">
+      <div>
+        <label for="usernumber">Número de Empleado:</label>
+        <input type="text" id="usernumber" [(ngModel)]="usernumber" name="usernumber" (input)="onInputChange()" required pattern="^\d+$" title="El número de empleado debe contener solo números"/>
+      </div>
+      <div>
+        <label for="username">Nombre de Usuario:</label>
+        <input type="text" id="username" [(ngModel)]="username" name="username" (input)="onInputChange()" required />
+      </div>
+      <div>
+        <label for="password">Contraseña:</label>
+        <input type="password" id="password" [(ngModel)]="password" name="password" (input)="onInputChange()" required />
+      </div>
+      <div>
+        <label for="confirmPassword">Confirmar Contraseña:</label>
+        <input type="password" id="confirmPassword" [(ngModel)]="confirmPassword" name="confirmPassword" (input)="onInputChange()" required />
+      </div>
+      <div *ngIf="errorMessage" class="error-message">
+        {{ errorMessage }}
+      </div>
+      <button type="submit" class="register-button">Registrar</button>
+    </form>
+    <button (click)="onBack()" class="back-button">Regresar</button>
+  </div>
+  

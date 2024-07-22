@@ -1,6 +1,22 @@
+
 import { Routes } from '@angular/router';
-import { FormsAppsPageComponent } from './modules/aplicaciones/components/form-app/form-app.component';
 
 export const routes: Routes = [
-    { path: 'new-app', component: FormsAppsPageComponent },
+    {
+        path: 'auth',
+        loadChildren: () => import('@modules/auth/auth.routes').then(m => m.authRoutes)
+    },
+    {
+        path: 'apps',
+        loadChildren: () => import('@modules/aplicaciones/apps.routes').then(m => m.appsRoutes)
+    },
+    {
+        path: '',
+        redirectTo: 'apps',
+        pathMatch: 'full'
+    },
+    {
+        path: '**',
+        redirectTo: 'apps'
+    }
 ];
