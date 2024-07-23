@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserLogged } from '../interfaces/userLogged.interface';
+import { of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,16 +11,16 @@ export class AuthService {
   constructor() { }
 
   get userLogged(): UserLogged | null {
-    // return this.currentUser;
-    return {
-      username: 'Penta Cero Miedo',
-      usernumber: '99872123',
-      token: 'esteesuntokencomodequeno',
-      // rol: 'Invitado'
-      // rol: 'Usuario',
-      // rol: 'Autorizador',
-      rol: 'Administrador'
-    };
+    return this.currentUser;
+    // return {
+    //   username: 'Penta Cero Miedo',
+    //   usernumber: '99872123',
+    //   token: 'esteesuntokencomodequeno',
+    //   // rol: 'Invitado'
+    //   // rol: 'Usuario',
+    //   // rol: 'Autorizador',
+    //   rol: 'Administrador'
+    // };
   }
 
   register(usernumber: string, username: string, password: string): Promise<void> {
@@ -49,11 +50,16 @@ export class AuthService {
       username: 'Penta Cero Miedo',
       usernumber: '99872123',
       token: 'esteesuntokencomodequeno',
-      // rol: 'Invitado'
+      rol: 'Invitado'
       // rol: 'Usuario',
-      rol: 'Autorizador',
+      // rol: 'Autorizador',
       // rol: 'Administrador'
     };
+    
+    return of({
+      ok: true,
+      user: this.currentUser
+    })
   }
 
   onLogout(): void {

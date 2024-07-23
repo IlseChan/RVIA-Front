@@ -47,8 +47,6 @@ export class ListUsuariosComponent implements OnInit {
     this.usuariosService.getUsuarios(this.currentPage).subscribe(({data,total}) => {
       this.users = data;
       this.totalItems  = total;
-      console.log(this.totalItems);
-      
     });  
   }
 
