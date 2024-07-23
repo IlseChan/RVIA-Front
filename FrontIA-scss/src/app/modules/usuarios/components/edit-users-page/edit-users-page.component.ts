@@ -49,9 +49,6 @@ export class EditUsersPageComponent implements OnInit {
         if(!user){
           this.router.navigate(['/apps/users/list-users']);
         }
-
-        console.log(user);
-        
         this.initForm(user!);
       });
   }

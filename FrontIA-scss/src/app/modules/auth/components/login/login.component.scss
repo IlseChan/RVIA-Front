@@ -1,0 +1,78 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f8f9fa; /* Color de fondo general */
+  }
+  
+  .login-container {
+    width: 400px; /* Ancho más grande */
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+  
+    .login-box {
+      background-color: #3b39398e; /* Fondo más oscuro */
+      padding: 30px; /* Aumentar el padding para más espacio interno */
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Sombra más pronunciada */
+      color: #fff; /* Texto blanco para mejor contraste */
+    }
+  
+    h2 {
+      margin-bottom: 20px; /* Añadir espacio debajo del título */
+    }
+  
+    .form-group {
+      margin-bottom: 20px; /* Más espacio entre los grupos de formularios */
+      text-align: left;
+  
+      label {
+        display: block;
+        margin-bottom: 5px;
+        color: #fff; /* Color del texto blanco para mejor contraste */
+      }
+  
+      input[type="text"],
+      input[type="password"] {
+        width: 100%;
+        padding: 10px; /* Aumentar el padding para inputs más grandes */
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+    }
+  
+    .button-group {
+      display: flex;
+      flex-direction: column; /* Disponer los botones en una columna */
+      gap: 10px; /* Añadir espacio entre los botones */
+      margin-top: 50px;
+  
+      button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+  
+        &:disabled {
+          background-color: #ccc;
+          cursor: not-allowed;
+        }
+      }
+  
+      button[type="button"] {
+        background-color: #1f5bb67e;
+      }
+    }
+  
+    .error-message {
+      color: red;
+      margin-bottom: 15px;
+    }
+  }
+  

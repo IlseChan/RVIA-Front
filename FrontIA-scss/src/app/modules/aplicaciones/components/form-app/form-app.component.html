@@ -5,13 +5,13 @@
         <button class="image-button" (click)="triggerFileInput('zip')">
           <img src="assets/images/Cargar.png" alt="Button Image 1">
         </button>
-        <input type="file" #zipInput accept=".zip" (change)="onFileSelected($event, 'zip')" style="display: none;">
+        <input id="input-zip" type="file" #zipInput accept=".zip" (change)="onFileSelected($event, 'zip')" style="display: none;">
         <button class="image-button" (click)="showGitlabInput()">
           <img src="assets/images/gitlab.webp" alt="Button Image 2">
         </button>
       </div>
       <div *ngIf="showGitlabUrlInput" class="gitlab-url-container">
-        <input type="text" [(ngModel)]="gitlabUrl" placeholder="Ingrese la URL de GitLab" class="gitlab-url-input">
+        <input id="input-url" type="text" [(ngModel)]="gitlabUrl" placeholder="Ingrese la URL de GitLab" class="gitlab-url-input">
       </div>
       <div *ngIf="zipFileName" class="project-info-container">
         <span class="source-code-text">Código Fuente:</span>

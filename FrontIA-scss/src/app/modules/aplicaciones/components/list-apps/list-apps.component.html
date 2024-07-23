@@ -1,6 +1,8 @@
 <section class="flex mt-3">
     <h1 class="inline text-5xl my-0 ">Lista de Aplicaciones</h1>
-    <a  pRipple 
+    <a
+        *ngIf="user!.rol !== 'Invitado'"
+        pRipple 
         routerLink="/apps/new-app" 
         class="p-button font-bold ml-auto bnt-new">
         <span class="pi pi-plus-circle mr-2" style="font-size: 1.4rem"></span>
@@ -23,8 +25,9 @@
                     <td>{{ app.id }}</td>
                     <td>{{ app.name }}</td>
                     <td *ngIf="user!.rol !== 'Invitado' && user!.rol !== 'Usuario'">{{ app.user }}</td>
-                    <td      *ngIf="user!.rol === 'Autorizador' || user!.rol === 'Administrador'; else authStatus">
+                    <td *ngIf="user!.rol === 'Autorizador' || user!.rol === 'Administrador'; else authStatus">
                         <p-dropdown
+                            [id]="app.id + 'selectInputFin'"
                             *ngIf="app.status === 1; else selectStatus"
                             [options]="[{name: 'Finalizado', code: 1}]"
                             [ngModel]="app.status"
@@ -34,6 +37,7 @@
                         />
                         <ng-template #selectStatus>
                             <p-dropdown
+                                [id]="app.id + 'selectInput'"
                                 [options]="statusOpcs"
                                 [ngModel]="app.status"
                                 optionLabel="name"  
