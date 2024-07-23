@@ -35,9 +35,13 @@ export class LoginComponent {
 
     if (user) {
       console.log('Autenticación exitosa');
-      alert('Autenticación exitosa');
+      // alert('Autenticación exitosa');
       this.errorMessage = ''; // Limpiar mensaje de error en caso de éxito
-      this.router.navigate(['/apps/home']);  // Navega a la página de inicio
+      
+      this.authService.onLogin(trimmedUsernumber,trimmedPassword).subscribe(resp => {
+
+        this.router.navigate(['/apps/home']);  // Navega a la página de inicio
+      }); 
     } else {
       this.errorMessage = 'Número de empleado o contraseña incorrecta';
     }
