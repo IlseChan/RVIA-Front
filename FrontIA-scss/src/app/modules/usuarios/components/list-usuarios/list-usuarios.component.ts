@@ -58,9 +58,9 @@ export class ListUsuariosComponent implements OnInit {
   onDeleteUsuario(user: Usuario){
     if(this.isDeleting) return;
     this.isDeleting = true;
-    this.idToDelete  = user.usernumber;
+    this.idToDelete  = `${user.numero_empleado}`;
 
-    const message = `¿Deseas eliminar al usuario ${user.username}?`;
+    const message = `¿Deseas eliminar al usuario ${user.numero_empleado}?`;
     this.confirmationService.confirm({
       message,
       header: 'Eliminar usuario',
@@ -69,12 +69,12 @@ export class ListUsuariosComponent implements OnInit {
       acceptLabel: 'Sí, eliminar',
       rejectLabel: 'No, cancelar',
       accept: () => {
-        this.usuariosService.deleteUsuario(user.usernumber)
+        this.usuariosService.deleteUsuario( `${user.numero_empleado}`)
           .subscribe((resp) => {
             this.messageService.add(
               { severity: 'success', 
                 summary: 'Usuario eliminado', 
-                detail: `El usuario ${user.usernumber} se elimino exitosamente` 
+                detail: `El usuario ${user.numero_empleado} se elimino exitosamente` 
               });
             this.resetValues();
             this.onGetUsuarios();

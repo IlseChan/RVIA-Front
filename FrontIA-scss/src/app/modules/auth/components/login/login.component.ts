@@ -30,21 +30,21 @@ export class LoginComponent {
     const trimmedUsernumber = this.usernumber.trim();
     const trimmedPassword = this.password.trim();
 
-    const users: User[] = this.authService.getUsers();
-    const user = users.find((u: User) => u.usernumber === trimmedUsernumber && u.password === trimmedPassword);
+    // const users: User[] = this.authService.getUsers();
+    // const user = users.find((u: User) => u.usernumber === trimmedUsernumber && u.password === trimmedPassword);
 
-    if (user) {
+    // if (user) {
       console.log('Autenticación exitosa');
       // alert('Autenticación exitosa');
       this.errorMessage = ''; // Limpiar mensaje de error en caso de éxito
       
       this.authService.onLogin(trimmedUsernumber,trimmedPassword).subscribe(resp => {
-
+        console.log('Respuesta en el login component');
         this.router.navigate(['/apps/home']);  // Navega a la página de inicio
       }); 
-    } else {
-      this.errorMessage = 'Número de empleado o contraseña incorrecta';
-    }
+    // } else {
+    //   this.errorMessage = 'Número de empleado o contraseña incorrecta';
+    // }
   }
 
   onInputChange(): void {

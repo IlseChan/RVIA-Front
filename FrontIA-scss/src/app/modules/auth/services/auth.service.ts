@@ -12,16 +12,17 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   get userLogged(): UserLogged | null {
-    return this.currentUser;
-    // return {
-    //   username: 'Penta Cero Miedo',
-    //   usernumber: '99872123',
-    //   token: 'esteesuntokencomodequeno',
-    //   // rol: 'Invitado'
-    //   // rol: 'Usuario',
-    //   // rol: 'Autorizador',
-    //   rol: 'Administrador'
-    // };
+    return {
+      idu_usuario: 1,
+      nom_correo: "angel.magan@coppel.com",
+      numero_empleado: 11,
+      position: {
+        idu_puesto: 1,
+        nom_puesto: "Administrador",
+      },
+      // token: ''
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzIxNzYzOTEyLCJleHAiOjE3MjE3NzExMTJ9.XIvJEVTC2v6YUh9hS0_MdKMDEmqKobVSUDpUTT36ZaQ"
+    }
   }
 
   register(usernumber: string, username: string, password: string): Promise<void> {
@@ -45,16 +46,15 @@ export class AuthService {
   onLogin(user: string, password: string) {
     // TODO: Request GET con el HTTPClient que retorna un observable con la info
     // TODO: De ser exitoso almancenar la información del usuario en currentUser
-
-    return this.http.post('http://localhost:3000/auth/login', {
-      numero_empleado: '00000011',
-      nom_contrasena: 'Aamd230299'
+    // 00000011
+    // Aamd230299
+    return this.http.post<UserLogged>('http://localhost:3000/auth/login', {
+      numero_empleado: user,
+      nom_contrasena: password
     })
     .pipe(
       tap(resp => {
-        console.log('En el login->');
-        console.log(resp);
-        
+        this.currentUser = resp;
       }),
       catchError(e => {
         console.log(e)

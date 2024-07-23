@@ -1,7 +1,7 @@
 <section class="flex mt-3">
     <h1 class="inline text-5xl my-0 ">Lista de Aplicaciones</h1>
     <a
-        *ngIf="user!.rol !== 'Invitado'"
+        *ngIf="user!.position.nom_puesto !== 'Invitado'"
         pRipple 
         routerLink="/apps/new-app" 
         class="p-button font-bold ml-auto bnt-new">
@@ -24,8 +24,8 @@
                 <tr >
                     <td>{{ app.id }}</td>
                     <td>{{ app.name }}</td>
-                    <td *ngIf="user!.rol !== 'Invitado' && user!.rol !== 'Usuario'">{{ app.user }}</td>
-                    <td *ngIf="user!.rol === 'Autorizador' || user!.rol === 'Administrador'; else authStatus">
+                    <td *ngIf="user!.position.nom_puesto !== 'Invitado' && user!.position.nom_puesto !== 'Usuario'">{{ app.user }}</td>
+                    <td *ngIf="user!.position.nom_puesto === 'Autorizador' || user!.position.nom_puesto === 'Administrador'; else authStatus">
                         <p-dropdown
                             [id]="app.id + 'selectInputFin'"
                             *ngIf="app.status === 1; else selectStatus"
@@ -51,7 +51,7 @@
                      <ng-template #authStatus>
                          <td>{{ app.status | statusApp}}</td>
                      </ng-template>
-                    <td *ngIf="user!.rol !== 'Invitado'">
+                    <td *ngIf="user!.position.nom_puesto !== 'Invitado'">
                         <a 
                             *ngIf="app.status === 1"
                             [href]="app.linkDownload"

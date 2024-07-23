@@ -9,16 +9,11 @@ import { delay, Observable, of } from 'rxjs';
 export class UsuariosService {  
   usuarios = {
     data: [
-      {usernumber: "12312412", username: "Arturo Solis", rol: 'Invitado'},
-      {usernumber: "12312413", username: "Otro Arturo Solis", rol: 'Usuario'},
-      {usernumber: "12312414", username: "Brandon Jaimes", rol: 'Administrador'},
-      {usernumber: "12312415", username: "Otro Brandon Jaimes", rol: 'Autorizador'},
-      {usernumber: "12312416", username: "Otro Angel Magana", rol: 'Invitado'},
-      {usernumber: "12312417", username: "Angel Magana", rol: 'Usuario'},
-      {usernumber: "12312418", username: "Ilse Chan", rol: 'Administrador'},
-      {usernumber: "12312419", username: "Otro Ilse Chan", rol: 'Invitado'},
+      // {usernumber: "12312412", username: "Arturo Solis", rol: 'Invitado'},
+      // {usernumber: "12312413", username: "Otro Arturo Solis", rol: 'Usuario'}
+      // ,
     ],
-    total: 8
+    total: 0
   } as ResponseGetUsuarios
 
   constructor() { }
@@ -35,7 +30,7 @@ export class UsuariosService {
   }
 
   getUsuarioById(id: string): Observable<Usuario | undefined>{
-    const user = this.usuarios.data.filter(user => user.usernumber === id);
+    const user = this.usuarios.data.filter(user => user.numero_empleado === +id);
     
     if(user.length > 0){
       return of(user[0])
@@ -57,7 +52,7 @@ export class UsuariosService {
 
   deleteUsuario(id: string): Observable<any> {
     
-    const temp = this.usuarios.data.filter(u => u.usernumber !== id);
+    const temp = this.usuarios.data.filter(u => u.numero_empleado !== +id);
     this.usuarios.data = [...temp];
     this.usuarios.total = temp.length;
 

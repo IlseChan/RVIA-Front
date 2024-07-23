@@ -1,10 +1,12 @@
-export interface Aplication {
-    id:   number;
-    name: string;
-    user: string;
-    status: StatusApps;
-    linkDownload?: string;
-}
+import { Usuario } from "@modules/usuarios/interfaces/usuario.interface";
+
+// export interface Aplication {
+//     id:   number;
+//     name: string;
+//     user: string;
+//     status: StatusApps;
+//     linkDownload?: string;
+// }
 
 export enum StatusApps {
     DONE     = 1,
@@ -14,11 +16,43 @@ export enum StatusApps {
 }
 
 export interface GetAplicacionesResponse {
-    data: Aplication[];
-    total: number;
+    // data: Aplication[];
 }
 
 export interface OpcsStatus {
     newStatus: number;
     firstValue: number;
+}
+
+export interface Aplication {
+    idu_aplicacion:    number;
+    nom_aplicacion:    string;
+    applicationstatus: Applicationstatus;
+    sourcecode:        Sourcecode;
+    user:              User;
+}
+
+export interface User {
+    idu_usuario:     number;
+    numero_empleado: number;
+    nom_correo:      string;
+    nom_usuario:     string;
+    esActivo:        boolean;
+    position:        Position;
+}
+
+export interface Position {
+    idu_puesto: number;
+    nom_puesto: string;
+}
+
+export interface Applicationstatus {
+    idu_estatus_aplicacion: number;
+    des_estatus_aplicacion: string;
+}
+
+export interface Sourcecode {
+    idu_codigo_fuente: number;
+    nom_codigo_fuente: string;
+    nom_directorio:    string;
 }

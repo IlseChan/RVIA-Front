@@ -1,4 +1,4 @@
-<section class="flex mt-3">
+<!-- <section class="flex mt-3">
     <h1 class="inline text-5xl my-0 ">Lista de Usuarios</h1>
 </section>
 <section class="mt-4">
@@ -12,12 +12,12 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-user let-index="rowIndex">
-                <tr [ngClass]="{'deleting': isDeleting && user.usernumber === idToDelete}">
-                    <td>{{ user.usernumber }}</td>
-                    <td>{{ user.username }}</td>
+                <tr [ngClass]="{'deleting': isDeleting && user.numero_empleado === idToDelete}">
+                    <td>{{ user.numero_empleado }}</td>
+                    <td>{{ user. }}</td>
                     <td>{{ user.rol }}</td>
                     <td>
-                        <a (click)="onEdit(user.usernumber)"
+                        <a (click)="onEdit(user.numero_empleado)"
                             class="c-pointer icon-edit mr-3">
                                 <i class="pi pi-user-edit" style="font-size: 1.6rem"></i>
                         </a>
@@ -38,4 +38,6 @@
     />
 </section>
 <p-toast />
-<p-confirmDialog/>
+<p-confirmDialog/> -->
+
+<p>Esta es la lista de usuarios. REVISAR</p>
