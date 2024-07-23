@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserLogged } from '../interfaces/userLogged.interface';
-import { of } from 'rxjs';
+import { catchError, of, tap } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { of } from 'rxjs';
 export class AuthService {
   private currentUser: UserLogged | null = null;
 
-  constructor() { }
+  constructor(private http: HttpClient) { }
 
   get userLogged(): UserLogged | null {
     return this.currentUser;
@@ -45,21 +46,37 @@ export class AuthService {
     // TODO: Request GET con el HTTPClient que retorna un observable con la info
     // TODO: De ser exitoso almancenar la información del usuario en currentUser
 
-    // Este código solo es local [ELIMINAR CUANDO SE TENGA BD Y RESPUESTA]
-    this.currentUser = {
-      username: 'Penta Cero Miedo',
-      usernumber: '99872123',
-      token: 'esteesuntokencomodequeno',
-      rol: 'Invitado'
-      // rol: 'Usuario',
-      // rol: 'Autorizador',
-      // rol: 'Administrador'
-    };
-    
-    return of({
-      ok: true,
-      user: this.currentUser
+    return this.http.post('http://localhost:3000/auth/login', {
+      numero_empleado: '00000011',
+      nom_contrasena: 'Aamd230299'
     })
+    .pipe(
+      tap(resp => {
+        console.log('En el login->');
+        console.log(resp);
+        
+      }),
+      catchError(e => {
+        console.log(e)
+        return of([])
+      })
+    )
+
+    // // Este código solo es local [ELIMINAR CUANDO SE TENGA BD Y RESPUESTA]
+    // this.currentUser = {
+    //   username: 'Penta Cero Miedo',
+    //   usernumber: '99872123',
+    //   token: 'esteesuntokencomodequeno',
+    //   // rol: 'Invitado'
+    //   // rol: 'Usuario',
+    //   // rol: 'Autorizador',
+    //   rol: 'Administrador'
+    // };
+    
+    // // return of({
+    // //   ok: true,
+    // //   user: this.currentUser
+    // // })
   }
 
   onLogout(): void {
