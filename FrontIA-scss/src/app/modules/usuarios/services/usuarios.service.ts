@@ -45,7 +45,7 @@ export class UsuariosService {
   }
 
   updateUsuario(user: Usuario): Observable<any> {
-
+    
     return of({
       ok: true,
       message: 'Se actualizo',
