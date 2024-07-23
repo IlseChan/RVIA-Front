@@ -1,3 +1,6 @@
 export interface UserLogged {
-    rol: string;
+    username:   string;
+    usernumber: string;
+    token:      string;
+    rol:        string;
 }

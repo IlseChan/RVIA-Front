@@ -1,16 +1,14 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
-
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [],
+  imports: [NgIf, FormsModule],
   templateUrl: './register.component.html',
-  styleUrl: './register.component.scss'
+  styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent {
   usernumber: string = '';
@@ -21,7 +19,7 @@ export class RegisterComponent {
 
   @ViewChild('passwordInput', { static: false }) passwordInput!: ElementRef;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private router: Router) {}
 
   onRegister(): void {
     const trimmedUsernumber = this.usernumber.trim();
@@ -39,18 +37,11 @@ export class RegisterComponent {
       return;
     }
 
-    console.log(`NumeroEmpleado: ${trimmedUsernumber}, Usuario: ${trimmedUsername}, Contraseña: ${trimmedPassword}`);
-
-    this.authService.register(trimmedUsernumber, trimmedUsername, trimmedPassword)
-      .then(() => {
-        console.log('Registro exitoso');
-        alert('Registro exitoso');
-        this.errorMessage = ''; // Limpiar mensaje de error en caso de éxito
-        this.router.navigate(['/apps/home']);  // Navega a la página de inicio
-      })
-      .catch((error: any) => {
-        this.errorMessage = error.message;
-      });
+    // Simula el éxito del registro
+    console.log('Registro simulado exitoso');
+    alert('Registro simulado exitoso');
+    this.errorMessage = ''; // Limpiar mensaje de error en caso de éxito
+    this.router.navigate(['/auth/login']);  // Navega a la página de login
   }
 
   onInputChange(): void {

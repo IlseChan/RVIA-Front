@@ -5,14 +5,21 @@ import { UserLogged } from '../interfaces/userLogged.interface';
   providedIn: 'root'
 })
 export class AuthService {
+  private currentUser: UserLogged | null = null;
 
   constructor() { }
 
-  get userLogged(): UserLogged {
-    // return { rol: 'Invitado'};
-    // return { rol: 'Usuario'};
-    // return { rol: 'Autorizador'};
-    return { rol: 'Administrador'};
+  get userLogged(): UserLogged | null {
+    // return this.currentUser;
+    return {
+      username: 'Penta Cero Miedo',
+      usernumber: '99872123',
+      token: 'esteesuntokencomodequeno',
+      // rol: 'Invitado'
+      // rol: 'Usuario',
+      // rol: 'Autorizador',
+      rol: 'Administrador'
+    };
   }
 
   register(usernumber: string, username: string, password: string): Promise<void> {
@@ -31,5 +38,26 @@ export class AuthService {
 
   getUsers(): { usernumber: string, username: string, password: string }[] {
     return JSON.parse(localStorage.getItem('users') || '[]');
+  }
+
+  onLogin(user: string, password: string) {
+    // TODO: Request GET con el HTTPClient que retorna un observable con la info
+    // TODO: De ser exitoso almancenar la información del usuario en currentUser
+
+    // Este código solo es local [ELIMINAR CUANDO SE TENGA BD Y RESPUESTA]
+    this.currentUser = {
+      username: 'Penta Cero Miedo',
+      usernumber: '99872123',
+      token: 'esteesuntokencomodequeno',
+      // rol: 'Invitado'
+      // rol: 'Usuario',
+      rol: 'Autorizador',
+      // rol: 'Administrador'
+    };
+  }
+
+  onLogout(): void {
+    //TODO: Limpiar al usuario según sea necesario
+    this.currentUser = null;
   }
 }

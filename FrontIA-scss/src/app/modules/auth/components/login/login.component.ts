@@ -1,6 +1,8 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 interface User {
   usernumber: string;
@@ -11,7 +13,7 @@ interface User {
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [],
+  imports: [NgIf, FormsModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })

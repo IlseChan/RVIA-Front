@@ -1,0 +1,26 @@
+.icon-down{
+    color: #7ed957;
+
+    &:hover{
+        color: #65af46;
+    }
+}
+
+.bnt-new{
+    background-color: #a6a6a6;
+    border-color: #a6a6a6;
+    text-decoration: none;
+
+    span {
+        font-weight: bold;
+        color: #0000ff; 
+    }
+
+    &:hover {
+        background-color: #868686;
+    }
+}
+
+:host ::ng-deep .p-dropdown {
+    position: initial !important;
+}
