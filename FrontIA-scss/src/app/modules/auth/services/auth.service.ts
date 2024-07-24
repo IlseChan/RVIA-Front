@@ -2,16 +2,20 @@ import { Injectable } from '@angular/core';
 import { UserLogged } from '../interfaces/userLogged.interface';
 import { catchError, of, tap } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly baseUrl = environment.baseURL;
+
   private currentUser: UserLogged | null = null;
 
   constructor(private http: HttpClient) { }
 
   get userLogged(): UserLogged | null {
+    // return this.currentUser;
     return {
       idu_usuario: 1,
       nom_correo: "angel.magan@coppel.com",
@@ -49,7 +53,7 @@ export class AuthService {
   onLogin(user: string, password: string) {
     // 00000011
     // Aamd230299
-    return this.http.post<UserLogged>('http://localhost:3000/auth/login', {
+    return this.http.post<UserLogged>(`${this.baseUrl}/auth/login`, {
       numero_empleado: user,
       nom_contrasena: password
     })

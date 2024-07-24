@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { catchError, delay, map, Observable, of, tap } from 'rxjs';
 import { Aplication, AplicationsData } from '../interfaces/aplicaciones.interfaces';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AplicacionesService {
+  private readonly baseUrl = environment.baseURL;
 
   allAppsResp: AplicationsData = {
     data: [],
@@ -26,7 +28,7 @@ export class AplicacionesService {
           'Authorization': `Bearer ${token}`
         })
       };
-      return this.http.get<Aplication[]>('http://localhost:3000/applications',headerOpc)
+      return this.http.get<Aplication[]>(`${this.baseUrl}/applications`,headerOpc)
         .pipe(
           tap(apps => {
             this.allAppsResp.data = apps;
@@ -77,7 +79,7 @@ export class AplicacionesService {
 
       const body = { estatusId: newStatus };
     
-      return this.http.patch<Aplication>(`http://localhost:3000/applications/${app.idu_aplicacion}`,body,headerOpc)
+      return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body,headerOpc)
         .pipe(
           delay(1000),
           catchError(e => {    
@@ -101,7 +103,7 @@ export class AplicacionesService {
         })
       };
     
-      return this.http.post<Aplication>(`http://localhost:3000/applications/git`,{ url },headerOpc)
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,{ url },headerOpc)
         .pipe(
           catchError(e => {
             return of(null)
@@ -125,7 +127,7 @@ export class AplicacionesService {
         'Authorization': `Bearer ${token}`,
       });
 
-      return this.http.post<Aplication>(`http://localhost:3000/applications/files`,formData,{ headers })
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData,{ headers })
         .pipe(
           catchError(e => {
             return of(null)
