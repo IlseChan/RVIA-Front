@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, delay, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { Aplication, AplicationsData } from '../interfaces/aplicaciones.interfaces';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -70,10 +70,10 @@ export class AplicacionesService {
       }
   }
 
-  setNewStatus(app: Aplication, newStatus: number): Observable<Aplication | null> {
+  setNewStatus(app: Aplication, newStatus: number): Observable<Aplication> {
     
     const token = localStorage.getItem('token');
-    
+
     if(token){
       const headerOpc = {
         headers: new HttpHeaders({
@@ -86,14 +86,11 @@ export class AplicacionesService {
     
       return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body,headerOpc)
         .pipe(
-          delay(1000),
-          catchError(e => {    
-            return of(null)
-          })
+          delay(1000)
         );
     }
 
-    return of(null)
+    return throwError(() => {})
   }
 
   saveGitLabUrl(url: string): Observable<Aplication | null>{

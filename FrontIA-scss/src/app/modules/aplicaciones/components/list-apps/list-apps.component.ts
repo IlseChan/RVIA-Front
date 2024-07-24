@@ -7,7 +7,7 @@ import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
 import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService } from 'primeng/api';
+import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
@@ -16,16 +16,18 @@ import { UserLogged } from '@modules/auth/interfaces/userLogged.interface';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Nom_Puesto } from '@modules/usuarios/interfaces/usuario.interface';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
+import { ToastModule } from 'primeng/toast';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'list-apps',
   standalone: true,
   imports: [ButtonModule, TableModule, CommonModule, 
     PaginatorModule, StatusAppPipe,RouterLink,
-    DropdownModule,ConfirmDialogModule,ProgressSpinnerModule ],
+    DropdownModule,ConfirmDialogModule,ProgressSpinnerModule,ToastModule ],
   templateUrl: './list-apps.component.html',
   styleUrl: './list-apps.component.scss',
-  providers: [ConfirmationService],
+  providers: [ConfirmationService, MessageService],
 })
 export class ListAppsComponent implements OnInit {
   user!: UserLogged | null;
@@ -49,7 +51,9 @@ export class ListAppsComponent implements OnInit {
   constructor(
     private aplicacionService: AplicacionesService,
     private authService: AuthService,
-    private confirmationService: ConfirmationService ){}
+    private confirmationService: ConfirmationService,
+    private messageService: MessageService 
+  ){}
   
   ngOnInit(): void {
     this.user = this.authService.userLogged;
@@ -85,10 +89,24 @@ export class ListAppsComponent implements OnInit {
     if(value === 4){
       this.dialogConfirmation(app,index,value);
     }else{
-      this.aplicacionService.setNewStatus({...app},value)
-        .subscribe( resp => {
-          this.updateValue(value,index);
-        });
+      this.aplicacionService.setNewStatus({...app},value).
+      pipe(
+        catchError(e => throwError(() => ({ error: true })))
+      )
+      .subscribe({ 
+        next: (appUp) => {
+          if(appUp){
+            this.showMessage(appUp,'success');
+            this.updateValue(value,index);
+          }         
+        },
+        error: (e) => {
+          this.showMessage(app,'error');
+          setTimeout(() => {
+            this.isChangeStatus = false;
+          },1000)
+        }
+      });
     }
   }
   
@@ -112,9 +130,25 @@ export class ListAppsComponent implements OnInit {
       rejectLabel: 'No, cancelar',
       accept: () => {
         this.aplicacionService.setNewStatus({...app},newValue)
-          .subscribe(() => {
-            this.updateValue(newValue,index);
-          })
+        .pipe(
+          catchError(e => throwError(() => ({ error: true })))
+        )  
+        .subscribe({
+            next: (appUp) => {
+              if(appUp){
+                this.showMessage(appUp,'success');
+                this.updateValue(newValue,index);
+              }         
+            },
+            error: () => {
+              this.showMessage(app,'error');
+              this.updateValue(app.applicationstatus.idu_estatus_aplicacion,index);
+
+              setTimeout(() => {
+                this.isChangeStatus = false;
+              },1000)
+            }
+          });
       },
       reject: () => {
         this.updateValue(app.applicationstatus.idu_estatus_aplicacion,index);
@@ -127,5 +161,25 @@ export class ListAppsComponent implements OnInit {
     if(newPage === this.currentPage) return;
     this.currentPage = newPage;
     this.onGetAplicaciones(); 
-  }  
+  }
+  
+  showMessage(app: Aplication, severity: string): void{
+    let detail = '';
+    let summary = '';
+
+    if(severity === 'success'){
+      detail = `¡El estado de la aplicación ${app.nom_aplicacion} se a actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`; 
+      summary = 'Estatus actualizado';
+    }
+    if(severity === 'error'){
+      detail = `¡El estado no se pudo actualizar`; 
+      summary = 'Error actualizando';
+    }
+    
+    this.messageService.add({ 
+      severity, 
+      summary, 
+      detail 
+    });
+  }
 }
