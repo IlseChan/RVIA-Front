@@ -24,7 +24,6 @@ export class AplicacionesService {
     const token = localStorage.getItem('token');
     
     if((token && this.allAppsResp.data.length === 0) || (token && this.changeListSubject.getValue())){
-      console.log('hacemos llamada');
       
       const headerOpc = {
         headers: new HttpHeaders({
@@ -93,7 +92,7 @@ export class AplicacionesService {
     return throwError(() => {})
   }
 
-  saveGitLabUrl(url: string): Observable<Aplication | null>{
+  saveGitLabUrl(url: string): Observable<Aplication>{
 
     const token = localStorage.getItem('token');
 
@@ -106,17 +105,12 @@ export class AplicacionesService {
       };
     
       return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,{ url },headerOpc)
-        .pipe(
-          catchError(e => {
-            return of(null)
-          })
-        );
     }
 
-    return of(null)
+    return throwError(() => {})
   }
 
-  saveZipFile(file: File): Observable<Aplication | null>{
+  saveZipFile(file: File): Observable<Aplication>{
 
     const token = localStorage.getItem('token');
     
@@ -130,14 +124,9 @@ export class AplicacionesService {
       });
 
       return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData,{ headers })
-        .pipe(
-          catchError(e => {
-            return of(null)
-          })
-        )
     }
     
-    return of(null)
+    return throwError(() => {})
   }
 
 }

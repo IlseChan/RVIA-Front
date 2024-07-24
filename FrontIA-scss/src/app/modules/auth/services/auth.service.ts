@@ -63,6 +63,8 @@ export class AuthService {
         localStorage.setItem('token', this.currentUser.token)
       }),
       catchError(e => {
+        console.log(e);
+        
         return of([])
       })
     )
@@ -71,5 +73,6 @@ export class AuthService {
   onLogout(): void {
     //TODO: Limpiar al usuario según sea necesario
     this.currentUser = null;
+    localStorage.removeItem('token');
   }
 }

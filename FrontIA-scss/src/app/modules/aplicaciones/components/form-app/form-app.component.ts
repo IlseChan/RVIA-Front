@@ -7,6 +7,7 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { ButtonModule } from 'primeng/button';
+import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-form-apps-page',
@@ -72,39 +73,71 @@ export class FormsAppsPageComponent {
     this.isLoading = true;
     if (this.gitlabUrl && this.isValidGitlabUrl(this.gitlabUrl)) {
       this.aplicacionesService.saveGitLabUrl(this.gitlabUrl)
-        .subscribe(app => {
-          if(app){
-            this.handleResponse(app,'success');
+        .pipe(
+          catchError(e => throwError(() => ({ error: true })))
+        )  
+        .subscribe({
+          next: (app) => {
+            if(app){
+              this.handleResponse('success','GIT',app);
+            }
+          },
+          error: () => {
+            this.handleResponse('error','GIT');
           }
-      })
+        })
     } 
     
     if(this.zipFile && this.zipFileName){
       this.aplicacionesService.saveZipFile(this.zipFile)
-        .subscribe(app => {
+      .pipe(
+        catchError(e => throwError(() => ({ error: true })))
+      )  
+      .subscribe({
+        next: (app) => {
           if(app){
-            this.handleResponse(app,'success');
+            this.handleResponse('success','ZIP',app);
           }
+        },
+        error: () => {
+          this.handleResponse('error','ZIP');
+        }
       });
     }
   }
 
-  handleResponse(app: Aplication, severity: string): void{
-    this.aplicacionesService.changeListSubject.next(true);
-    this.showMessage(app.nom_aplicacion,severity);  
-    setTimeout(() => {
-      this.router.navigate(['/apps/list-apps']);
-    },3200);
-  }
+  handleResponse(severity: string, type: string, app?: Aplication): void{
+    let detail = '';
+    let summary = '';
 
-  showMessage(nom_app:string, severity:string): void{
-    const detail = `¡El aplicativo ${nom_app} se a subido con éxito!`; 
-    const summary = 'Aplicativo guardado';
+    if( severity === 'error'){
+      summary = 'Error al guardar';
 
+      if(type === 'GIT'){
+        detail = 'Error al cargar el archivo desde URL';
+      }
+      
+      if(type === 'ZIP'){
+        detail = 'Error al cargar el archivo ZIP';
+      }
+    }
+
+    if( severity === 'success'){
+      summary = 'Aplicativo guardado';
+      detail = `¡El aplicativo ${app?.nom_aplicacion} se a subido con éxito!`; 
+      this.aplicacionesService.changeListSubject.next(true);
+    }
+    
     this.messageService.add({ 
       severity, 
       summary, 
       detail 
     });
+
+    setTimeout(() => {
+      severity === 'error' 
+      ? this.isLoading = false
+      : this.router.navigate(['/apps/list-apps']);
+    },3200)
   }
 }
