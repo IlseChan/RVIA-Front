@@ -127,5 +127,5 @@ export class ListAppsComponent implements OnInit {
     if(newPage === this.currentPage) return;
     this.currentPage = newPage;
     this.onGetAplicaciones(); 
-  }
+  }  
 }

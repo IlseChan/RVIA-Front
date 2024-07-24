@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { UserLogged } from '../interfaces/userLogged.interface';
 import { catchError, of, tap } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -18,13 +18,13 @@ export class AuthService {
       numero_empleado: 11,
       position: {
         idu_puesto: 1,
-        // nom_puesto: "Administrador",
+        nom_puesto: "Administrador",
         // nom_puesto: "Autorizador",
-        nom_puesto: "Usuario",
+        // nom_puesto: "Usuario",
         // nom_puesto: "Invitado",
       },
       // token: ''
-      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzIxNzg5Mzk1LCJleHAiOjE3MjE3OTY1OTV9.CoEz3Qds47pU6c-HbZXY0isnfOIcO0DaOXHIfCS8aLU"
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzIxODM3NTE3LCJleHAiOjE3MjE4NDQ3MTd9.yXCcChs_qVj60uqciR0nS9K5olE-n3hA0e-pDldRrjU"
     }
   }
 

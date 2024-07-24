@@ -63,8 +63,9 @@
                     <td *ngIf="user!.position.nom_puesto !== 'Invitado'">
                         <a 
                             *ngIf="app.applicationstatus.idu_estatus_aplicacion === 3"
-                            [href]="app.linkDownload"
-                            download="{{ app.nom_aplicacion }}.jpeg"
+                            href="http://localhost:3000/applications/zip/{{app.idu_aplicacion}}"
+                            download
+                            target="_blank"
                             class="c-pointer icon-down">
                             <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
                         </a>
