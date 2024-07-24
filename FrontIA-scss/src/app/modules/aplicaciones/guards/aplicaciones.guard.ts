@@ -15,7 +15,7 @@ export const AplicacionesGuard = (): boolean => {
     }
 
     if (currentUser && !validRol.includes(currentUser!.position.nom_puesto) ){
-        router.navigate(['/apps/home'])
+        router.navigate(['/apps/list-apps'])
         return false;
     }
 

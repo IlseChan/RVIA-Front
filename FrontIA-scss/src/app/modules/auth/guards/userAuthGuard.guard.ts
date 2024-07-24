@@ -11,6 +11,6 @@ export const UserAuthGuard = (): boolean => {
         return true;
     }
     
-    router.navigate(['/apps/home']);
+    router.navigate(['/apps/list-apps']);
     return false;
 }

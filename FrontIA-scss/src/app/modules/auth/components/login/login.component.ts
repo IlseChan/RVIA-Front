@@ -38,7 +38,7 @@ export class LoginComponent {
       this.errorMessage = ''; // Limpiar mensaje de error en caso de éxito
       
       this.authService.onLogin(trimmedUsernumber,trimmedPassword).subscribe(resp => {
-        this.router.navigate(['/apps/home']);  // Navega a la página de inicio
+        this.router.navigate(['/apps/list-apps']);  // Navega a la página de inicio
       }); 
     // } else {
     //   this.errorMessage = 'Número de empleado o contraseña incorrecta';
