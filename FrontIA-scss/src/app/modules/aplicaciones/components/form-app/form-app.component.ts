@@ -29,15 +29,15 @@ export class FormsAppsPageComponent {
     }
   }
 
-  onFileSelected(event: Event, type: string): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files?.length) {
-      if (type === 'zip') {
-        this.zipFile = input.files[0];
-        this.zipFileName = this.zipFile.name;
-        this.gitlabUrl = ''; // Limpiar la URL de GitLab si se selecciona un ZIP
-        this.showGitlabUrlInput = false; // Ocultar el campo de URL de GitLab
-      }
+  onFileSelected(event:any, type: string): void {
+    const file: File = event.target.files[0];
+    const types = ['zip','x-zip-compressed'];
+    
+    if(file && types.includes(file.type.split('/')[1])){
+      this.zipFile = file
+      this.zipFileName = file.name;
+      this.gitlabUrl = ''; // Limpiar la URL de GitLab si se selecciona un ZIP
+      this.showGitlabUrlInput = false; // Ocultar el campo de URL de GitLab
     }
   }
 
@@ -67,22 +67,13 @@ export class FormsAppsPageComponent {
         .subscribe(resp => {
           this.router.navigate(['/apps/list-apps']);
         })
-      // alert(`URL de GitLab válida: ${this.gitlabUrl}`);
     } 
     
     if(this.zipFile && this.zipFileName){
-      console.log('tenemos archivo');
-      console.log(this.zipFile);
-      this.aplicacionesService.saveZipFile(this.zipFile, this.zipFileName)
+      this.aplicacionesService.saveZipFile(this.zipFile)
         .subscribe(resp => {
-            console.log('no movemos');
-            
-        })
-
+          this.router.navigate(['/apps/list-apps']);
+        });
     }
-
-    // else {
-    //   alert('Por favor, ingrese una URL válida de GitLab');
-    // }
   }
 }

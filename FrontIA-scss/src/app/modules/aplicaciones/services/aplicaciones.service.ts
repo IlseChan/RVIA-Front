@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { Aplication } from '../interfaces/aplicaciones.interfaces';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpEvent, HttpEventType, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -130,44 +130,33 @@ export class AplicacionesService {
     return of(null)
   }
 
-  saveZipFile(file: File, name: string) {
+  saveZipFile(file: File) {
 
     const token = localStorage.getItem('token');
-
+    
     if(token){
-      const headerOpc = {
-        headers: new HttpHeaders({
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${token}`
-        })
-      };
-
       
       const formData = new FormData();
       formData.append('file',file);
+      
+      const headers = new HttpHeaders({
+        'Authorization': `Bearer ${token}`,
+      });
 
-      console.log(formData);
-      // const body = {
-      //   file
-      // }      
-    
-      return this.http.post(`http://localhost:3000/applications/files`,file,headerOpc)
+      return this.http.post(`http://localhost:3000/applications/files`,formData,{ headers })
         .pipe(
           tap(resp => {
-            console.log(resp);
-            
+            console.log(resp)
           }),
           catchError(e => {
             console.log(e);
             
             return of(null)
           })
-        );
+        )
     }
-
-    return of(null)
     
-
+    return of(null)
   }
 
 }

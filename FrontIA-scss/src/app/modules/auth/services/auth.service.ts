@@ -24,7 +24,7 @@ export class AuthService {
         // nom_puesto: "Invitado",
       },
       // token: ''
-      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzIxNzgxNzM2LCJleHAiOjE3MjE3ODg5MzZ9.9Wu9918xKdAr_UwskdnR_TYJN9WUkCaRAuE8gQy11lA"
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzIxNzg5Mzk1LCJleHAiOjE3MjE3OTY1OTV9.CoEz3Qds47pU6c-HbZXY0isnfOIcO0DaOXHIfCS8aLU"
     }
   }
 
