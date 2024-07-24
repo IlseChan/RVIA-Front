@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, delay, map, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, catchError, delay, map, Observable, of, tap } from 'rxjs';
 import { Aplication, AplicationsData } from '../interfaces/aplicaciones.interfaces';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
@@ -9,6 +9,8 @@ import { environment } from '../../../../environments/environment';
 })
 export class AplicacionesService {
   private readonly baseUrl = environment.baseURL;
+
+  changeListSubject = new BehaviorSubject<boolean>(false);
 
   allAppsResp: AplicationsData = {
     data: [],
@@ -21,7 +23,9 @@ export class AplicacionesService {
    
     const token = localStorage.getItem('token');
     
-    if(token && this.allAppsResp.data.length === 0){
+    if((token && this.allAppsResp.data.length === 0) || (token && this.changeListSubject.getValue())){
+      console.log('hacemos llamada');
+      
       const headerOpc = {
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
@@ -33,6 +37,7 @@ export class AplicacionesService {
           tap(apps => {
             this.allAppsResp.data = apps;
             this.allAppsResp.total = apps.length;
+            this.changeListSubject.next(false);
           }),
           map(apps => {
             const from = ( page - 1 ) * 5;
