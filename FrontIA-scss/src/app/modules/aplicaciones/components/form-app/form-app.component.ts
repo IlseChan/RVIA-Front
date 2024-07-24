@@ -1,6 +1,8 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-form-apps-page',
@@ -16,6 +18,10 @@ export class FormsAppsPageComponent {
   zipFileName: string | null = null;
   gitlabUrl: string = '';
   showGitlabUrlInput: boolean = false;
+
+  constructor(
+    private aplicacionesService: AplicacionesService, 
+    private router: Router){}
 
   triggerFileInput(type: string): void {
     if (type === 'zip' && !this.gitlabUrl) {
@@ -42,7 +48,7 @@ export class FormsAppsPageComponent {
   }
 
   isValidGitlabUrl(url: string): boolean {
-    const regex = /^(https:\/\/|http:\/\/)?(www\.)?gitlab\.com\/[\w\-]+\/[\w\-]+(\.git)?$/;
+    const regex = /^(https:\/\/|http:\/\/)?(www\.)?github\.com\/[\w\-]+\/[\w\-]+(\.git)?$/;
     return regex.test(url);
   }
 
@@ -57,9 +63,26 @@ export class FormsAppsPageComponent {
   onSave(): void {
     if (this.gitlabUrl && this.isValidGitlabUrl(this.gitlabUrl)) {
       console.log('GitLab URL válida:', this.gitlabUrl);
-      alert(`URL de GitLab válida: ${this.gitlabUrl}`);
-    } else {
-      alert('Por favor, ingrese una URL válida de GitLab');
+      this.aplicacionesService.saveGitLabUrl(this.gitlabUrl)
+        .subscribe(resp => {
+          this.router.navigate(['/apps/list-apps']);
+        })
+      // alert(`URL de GitLab válida: ${this.gitlabUrl}`);
+    } 
+    
+    if(this.zipFile && this.zipFileName){
+      console.log('tenemos archivo');
+      console.log(this.zipFile);
+      this.aplicacionesService.saveZipFile(this.zipFile, this.zipFileName)
+        .subscribe(resp => {
+            console.log('no movemos');
+            
+        })
+
     }
+
+    // else {
+    //   alert('Por favor, ingrese una URL válida de GitLab');
+    // }
   }
 }

@@ -19,9 +19,12 @@ export class AuthService {
       position: {
         idu_puesto: 1,
         nom_puesto: "Administrador",
+        // nom_puesto: "Autorizador",
+        // nom_puesto: "Usuario",
+        // nom_puesto: "Invitado",
       },
       // token: ''
-      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzIxNzYzOTEyLCJleHAiOjE3MjE3NzExMTJ9.XIvJEVTC2v6YUh9hS0_MdKMDEmqKobVSUDpUTT36ZaQ"
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzIxNzgxNzM2LCJleHAiOjE3MjE3ODg5MzZ9.9Wu9918xKdAr_UwskdnR_TYJN9WUkCaRAuE8gQy11lA"
     }
   }
 
@@ -55,28 +58,13 @@ export class AuthService {
     .pipe(
       tap(resp => {
         this.currentUser = resp;
+        localStorage.setItem('token', this.currentUser.token)
       }),
       catchError(e => {
         console.log(e)
         return of([])
       })
     )
-
-    // // Este código solo es local [ELIMINAR CUANDO SE TENGA BD Y RESPUESTA]
-    // this.currentUser = {
-    //   username: 'Penta Cero Miedo',
-    //   usernumber: '99872123',
-    //   token: 'esteesuntokencomodequeno',
-    //   // rol: 'Invitado'
-    //   // rol: 'Usuario',
-    //   // rol: 'Autorizador',
-    //   rol: 'Administrador'
-    // };
-    
-    // // return of({
-    // //   ok: true,
-    // //   user: this.currentUser
-    // // })
   }
 
   onLogout(): void {

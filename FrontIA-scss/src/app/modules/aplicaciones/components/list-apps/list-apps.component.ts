@@ -34,11 +34,12 @@ export class ListAppsComponent implements OnInit {
   colums: string[] = ['ID','Nombre','Estatus'];
 
   statusOpcs = [
-    { name: 'En proceso', code : 2 },
-    { name: 'Rechazado',  code : 3 },
-    { name: 'En espera',  code : 4 },
+    { name: 'En proceso', code : 1 },
+    { name: 'En espera',  code : 2 },
+    { name: 'Rechazado',  code : 4 },
   ];
 
+  isLoading: boolean = true;
   constructor(
     private aplicacionService: AplicacionesService,
     private authService: AuthService,
@@ -61,21 +62,20 @@ export class ListAppsComponent implements OnInit {
   }
 
   onGetAplicaciones(): void {
-    // this.aplicacionService.getAplicaciones(this.currentPage)
-    // .subscribe(({data,total}) => {
-    //   this.aplications = [...data];
-    //   this.totalItems  = total;
-    // });
+    this.aplicacionService.getAplicaciones(this.currentPage)
+    .subscribe(({data, total}) => {
+      if(!data) return
+      this.aplications = [...data];
+      this.totalItems  = total;
+    });
   }
 
   onChangeStatus({value}: DropdownChangeEvent, app: Aplication, index: number){
-    if(value === 3){
+    if(value === 4){
       this.dialogConfirmation(app,index,value);
     }else{
       this.aplicacionService.setNewStatus({...app},value)
-        .subscribe( resp => {
-          this.updateValue(value,index);
-        })
+        .subscribe( resp => {});
     }
   }
 
@@ -87,24 +87,22 @@ export class ListAppsComponent implements OnInit {
   }
 
   dialogConfirmation(app: Aplication, index: number, newValue: number){
-    // const message = `¿Deseas rechazar la aplicación ${app.name}?`;
-    // this.confirmationService.confirm({
-    //   message,
-    //   header: 'Confirmación de rechazo',
-    //   icon: 'pi pi-exclamation-triangle',
-    //   acceptButtonStyleClass: 'p-button-danger',
-    //   acceptLabel: 'Sí, rechazar',
-    //   rejectLabel: 'No, cancelar',
-    //   accept: () => {
-    //     this.aplicacionService.setNewStatus({...app},newValue)
-    //       .subscribe( resp => {
-    //         this.updateValue(newValue,index);
-    //       })
-    //   },
-    //   reject: () => {
-    //     this.updateValue(app.status,index);
-    //   }
-    // });
+    const message = `¿Deseas rechazar la aplicación ${app.nom_aplicacion}?`;
+    this.confirmationService.confirm({
+      message,
+      header: 'Confirmación de rechazo',
+      icon: 'pi pi-exclamation-triangle',
+      acceptButtonStyleClass: 'p-button-danger',
+      acceptLabel: 'Sí, rechazar',
+      rejectLabel: 'No, cancelar',
+      accept: () => {
+        this.aplicacionService.setNewStatus({...app},newValue)
+          .subscribe()
+      },
+      reject: () => {
+        this.updateValue(app.applicationstatus.idu_estatus_aplicacion,index);
+      }
+    });
   }
 
   onPageChange({ page = 0 }: PaginatorState) {

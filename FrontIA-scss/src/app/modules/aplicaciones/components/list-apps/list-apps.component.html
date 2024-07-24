@@ -22,24 +22,24 @@
             </ng-template>
             <ng-template pTemplate="body" let-app let-index="rowIndex">
                 <tr >
-                    <td>{{ app.id }}</td>
-                    <td>{{ app.name }}</td>
-                    <td *ngIf="user!.position.nom_puesto !== 'Invitado' && user!.position.nom_puesto !== 'Usuario'">{{ app.user }}</td>
+                    <td>{{ app.idu_aplicacion }}</td>
+                    <td>{{ app.nom_aplicacion }}</td>
+                    <td *ngIf="user!.position.nom_puesto !== 'Invitado' && user!.position.nom_puesto !== 'Usuario'">{{ app.user.nom_usuario }}</td>
                     <td *ngIf="user!.position.nom_puesto === 'Autorizador' || user!.position.nom_puesto === 'Administrador'; else authStatus">
                         <p-dropdown
-                            [id]="app.id + 'selectInputFin'"
-                            *ngIf="app.status === 1; else selectStatus"
-                            [options]="[{name: 'Finalizado', code: 1}]"
-                            [ngModel]="app.status"
+                            [id]="app.idu_aplicacion + 'selectInputFin'"
+                            *ngIf="app.applicationstatus.idu_estatus_aplicacion === 3; else selectStatus"
+                            [options]="[{name: 'Finalizado', code: 3}]"
+                            [ngModel]="app.applicationstatus.idu_estatus_aplicacion"
                             optionLabel="name"
                             optionValue="code"
                             [disabled]="true"
                         />
                         <ng-template #selectStatus>
                             <p-dropdown
-                                [id]="app.id + 'selectInput'"
+                                [id]="app.idu_aplicacion + 'selectInput'"
                                 [options]="statusOpcs"
-                                [ngModel]="app.status"
+                                [ngModel]="app.applicationstatus.idu_estatus_aplicacion"
                                 optionLabel="name"  
                                 optionValue="code"
                                 placeholder="Select a status"
@@ -49,13 +49,13 @@
                         
                      </td>
                      <ng-template #authStatus>
-                         <td>{{ app.status | statusApp}}</td>
+                         <td>{{ app.applicationstatus.idu_estatus_aplicacion | statusApp}}</td>
                      </ng-template>
                     <td *ngIf="user!.position.nom_puesto !== 'Invitado'">
                         <a 
-                            *ngIf="app.status === 1"
+                            *ngIf="app.applicationstatus.idu_estatus_aplicacion === 3"
                             [href]="app.linkDownload"
-                            download="{{ app.name }}.jpeg"
+                            download="{{ app.nom_aplicacion }}.jpeg"
                             class="c-pointer icon-down">
                             <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
                         </a>

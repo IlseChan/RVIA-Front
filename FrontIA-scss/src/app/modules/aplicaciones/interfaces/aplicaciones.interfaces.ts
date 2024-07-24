@@ -1,22 +1,8 @@
-import { Usuario } from "@modules/usuarios/interfaces/usuario.interface";
-
-// export interface Aplication {
-//     id:   number;
-//     name: string;
-//     user: string;
-//     status: StatusApps;
-//     linkDownload?: string;
-// }
-
 export enum StatusApps {
-    DONE     = 1,
-    PROGRESS = 2,
-    REFUSED  = 3,
-    ONHOLD   = 4
-}
-
-export interface GetAplicacionesResponse {
-    // data: Aplication[];
+    PROGRESS = 1,
+    ONHOLD   = 2,
+    DONE     = 3,
+    REFUSED  = 4,
 }
 
 export interface OpcsStatus {
@@ -47,7 +33,7 @@ export interface Position {
 }
 
 export interface Applicationstatus {
-    idu_estatus_aplicacion: number;
+    idu_estatus_aplicacion: StatusApps;
     des_estatus_aplicacion: string;
 }
 
