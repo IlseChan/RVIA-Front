@@ -38,7 +38,6 @@ export class RegisterComponent {
     }
 
     // Simula el éxito del registro
-    console.log('Registro simulado exitoso');
     alert('Registro simulado exitoso');
     this.errorMessage = ''; // Limpiar mensaje de error en caso de éxito
     this.router.navigate(['/auth/login']);  // Navega a la página de login

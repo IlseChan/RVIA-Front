@@ -34,12 +34,10 @@ export class LoginComponent {
     // const user = users.find((u: User) => u.usernumber === trimmedUsernumber && u.password === trimmedPassword);
 
     // if (user) {
-      console.log('Autenticación exitosa');
       // alert('Autenticación exitosa');
       this.errorMessage = ''; // Limpiar mensaje de error en caso de éxito
       
       this.authService.onLogin(trimmedUsernumber,trimmedPassword).subscribe(resp => {
-        console.log('Respuesta en el login component');
         this.router.navigate(['/apps/home']);  // Navega a la página de inicio
       }); 
     // } else {

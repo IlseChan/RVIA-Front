@@ -18,9 +18,9 @@ export class AuthService {
       numero_empleado: 11,
       position: {
         idu_puesto: 1,
-        nom_puesto: "Administrador",
+        // nom_puesto: "Administrador",
         // nom_puesto: "Autorizador",
-        // nom_puesto: "Usuario",
+        nom_puesto: "Usuario",
         // nom_puesto: "Invitado",
       },
       // token: ''
@@ -47,8 +47,6 @@ export class AuthService {
   }
 
   onLogin(user: string, password: string) {
-    // TODO: Request GET con el HTTPClient que retorna un observable con la info
-    // TODO: De ser exitoso almancenar la información del usuario en currentUser
     // 00000011
     // Aamd230299
     return this.http.post<UserLogged>('http://localhost:3000/auth/login', {
@@ -61,7 +59,6 @@ export class AuthService {
         localStorage.setItem('token', this.currentUser.token)
       }),
       catchError(e => {
-        console.log(e)
         return of([])
       })
     )

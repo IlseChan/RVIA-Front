@@ -1,30 +1,25 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of, tap } from 'rxjs';
-import { Aplication } from '../interfaces/aplicaciones.interfaces';
-import { HttpClient, HttpEvent, HttpEventType, HttpHeaders } from '@angular/common/http';
+import { catchError, delay, map, Observable, of, tap } from 'rxjs';
+import { Aplication, AplicationsData } from '../interfaces/aplicaciones.interfaces';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AplicacionesService {
 
-  allAppsResp: { 
-    data: Aplication[];
-    total: number
-  } = {
+  allAppsResp: AplicationsData = {
     data: [],
     total: -1 
   }
 
   constructor(private http: HttpClient){}
 
-  getAplicaciones(page: number = 1): Observable<any> {
+  getAplicaciones(page: number = 1): Observable<AplicationsData> {
    
     const token = localStorage.getItem('token');
     
     if(token && this.allAppsResp.data.length === 0){
-      console.log(token);
-      
       const headerOpc = {
         headers: new HttpHeaders({
           'Content-Type': 'application/json',
@@ -41,16 +36,14 @@ export class AplicacionesService {
             const from = ( page - 1 ) * 5;
             const to = from + 5;
             const tmpData = [...apps.slice(from,to)];
-            console.log(apps.length);
-            
+
             return {
               data: tmpData,
               total: apps.length 
             };
           }),
+          delay(1000),
           catchError(e => {
-            console.log(e);
-            
             return of({
               data: [],
               total: 0
@@ -86,9 +79,8 @@ export class AplicacionesService {
     
       return this.http.patch<Aplication>(`http://localhost:3000/applications/${app.idu_aplicacion}`,body,headerOpc)
         .pipe(
-          catchError(e => {
-            console.log(e);
-            
+          delay(1000),
+          catchError(e => {    
             return of(null)
           })
         );
@@ -97,7 +89,7 @@ export class AplicacionesService {
     return of(null)
   }
 
-  saveGitLabUrl(url: string){
+  saveGitLabUrl(url: string): Observable<Aplication | null>{
 
     const token = localStorage.getItem('token');
 
@@ -108,20 +100,10 @@ export class AplicacionesService {
           'Authorization': `Bearer ${token}`
         })
       };
-
-      console.log(token);
-      
-      const body = { url };
     
-      return this.http.post(`http://localhost:3000/applications/git`,body,headerOpc)
+      return this.http.post<Aplication>(`http://localhost:3000/applications/git`,{ url },headerOpc)
         .pipe(
-          tap(resp => {
-            console.log(resp);
-            
-          }),
           catchError(e => {
-            console.log(e);
-            
             return of(null)
           })
         );
@@ -130,7 +112,7 @@ export class AplicacionesService {
     return of(null)
   }
 
-  saveZipFile(file: File) {
+  saveZipFile(file: File): Observable<Aplication | null>{
 
     const token = localStorage.getItem('token');
     
@@ -143,14 +125,9 @@ export class AplicacionesService {
         'Authorization': `Bearer ${token}`,
       });
 
-      return this.http.post(`http://localhost:3000/applications/files`,formData,{ headers })
+      return this.http.post<Aplication>(`http://localhost:3000/applications/files`,formData,{ headers })
         .pipe(
-          tap(resp => {
-            console.log(resp)
-          }),
           catchError(e => {
-            console.log(e);
-            
             return of(null)
           })
         )

@@ -24,3 +24,12 @@
 :host ::ng-deep .p-dropdown {
     position: initial !important;
 }
+
+.change{
+    opacity: 0.5;
+    cursor: progress;
+
+    a{
+        pointer-events: none;
+    }
+}

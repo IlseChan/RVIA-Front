@@ -10,7 +10,16 @@
     </a>
 </section>
 
-<section class="mt-4">
+<div *ngIf="isLoading" class="card flex justify-content-center">
+    <p-progressSpinner ariaLabel="loading" />
+</div>
+
+<div *ngIf="!isLoading && aplications.length === 0">
+    <h2>¡No hay aplicaciones para listar!</h2>
+</div>
+
+
+<section *ngIf="!isLoading && aplications.length > 0" class="mt-4">
     <div class="card">
         <p-table [value]="aplications" [tableStyle]="{ 'min-width': '50rem'}" [lazy]="true" >
             <ng-template pTemplate="header">
@@ -21,7 +30,7 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-app let-index="rowIndex">
-                <tr >
+                <tr [ngClass]="{'change': isChangeStatus }" >
                     <td>{{ app.idu_aplicacion }}</td>
                     <td>{{ app.nom_aplicacion }}</td>
                     <td *ngIf="user!.position.nom_puesto !== 'Invitado' && user!.position.nom_puesto !== 'Usuario'">{{ app.user.nom_usuario }}</td>
@@ -64,11 +73,11 @@
             </ng-template>
         </p-table>
     </div>
+    <p-paginator 
+        (onPageChange)="onPageChange($event)" 
+        [first]="0"
+        [rows]="5" 
+        [totalRecords]="totalItems" 
+    />
 </section>
-<p-paginator 
-    (onPageChange)="onPageChange($event)" 
-    [first]="0"
-    [rows]="5" 
-    [totalRecords]="totalItems" 
-/>
 <p-confirmDialog/>

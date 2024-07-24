@@ -62,17 +62,20 @@ export class FormsAppsPageComponent {
 
   onSave(): void {
     if (this.gitlabUrl && this.isValidGitlabUrl(this.gitlabUrl)) {
-      console.log('GitLab URL válida:', this.gitlabUrl);
       this.aplicacionesService.saveGitLabUrl(this.gitlabUrl)
         .subscribe(resp => {
-          this.router.navigate(['/apps/list-apps']);
+          if(resp){
+            this.router.navigate(['/apps/list-apps']);
+          }
         })
     } 
     
     if(this.zipFile && this.zipFileName){
       this.aplicacionesService.saveZipFile(this.zipFile)
         .subscribe(resp => {
-          this.router.navigate(['/apps/list-apps']);
+          if(resp){
+            this.router.navigate(['/apps/list-apps']);
+          }
         });
     }
   }
