@@ -1,67 +1,106 @@
 import { Injectable } from '@angular/core';
-import { Usuario, ResponseGetUsuarios } from '../interfaces/usuario.interface';
-import { delay, Observable, of } from 'rxjs';
+import { Usuario, UsersData } from '../interfaces/usuario.interface';
+import { delay, map, Observable, of, tap, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuariosService {  
-  usuarios = {
-    data: [
-      // {usernumber: "12312412", username: "Arturo Solis", rol: 'Invitado'},
-      // {usernumber: "12312413", username: "Otro Arturo Solis", rol: 'Usuario'}
-      // ,
-    ],
-    total: 0
-  } as ResponseGetUsuarios
+  private readonly baseUrl = environment.baseURL;
 
-  constructor() { }
+  private allUsers: UsersData = {
+    data: [],
+    total: -1 
+  }
+  private changes: boolean = false;
 
-  getUsuarios(page: number = 1): Observable<ResponseGetUsuarios> {
+  constructor(private http: HttpClient){}
+
+  getUsuarios(page: number = 1): Observable<UsersData> {
+    
+    const token = localStorage.getItem('token');
+    
+    if((token && this.allUsers.data.length === 0 || this.changes)){
+      const headerOpc = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        })
+      };
+      
+      return this.http.get<Usuario[]>(`${this.baseUrl}/auth`,headerOpc)
+        .pipe(
+          tap((r) => {
+            this.allUsers.data = r;
+            this.allUsers.total = r.length;
+            this.changes = false;
+          }),
+          map(users => {
+            return {
+              data: this.getUserByPage(page),
+              total: users.length 
+            }
+          })
+        )
+    }else{
+      const data = this.getUserByPage(page);
+      return of({
+        data,
+        total: this.allUsers.total
+      })
+    }
+  }
+
+  private getUserByPage(page: number){
     const from = ( page -1 ) * 5;
     const to = from + 5;
-    const tmpData = this.usuarios.data.slice(from,to);
-    
-    return of({
-      data: [...tmpData],
-      total: this.usuarios.total
-    })
+    return this.allUsers.data.slice(from,to);
   }
 
-  getUsuarioById(id: string): Observable<Usuario | undefined>{
-    const user = this.usuarios.data.filter(user => user.numero_empleado === +id);
+  getUsuarioById(id: string){
+    // const user = this.usuarios.data.filter(user => user.numero_empleado === +id);
     
-    if(user.length > 0){
-      return of(user[0])
+    // if(user.length > 0){
+    //   return of(user[0])
+    // }
+
+    // return of(undefined)
+  }
+
+  updateUsuario(user: Usuario) {
+    
+    // return of({
+    //   ok: true,
+    //   message: 'Se actualizo',
+    //   user
+    // }).pipe(
+    //   delay(2000)
+    // )
+  }
+
+  deleteUsuario(id: number) {
+    
+    const token = localStorage.getItem('token');
+  
+    if(token){
+      const headerOpc = {
+        headers: new HttpHeaders({
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        })
+      };
+
+      return this.http.delete(`${this.baseUrl}/auth/${id}`,headerOpc)
+        .pipe(
+          tap(() => this.changes = true),
+          delay(2000)
+        )
     }
 
-    return of(undefined)
-  }
-
-  updateUsuario(user: Usuario): Observable<any> {
-    
-    return of({
-      ok: true,
-      message: 'Se actualizo',
-      user
-    }).pipe(
-      delay(2000)
-    )
-  }
-
-  deleteUsuario(id: string): Observable<any> {
-    
-    const temp = this.usuarios.data.filter(u => u.numero_empleado !== +id);
-    this.usuarios.data = [...temp];
-    this.usuarios.total = temp.length;
-
-    return of({
-      ok: true,
-      message: 'Se elimino'
-    }).pipe(
-      delay(2000)
-    )
+    return throwError(() => {});
   }
 
 }

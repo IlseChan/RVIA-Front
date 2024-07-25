@@ -1,8 +1,8 @@
 export enum Nom_Puesto {
+    ADMINISTRADOR = 'Administrador',  
+    AUTORIZADOR   = 'Autorizador',
     INVITADO      = 'Invitado',
     USUARIO       =  'Usuario',
-    AUTORIZADOR   = 'Autorizador',
-    ADMINISTRADOR = 'Administrador'  
 }
 
 export enum Idu_Puesto {
@@ -13,15 +13,20 @@ export enum Idu_Puesto {
 }
 
 export interface Usuario {
+    esActivo:        boolean;
     idu_usuario:     number;
+    nom_correo:      string;
+    nom_usuario:     string;
     numero_empleado: number;
-    position: {
-        idu_usuario: Idu_Puesto;
-        nom_puesto: Nom_Puesto;
-    } 
+    position:        Position;
 }
 
-export interface ResponseGetUsuarios {
+export interface Position {
+    idu_usuario: Idu_Puesto;
+    nom_puesto: Nom_Puesto
+}
+
+export interface UsersData {
     data: Usuario[],
     total: number
 }

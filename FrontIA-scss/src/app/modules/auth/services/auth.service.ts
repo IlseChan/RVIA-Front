@@ -15,21 +15,21 @@ export class AuthService {
   constructor(private http: HttpClient) { }
 
   get userLogged(): UserLogged | null {
-    return this.currentUser;
-    // return {
-    //   idu_usuario: 1,
-    //   nom_correo: "angel.magan@coppel.com",
-    //   numero_empleado: 11,
-    //   position: {
-    //     idu_puesto: 1,
-    //     nom_puesto: "Administrador",
-    //     // nom_puesto: "Autorizador",
-    //     // nom_puesto: "Usuario",
-    //     // nom_puesto: "Invitado",
-    //   },
-    //   // token: ''
-    //   token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzIxODM3NTE3LCJleHAiOjE3MjE4NDQ3MTd9.yXCcChs_qVj60uqciR0nS9K5olE-n3hA0e-pDldRrjU"
-    // }
+    // return this.currentUser;
+    return {
+      idu_usuario: 2,
+      nom_correo: "penta0.miedo@coppel.com",
+      numero_empleado: 19,
+      position: {
+        idu_puesto: 1,
+        nom_puesto: "Administrador",
+        //     nom_puesto: "Administrador",
+        //     // nom_puesto: "Autorizador",
+        //     // nom_puesto: "Usuario",
+        //     // nom_puesto: "Invitado",
+      },
+      token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzIxODYwNDAzLCJleHAiOjE3MjE4Njc2MDN9.kze-ZG6Fo8kJsVdnD2Aa-lQhCGFtBVyCvnkb8-qutsI"
+    }
   }
 
   register(usernumber: string, username: string, password: string, email: string): Observable<void> {
@@ -64,6 +64,8 @@ export class AuthService {
     })
     .pipe(
       tap(resp => {
+        console.log(resp);
+        
         this.currentUser = resp;
         localStorage.setItem('token', this.currentUser.token)
       }),

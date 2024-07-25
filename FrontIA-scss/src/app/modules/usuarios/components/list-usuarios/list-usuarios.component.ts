@@ -1,4 +1,4 @@
-import { NgClass, NgFor } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 
@@ -10,11 +10,15 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 
 import { Usuario } from '@modules/usuarios/interfaces/usuario.interface';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { catchError, finalize, of, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-list-usuarios',
   standalone: true,
-  imports: [TableModule,NgFor, PaginatorModule,RouterLink,ConfirmDialogModule, NgClass,ToastModule,PaginatorModule],
+  imports: [TableModule, PaginatorModule,RouterLink,
+    ConfirmDialogModule,ToastModule,PaginatorModule
+    ,CommonModule,ProgressSpinnerModule],
   templateUrl: './list-usuarios.component.html',
   styleUrl: './list-usuarios.component.scss',
   providers: [ConfirmationService,MessageService],
@@ -26,8 +30,10 @@ export class ListUsuariosComponent implements OnInit {
     '# Empleado', 'Nombre', 'Rol', 'Acciones'
   ];
 
+  isLoading: boolean= true;
+  
   isDeleting: boolean = false;
-  idToDelete: string = '';
+  idToDelete: number = -1;
 
   currentPage: number = 1;
   totalItems: number = 0;
@@ -44,10 +50,26 @@ export class ListUsuariosComponent implements OnInit {
   }
   
   onGetUsuarios(): void{
-    this.usuariosService.getUsuarios(this.currentPage).subscribe(({data,total}) => {
-      this.users = data;
-      this.totalItems  = total;
-    });  
+    this.isLoading = true;
+    this.usuariosService.getUsuarios(this.currentPage)
+    .pipe(
+      finalize(()=> this.isLoading = false),
+      catchError(e => throwError(() => {}))
+    )
+    .subscribe({
+      next: ({data,total}) => {
+        this.users = data;
+        this.totalItems = total;
+      },
+      error: (e) => {
+        this.users = [];
+        this.totalItems  = 0;
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error', 
+          detail: `Error al cargar los usuarios` 
+        });
+      }});  
   }
 
   onEdit(idUser: string): void{
@@ -57,9 +79,10 @@ export class ListUsuariosComponent implements OnInit {
 
   onDeleteUsuario(user: Usuario){
     if(this.isDeleting) return;
-    this.isDeleting = true;
-    this.idToDelete  = `${user.numero_empleado}`;
-
+    
+    this.isDeleting = true; 
+    this.idToDelete  = user.numero_empleado;
+  
     const message = `¿Deseas eliminar al usuario ${user.numero_empleado}?`;
     this.confirmationService.confirm({
       message,
@@ -69,15 +92,28 @@ export class ListUsuariosComponent implements OnInit {
       acceptLabel: 'Sí, eliminar',
       rejectLabel: 'No, cancelar',
       accept: () => {
-        this.usuariosService.deleteUsuario( `${user.numero_empleado}`)
-          .subscribe((resp) => {
-            this.messageService.add(
-              { severity: 'success', 
+        this.usuariosService.deleteUsuario(user.idu_usuario)
+          .pipe(
+            finalize(() => this.resetValues()),
+            catchError(e => throwError(() => {}))
+          )
+          .subscribe({
+            next: (r) => {
+              this.messageService.add({ 
+                severity: 'success', 
                 summary: 'Usuario eliminado', 
-                detail: `El usuario ${user.numero_empleado} se elimino exitosamente` 
+                detail: `El usuario ${user.nom_usuario} se elimino correctamente.` 
               });
-            this.resetValues();
-            this.onGetUsuarios();
+              this.currentPage = 1;
+              this.onGetUsuarios();
+            },
+            error: (e) => {
+              this.messageService.add({ 
+                severity: 'error', 
+                summary: 'Error', 
+                detail: `Error al eliminar al usuario ${user.nom_usuario}.` 
+             });
+           }
           });
       },
       reject: () => {
@@ -88,7 +124,7 @@ export class ListUsuariosComponent implements OnInit {
 
   resetValues(): void {
     this.isDeleting = false;
-    this.idToDelete = '';
+    this.idToDelete = -1;
   }
 
   onPageChange({ page = 0 }: PaginatorState): void {

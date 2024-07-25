@@ -1,7 +1,16 @@
-<!-- <section class="flex mt-3">
+<section class="flex mt-3">
     <h1 class="inline text-5xl my-0 ">Lista de Usuarios</h1>
 </section>
-<section class="mt-4">
+
+<div *ngIf="isLoading" class="card flex justify-content-center">
+    <p-progressSpinner ariaLabel="loading" />
+</div>
+
+<div *ngIf="!isLoading && totalItems === 0">
+    <h2>¡No hay usuarios para listar!</h2>
+</div>
+
+<section *ngIf="!isLoading && users.length > 0" class="mt-4">
     <div class="card">
         <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem'}" [lazy]="true" >
             <ng-template pTemplate="header">
@@ -14,8 +23,8 @@
             <ng-template pTemplate="body" let-user let-index="rowIndex">
                 <tr [ngClass]="{'deleting': isDeleting && user.numero_empleado === idToDelete}">
                     <td>{{ user.numero_empleado }}</td>
-                    <td>{{ user. }}</td>
-                    <td>{{ user.rol }}</td>
+                    <td>{{ user.nom_usuario }}</td>
+                    <td>{{ user.position.nom_puesto }}</td>
                     <td>
                         <a (click)="onEdit(user.numero_empleado)"
                             class="c-pointer icon-edit mr-3">
@@ -37,7 +46,5 @@
         [totalRecords]="totalItems" 
     />
 </section>
+<p-confirmDialog/>
 <p-toast />
-<p-confirmDialog/> -->
-
-<p>Esta es la lista de usuarios. REVISAR</p>
