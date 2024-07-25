@@ -9,6 +9,7 @@ import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { Usuario } from '@modules/usuarios/interfaces/usuario.interface';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
@@ -18,7 +19,7 @@ import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
   standalone: true,
   imports: [TableModule, PaginatorModule,RouterLink,
     ConfirmDialogModule,ToastModule,PaginatorModule
-    ,CommonModule,ProgressSpinnerModule],
+    ,CommonModule,ProgressSpinnerModule,TooltipModule],
   templateUrl: './list-usuarios.component.html',
   styleUrl: './list-usuarios.component.scss',
   providers: [ConfirmationService,MessageService],

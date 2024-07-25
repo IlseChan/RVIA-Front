@@ -1,20 +1,23 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { Router } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
+
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { ButtonModule } from 'primeng/button';
-import { catchError, throwError } from 'rxjs';
+import { TooltipModule } from 'primeng/tooltip';
+
+import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
+import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 
 @Component({
   selector: 'app-form-apps-page',
   templateUrl: './form-app.component.html',
   styleUrls: ['./form-app.component.scss'],
   standalone: true,
-  imports: [CommonModule, FormsModule,ButtonModule,ToastModule],
+  imports: [CommonModule, FormsModule,ButtonModule,ToastModule,TooltipModule],
   providers: [MessageService]
 })
 export class FormsAppsPageComponent {

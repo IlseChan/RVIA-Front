@@ -3,7 +3,9 @@
     <a
         *ngIf="user!.position.nom_puesto !== 'Invitado'"
         pRipple 
-        routerLink="/apps/new-app" 
+        routerLink="/apps/new-app"
+        pTooltip="Subir una aplicación" 
+        tooltipPosition="left"  
         class="p-button font-bold ml-auto bnt-new">
         <span class="pi pi-plus-circle mr-2" style="font-size: 1.4rem"></span>
         Nueva
@@ -65,6 +67,8 @@
                             *ngIf="app.applicationstatus.idu_estatus_aplicacion === 3"
                             href="http://localhost:3000/applications/zip/{{app.idu_aplicacion}}"
                             download
+                            pTooltip="Descargar ZIP" 
+                            tooltipPosition="top" 
                             target="_blank"
                             class="c-pointer icon-down">
                             <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>

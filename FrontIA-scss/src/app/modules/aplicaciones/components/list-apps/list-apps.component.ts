@@ -11,6 +11,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ToastModule } from 'primeng/toast';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
@@ -24,7 +25,8 @@ import { StatusAppPipe } from "../../pipes/status-app.pipe";
   standalone: true,
   imports: [ButtonModule, TableModule, CommonModule, 
     PaginatorModule, StatusAppPipe,RouterLink,
-    DropdownModule,ConfirmDialogModule,ProgressSpinnerModule,ToastModule ],
+    DropdownModule,ConfirmDialogModule,ProgressSpinnerModule,
+    ToastModule, TooltipModule],
   templateUrl: './list-apps.component.html',
   styleUrl: './list-apps.component.scss',
   providers: [ConfirmationService, MessageService],

@@ -2,12 +2,20 @@
   <div class="dark-box">
     <p class="project-type-text">Tipo de Proyecto:</p>
     <div class="image-buttons">
-      <button class="image-button" (click)="triggerFileInput('zip')">
-        <img src="assets/images/Cargar.png" alt="Button Image 1">
+      <button
+        pTooltip="Subir zip" 
+        tooltipPosition="bottom" 
+        class="image-button" 
+        (click)="triggerFileInput('zip')">
+          <img src="assets/images/Cargar.png" alt="Button Image 1">
       </button>
       <input id="input-zip" type="file" #zipInput accept=".zip" (change)="onFileSelected($event, 'zip')" style="display: none;">
-      <button class="image-button" (click)="showGitlabInput()">
-        <img src="assets/images/gitlab.webp" alt="Button Image 2">
+      <button 
+        pTooltip="Añadir URL Git Lab" 
+        tooltipPosition="bottom"  
+        class="image-button" 
+        (click)="showGitlabInput()">
+          <img src="assets/images/gitlab.webp" alt="Button Image 2">
       </button>
     </div>
     <div *ngIf="showGitlabUrlInput" class="gitlab-url-container">
