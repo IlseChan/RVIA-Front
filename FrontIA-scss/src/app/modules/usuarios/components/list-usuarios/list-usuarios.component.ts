@@ -1,17 +1,17 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { catchError, finalize, throwError } from 'rxjs';
 
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { Usuario } from '@modules/usuarios/interfaces/usuario.interface';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { catchError, finalize, of, throwError } from 'rxjs';
 
 @Component({
   selector: 'app-list-usuarios',
@@ -72,8 +72,9 @@ export class ListUsuariosComponent implements OnInit {
       }});  
   }
 
-  onEdit(idUser: string): void{
+  onEdit(idUser: number): void{
     if(this.isDeleting) return;
+    this.usuariosService.setUserToEdit(idUser);
     this.router.navigate([`/apps/users/edit/${idUser}`]);
   }
 

@@ -2,7 +2,7 @@ export enum Nom_Puesto {
     ADMINISTRADOR = 'Administrador',  
     AUTORIZADOR   = 'Autorizador',
     INVITADO      = 'Invitado',
-    USUARIO       =  'Usuario',
+    USUARIO       = 'Usuario',
 }
 
 export enum Idu_Puesto {
@@ -22,7 +22,7 @@ export interface Usuario {
 }
 
 export interface Position {
-    idu_usuario: Idu_Puesto;
+    idu_puesto: Idu_Puesto;
     nom_puesto: Nom_Puesto
 }
 
