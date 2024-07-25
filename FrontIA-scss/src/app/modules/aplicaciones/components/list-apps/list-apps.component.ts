@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { catchError, throwError } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -9,6 +10,7 @@ import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ToastModule } from 'primeng/toast';
 
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
@@ -16,8 +18,6 @@ import { UserLogged } from '@modules/auth/interfaces/userLogged.interface';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Nom_Puesto } from '@modules/usuarios/interfaces/usuario.interface';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
-import { ToastModule } from 'primeng/toast';
-import { catchError, throwError } from 'rxjs';
 
 @Component({
   selector: 'list-apps',
@@ -127,6 +127,7 @@ export class ListAppsComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger',
       acceptLabel: 'Sí, rechazar',
+      rejectButtonStyleClass: 'p-button-outlined',
       rejectLabel: 'No, cancelar',
       accept: () => {
         this.aplicacionService.setNewStatus({...app},newValue)

@@ -91,6 +91,7 @@ export class ListUsuariosComponent implements OnInit {
       icon: 'pi pi-exclamation-triangle',
       acceptButtonStyleClass: 'p-button-danger',
       acceptLabel: 'Sí, eliminar',
+      rejectButtonStyleClass: 'p-button-outlined',
       rejectLabel: 'No, cancelar',
       accept: () => {
         this.usuariosService.deleteUsuario(user.idu_usuario)
