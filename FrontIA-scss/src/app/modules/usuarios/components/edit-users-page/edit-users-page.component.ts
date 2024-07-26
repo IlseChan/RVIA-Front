@@ -97,8 +97,10 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   isValidUserNumber(control: FormControl): ValidationErrors | null {
     const value = control.value;
     const isNumeric = /^[0-9]+$/.test(value);
-    
-    return isNumeric ? null : { noNumeric: true }
+    const numInt = parseInt(value, 10);
+    const rangeNum = (numInt > 90000000 && numInt <= 99999999)
+
+    return (isNumeric && rangeNum) ? null : { noNumeric: true }
   }
 
   get hasFormChanges(): boolean {
@@ -113,6 +115,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
 
     this.isUpdate = true;
     const user = this.userForm.value;
+        
     this.usuariosService.updateUsuario(this.originalUser,user)
       .pipe(
         catchError(e =>  throwError(() => e)),
