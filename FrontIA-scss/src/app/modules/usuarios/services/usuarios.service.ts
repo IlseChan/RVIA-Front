@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
 import { Usuario, UsersData } from '../interfaces/usuario.interface';
@@ -21,19 +21,14 @@ export class UsuariosService {
 
   constructor(private http: HttpClient){}
 
-  getUsuarios(page: number = 1): Observable<UsersData> {
-    
+  get token(): string | null {
     const token = localStorage.getItem('token');
-    
-    if((token && this.allUsers.data.length === 0 || this.changes)){
-      const headerOpc = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        })
-      };
-      
-      return this.http.get<Usuario[]>(`${this.baseUrl}/auth`,headerOpc)
+    return token || null;
+  }
+
+  getUsuarios(page: number = 1): Observable<UsersData> {
+    if((this.token && this.allUsers.data.length === 0 || this.changes)){
+      return this.http.get<Usuario[]>(`${this.baseUrl}/auth`)
         .pipe(
           tap((r) => {
             this.allUsers.data = r;
@@ -68,23 +63,15 @@ export class UsuariosService {
   }
 
   getUsuarioById(id: number): Observable<Usuario>{
-
-    const token = localStorage.getItem('token');
-    if(token){
+    if(this.token){
       return this.userEdit$.pipe(
         switchMap( user => {
           
           if(user && user.idu_usuario === id){
             return of(user);
-          } else{
-            const headerOpc = {
-              headers: new HttpHeaders({
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-              })
-            };            
-            return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`,headerOpc)
           }
+
+          return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`)
         })
       );
     }
@@ -93,17 +80,8 @@ export class UsuariosService {
   }
 
   updateUsuario(originalUser: Usuario,changes: Usuario): Observable<Usuario>{
-    const token = localStorage.getItem('token');
-  
-    if(token){
-      const headerOpc = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        })
-      };
-      
-      return this.http.patch<Usuario>(`${this.baseUrl}/auth/${originalUser.idu_usuario}`,changes,headerOpc)
+    if(this.token){
+      return this.http.patch<Usuario>(`${this.baseUrl}/auth/${originalUser.idu_usuario}`,changes)
         .pipe(
           tap(() => this.changes = true),
           tap(() => this.userEditSubject.next(null)),
@@ -115,18 +93,8 @@ export class UsuariosService {
   }
 
   deleteUsuario(id: number){
-    
-    const token = localStorage.getItem('token');
-  
-    if(token){
-      const headerOpc = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        })
-      };
-
-      return this.http.delete(`${this.baseUrl}/auth/${id}`,headerOpc)
+    if(this.token){
+      return this.http.delete(`${this.baseUrl}/auth/${id}`)
         .pipe(
           tap(() => this.changes = true),
           delay(2000)

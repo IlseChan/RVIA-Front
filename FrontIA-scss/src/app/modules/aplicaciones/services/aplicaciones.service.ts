@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { Aplication, AplicationsData } from '../interfaces/aplicaciones.interfaces';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -19,24 +19,19 @@ export class AplicacionesService {
 
   constructor(private http: HttpClient){}
 
+  get token(): string | null {
+    const token = localStorage.getItem('token');
+    return token || null;
+  }
+
   clearDataApps(): void{
     this.allAppsResp.data = [];
     this.allAppsResp.total = -1; 
   }
 
   getAplicaciones(page: number = 1): Observable<AplicationsData> {
-   
-    const token = localStorage.getItem('token');
-    
-    if((token && this.allAppsResp.data.length === 0) || (token && this.changeListSubject.getValue())){
-      
-      const headerOpc = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        })
-      };
-      return this.http.get<Aplication[]>(`${this.baseUrl}/applications`,headerOpc)
+    if((this.token && this.allAppsResp.data.length === 0) || (this.token && this.changeListSubject.getValue())){
+      return this.http.get<Aplication[]>(`${this.baseUrl}/applications`)
         .pipe(
           tap(apps => {
             this.allAppsResp.data = apps;
@@ -75,20 +70,9 @@ export class AplicacionesService {
   }
 
   setNewStatus(app: Aplication, newStatus: number): Observable<Aplication> {
-    
-    const token = localStorage.getItem('token');
-
-    if(token){
-      const headerOpc = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        })
-      };
-
+    if(this.token){
       const body = { estatusId: newStatus };
-    
-      return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body,headerOpc)
+      return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body)
         .pipe(
           delay(1000)
         );
@@ -98,37 +82,19 @@ export class AplicacionesService {
   }
 
   saveGitLabUrl(url: string): Observable<Aplication>{
-
-    const token = localStorage.getItem('token');
-
-    if(token){
-      const headerOpc = {
-        headers: new HttpHeaders({
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        })
-      };
-    
-      return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,{ url },headerOpc)
+    if(this.token){
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,{ url })
     }
 
     return throwError(() => {})
   }
 
   saveZipFile(file: File): Observable<Aplication>{
-
-    const token = localStorage.getItem('token');
-    
-    if(token){
-      
+    if(this.token){
       const formData = new FormData();
       formData.append('file',file);
-      
-      const headers = new HttpHeaders({
-        'Authorization': `Bearer ${token}`,
-      });
 
-      return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData,{ headers })
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData)
     }
     
     return throwError(() => {})

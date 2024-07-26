@@ -59,8 +59,6 @@ export class AuthService {
   }
 
   onLogin(user: string, password: string) {
-    // 00000011
-    // Aamd230299
     return this.http.post<UserLogged>(`${this.baseUrl}/auth/login`, {
       numero_empleado: user,
       nom_contrasena: password
