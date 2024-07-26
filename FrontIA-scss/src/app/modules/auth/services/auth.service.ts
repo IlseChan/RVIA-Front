@@ -1,69 +1,87 @@
 import { Injectable } from '@angular/core';
 import { UserLogged } from '../interfaces/userLogged.interface';
-import { of } from 'rxjs';
+import { catchError, Observable, of, tap, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
+import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly baseUrl = environment.baseURL;
+
   private currentUser: UserLogged | null = null;
 
-  constructor() { }
+  constructor(
+    private http: HttpClient, 
+    private aplicacionesServices: AplicacionesService) { }
 
   get userLogged(): UserLogged | null {
     return this.currentUser;
     // return {
-    //   username: 'Penta Cero Miedo',
-    //   usernumber: '99872123',
-    //   token: 'esteesuntokencomodequeno',
-    //   // rol: 'Invitado'
-    //   // rol: 'Usuario',
-    //   // rol: 'Autorizador',
-    //   rol: 'Administrador'
-    // };
+    //   idu_usuario: 2,
+    //   nom_correo: "penta0.miedo@coppel.com",
+    //   numero_empleado: 19,
+    //   position: {
+    //     idu_puesto: 1,
+    //     nom_puesto: "Administrador",
+    //     //     nom_puesto: "Administrador",
+    //     //     // nom_puesto: "Autorizador",
+    //     //     // nom_puesto: "Usuario",
+    //     //     // nom_puesto: "Invitado",
+    //   },
+    //   token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzIxODYwNDAzLCJleHAiOjE3MjE4Njc2MDN9.kze-ZG6Fo8kJsVdnD2Aa-lQhCGFtBVyCvnkb8-qutsI"
+    // }
   }
 
-  register(usernumber: string, username: string, password: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const users = JSON.parse(localStorage.getItem('users') || '[]');
-
-      if (users.find((user: any) => user.usernumber === usernumber)) {
-        reject(new Error('El número de empleado ya está registrado'));
-      } else {
-        users.push({ usernumber, username, password });
-        localStorage.setItem('users', JSON.stringify(users));
-        resolve();
-      }
-    });
+  register(usernumber: string, username: string, password: string, email: string): Observable<void> {
+    const idu_puesto = 4; // Asegurar que idu_puesto siempre es 4
+    return this.http.post<void>(`${this.baseUrl}/auth/register`, {
+      numero_empleado: usernumber,
+      nom_usuario: username,
+      nom_contrasena: password,
+      idu_puesto: idu_puesto,
+      nom_correo: email
+    })
+    .pipe(
+      catchError(this.handleError)
+    );
   }
+
+  private handleError(error: any): Observable<never> {
+    return throwError(error.error || 'Server error');
+  }
+
 
   getUsers(): { usernumber: string, username: string, password: string }[] {
     return JSON.parse(localStorage.getItem('users') || '[]');
   }
 
   onLogin(user: string, password: string) {
-    // TODO: Request GET con el HTTPClient que retorna un observable con la info
-    // TODO: De ser exitoso almancenar la información del usuario en currentUser
-
-    // Este código solo es local [ELIMINAR CUANDO SE TENGA BD Y RESPUESTA]
-    this.currentUser = {
-      username: 'Penta Cero Miedo',
-      usernumber: '99872123',
-      token: 'esteesuntokencomodequeno',
-      rol: 'Invitado'
-      // rol: 'Usuario',
-      // rol: 'Autorizador',
-      // rol: 'Administrador'
-    };
-    
-    return of({
-      ok: true,
-      user: this.currentUser
+    return this.http.post<UserLogged>(`${this.baseUrl}/auth/login`, {
+      numero_empleado: user,
+      nom_contrasena: password
     })
+    .pipe(
+      tap(resp => {
+        console.log(resp);
+        
+        this.currentUser = resp;
+        localStorage.setItem('token', this.currentUser.token)
+      }),
+      catchError(e => {
+        console.log(e);
+        
+        return of([])
+      })
+    )
   }
 
   onLogout(): void {
-    //TODO: Limpiar al usuario según sea necesario
+    //TODO: Limpiar al usuario y datos según sea necesario
     this.currentUser = null;
+    localStorage.removeItem('token');
+    this.aplicacionesServices.clearDataApps();
   }
 }

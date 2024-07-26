@@ -24,7 +24,7 @@ export const appsRoutes: Routes = [
                 canActivate: [AdminGuard],
                 children: usuariosRoutes
             },
-            { path: '**', redirectTo: 'home' },
+            { path: '**', redirectTo: 'list-apps' },
         ]
     }
 ];

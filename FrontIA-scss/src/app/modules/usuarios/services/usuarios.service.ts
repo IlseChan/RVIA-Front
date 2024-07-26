@@ -1,72 +1,107 @@
 import { Injectable } from '@angular/core';
-import { Usuario, ResponseGetUsuarios } from '../interfaces/usuario.interface';
-import { delay, Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { BehaviorSubject, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
+import { Usuario, UsersData } from '../interfaces/usuario.interface';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuariosService {  
-  usuarios = {
-    data: [
-      {usernumber: "12312412", username: "Arturo Solis", rol: 'Invitado'},
-      {usernumber: "12312413", username: "Otro Arturo Solis", rol: 'Usuario'},
-      {usernumber: "12312414", username: "Brandon Jaimes", rol: 'Administrador'},
-      {usernumber: "12312415", username: "Otro Brandon Jaimes", rol: 'Autorizador'},
-      {usernumber: "12312416", username: "Otro Angel Magana", rol: 'Invitado'},
-      {usernumber: "12312417", username: "Angel Magana", rol: 'Usuario'},
-      {usernumber: "12312418", username: "Ilse Chan", rol: 'Administrador'},
-      {usernumber: "12312419", username: "Otro Ilse Chan", rol: 'Invitado'},
-    ],
-    total: 8
-  } as ResponseGetUsuarios
+  private readonly baseUrl = environment.baseURL;
+  private userEditSubject = new BehaviorSubject<Usuario|null>(null);
+  userEdit$: Observable<Usuario|null> = this.userEditSubject.asObservable();
 
-  constructor() { }
+  private allUsers: UsersData = {
+    data: [],
+    total: -1 
+  }
+  private changes: boolean = false;
 
-  getUsuarios(page: number = 1): Observable<ResponseGetUsuarios> {
+  constructor(private http: HttpClient){}
+
+  get token(): string | null {
+    const token = localStorage.getItem('token');
+    return token || null;
+  }
+
+  getUsuarios(page: number = 1): Observable<UsersData> {
+    if((this.token && this.allUsers.data.length === 0 || this.changes)){
+      return this.http.get<Usuario[]>(`${this.baseUrl}/auth`)
+        .pipe(
+          tap((r) => {
+            this.allUsers.data = r;
+            this.allUsers.total = r.length;
+            this.changes = false;
+          }),
+          map(users => {
+            return {
+              data: this.getUserByPage(page),
+              total: users.length 
+            }
+          })
+        )
+    }else{
+      const data = this.getUserByPage(page);
+      return of({
+        data,
+        total: this.allUsers.total
+      })
+    }
+  }
+
+  private getUserByPage(page: number): Usuario[]{
     const from = ( page -1 ) * 5;
     const to = from + 5;
-    const tmpData = this.usuarios.data.slice(from,to);
-    
-    return of({
-      data: [...tmpData],
-      total: this.usuarios.total
-    })
+    return this.allUsers.data.slice(from,to);
   }
 
-  getUsuarioById(id: string): Observable<Usuario | undefined>{
-    const user = this.usuarios.data.filter(user => user.usernumber === id);
-    
-    if(user.length > 0){
-      return of(user[0])
+  setUserToEdit(id: number){
+    const user = this.allUsers.data.find(user => user.idu_usuario === id);
+    this.userEditSubject.next(user ? user : null);
+  }
+
+  getUsuarioById(id: number): Observable<Usuario>{
+    if(this.token){
+      return this.userEdit$.pipe(
+        switchMap( user => {
+          
+          if(user && user.idu_usuario === id){
+            return of(user);
+          }
+
+          return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`)
+        })
+      );
     }
 
-    return of(undefined)
+    return throwError(() => {});
   }
 
-  updateUsuario(user: Usuario): Observable<any> {
-    
-    return of({
-      ok: true,
-      message: 'Se actualizo',
-      user
-    }).pipe(
-      delay(2000)
-    )
+  updateUsuario(originalUser: Usuario,changes: Usuario): Observable<Usuario>{
+    if(this.token){
+      return this.http.patch<Usuario>(`${this.baseUrl}/auth/${originalUser.idu_usuario}`,changes)
+        .pipe(
+          tap(() => this.changes = true),
+          tap(() => this.userEditSubject.next(null)),
+          delay(1000)
+        )
+    }
+
+    return throwError(() => {});
   }
 
-  deleteUsuario(id: string): Observable<any> {
-    
-    const temp = this.usuarios.data.filter(u => u.usernumber !== id);
-    this.usuarios.data = [...temp];
-    this.usuarios.total = temp.length;
+  deleteUsuario(id: number){
+    if(this.token){
+      return this.http.delete(`${this.baseUrl}/auth/${id}`)
+        .pipe(
+          tap(() => this.changes = true),
+          delay(2000)
+        )
+    }
 
-    return of({
-      ok: true,
-      message: 'Se elimino'
-    }).pipe(
-      delay(2000)
-    )
+    return throwError(() => {});
   }
 
 }

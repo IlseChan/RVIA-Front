@@ -1,120 +1,103 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Aplication, GetAplicacionesResponse } from '../interfaces/aplicaciones.interfaces';
+import { BehaviorSubject, catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
+import { Aplication, AplicationsData } from '../interfaces/aplicaciones.interfaces';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AplicacionesService {
-  private data: GetAplicacionesResponse = {
-    data: [
-      {
-        id:   1,
-        name: 'Intranet-botonera',
-        user: 'Luis',
-        status: 2
-      },
-      {
-        id:   2,
-        name: 'Web App simple',
-        status: 1,
-        user: 'Angel',
-        linkDownload:  'assets/images/portada.jpeg'
-      },
-      {
-        id:   3,
-        name: 'SI.exe',
-        status: 3,
-        user: 'Ilse',
-        linkDownload:  'assets/images/portada.jpeg'
-      },
-      {
-        id:   4,
-        name: 'Intranet-huellas',
-        user: 'Brandon',
-        status: 4
-      },
-      {
-        id:   5,
-        name: 'Aplicacion prueba 2',
-        user: 'Luis',
-        status: 1
-      },
-      {
-        id:   6,
-        name: '6Intranet-botonera',
-        user: 'Luis',
-        status: 2
-      },
-      {
-        id:   7,
-        name: '7Web App simple',
-        user: 'Angel',
-        status: 1,
-        linkDownload:  'assets/images/portada.jpeg'
-      },
-      {
-        id:   8,
-        name: '8SI.exe',
-        status: 2,
-        user: 'Otro',
-        linkDownload:  'assets/images/portada.jpeg'
-      },
-      {
-        id:   9,
-        name: '9Intranet-huellas',
-        user: 'Otro',
-        status: 3
-      },
-      {
-        id:   10,
-        name: '10Aplicacion prueba 2',
-        user: 'Luis',
-        status: 2
-      },
-      {
-        id:   11,
-        name: '11SI.exe',
-        user: 'Ilse',
-        status: 1,
-        linkDownload:  'assets/images/portada.jpeg'
-      },
-      {
-        id:   12,
-        name: '12Intranet-huellas',
-        user: 'Brandon',
-        status: 3
-      },
-      {
-        id:   13,
-        name: '13Aplicacion prueba 2',
-        user: 'Brandon',
-        status: 4
-      },
-    ],
-    total: 13
-  } as GetAplicacionesResponse
+  private readonly baseUrl = environment.baseURL;
 
-  constructor() { }
+  changeListSubject = new BehaviorSubject<boolean>(false);
 
-  getAplicaciones(page: number = 1): Observable<GetAplicacionesResponse> {
-    const from = ( page -1 ) * 5;
-    const to = from + 5;
-    const tmpData = this.data.data.slice(from,to);
+  allAppsResp: AplicationsData = {
+    data: [],
+    total: -1 
+  }
+
+  constructor(private http: HttpClient){}
+
+  get token(): string | null {
+    const token = localStorage.getItem('token');
+    return token || null;
+  }
+
+  clearDataApps(): void{
+    this.allAppsResp.data = [];
+    this.allAppsResp.total = -1; 
+  }
+
+  getAplicaciones(page: number = 1): Observable<AplicationsData> {
+    if((this.token && this.allAppsResp.data.length === 0) || (this.token && this.changeListSubject.getValue())){
+      return this.http.get<Aplication[]>(`${this.baseUrl}/applications`)
+        .pipe(
+          tap(apps => {
+            this.allAppsResp.data = apps;
+            this.allAppsResp.total = apps.length;
+            this.changeListSubject.next(false);
+          }),
+          map(apps => {
+            const from = ( page - 1 ) * 5;
+            const to = from + 5;
+            const tmpData = [...apps.slice(from,to)];
+
+            return {
+              data: tmpData,
+              total: apps.length 
+            };
+          }),
+          delay(1000),
+          catchError(e => {
+            return of({
+              data: [],
+              total: 0
+            })
+          })
+        )
+      }
+      else{
+        const from = ( page - 1 ) * 5;
+        const to = from + 5;
+        
+        const tmpData = [...this.allAppsResp.data.slice(from,to)];
+        return of({
+          data: tmpData,
+          total: this.allAppsResp.total
+        });
+      }
+  }
+
+  setNewStatus(app: Aplication, newStatus: number): Observable<Aplication> {
+    if(this.token){
+      const body = { estatusId: newStatus };
+      return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body)
+        .pipe(
+          delay(1000)
+        );
+    }
+
+    return throwError(() => {})
+  }
+
+  saveGitLabUrl(url: string): Observable<Aplication>{
+    if(this.token){
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,{ url })
+    }
+
+    return throwError(() => {})
+  }
+
+  saveZipFile(file: File): Observable<Aplication>{
+    if(this.token){
+      const formData = new FormData();
+      formData.append('file',file);
+
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData)
+    }
     
-    return of({
-      data: tmpData,
-      total: this.data.total
-    })
+    return throwError(() => {})
   }
 
-  setNewStatus(app: Aplication, newStatus: number): Observable<any> {
-    app.status = newStatus;
-
-    return of({
-      ok: true,
-      message: 'Se hizo',
-      app
-    });
-  }
 }

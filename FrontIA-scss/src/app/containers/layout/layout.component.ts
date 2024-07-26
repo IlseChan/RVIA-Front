@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { UserLogged } from '@modules/auth/interfaces/userLogged.interface';
 import { AuthService } from '@modules/auth/services/auth.service';
+import { Nom_Puesto } from '@modules/usuarios/interfaces/usuario.interface';
 
 @Component({
   selector: 'app-layout',
@@ -25,11 +26,12 @@ export class LayoutComponent {
   ngOnInit(): void {
     this.userLogged = this.authService.userLogged;
     if(this.userLogged){
-      if(this.userLogged.rol === 'Administrador'){
+      if(this.userLogged.position.nom_puesto === Nom_Puesto.ADMINISTRADOR){
         this.menuSidebar.push(
           { path: '/apps/users/list-users', name: 'Usuarios'},
         )
       }
+    
     }
   }
 

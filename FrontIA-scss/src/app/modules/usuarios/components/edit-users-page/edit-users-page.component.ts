@@ -1,35 +1,44 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Role, Usuario } from '@modules/usuarios/interfaces/usuario.interface';
-import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
+import { catchError, Subscription, switchMap, throwError } from 'rxjs';
+
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
-import { switchMap } from 'rxjs';
+
+import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
+import { Idu_Puesto, Usuario } from '@modules/usuarios/interfaces/usuario.interface';
 
 @Component({
   selector: 'edit-users-page',
   standalone: true,
-  imports: [CommonModule, InputTextModule, DropdownModule, ButtonModule, DropdownModule,ReactiveFormsModule,ToastModule],
+  imports: [CommonModule, InputTextModule, DropdownModule, 
+    ButtonModule, DropdownModule,ReactiveFormsModule,
+    ToastModule,ProgressSpinnerModule],
   templateUrl: './edit-users-page.component.html',
   styleUrl: './edit-users-page.component.scss',
   providers: [MessageService]
 })
-export class EditUsersPageComponent implements OnInit {
+export class EditUsersPageComponent implements OnInit, OnDestroy {
   userForm!:  FormGroup;
   initalValues: any;
   
-  isLoading: boolean = false;
+  isLoading: boolean = true;
   typesUsers = [
-    { code: 'Invitado',      name: 'Invitado' },
-    { code: 'Usuario',       name: 'Usuario' },
-    { code: 'Autorizador',   name: 'Autorizador' },
-    { code: 'Administrador', name: 'Administrador' },
+    { idu_usuario: 1, nom_puesto: 'Administrador' },
+    { idu_usuario: 2, nom_puesto: 'Autorizador' },
+    { idu_usuario: 3, nom_puesto: 'Usuario' },
+    { idu_usuario: 4, nom_puesto: 'Invitado' },
   ];
+
+  userSub!: Subscription;
+  isUpdate: boolean = false;
+  originalUser!: Usuario;
 
   constructor(
     private router: Router,
@@ -41,28 +50,44 @@ export class EditUsersPageComponent implements OnInit {
   ngOnInit(): void {
     if(!this.router.url.includes('edit')) return;
 
-    this.activedRoute.params  
+    this.userSub = this.activedRoute.params  
       .pipe(
-        switchMap(({id}) => this.usuariosService.getUsuarioById(id))
+        switchMap(({id}) => this.usuariosService.getUsuarioById(+id)),
+        catchError(e => throwError(() => {})),
       )
-      .subscribe( user => {
-        if(!user){
-          this.router.navigate(['/apps/users/list-users']);
+      .subscribe({
+        next: (user) => {
+          this.initForm(user); 
+          this.originalUser = user;
+          this.isLoading = false; 
+        },
+        error: (e) => {
+          console.log(e);
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error', 
+            detail: `Error al cargar información` 
+          });
+          setTimeout(() => {
+            this.router.navigate(['apps/users/list-users'])
+          }, 2800);
         }
-        this.initForm(user!);
-      });
+      });  
   }
-
   
   initForm(user: Usuario): void {
+    const numEmpleado = this.addZeros(user.numero_empleado);
     this.userForm = new FormGroup({
-      usernumber: new FormControl<string>('', [Validators.required, Validators.minLength(3), this.isValidUserNumber]),
-      username: new FormControl<string>('',[Validators.required, Validators.minLength(3)]),
-      rol: new FormControl<Role>(Role.INVITADO,[Validators.required])
+      numero_empleado: new FormControl<string>(numEmpleado, [Validators.required, Validators.minLength(8), this.isValidUserNumber]),
+      nom_usuario: new FormControl<string>(user.nom_usuario,[Validators.required, Validators.minLength(3)]),
+      idu_puesto: new FormControl<Idu_Puesto>(user.position.idu_puesto,[Validators.required])
     });
   
-    this.userForm.reset(user);
     this.initalValues = this.userForm.value;
+  }
+
+  addZeros(num: number): string {
+    return num.toString().padStart(8,'0');
   }
 
   isValidField(field: string): boolean | null {
@@ -70,10 +95,12 @@ export class EditUsersPageComponent implements OnInit {
   }
 
   isValidUserNumber(control: FormControl): ValidationErrors | null {
-    const value = control.value?.trim();
+    const value = control.value;
     const isNumeric = /^[0-9]+$/.test(value);
-    
-    return isNumeric ? null : { noNumeric: true }
+    const numInt = parseInt(value, 10);
+    const rangeNum = (numInt > 90000000 && numInt <= 99999999)
+
+    return (isNumeric && rangeNum) ? null : { noNumeric: true }
   }
 
   get hasFormChanges(): boolean {
@@ -86,22 +113,42 @@ export class EditUsersPageComponent implements OnInit {
       return;
     }
 
-    this.isLoading = true;
+    this.isUpdate = true;
     const user = this.userForm.value;
-    this.usuariosService.updateUsuario(user)
-    .subscribe( resp => {
-      this.isLoading = false;
-      this.messageService.add(
-        { severity: 'success', 
-          summary: 'Usuario actualizado', 
-          detail: `¡Se a modificado a ${resp.user.username} como ${resp.user.rol} con éxito!` 
-        });
-      this.initalValues = this.userForm.value;
-    });
+        
+    this.usuariosService.updateUsuario(this.originalUser,user)
+      .pipe(
+        catchError(e =>  throwError(() => e)),
+      )
+      .subscribe({
+        next: (resp) => {
+          this.messageService.add({ 
+            severity: 'success', 
+            summary: 'Actualización Exitosa', 
+            detail: `El usuario ${resp.numero_empleado} - ${resp.nom_usuario} con posición ${resp.position.nom_puesto} se actualizó correctamente` 
+          });
+          setTimeout(() => {
+            this.router.navigate(['apps/users/list-users']);
+          },2800)
+        },
+        error: (e) => {
+          const detail = `Error al actualizar al usaurio. ${e.error.message}`;
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error al actualizar', 
+            detail
+          });
+          this.isUpdate = false;
+        }
+      });
   }
 
   onCancel(): void{
     this.userForm.reset(this.initalValues);
+  }
+
+  ngOnDestroy(): void {
+    if(this.userSub) this.userSub.unsubscribe();
   }
 }
 

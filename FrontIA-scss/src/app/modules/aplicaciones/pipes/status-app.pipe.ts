@@ -8,10 +8,10 @@ export class StatusAppPipe implements PipeTransform {
 
   transform(value: number): string {
     const statusApp: {[key:number]: string} = {
-       1: 'Finalizado',
-       2: 'En proceso',
-       3: 'Rechazado',
-       4: 'En espera'
+      1: 'En proceso',
+      2: 'En espera',
+      3: 'Finalizado',
+      4: 'Rechazado',
     }
 
     return statusApp[value] || 'Error';

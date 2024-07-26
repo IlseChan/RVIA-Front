@@ -1,7 +1,16 @@
 <section class="flex mt-3">
     <h1 class="inline text-5xl my-0 ">Lista de Usuarios</h1>
 </section>
-<section class="mt-4">
+
+<div *ngIf="isLoading" class="card flex justify-content-center">
+    <p-progressSpinner ariaLabel="loading" />
+</div>
+
+<div *ngIf="!isLoading && totalItems === 0">
+    <h2>¡No hay usuarios para listar!</h2>
+</div>
+
+<section *ngIf="!isLoading && users.length > 0" class="mt-4">
     <div class="card">
         <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem'}" [lazy]="true" >
             <ng-template pTemplate="header">
@@ -12,16 +21,20 @@
                 </tr>
             </ng-template>
             <ng-template pTemplate="body" let-user let-index="rowIndex">
-                <tr [ngClass]="{'deleting': isDeleting && user.usernumber === idToDelete}">
-                    <td>{{ user.usernumber }}</td>
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.rol }}</td>
+                <tr [ngClass]="{'deleting': isDeleting && user.numero_empleado === idToDelete}">
+                    <td>{{ user.numero_empleado }}</td>
+                    <td>{{ user.nom_usuario }}</td>
+                    <td>{{ user.position.nom_puesto }}</td>
                     <td>
-                        <a (click)="onEdit(user.usernumber)"
+                        <a  pTooltip="Editar usuario" 
+                            tooltipPosition="left"  
+                            (click)="onEdit(user.idu_usuario)"
                             class="c-pointer icon-edit mr-3">
                                 <i class="pi pi-user-edit" style="font-size: 1.6rem"></i>
                         </a>
-                        <a  (click)="onDeleteUsuario(user)"
+                        <a  pTooltip="Eliminar usuario" 
+
+                            (click)="onDeleteUsuario(user)"
                             class="c-pointer icon-del">
                                 <i class="pi pi-trash" style="font-size: 1.6rem"></i>
                         </a>
@@ -37,5 +50,5 @@
         [totalRecords]="totalItems" 
     />
 </section>
-<p-toast />
 <p-confirmDialog/>
+<p-toast />
