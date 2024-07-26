@@ -19,6 +19,11 @@ export class AplicacionesService {
 
   constructor(private http: HttpClient){}
 
+  clearDataApps(): void{
+    this.allAppsResp.data = [];
+    this.allAppsResp.total = -1; 
+  }
+
   getAplicaciones(page: number = 1): Observable<AplicationsData> {
    
     const token = localStorage.getItem('token');
