@@ -1,0 +1,26 @@
+.deleting{
+    opacity: 0.5;
+    cursor: progress;
+
+    a{
+        pointer-events: none;
+    }
+}
+
+.icon{
+    &-edit{
+        color: #5271FF;
+
+        &:hover{
+            color: #1d45fa;
+        }
+    }
+
+    &-del{
+        color: #FF5757;
+
+        &:hover{
+            color: #f81c1c;
+        }
+    }
+}
