@@ -4,6 +4,7 @@ import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
+import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,8 @@ export class AuthService {
 
   constructor(
     private http: HttpClient, 
-    private aplicacionesServices: AplicacionesService
+    private aplicacionesServices: AplicacionesService,
+    private usuariosService: UsuariosService
   ) { }
 
   get userLogged(): UserLogged | null {
@@ -61,6 +63,7 @@ export class AuthService {
     this.currentUser = null;
     localStorage.removeItem('token');
     this.aplicacionesServices.clearDataApps();
+    this.usuariosService.clearDataUsers();
   }
 
   tokenValidation(): Observable<boolean> {
