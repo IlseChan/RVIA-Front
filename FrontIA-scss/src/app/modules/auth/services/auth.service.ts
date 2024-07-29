@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { UserLogged } from '../interfaces/userLogged.interface';
-import { catchError, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
@@ -19,20 +19,6 @@ export class AuthService {
 
   get userLogged(): UserLogged | null {
     return this.currentUser;
-    // return {
-    //   idu_usuario: 2,
-    //   nom_correo: "penta0.miedo@coppel.com",
-    //   numero_empleado: 19,
-    //   position: {
-    //     idu_puesto: 1,
-    //     nom_puesto: "Administrador",
-    //     //     nom_puesto: "Administrador",
-    //     //     // nom_puesto: "Autorizador",
-    //     //     // nom_puesto: "Usuario",
-    //     //     // nom_puesto: "Invitado",
-    //   },
-    //   token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzIxODYwNDAzLCJleHAiOjE3MjE4Njc2MDN9.kze-ZG6Fo8kJsVdnD2Aa-lQhCGFtBVyCvnkb8-qutsI"
-    // }
   }
 
   register(usernumber: string, username: string, password: string, email: string): Observable<void> {
@@ -53,7 +39,6 @@ export class AuthService {
     return throwError(error.error || 'Server error');
   }
 
-
   getUsers(): { usernumber: string, username: string, password: string }[] {
     return JSON.parse(localStorage.getItem('users') || '[]');
   }
@@ -64,9 +49,7 @@ export class AuthService {
       nom_contrasena: password
     })
     .pipe(
-      tap(resp => {
-        console.log(resp);
-        
+      tap(resp => {        
         this.currentUser = resp;
         localStorage.setItem('token', this.currentUser.token)
       }),
@@ -79,9 +62,20 @@ export class AuthService {
   }
 
   onLogout(): void {
-    //TODO: Limpiar al usuario y datos según sea necesario
     this.currentUser = null;
     localStorage.removeItem('token');
     this.aplicacionesServices.clearDataApps();
+  }
+
+  tokenValidation(): Observable<boolean> {
+    return this.http.get<UserLogged>(`${this.baseUrl}/auth/check-status`)
+    .pipe(
+      map((resp) => {
+        this.currentUser = resp;
+        localStorage.setItem('token', this.currentUser.token)
+        return true;
+      }),
+      catchError(() => of(false))
+    )
   }
 }
