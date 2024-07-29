@@ -1,5 +1,5 @@
 {
-  "name": "front-ia-scss",
+  "name": "rvia-front",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -20,10 +20,6 @@
     "@angular/platform-browser": "^18.1.0",
     "@angular/platform-browser-dynamic": "^18.1.0",
     "@angular/router": "^18.1.0",
-    "body-parser": "^1.20.2",
-    "cors": "^2.8.5",
-    "express": "^4.19.2",
-    "mysql": "^2.18.1",
     "primeflex": "^3.3.1",
     "primeicons": "^7.0.0",
     "primeng": "^17.18.5",
