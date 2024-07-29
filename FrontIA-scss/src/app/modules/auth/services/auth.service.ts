@@ -21,17 +21,23 @@ export class AuthService {
     return this.currentUser;
   }
 
-  register(usernumber: string, username: string, password: string, email: string): Observable<void> {
-    const idu_puesto = 4; // Asegurar que idu_puesto siempre es 4
-    return this.http.post<void>(`${this.baseUrl}/auth/register`, {
+  register(usernumber: string, username: string, password: string, email: string): Observable<UserLogged> {
+    const idu_puesto = 4;
+    return this.http.post<UserLogged>(`${this.baseUrl}/auth/register`, {
       numero_empleado: usernumber,
       nom_usuario: username,
       nom_contrasena: password,
       idu_puesto: idu_puesto,
       nom_correo: email
     })
-    .pipe(
-      catchError(this.handleError)
+    .pipe( 
+      tap(resp => { 
+        console.log(resp);
+        
+        this.currentUser = resp;
+        localStorage.setItem('token', this.currentUser.token)
+    }),
+    catchError(this.handleError)
     );
   }
 
@@ -71,9 +77,12 @@ export class AuthService {
     return this.http.get<UserLogged>(`${this.baseUrl}/auth/check-status`)
     .pipe(
       map((resp) => {
-        this.currentUser = resp;
-        localStorage.setItem('token', this.currentUser.token)
-        return true;
+        if(resp){
+          this.currentUser = resp;
+          localStorage.setItem('token', this.currentUser.token)
+          return true;
+        }
+        return false;
       }),
       catchError(() => of(false))
     )

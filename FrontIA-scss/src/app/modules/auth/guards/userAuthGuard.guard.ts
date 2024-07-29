@@ -11,7 +11,7 @@ export const UserAuthGuard = (): boolean | Observable<boolean> => {
         .pipe(
             tap( isAuth => {
                 if(isAuth){
-                    router.navigate(['./apps/list-apps'])
+                    router.navigate(['./'])
                 }
             }),
             map( isAuth => !isAuth)
