@@ -4,6 +4,7 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 import { UserLogged } from '@modules/auth/interfaces/userLogged.interface';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Nom_Puesto } from '@modules/usuarios/interfaces/usuario.interface';
+import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 
 @Component({
   selector: 'app-layout',
@@ -21,7 +22,8 @@ export class LayoutComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService){}
+    private authService: AuthService,
+    private usuariosService: UsuariosService ){}
   
   ngOnInit(): void {
     this.userLogged = this.authService.userLogged;
@@ -34,10 +36,10 @@ export class LayoutComponent {
     
     }
   }
-
   
   logout():void {
     this.authService.onLogout();
+    this.usuariosService.clearDataApps();
     this.router.navigate(['/auth/login']);
   }
 }
