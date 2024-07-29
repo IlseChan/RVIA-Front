@@ -1,16 +1,59 @@
 .layout {
   display: flex;
+  flex-direction: column;
   height: 100%;
   width: 100%;
 }
 
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #333;
+  color: white;
+}
+
+.hamburger {
+  font-size: 1.5rem;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  .username, .usernumber, .userposition { /* Añadido .userposition */
+    margin-right: 10px;
+    white-space: nowrap;
+  }
+  .userposition { /* Estilo para el nombre del puesto */
+    font-style: italic;
+    color: #ffc107;
+  }
+}
+
 .sidebar {
+  position: fixed;
+  top: 0;
+  left: -200px; // Cambia este valor a -100% en pantallas pequeñas
   width: 200px;
+  height: 100%;
   background-color: #333;
   color: white;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  transition: left 0.3s ease, background-color 0.3s ease;
+  z-index: 1000; // Asegura que el sidebar se superponga al contenido
+  opacity: 1; // Asegura que el sidebar no sea transparente
+}
+
+.sidebar.active {
+  left: 0;
+  background-color: #333; // Asegura que el fondo del sidebar sea sólido al activarse
 }
 
 .sidebar ul {
@@ -62,10 +105,40 @@
   }
 }
 
+.sidebar-logout {
+  display: none;
+}
+
+.navbar-logout {
+  display: block;
+}
+
 .content {
   flex-grow: 1;
   background-color: #f0f0f0;
   padding: 20px 30px;
-  height: calc(100% );
+  height: calc(100%);
   overflow-y: auto;
+  transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    left: -100%; // Cambia este valor para ocultar la barra lateral en pantallas pequeñas
+
+    &.active {
+      width: 200px;
+      left: 0;
+      background-color: #333; // Asegura que el fondo del sidebar sea sólido al activarse en pantallas pequeñas
+    }
+  }
+
+  .navbar-logout {
+    display: none;
+  }
+
+  .sidebar-logout {
+    display: block;
+  }
 }
