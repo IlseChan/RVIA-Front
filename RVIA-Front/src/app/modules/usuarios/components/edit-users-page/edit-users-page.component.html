@@ -12,11 +12,10 @@
             <div class="field grid justify-content-center mb-2" >
                 <p for="numero_empleado-edit" class="col-fixed my-auto text-right" style="width:200px">Número de Empleado</p>
                 <div class="col-3">
-                    <div class="flex flex-column">
-                        <input pInputText id="numero_empleado-edit"
-                            formControlName="numero_empleado" type="text"/>
-                        <small class="mt-2 text-red" *ngIf="isValidField('numero_empleado')">Número de empleado invalido</small>
-                    </div>
+                    <input 
+                        pInputText id="numero_empleado-edit"
+                        type="text" [disabled]="true" readonly
+                        [value]="originalUser.numero_empleado"/>
                 </div>
             </div>
             <div class="field grid justify-content-center mb-2" >
