@@ -25,8 +25,7 @@ export class LayoutComponent {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
-    private usuariosService: UsuariosService ){}
+    private authService: AuthService){}
   
   ngOnInit(): void {
     this.userLogged = this.authService.userLogged;
@@ -54,7 +53,6 @@ export class LayoutComponent {
 
   logout():void {
     this.authService.onLogout();
-    this.usuariosService.clearDataApps();
     this.router.navigate(['/auth/login']);
   }
 }
