@@ -1,7 +1,5 @@
 import { HttpHandlerFn, HttpRequest } from "@angular/common/http";
 
-const token = localStorage.getItem('token') || null;
-
 const regexApps = /\/applications|\/applications\/\d+|\/applications\/git/;
 const methodsApps = ['GET','PATCH','POST'];
 const checkRegex = (url: string): boolean => {
@@ -20,6 +18,8 @@ const checkRegexDown = (url: string): boolean => {
 }
 
 export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandlerFn) => {       
+    const token = localStorage.getItem('token') || null;
+    
     try{
         const url = request.url;
         const method = request.method;
@@ -27,7 +27,7 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
         if((url.includes('/auth/login') || url.includes('/auth/register') && method === 'POST')){
             return next(request);
         }
-
+        
         //TODO revisar si es es para descargar pero que este en sesion (token y usuario)
         if((checkRegexDown(url) && token) && method === 'GET'){
             return next(request);
