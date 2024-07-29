@@ -62,7 +62,6 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
           this.isLoading = false; 
         },
         error: (e) => {
-          console.log(e);
           this.messageService.add({ 
             severity: 'error', 
             summary: 'Error', 
@@ -76,9 +75,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   }
   
   initForm(user: Usuario): void {
-    const numEmpleado = this.addZeros(user.numero_empleado);
     this.userForm = new FormGroup({
-      numero_empleado: new FormControl<string>(numEmpleado, [Validators.required, Validators.minLength(8), this.isValidUserNumber]),
       nom_usuario: new FormControl<string>(user.nom_usuario,[Validators.required, Validators.minLength(3)]),
       idu_puesto: new FormControl<Idu_Puesto>(user.position.idu_puesto,[Validators.required])
     });
@@ -86,21 +83,8 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
     this.initalValues = this.userForm.value;
   }
 
-  addZeros(num: number): string {
-    return num.toString().padStart(8,'0');
-  }
-
   isValidField(field: string): boolean | null {
     return this.userForm.controls[field].errors && this.userForm.controls[field].touched;
-  }
-
-  isValidUserNumber(control: FormControl): ValidationErrors | null {
-    const value = control.value;
-    const isNumeric = /^[0-9]+$/.test(value);
-    const numInt = parseInt(value, 10);
-    const rangeNum = (numInt > 90000000 && numInt <= 99999999)
-
-    return (isNumeric && rangeNum) ? null : { noNumeric: true }
   }
 
   get hasFormChanges(): boolean {

@@ -26,6 +26,11 @@ export class UsuariosService {
     return token || null;
   }
 
+  clearDataApps():void{
+    this.allUsers.data = [];
+    this.allUsers.total = -1;
+  }
+
   getUsuarios(page: number = 1): Observable<UsersData> {
     if((this.token && this.allUsers.data.length === 0 || this.changes)){
       return this.http.get<Usuario[]>(`${this.baseUrl}/auth`)
