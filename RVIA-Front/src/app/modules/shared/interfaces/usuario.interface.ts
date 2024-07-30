@@ -19,14 +19,10 @@ export interface Usuario {
     nom_usuario:     string;
     numero_empleado: number;
     position:        Position;
+    token?:          string;
 }
 
 export interface Position {
     idu_puesto: Idu_Puesto;
     nom_puesto: Nom_Puesto
-}
-
-export interface UsersData {
-    data: Usuario[],
-    total: number
 }

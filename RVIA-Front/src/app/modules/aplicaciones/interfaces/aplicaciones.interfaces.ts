@@ -1,3 +1,5 @@
+import { Usuario } from "@modules/shared/interfaces/usuario.interface";
+
 export enum StatusApps {
     PROGRESS = 1,
     ONHOLD   = 2,
@@ -15,21 +17,7 @@ export interface Aplication {
     idu_aplicacion:    number;
     nom_aplicacion:    string;
     sourcecode:        Sourcecode;
-    user:              User;
-}
-
-export interface User {
-    esActivo:        boolean;
-    idu_usuario:     number;
-    nom_correo:      string;
-    nom_usuario:     string;
-    numero_empleado: number;
-    position:        Position;
-}
-
-export interface Position {
-    idu_puesto: number;
-    nom_puesto: string;
+    user:              Usuario;
 }
 
 export interface Applicationstatus {

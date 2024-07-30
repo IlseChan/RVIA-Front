@@ -2,10 +2,8 @@ import { NgFor, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
-import { UserLogged } from '@modules/auth/interfaces/userLogged.interface';
 import { AuthService } from '@modules/auth/services/auth.service';
-import { Nom_Puesto } from '@modules/usuarios/interfaces/usuario.interface';
-import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
+import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
 
 @Component({
   selector: 'app-layout',
@@ -15,7 +13,7 @@ import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
-  userLogged!: UserLogged | null;
+  userLogged!: Usuario | null;
   menuSidebar = [
     { path: '/apps/home', name: 'Inicio'},
     { path: '/apps/list-apps', name: 'Aplicaciones'},
@@ -32,7 +30,7 @@ export class LayoutComponent {
 
     if(this.userLogged && this.userLogged.position.nom_puesto === Nom_Puesto.ADMINISTRADOR){
       this.menuSidebar.push(
-        { path: '/apps/users/list-users', name: 'Usuarios'},
+        { path: '/users/list-users', name: 'Usuarios'},
       )
     }
   }
@@ -42,13 +40,7 @@ export class LayoutComponent {
   }
 
   closeSidebar(): void {
-    if (this.sidebarActive) {
-      this.sidebarActive = false;
-    }
-  }
-
-  navigateAndCloseSidebar(path: string): void {
-    this.closeSidebar();
+    if (this.sidebarActive) this.sidebarActive = false;
   }
 
   logout():void {
