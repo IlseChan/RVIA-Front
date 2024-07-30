@@ -1,22 +1,36 @@
 <main class="layout">
-    <nav class="sidebar">
-      <ul>
-        <li *ngFor="let option of menuSidebar">
-          <a routerLinkActive="active"
-            [routerLink]="option.path" >
-              {{ option.name | titlecase }}
-          </a>
-        </li>
-      </ul>
-      <div class="logout-button ">
-        <button (click)="logout()">
-          <i class="pi pi-power-off"></i>
-          <span class="ml-2">Cerrar sesión</span>
-        </button>
-      </div>
-    </nav>
-    <section class="content">
-      <router-outlet></router-outlet>
-    </section>
+  <nav class="navbar">
+    <button class="hamburger" (click)="toggleSidebar()">
+      ☰
+    </button>
+    <div class="user-info">
+      <span class="username">{{ userLogged?.nom_usuario }}</span>
+      <span class="usernumber">{{ userLogged?.numero_empleado }}</span>
+      <span class="userposition">{{ userLogged?.position?.nom_puesto }}</span>
+    </div>
+    <div class="logout-button navbar-logout">
+      <button (click)="logout()">
+        <i class="pi pi-power-off"></i>
+        <span class="ml-2">Cerrar sesión</span>
+      </button>
+    </div>
+  </nav>
+  <nav class="sidebar" [class.active]="sidebarActive">
+    <ul>
+      <li *ngFor="let option of menuSidebar">
+        <a (click)="closeSidebar()" routerLinkActive="active" [routerLink]="option.path">
+          {{ option.name | titlecase }}
+        </a>
+      </li>
+    </ul>
+    <div class="logout-button sidebar-logout">
+      <button (click)="logout()">
+        <i class="pi pi-power-off"></i>
+        <span class="ml-2">Cerrar sesión</span>
+      </button>
+    </div>
+  </nav>
+  <section class="content" (click)="closeSidebar()">
+    <router-outlet></router-outlet>
+  </section>
 </main>
-  

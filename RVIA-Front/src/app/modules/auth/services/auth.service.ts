@@ -4,18 +4,20 @@ import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
+import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly baseUrl = environment.baseURL;
-
   private currentUser: UserLogged | null = null;
 
   constructor(
     private http: HttpClient, 
-    private aplicacionesServices: AplicacionesService) { }
+    private aplicacionesServices: AplicacionesService,
+    private usuariosService: UsuariosService
+  ) { }
 
   get userLogged(): UserLogged | null {
     return this.currentUser;
@@ -32,8 +34,6 @@ export class AuthService {
     })
     .pipe( 
       tap(resp => { 
-        console.log(resp);
-        
         this.currentUser = resp;
         localStorage.setItem('token', this.currentUser.token)
     }),
@@ -41,15 +41,7 @@ export class AuthService {
     );
   }
 
-  private handleError(error: any): Observable<never> {
-    return throwError(error.error || 'Server error');
-  }
-
-  getUsers(): { usernumber: string, username: string, password: string }[] {
-    return JSON.parse(localStorage.getItem('users') || '[]');
-  }
-
-  onLogin(user: string, password: string) {
+  onLogin(user: string, password: string): Observable<UserLogged> {
     return this.http.post<UserLogged>(`${this.baseUrl}/auth/login`, {
       numero_empleado: user,
       nom_contrasena: password
@@ -59,10 +51,10 @@ export class AuthService {
         this.currentUser = resp;
         localStorage.setItem('token', this.currentUser.token)
       }),
+      map(resp => resp as UserLogged), // Asegurar que la respuesta es del tipo UserLogged
       catchError(e => {
         console.log(e);
-        
-        return of([])
+        return throwError(() => new Error('Login failed')); // Retornar un error en lugar de un array vacío
       })
     )
   }
@@ -71,6 +63,7 @@ export class AuthService {
     this.currentUser = null;
     localStorage.removeItem('token');
     this.aplicacionesServices.clearDataApps();
+    this.usuariosService.clearDataUsers();
   }
 
   tokenValidation(): Observable<boolean> {
@@ -87,5 +80,8 @@ export class AuthService {
       catchError(() => of(false))
     )
   }
+
+  private handleError(error: any): Observable<never> {
+    return throwError(error.error || 'Server error');
+  }
 }
-// Carino@123456
