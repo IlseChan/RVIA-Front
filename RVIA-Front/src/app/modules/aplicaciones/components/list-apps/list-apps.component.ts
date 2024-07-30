@@ -15,10 +15,9 @@ import { TooltipModule } from 'primeng/tooltip';
 
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { UserLogged } from '@modules/auth/interfaces/userLogged.interface';
 import { AuthService } from '@modules/auth/services/auth.service';
-import { Nom_Puesto } from '@modules/usuarios/interfaces/usuario.interface';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
+import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
 
 @Component({
   selector: 'list-apps',
@@ -32,7 +31,7 @@ import { StatusAppPipe } from "../../pipes/status-app.pipe";
   providers: [ConfirmationService, MessageService],
 })
 export class ListAppsComponent implements OnInit {
-  user!: UserLogged | null;
+  user!: Usuario | null;
   aplications: Aplication[] = [];
   
   currentPage: number = 1;
@@ -84,7 +83,7 @@ export class ListAppsComponent implements OnInit {
     });
   }
 
-  onChangeStatus({value}: DropdownChangeEvent, app: Aplication, index: number){
+  onChangeStatus({value}: DropdownChangeEvent, app: Aplication, index: number): void{
     if(this.isChangeStatus) return;
     
     this.isChangeStatus = true;
@@ -121,7 +120,7 @@ export class ListAppsComponent implements OnInit {
     this.indexChange = -1;
   }
 
-  dialogConfirmation(app: Aplication, index: number, newValue: number){
+  dialogConfirmation(app: Aplication, index: number, newValue: number): void{
     const message = `¿Deseas rechazar la aplicación ${app.nom_aplicacion}?`;
     this.confirmationService.confirm({
       message,
@@ -159,7 +158,7 @@ export class ListAppsComponent implements OnInit {
     });
   }
 
-  onPageChange({ page = 0 }: PaginatorState) {
+  onPageChange({ page = 0 }: PaginatorState): void{
     const newPage = page + 1;
     if(newPage === this.currentPage) return;
     this.currentPage = newPage;

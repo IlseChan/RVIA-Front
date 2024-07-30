@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
-import { Aplication, AplicationsData } from '../interfaces/aplicaciones.interfaces';
 import { HttpClient } from '@angular/common/http';
+
+import { Aplication, AplicationsData } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -24,7 +25,7 @@ export class AplicacionesService {
     return token || null;
   }
 
-  clearDataApps(): void{
+  clearDataApps(): void {
     this.allAppsResp.data = [];
     this.allAppsResp.total = -1; 
   }
@@ -38,35 +39,26 @@ export class AplicacionesService {
             this.allAppsResp.total = apps.length;
             this.changeListSubject.next(false);
           }),
-          map(apps => {
-            const from = ( page - 1 ) * 5;
-            const to = from + 5;
-            const tmpData = [...apps.slice(from,to)];
-
-            return {
-              data: tmpData,
-              total: apps.length 
-            };
-          }),
+          map(apps => this.getAppsByPage(apps,page)),
           delay(1000),
-          catchError(e => {
-            return of({
-              data: [],
-              total: 0
-            })
-          })
+          catchError(e => of({ data: [], total: 0}))
         )
       }
       else{
-        const from = ( page - 1 ) * 5;
-        const to = from + 5;
-        
-        const tmpData = [...this.allAppsResp.data.slice(from,to)];
-        return of({
-          data: tmpData,
-          total: this.allAppsResp.total
-        });
+        return of(
+          this.getAppsByPage([...this.allAppsResp.data],page)
+        )
       }
+  }
+ 
+  private getAppsByPage(apps: Aplication[], page: number): AplicationsData {
+    const from = (page - 1) * 5;
+    const to = from + 5;
+    const tmpData = apps.slice(from, to);
+    return {
+      data: tmpData,
+      total: this.allAppsResp.total
+    };
   }
 
   setNewStatus(app: Aplication, newStatus: number): Observable<Aplication> {
@@ -99,5 +91,4 @@ export class AplicacionesService {
     
     return throwError(() => {})
   }
-
 }

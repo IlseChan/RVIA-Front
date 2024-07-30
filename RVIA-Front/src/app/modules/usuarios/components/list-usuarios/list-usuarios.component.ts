@@ -11,7 +11,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { Usuario } from '@modules/usuarios/interfaces/usuario.interface';
+import { Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 
 @Component({
@@ -76,7 +76,7 @@ export class ListUsuariosComponent implements OnInit {
   onEdit(idUser: number): void{
     if(this.isDeleting) return;
     this.usuariosService.setUserToEdit(idUser);
-    this.router.navigate([`/apps/users/edit/${idUser}`]);
+    this.router.navigate([`/users/edit/${idUser}`]);
   }
 
   onDeleteUsuario(user: Usuario){
