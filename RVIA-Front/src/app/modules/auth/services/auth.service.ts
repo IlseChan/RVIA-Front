@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
-import { UserLogged } from '../interfaces/userLogged.interface';
 import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
+import { Usuario } from '@modules/shared/interfaces/usuario.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private readonly baseUrl = environment.baseURL;
-  private currentUser: UserLogged | null = null;
+  private currentUser: Usuario | null = null;
 
   constructor(
     private http: HttpClient, 
@@ -19,13 +19,13 @@ export class AuthService {
     private usuariosService: UsuariosService
   ) { }
 
-  get userLogged(): UserLogged | null {
+  get userLogged(): Usuario | null {
     return this.currentUser;
   }
 
-  register(usernumber: string, username: string, password: string, email: string): Observable<UserLogged> {
+  register(usernumber: string, username: string, password: string, email: string): Observable<Usuario> {
     const idu_puesto = 4;
-    return this.http.post<UserLogged>(`${this.baseUrl}/auth/register`, {
+    return this.http.post<Usuario>(`${this.baseUrl}/auth/register`, {
       numero_empleado: usernumber,
       nom_usuario: username,
       nom_contrasena: password,
@@ -35,23 +35,25 @@ export class AuthService {
     .pipe( 
       tap(resp => { 
         this.currentUser = resp;
-        localStorage.setItem('token', this.currentUser.token)
+        if(this.currentUser.token)
+          localStorage.setItem('token', this.currentUser.token)
     }),
     catchError(this.handleError)
     );
   }
 
-  onLogin(user: string, password: string): Observable<UserLogged> {
-    return this.http.post<UserLogged>(`${this.baseUrl}/auth/login`, {
+  onLogin(user: string, password: string): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.baseUrl}/auth/login`, {
       numero_empleado: user,
       nom_contrasena: password
     })
     .pipe(
       tap(resp => {        
         this.currentUser = resp;
-        localStorage.setItem('token', this.currentUser.token)
+        if(this.currentUser.token)
+          localStorage.setItem('token', this.currentUser.token)
       }),
-      map(resp => resp as UserLogged), // Asegurar que la respuesta es del tipo UserLogged
+      map(resp => resp as Usuario), // Asegurar que la respuesta es del tipo UserLogged
       catchError(e => {
         console.log(e);
         return throwError(() => new Error('Login failed')); // Retornar un error en lugar de un array vacío
@@ -67,12 +69,13 @@ export class AuthService {
   }
 
   tokenValidation(): Observable<boolean> {
-    return this.http.get<UserLogged>(`${this.baseUrl}/auth/check-status`)
+    return this.http.get<Usuario>(`${this.baseUrl}/auth/check-status`)
     .pipe(
       map((resp) => {
         if(resp){
           this.currentUser = resp;
-          localStorage.setItem('token', this.currentUser.token)
+          if(this.currentUser.token)
+            localStorage.setItem('token', this.currentUser.token)
           return true;
         }
         return false;

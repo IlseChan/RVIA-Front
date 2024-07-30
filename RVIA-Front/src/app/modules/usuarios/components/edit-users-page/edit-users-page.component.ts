@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, Subscription, switchMap, throwError } from 'rxjs';
 
@@ -12,7 +12,8 @@ import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
-import { Idu_Puesto, Usuario } from '@modules/usuarios/interfaces/usuario.interface';
+import { Idu_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
+import { InitalValuesFormEdits } from '@modules/usuarios/interfaces/usuarios.interface';
 
 @Component({
   selector: 'edit-users-page',
@@ -26,7 +27,10 @@ import { Idu_Puesto, Usuario } from '@modules/usuarios/interfaces/usuario.interf
 })
 export class EditUsersPageComponent implements OnInit, OnDestroy {
   userForm!:  FormGroup;
-  initalValues: any;
+  initalValues: InitalValuesFormEdits = {
+    nom_usuario: '',
+    idu_puesto: Idu_Puesto.INVITADO
+  };
   
   isLoading: boolean = true;
   typesUsers = [

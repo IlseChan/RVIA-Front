@@ -2,7 +2,8 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
-import { Usuario, UsersData } from '../interfaces/usuario.interface';
+import { Usuario } from '@modules/shared/interfaces/usuario.interface';
+import { UsersData } from '../interfaces/usuarios.interface';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -26,7 +27,7 @@ export class UsuariosService {
     return token || null;
   }
 
-  clearDataUsers():void{
+  clearDataUsers():void {
     this.allUsers.data = [];
     this.allUsers.total = -1;
   }
@@ -40,29 +41,25 @@ export class UsuariosService {
             this.allUsers.total = r.length;
             this.changes = false;
           }),
-          map(users => {
-            return {
-              data: this.getUserByPage(page),
-              total: users.length 
-            }
-          })
+          map(users =>  this.getUserByPage(users,page))
         )
     }else{
-      const data = this.getUserByPage(page);
-      return of({
-        data,
-        total: this.allUsers.total
-      })
+      return of(
+        this.getUserByPage([...this.allUsers.data],page))
     }
   }
 
-  private getUserByPage(page: number): Usuario[]{
+  private getUserByPage(users: Usuario[], page: number): UsersData {
     const from = ( page -1 ) * 5;
     const to = from + 5;
-    return this.allUsers.data.slice(from,to);
+
+    return {
+      data: users.slice(from, to),
+      total: this.allUsers.total
+    }
   }
 
-  setUserToEdit(id: number){
+  setUserToEdit(id: number): void {
     const user = this.allUsers.data.find(user => user.idu_usuario === id);
     this.userEditSubject.next(user ? user : null);
   }
@@ -70,12 +67,10 @@ export class UsuariosService {
   getUsuarioById(id: number): Observable<Usuario>{
     if(this.token){
       return this.userEdit$.pipe(
-        switchMap( user => {
-          
+        switchMap( user => {        
           if(user && user.idu_usuario === id){
             return of(user);
           }
-
           return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`)
         })
       );
@@ -84,7 +79,7 @@ export class UsuariosService {
     return throwError(() => {});
   }
 
-  updateUsuario(originalUser: Usuario,changes: Usuario): Observable<Usuario>{
+  updateUsuario(originalUser: Usuario,changes: Usuario): Observable<Usuario> {
     if(this.token){
       return this.http.patch<Usuario>(`${this.baseUrl}/auth/${originalUser.idu_usuario}`,changes)
         .pipe(
@@ -97,9 +92,9 @@ export class UsuariosService {
     return throwError(() => {});
   }
 
-  deleteUsuario(id: number){
+  deleteUsuario(id: number): Observable<Usuario> {
     if(this.token){
-      return this.http.delete(`${this.baseUrl}/auth/${id}`)
+      return this.http.delete<Usuario>(`${this.baseUrl}/auth/${id}`)
         .pipe(
           tap(() => this.changes = true),
           delay(2000)
@@ -108,5 +103,4 @@ export class UsuariosService {
 
     return throwError(() => {});
   }
-
 }

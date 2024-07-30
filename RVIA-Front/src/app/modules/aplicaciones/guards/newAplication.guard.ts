@@ -1,9 +1,10 @@
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
-import { AuthService } from "@modules/auth/services/auth.service";
-import { Nom_Puesto } from "@modules/usuarios/interfaces/usuario.interface";
 
-export const AplicacionesGuard = (): boolean => {
+import { AuthService } from "@modules/auth/services/auth.service";
+import { Nom_Puesto } from "@modules/shared/interfaces/usuario.interface";
+
+export const NewAplicationGuard = (): boolean => {
     const validRol: string[] = [Nom_Puesto.ADMINISTRADOR,Nom_Puesto.AUTORIZADOR,Nom_Puesto.USUARIO];
     const router = inject(Router);
     const authService = inject(AuthService);
