@@ -11,7 +11,7 @@ import { environment } from '../../../../environments/environment';
 })
 export class UsuariosService {  
   private readonly baseUrl = environment.baseURL;
-  private userEditSubject = new BehaviorSubject<Usuario|null>(null);
+  userEditSubject = new BehaviorSubject<Usuario|null>(null);
   userEdit$: Observable<Usuario|null> = this.userEditSubject.asObservable();
 
   private allUsers: UsersData = {
@@ -84,7 +84,6 @@ export class UsuariosService {
       return this.http.patch<Usuario>(`${this.baseUrl}/auth/${originalUser.idu_usuario}`,changes)
         .pipe(
           tap(() => this.changes = true),
-          tap(() => this.userEditSubject.next(null)),
           delay(1000)
         )
     }

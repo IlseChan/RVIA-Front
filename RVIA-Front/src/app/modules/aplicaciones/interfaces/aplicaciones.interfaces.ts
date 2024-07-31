@@ -35,3 +35,10 @@ export interface AplicationsData {
     data: Aplication[];
     total: number
 }
+
+export interface FormProjectWithPDF{
+    pdfFile: File | null;
+    type: string;
+    urlGit: string;
+    zipFile: File | null;
+}

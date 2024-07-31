@@ -1,44 +1,15 @@
-.form-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: 100vh; // Para asegurar que el contenedor ocupe toda la altura de la pantalla
-  }
-  
-  .dark-box {
-    background-color: #555;
-    padding: 40px;
-    border-radius: 8px;
-    margin-top: 40px;
-    width: 60%; // Aumenta el ancho del contenedor para ajustar el cuadro de texto
-    height: 50%; // Ajusta la altura a un porcentaje de la pantalla
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between; // Distribuye el espacio entre los elementos
-    align-items: center;
-    box-sizing: border-box; // Incluye el padding en el tamaño total
-  }
-  
-  .project-type-text {
-    color: white;
-    font-weight: bold;
-    margin-bottom: 20px; // Espacio debajo del texto
-    font-family: 'Open Sans', sans-serif; // Cambia 'Arial' por el tipo de letra que prefieras
-    font-size: 30px; // Ajusta el tamaño de letra según sea necesario
-  }
-  
-  
-  .image-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 40px; // Aumenta el espacio entre los botones de imagen
-    margin-bottom: 10px; // Añade un margen inferior para separar las imágenes del recuadro de información
-  }
-  
-  .image-button {
-    padding: 10px; // Añade padding a los botones de imagen
-    background-color: transparent; // Fondo transparente para los botones
-    border: none; // Sin borde para los botones
+.container-text{
+  margin-inline: 4rem;
+}
+
+.container-stepper{
+  background-color: #fff;
+  margin-top: 3rem;
+  margin-inline: 4rem;
+  padding: 1.5rem;
+
+  .label-btn{
+    border: none; 
     cursor: pointer;
   
     img {
@@ -46,68 +17,14 @@
       height: 50px;
     }
   }
-  
-  .gitlab-url-container {
-    margin-bottom: 20px; // Espacio debajo del contenedor de la URL
-    width: 100%; // Asegura que el contenedor del input ocupe todo el ancho
-  }
-  
-  .gitlab-url-input {
-    width: 100%; // Asegura que el input ocupe todo el ancho del contenedor
-    padding: 20px;
-    border: 1px solid #777; // Define el borde del input
-    border-radius: 1px;
-    font-size: 16px; // Tamaño de fuente para mejor legibilidad
-    box-sizing: border-box; // Incluye el padding en el tamaño total
-  }
-  
-  .project-info-container {
+
+  .conteiner-panel{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin-bottom: 20px; // Añade un margen inferior para separar el recuadro de los botones de acción
-  }
-  
-  .source-code-text {
-    margin-bottom: 5px; // Reduce el margen inferior del texto "Código Fuente"
-    color: white;
-    font-weight: bold;
-  }
-  
-  .project-info {
-    background-color: #777;
-    padding: 10px;
-    border-radius: 4px;
-    color: white;
-    display: flex;
     justify-content: center;
-    width: 100%; // Ajusta el ancho del recuadro de información del proyecto
+    align-items: center;
+    padding-inline: 1rem;
   }
-  
-  .action-buttons {
-    display: flex;
-    gap: 20px;
-    justify-content: center; // Centra los botones de acción
-    margin-top: 20px; // Añade un espacio entre los botones de imagen y los botones de acción
-  
-    .cancel-button {
-      background-color: rgba(207, 5, 5, 0.705);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  
-    .accept-button {
-      background-color: #007bff;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      padding: 10px 20px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-  }
+}
+
   
