@@ -1,0 +1,37 @@
+<main class="mx-4"> 
+    <section>
+        <p-button 
+              label="Volver" 
+              icon="pi pi-arrow-left" 
+              severity="secondary"
+              [text]="true"
+              (onClick)="back()" 
+          />
+          <div class="text-center">
+              <h1 class="text-5xl my-0">Nueva aplicación</h1>
+          </div>
+     </section>
+    <section>
+        <h4 class="ml-8">Selecciona una opción:</h4>
+        <div class="flex-auto flex flex-wrap justify-content-center align-items-center gap-4">
+            <div class="flex align-items-center" *ngFor="let opc of radioOps">
+                <p-radioButton 
+                    [name]="opc.value" 
+                    [value]="opc.value" 
+                    [(ngModel)]="option" 
+                    [inputId]="opc.value"/>
+                <label [for]="opc.value" class="ml-2">
+                    {{ opc.txt }}
+                </label>
+            </div>
+        </div>
+    </section>
+    
+    <section *ngIf="option === 'op1'">
+        <form-update/>
+    </section>
+    
+    <section *ngIf="option === 'op2'">
+        <form-sanitize/>
+    </section>
+</main>    

@@ -18,16 +18,16 @@ import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 
 @Component({
-  selector: 'app-form-apps-page',
-  templateUrl: './form-app.component.html',
-  styleUrls: ['./form-app.component.scss'],
+  selector: 'form-sanitize',
   standalone: true,
+  templateUrl: './form-sanitize.component.html',
+  styleUrl: './form-sanitize.component.scss',
   imports: [CommonModule,ButtonModule,ToastModule,TooltipModule,
     StepperModule,RadioButtonModule,InputTextModule,ReactiveFormsModule,
     InputGroupModule,InputGroupAddonModule],
   providers: [MessageService]
 })
-export class FormsAppsPageComponent implements OnInit{
+export class FormSanitizeComponent {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
   @ViewChild('pdfInput', { static: false }) pdfInput!: ElementRef;
   
@@ -158,10 +158,6 @@ export class FormsAppsPageComponent implements OnInit{
       });
   }
 
-  back():void {
-    this.router.navigate(['apps/list-apps'],{ replaceUrl: true });
-  }
-
   private handleResponse(severity: string, app?: Aplication): void {
     let detail = '';
     let summary = '';
@@ -186,7 +182,7 @@ export class FormsAppsPageComponent implements OnInit{
     setTimeout(() => {
       severity === 'error' 
       ? this.isUploadProject = false
-      : this.back();
+      : this.router.navigate(['apps/list-apps'],{ replaceUrl: true });;
     },3200);
   }
-} 
+}
