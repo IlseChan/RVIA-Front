@@ -98,7 +98,7 @@
                   (onClick)="prevCallback.emit()" (onClick)="onBack('pdf')" />
                 <p-button [label]="isUploadProject ? 'Subiendo...' : 'Subir proyecto'" icon="pi pi-arrow-right" iconPos="right"
                   [disabled]="formFiles.controls['pdfFile'].errors || formFiles.controls['pdfFile'].value === null || isUploadProject"
-                  (onClick)="uploadFiles()" class="ml-auto" severity="success" 
+                  (onClick)="uploadFiles()" class="ml-auto" severity="success" [loading]="isUploadProject"
                   [outlined]="formFiles.controls['pdfFile'].errors || formFiles.controls['pdfFile'].value === null "/>
             </div>
         </ng-template>

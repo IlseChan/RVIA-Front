@@ -52,7 +52,7 @@ export class FormsAppsPageComponent implements OnInit{
       zipFile: new FormControl(null,[this.fileValidation('zip')]),
       urlGit: new FormControl(null,[this.isValidGitlabUrl as ValidatorFn]),
       pdfFile: new FormControl(null,[this.fileValidation('pdf')]),
-    })
+    });
   }
 
   triggerFileInput(type: string): void {
@@ -69,12 +69,12 @@ export class FormsAppsPageComponent implements OnInit{
 
         if(type === 'zip'){
           const types = ['application/zip','application/x-zip-compressed'];
-          return types.includes(fileType) ? null : { invalidTypeZip: true}
+          return types.includes(fileType) ? null : { invalidTypeZip: true } 
         }
         
         if(type === 'pdf'){
           const types = ['application/pdf'];
-          return types.includes(fileType) ? null : { invalidTypePdf: true}
+          return types.includes(fileType) ? null : { invalidTypePdf: true }
         }
       }
       return null;
@@ -99,7 +99,7 @@ export class FormsAppsPageComponent implements OnInit{
       setTimeout(() => {
         this.formFiles.patchValue({
           [formOption]: file
-        })
+        });
         this.isUploadFile = false;
       }, 1500);
     }else{
@@ -142,10 +142,51 @@ export class FormsAppsPageComponent implements OnInit{
     if(values.type === 'zip' && !values.zipFile) return;
     if(values.type === 'git' && !values.urlGit) return;
 
-    this.aplicacionesService.saveProjectWitPDF(this.formFiles.value);
+    this.aplicacionesService.saveProjectWitPDF(this.formFiles.value)
+      .pipe(
+        catchError(e =>  throwError(() => e)),
+      )
+      .subscribe({
+        next: (resp) => {
+          if(resp){
+            this.handleResponse('success', resp);
+          }
+        },
+        error: (e) => {
+          this.handleResponse('error');
+        }
+      });
   }
 
   back():void {
     this.router.navigate(['apps/list-apps'],{ replaceUrl: true });
   }
-}
+
+  private handleResponse(severity: string, app?: Aplication): void {
+    let detail = '';
+    let summary = '';
+
+    if( severity === 'error'){
+      summary = 'Error al guardar';
+      detail = `Ocurio un error al guardar el aplicativo.`;
+    }
+
+    if( severity === 'success'){
+      summary = 'Aplicativo guardado';
+      detail = `¡El aplicativo ${app?.nom_aplicacion} se a subido con éxito!`; 
+      this.aplicacionesService.changeListSubject.next(true);
+    }
+
+    this.messageService.add({ 
+      severity, 
+      summary, 
+      detail 
+    });
+
+    setTimeout(() => {
+      severity === 'error' 
+      ? this.isUploadProject = false
+      : this.back();
+    },3200);
+  }
+} 
