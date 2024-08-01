@@ -5,14 +5,8 @@
     </button>
     <div class="user-info">
       <span class="username">{{ userLogged?.nom_usuario }}</span>
-      <span class="usernumber">{{ userLogged?.numero_empleado }}</span>
+      <span class="separator">|</span>
       <span class="userposition">{{ userLogged?.position?.nom_puesto }}</span>
-    </div>
-    <div class="logout-button navbar-logout">
-      <button (click)="logout()">
-        <i class="pi pi-power-off"></i>
-        <span class="ml-2">Cerrar sesión</span>
-      </button>
     </div>
   </nav>
   <nav class="sidebar" [class.active]="sidebarActive">
