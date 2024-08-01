@@ -145,4 +145,7 @@ export class FormsAppsPageComponent implements OnInit{
     this.aplicacionesService.saveProjectWitPDF(this.formFiles.value);
   }
 
+  back():void {
+    this.router.navigate(['apps/list-apps'],{ replaceUrl: true });
+  }
 }
