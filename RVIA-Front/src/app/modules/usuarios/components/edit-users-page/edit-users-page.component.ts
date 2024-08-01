@@ -72,7 +72,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
             detail: `Error al cargar información` 
           });
           setTimeout(() => {
-            this.router.navigate(['apps/users/list-users'])
+            this.router.navigate(['users/list-users'])
           }, 2800);
         }
       });  
@@ -116,7 +116,8 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
             detail: `El usuario ${resp.numero_empleado} - ${resp.nom_usuario} con posición ${resp.position.nom_puesto} se actualizó correctamente` 
           });
           setTimeout(() => {
-            this.router.navigate(['apps/users/list-users']);
+            this.router.navigate(['users/list-users'],{ replaceUrl: true });
+            this.usuariosService.userEditSubject.next(null);
           },2800)
         },
         error: (e) => {
@@ -133,6 +134,10 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
 
   onCancel(): void{
     this.userForm.reset(this.initalValues);
+  }
+
+  back():void {
+    this.router.navigate(['users/list-users'],{ replaceUrl: true });
   }
 
   ngOnDestroy(): void {

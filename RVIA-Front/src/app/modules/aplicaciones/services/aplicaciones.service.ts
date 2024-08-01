@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Aplication, AplicationsData } from '../interfaces/aplicaciones.interfaces';
+import { Aplication, AplicationsData, FormProjectWithPDF } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -90,5 +90,25 @@ export class AplicacionesService {
     }
     
     return throwError(() => {})
+  }
+
+  saveProjectWitPDF(form: FormProjectWithPDF): Observable<Aplication> {
+    const formData = new FormData();
+    
+    if(this.token){
+      if(form.type === 'zip'){
+        formData.append('files',form.pdfFile!);
+        formData.append('files',form.zipFile!);
+        return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData);
+      }
+  
+      if(form.type === 'git'){
+        formData.append('file',form.pdfFile!);
+        formData.append('url',form.urlGit);
+        return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,formData);
+      }
+    }
+
+    return throwError(() => {});
   }
 }

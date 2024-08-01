@@ -25,13 +25,22 @@
 .user-info {
   display: flex;
   align-items: center;
-  .username, .usernumber, .userposition { /* Añadido .userposition */
-    margin-right: 10px;
+  direction: rtl; 
+
+  .username, .userposition {
+    margin-left: 10px; /* Cambia margin-right a margin-left */
     white-space: nowrap;
   }
-  .userposition { /* Estilo para el nombre del puesto */
+
+  .userposition {
     font-style: italic;
     color: #ffc107;
+  }
+
+  .separator {
+    margin-left: 10px; /* Ajusta el espaciado según sea necesario */
+    color: white; 
+    direction: ltr; 
   }
 }
 
@@ -47,13 +56,13 @@
   flex-direction: column;
   justify-content: space-between;
   transition: left 0.3s ease, background-color 0.3s ease;
-  z-index: 1000; // Asegura que el sidebar se superponga al contenido
-  opacity: 1; // Asegura que el sidebar no sea transparente
+  z-index: 1000;
+  opacity: 1;
 }
 
 .sidebar.active {
   left: 0;
-  background-color: #333; // Asegura que el fondo del sidebar sea sólido al activarse
+  background-color: #333;
 }
 
 .sidebar ul {
@@ -88,6 +97,8 @@
 
 .logout-button {
   margin-top: auto;
+  padding: 20px;
+  text-align: center;
 
   button {
     background-color: rgba(0, 0, 0, 0.5);
@@ -102,15 +113,23 @@
     &:hover {
       background-color: rgba(255, 255, 255, 0.1);
     }
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+      margin-right: 8px;
+    }
   }
 }
 
 .sidebar-logout {
-  display: none;
+  display: block;
 }
 
 .navbar-logout {
-  display: block;
+  display: none;
 }
 
 .content {
@@ -125,12 +144,12 @@
 @media (max-width: 768px) {
   .sidebar {
     width: 100%;
-    left: -100%; // Cambia este valor para ocultar la barra lateral en pantallas pequeñas
+    left: -100%;
 
     &.active {
       width: 200px;
       left: 0;
-      background-color: #333; // Asegura que el fondo del sidebar sea sólido al activarse en pantallas pequeñas
+      background-color: #333;
     }
   }
 

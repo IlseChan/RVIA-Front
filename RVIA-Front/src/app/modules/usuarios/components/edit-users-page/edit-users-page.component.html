@@ -1,5 +1,12 @@
 <section class="flex my-3">
-   <h1 class="inline text-5xl my-0 ">Modificar Usuario</h1>
+    <p-button 
+        label="Volver" 
+        icon="pi pi-arrow-left" 
+        severity="secondary"
+        [text]="true"
+        (onClick)="back()" 
+    />
+   <h1 class="inline text-5xl my-0 mx-auto">Modificar Usuario</h1>
 </section>
 
 <div *ngIf="isLoading; else form" class="card flex justify-content-center">
@@ -48,7 +55,7 @@
                 type="button"
                 (click)="onCancel()"
                 label="Cancelar" 
-                severity="danger" 
+                [outlined]="true"
                 [disabled]="isUpdate"
                 class="mr-8"/>
             <p-button 
