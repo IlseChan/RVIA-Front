@@ -1,0 +1,176 @@
+<section>
+  <p-button 
+    label="Volver" 
+    icon="pi pi-arrow-left" 
+    severity="secondary"
+    [text]="true"
+    (onClick)="back()" 
+  />
+  <div class="text-center">
+    <h1 class="text-5xl my-0">Nueva aplicación</h1>
+  </div>
+</section>
+<main class="mx-4 main-container"> 
+  <div class="container-stepper font-medium">
+    <form [formGroup]="formFiles">
+      <p-stepper [linear]="true">
+        <p-stepperPanel header="Acciones">
+          <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
+            <div class="flex flex-column justify-content-center align-items-center h-14rem border-round surface-ground px-3">
+              <p>Selecciona la(s) accion(es) a realizar:</p>
+              <div>
+                <div *ngFor="let opt of actionsOps" class="field-checkbox">
+                  <p-checkbox 
+                    formControlName="actions"
+                    [label]="opt.txt" 
+                    [name]="opt.txt" 
+                    [value]="opt.value" 
+                  />
+                </div>
+              </div>
+              <span 
+                *ngIf="formFiles.controls['actions'].errors && formFiles.controls['actions'].touched" 
+                class="mt-3 font-italic text-red-500" >
+                  Debes seleccionar al menos una opoción
+              </span>
+            </div>
+            <div class="flex pt-4 justify-content-end">
+              <p-button label="Siguinte" icon="pi pi-arrow-right" 
+                iconPos="right" (onClick)="nextCallback.emit()"
+                [disabled]="this.formFiles.controls['actions'].errors"
+              />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="Tipo de proyecto">
+          <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
+            <div class="flex flex-column justify-content-center align-items-center h-14rem border-round surface-ground px-3">
+              <p>Selecciona el tipo de proyecto que se subira:</p>
+                <div class="flex-auto flex justify-content-center align-items-center">
+                  <div class="flex align-items-center mx-3 py-2 px-3" *ngFor="let option of radioOps">
+                    <p-radioButton 
+                        [inputId]="option.value" 
+                        [value]="option.value"
+                        formControlName="type"
+                      />
+                    <label [for]="option.value" class="ml-3 label-btn">
+                      <img 
+                        src="assets/images/{{option.image}}" 
+                        [alt]="option.value"
+                        [pTooltip]="option.tooltip" 
+                        tooltipPosition="bottom" >
+                    </label>
+                  </div>
+                </div>
+            </div>
+            <div class="flex pt-4 justify-content-between">
+              <p-button label="Regresar" [outlined]="true" 
+                icon="pi pi-arrow-left" (onClick)="prevCallback.emit()"/>
+              <p-button label="Siguinte" icon="pi pi-arrow-right" iconPos="right" (onClick)="nextCallback.emit()" />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="Seleccionar Proyecto">
+          <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
+            <div *ngIf="formFiles.get('type')?.value === 'zip'" class="h-14rem border-round surface-ground conteiner-panel">
+              <p class="">Selecciona el archivo <strong>.zip</strong> o <strong>.7z</strong> de tu proyecto</p>
+              <div class="flex-auto flex flex-column justify-content-center align-items-center">
+                <p-inputGroup>
+                  <button type="button" pButton label="Buscar" (click)="triggerFileInput('zip')"></button>
+                  <input type="text" pInputText 
+                    id="inputNameZip"
+                    placeholder="Selecciona tu proyecto" 
+                    readonly disabled="true"
+                    [value]="formFiles.controls['zipFile'].value?.name ?? ''"/>
+                </p-inputGroup>
+                <span *ngIf="isUploadFile" class="mt-2 font-italic text-500" >Cargando ...</span>
+                <p-button *ngIf="formFiles.controls['zipFile'].value !== null" 
+                  label="Limpiar" [link]="true" (onClick)="onBack('project')"/>
+                <span *ngIf="formFiles.controls['zipFile'].errors" class="mt-3 font-italic text-red-500" >Error al cargar el archivo, extensiones validas <strong>.zip</strong> y <strong>.7z</strong></span>
+                <input id="input-zip" type="file" #zipInput accept=".zip, .7z" (change)="onFileSelected($event, 'zipFile')" style="display: none;">
+              </div>
+            </div>
+            <div *ngIf="formFiles.get('type')?.value === 'git'" class="h-14rem border-round surface-ground conteiner-panel">
+              <p>Ingresa la <strong>URL</strong> del repositorio de tu proyecto en Git Lab</p>
+              <div class="flex-auto flex flex-column justify-content-center align-items-center">
+                <input type="text" pInputText formControlName="urlGit" placeholder="URl de tu proyecto" id="inputUrlGit"/>
+                <p-button *ngIf="formFiles.controls['urlGit'].value !== null" 
+                    label="Limpiar" [link]="true" (onClick)="onBack('project')"/>
+                <span *ngIf="formFiles.controls['urlGit'].errors" class="mt-3 font-italic text-red-500" >URL invalida</span>
+              </div>
+            </div>
+            <div class="flex pt-4 justify-content-between">
+                <p-button label="Regresar" [outlined]="true" 
+                  icon="pi pi-arrow-left" (onClick)="prevCallback.emit()"/>
+                <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right"
+                    [disabled]="isInputValid()" 
+                    [outlined]="isInputValid()"
+                    (onClick)="nextCallback.emit()" />
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="Seleccionar PDF*">
+          <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
+            <div class="flex flex-column justify-content-center align-items-center  h-14rem border-round surface-ground px-3">
+              <p>Puedes añadir el archivo <strong>.pdf</strong> de las vulnerabilidades de tu proyecto.*</p>
+              <div class="flex-auto flex flex-column justify-content-center align-items-center">
+                <p-inputGroup>
+                  <button type="button" pButton label="Buscar" (click)="triggerFileInput('pdf')"></button>
+                  <input type="text" pInputText placeholder="Selecciona tu pdf"
+                    readonly disabled="true" id="inputpdfFile"
+                    [value]="formFiles.controls['pdfFile'].value?.name ?? ''"/>
+                </p-inputGroup>
+                <span *ngIf="isUploadFile" class="mt-2 font-italic text-500" >
+                  Cargando ...
+                </span>
+                <p-button *ngIf="formFiles.controls['pdfFile'].value !== null" 
+                  label="Limpiar" [link]="true" (onClick)="onBack('pdf')"/>
+                <span *ngIf="formFiles.controls['pdfFile'].errors" class="font-italic text-red-500" >
+                  Error al cargar el archivo, extensión valida <strong>.pdf</strong> 
+                </span>
+                <input id="input-pdf" type="file" #pdfInput accept=".pdf" (change)="onFileSelected($event, 'pdfFile')" style="display: none;">
+              </div>
+            </div>
+            <div class="flex pt-4 justify-content-between">
+                <p-button label="Regresar" icon="pi pi-arrow-left" 
+                  *ngIf="!isUploadProject"  [outlined]="true"
+                  (onClick)="prevCallback.emit()" 
+                />
+                <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right"
+                  [disabled]="formFiles.controls['pdfFile'].errors"
+                  class="ml-auto" (onClick)="nextCallback.emit()"
+                  [outlined]="formFiles.controls['pdfFile'].errors"
+                />
+            </div>
+            <div class="flex mt-4 justify-content-center">
+              <p class="text-500 font-italic">* Este paso es opcional.</p>
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+        <p-stepperPanel header="Resumen">
+          <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
+            <div class="flex flex-column justify-content-center align-items-center  h-14rem border-round surface-ground px-3">
+              <p>Se subira tu proyecto son los siguientes elementos: </p>
+              <div>
+                <p>Accion(es): <strong>{{ toStringActions }}</strong></p>
+                <p>Tipo de proyecto: <strong>{{ formFiles.controls['type'].value === 'zip' ? radioOps[0].tooltip : radioOps[1].tooltip}}</strong></p>
+                <p>Projecto en: <strong>{{ projectName }}</strong></p>
+                <p>PDF: <strong>{{ formFiles.controls['pdfFile'].value ? formFiles.controls['pdfFile'].value.name : 'No aplica'}}</strong></p>
+              </div>
+            </div> 
+            <div class="flex pt-4 justify-content-between">
+                <p-button label="Regresar" icon="pi pi-arrow-left" 
+                  *ngIf="!isUploadProject"  [outlined]="true"
+                  (onClick)="prevCallback.emit()"/>
+                <p-button [label]="isUploadProject ? 'Subiendo...' : 'Subir proyecto'" 
+                  severity="success" icon="pi pi-arrow-right" iconPos="right"
+                  class="ml-auto" [loading]="isUploadProject"
+                  (onClick)="uploadFiles()"/>
+            </div>
+          </ng-template>
+        </p-stepperPanel>
+      </p-stepper>
+    </form>
+  </div>
+</main>    
+<p-toast />

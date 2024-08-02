@@ -18,6 +18,7 @@ import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
 import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'list-apps',
@@ -31,6 +32,7 @@ import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interfac
   providers: [ConfirmationService, MessageService],
 })
 export class ListAppsComponent implements OnInit {
+  readonly baseUrl: string = environment.baseURL;
   user!: Usuario | null;
   aplications: Aplication[] = [];
   

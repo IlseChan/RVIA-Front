@@ -65,7 +65,7 @@
                     <td *ngIf="user!.position.nom_puesto !== 'Invitado'">
                         <a 
                             *ngIf="app.applicationstatus.idu_estatus_aplicacion === 3"
-                            href="http://localhost:3000/applications/zip/{{app.idu_aplicacion}}"
+                            href="{{baseUrl}}/applications/zip/{{app.idu_aplicacion}}"
                             download
                             pTooltip="Descargar ZIP" 
                             tooltipPosition="top" 
