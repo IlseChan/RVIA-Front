@@ -4,6 +4,7 @@ import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModu
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
+import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -24,7 +25,7 @@ import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interf
   styleUrl: './form-sanitize.component.scss',
   imports: [CommonModule,ButtonModule,ToastModule,TooltipModule,
     StepperModule,RadioButtonModule,InputTextModule,ReactiveFormsModule,
-    InputGroupModule,InputGroupAddonModule,FormsModule],
+    InputGroupModule,InputGroupAddonModule,FormsModule,CheckboxModule],
   providers: [MessageService]
 })
 export class FormSanitizeComponent implements OnInit {
@@ -36,29 +37,28 @@ export class FormSanitizeComponent implements OnInit {
   isUploadProject: boolean = false;
 
   radioOps = [
-    { value: 'zip', image: 'Cargar.png', tooltip: 'Usar zip'},
-    { value: 'git', image: 'gitlab.webp', tooltip: 'Usar URL de Git Lab'}
+    { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
+    { value: 'git', image: 'gitlab.webp', tooltip: 'URL de Git Lab'}
   ];
 
-  radioOps1 = [
-    { value: 'op1', txt: 'Actualizar código' },
-    { value: 'op2', txt: 'Sanitizar código' },
+  actionsOps = [
+    { value: 1, txt: 'Actualizar código' },
+    { value: 2, txt: 'Sanitizar código' },
   ];
-
-  option: 'op1' | 'op2' = 'op1';
 
   constructor(
     private aplicacionesService: AplicacionesService, 
     private router: Router,
     private messageService: MessageService 
   ){}
-
+  
   ngOnInit(): void {
     this.formFiles = new FormGroup({
-      type: new FormControl('zip',[Validators.required]),
+      type:    new FormControl('zip',[Validators.required]),
       zipFile: new FormControl(null,[this.fileValidation('zip')]),
-      urlGit: new FormControl(null,[this.isValidGitlabUrl as ValidatorFn]),
+      urlGit:  new FormControl(null,[this.isValidGitlabUrl as ValidatorFn]),
       pdfFile: new FormControl(null,[this.fileValidation('pdf')]),
+      actions: new FormControl([],[Validators.required])
     });
   }
 
@@ -73,6 +73,13 @@ export class FormSanitizeComponent implements OnInit {
       
       if(file){
         const fileType = file.type;
+        
+        if(fileType === ''){
+          const elemts = file.name.split('.');
+          const ext = elemts[elemts.length -1];
+
+          return ext === '7z' ? null : { invalidType7z: true } 
+        }
 
         if(type === 'zip'){
           const types = ['application/zip','application/x-zip-compressed'];
@@ -124,7 +131,7 @@ export class FormSanitizeComponent implements OnInit {
     return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
   }
 
-  onBack(step: string):void {
+  onBack(step: string): void {
     if(step === 'project'){
       this.formFiles.patchValue({
         zipFile: null,
@@ -139,13 +146,38 @@ export class FormSanitizeComponent implements OnInit {
     }
   }
 
+  get toStringActions(): string {
+    const actions = this.formFiles.controls['actions'].value;
+    if(actions.length === 2){
+      return `Actualizar y Sanitizar código`;
+    }
+
+    if(actions.length === 1){
+      const opc = actions[0] - 1;
+      return this.actionsOps[opc].txt;
+    }
+
+    return 'error';
+  }
+
+  get projectName(): string {
+    if(this.formFiles.controls['type'].value === 'zip'){
+      return this.formFiles.controls['zipFile'].value.name
+    }
+
+    if(this.formFiles.controls['type'].value === 'git'){
+      return this.formFiles.controls['urlGit'].value;
+    }
+
+    return 'error'
+  }
+
   uploadFiles(): void{
     if(this.isUploadProject) return;
 
     this.isUploadProject = true;
     const values = this.formFiles.value;
     
-    if(!values.pdfFile) return;
     if(values.type === 'zip' && !values.zipFile) return;
     if(values.type === 'git' && !values.urlGit) return;
 
@@ -159,7 +191,7 @@ export class FormSanitizeComponent implements OnInit {
             this.handleResponse('success', resp);
           }
         },
-        error: (e) => {
+        error: (e) => {          
           this.handleResponse('error');
         }
       });
@@ -189,7 +221,7 @@ export class FormSanitizeComponent implements OnInit {
     setTimeout(() => {
       severity === 'error' 
       ? this.isUploadProject = false
-      : this.router.navigate(['apps/list-apps'],{ replaceUrl: true });;
+      : this.back();
     },3200);
   }
 

@@ -37,6 +37,7 @@ export interface AplicationsData {
 }
 
 export interface FormProjectWithPDF{
+    actions: number[];  
     pdfFile: File | null;
     type: string;
     urlGit: string;

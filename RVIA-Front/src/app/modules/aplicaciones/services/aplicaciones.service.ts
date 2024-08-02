@@ -96,15 +96,26 @@ export class AplicacionesService {
     const formData = new FormData();
     
     if(this.token){
-      if(form.type === 'zip'){
-        formData.append('files',form.pdfFile!);
+
+      const num_accion = form.actions.length === 2 ? 3 : form.actions[0];
+      formData.append('num_accion',`${num_accion}`); 
+
+      if(form.type === 'zip'){ 
         formData.append('files',form.zipFile!);
+ 
+        if(form.pdfFile){
+          formData.append('files',form.pdfFile!);
+        }
+      
         return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData);
       }
   
       if(form.type === 'git'){
-        formData.append('file',form.pdfFile!);
         formData.append('url',form.urlGit);
+        if(form.pdfFile){
+          formData.append('file',form.pdfFile);
+        }
+
         return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,formData);
       }
     }
