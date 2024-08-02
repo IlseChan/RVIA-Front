@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
@@ -24,10 +24,10 @@ import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interf
   styleUrl: './form-sanitize.component.scss',
   imports: [CommonModule,ButtonModule,ToastModule,TooltipModule,
     StepperModule,RadioButtonModule,InputTextModule,ReactiveFormsModule,
-    InputGroupModule,InputGroupAddonModule],
+    InputGroupModule,InputGroupAddonModule,FormsModule],
   providers: [MessageService]
 })
-export class FormSanitizeComponent {
+export class FormSanitizeComponent implements OnInit {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
   @ViewChild('pdfInput', { static: false }) pdfInput!: ElementRef;
   
@@ -39,6 +39,13 @@ export class FormSanitizeComponent {
     { value: 'zip', image: 'Cargar.png', tooltip: 'Usar zip'},
     { value: 'git', image: 'gitlab.webp', tooltip: 'Usar URL de Git Lab'}
   ];
+
+  radioOps1 = [
+    { value: 'op1', txt: 'Actualizar código' },
+    { value: 'op2', txt: 'Sanitizar código' },
+  ];
+
+  option: 'op1' | 'op2' = 'op1';
 
   constructor(
     private aplicacionesService: AplicacionesService, 
@@ -184,5 +191,9 @@ export class FormSanitizeComponent {
       ? this.isUploadProject = false
       : this.router.navigate(['apps/list-apps'],{ replaceUrl: true });;
     },3200);
+  }
+
+  back(): void{
+    this.router.navigate(['apps/list-apps'],{ replaceUrl: true });
   }
 }
