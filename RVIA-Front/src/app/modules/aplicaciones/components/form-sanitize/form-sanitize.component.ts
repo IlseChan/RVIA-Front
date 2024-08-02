@@ -1,9 +1,10 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
+import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -18,16 +19,16 @@ import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 
 @Component({
-  selector: 'app-form-apps-page',
-  templateUrl: './form-app.component.html',
-  styleUrls: ['./form-app.component.scss'],
+  selector: 'form-sanitize',
   standalone: true,
+  templateUrl: './form-sanitize.component.html',
+  styleUrl: './form-sanitize.component.scss',
   imports: [CommonModule,ButtonModule,ToastModule,TooltipModule,
     StepperModule,RadioButtonModule,InputTextModule,ReactiveFormsModule,
-    InputGroupModule,InputGroupAddonModule],
+    InputGroupModule,InputGroupAddonModule,FormsModule,CheckboxModule],
   providers: [MessageService]
 })
-export class FormsAppsPageComponent implements OnInit{
+export class FormSanitizeComponent implements OnInit {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
   @ViewChild('pdfInput', { static: false }) pdfInput!: ElementRef;
   
@@ -36,8 +37,13 @@ export class FormsAppsPageComponent implements OnInit{
   isUploadProject: boolean = false;
 
   radioOps = [
-    { value: 'zip', image: 'Cargar.png', tooltip: 'Usar zip'},
-    { value: 'git', image: 'gitlab.webp', tooltip: 'Usar URL de Git Lab'}
+    { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
+    { value: 'git', image: 'gitlab.webp', tooltip: 'URL de Git Lab'}
+  ];
+
+  actionsOps = [
+    { value: 1, txt: 'Actualizar código' },
+    { value: 2, txt: 'Sanitizar código' },
   ];
 
   constructor(
@@ -45,13 +51,14 @@ export class FormsAppsPageComponent implements OnInit{
     private router: Router,
     private messageService: MessageService 
   ){}
-
+  
   ngOnInit(): void {
     this.formFiles = new FormGroup({
-      type: new FormControl('zip',[Validators.required]),
+      type:    new FormControl('zip',[Validators.required]),
       zipFile: new FormControl(null,[this.fileValidation('zip')]),
-      urlGit: new FormControl(null,[this.isValidGitlabUrl as ValidatorFn]),
+      urlGit:  new FormControl(null,[this.isValidGitlabUrl as ValidatorFn]),
       pdfFile: new FormControl(null,[this.fileValidation('pdf')]),
+      actions: new FormControl([],[Validators.required])
     });
   }
 
@@ -66,6 +73,13 @@ export class FormsAppsPageComponent implements OnInit{
       
       if(file){
         const fileType = file.type;
+        
+        if(fileType === ''){
+          const elemts = file.name.split('.');
+          const ext = elemts[elemts.length -1];
+
+          return ext === '7z' ? null : { invalidType7z: true } 
+        }
 
         if(type === 'zip'){
           const types = ['application/zip','application/x-zip-compressed'];
@@ -117,7 +131,7 @@ export class FormsAppsPageComponent implements OnInit{
     return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
   }
 
-  onBack(step: string):void {
+  onBack(step: string): void {
     if(step === 'project'){
       this.formFiles.patchValue({
         zipFile: null,
@@ -132,13 +146,38 @@ export class FormsAppsPageComponent implements OnInit{
     }
   }
 
+  get toStringActions(): string {
+    const actions = this.formFiles.controls['actions'].value;
+    if(actions.length === 2){
+      return `Actualizar y Sanitizar código`;
+    }
+
+    if(actions.length === 1){
+      const opc = actions[0] - 1;
+      return this.actionsOps[opc].txt;
+    }
+
+    return 'error';
+  }
+
+  get projectName(): string {
+    if(this.formFiles.controls['type'].value === 'zip'){
+      return this.formFiles.controls['zipFile'].value.name
+    }
+
+    if(this.formFiles.controls['type'].value === 'git'){
+      return this.formFiles.controls['urlGit'].value;
+    }
+
+    return 'error'
+  }
+
   uploadFiles(): void{
     if(this.isUploadProject) return;
 
     this.isUploadProject = true;
     const values = this.formFiles.value;
     
-    if(!values.pdfFile) return;
     if(values.type === 'zip' && !values.zipFile) return;
     if(values.type === 'git' && !values.urlGit) return;
 
@@ -152,14 +191,10 @@ export class FormsAppsPageComponent implements OnInit{
             this.handleResponse('success', resp);
           }
         },
-        error: (e) => {
+        error: (e) => {          
           this.handleResponse('error');
         }
       });
-  }
-
-  back():void {
-    this.router.navigate(['apps/list-apps'],{ replaceUrl: true });
   }
 
   private handleResponse(severity: string, app?: Aplication): void {
@@ -189,4 +224,8 @@ export class FormsAppsPageComponent implements OnInit{
       : this.back();
     },3200);
   }
-} 
+
+  back(): void{
+    this.router.navigate(['apps/list-apps'],{ replaceUrl: true });
+  }
+}

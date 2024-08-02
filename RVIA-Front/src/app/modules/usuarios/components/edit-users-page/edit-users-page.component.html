@@ -61,6 +61,7 @@
             <p-button 
                 (click)="onSubmit()"
                 type='submit'
+                [loading]="isUpdate"
                 [disabled]="userForm.invalid || !hasFormChanges || isUpdate"
                 [label]="isUpdate ? 'Actualizando...' : 'Actualizar'" 
                 class="ml-8"/>

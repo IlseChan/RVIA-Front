@@ -1,9 +1,8 @@
 import { Routes } from "@angular/router";
-import { LayoutComponent } from "../../containers/layout/layout.component";
 import { HomeComponent } from "./components/home/home.component";
 import { ListAppsComponent } from "./components/list-apps/list-apps.component";
-import { FormsAppsPageComponent } from "./components/form-app/form-app.component";
 import { NewAplicationGuard } from "./guards/newAplication.guard";
+import { FormSanitizeComponent } from "./components/form-sanitize/form-sanitize.component";
 
 export const appsRoutes: Routes = [
     {
@@ -13,7 +12,7 @@ export const appsRoutes: Routes = [
             { path: 'list-apps', component: ListAppsComponent },
             { 
                 path: 'new-app', 
-                component: FormsAppsPageComponent,
+                component: FormSanitizeComponent,
                 canActivate: [NewAplicationGuard] 
             },
             { path: '**', redirectTo: 'list-apps' },
