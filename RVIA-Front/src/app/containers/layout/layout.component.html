@@ -9,10 +9,11 @@
       <span class="userposition">{{ userLogged?.position?.nom_puesto }}</span>
     </div>
   </nav>
-  <nav class="sidebar" [class.active]="sidebarActive">
+  <nav class="sidebar" [ngClass]="{'active': sidebarActive}">
+    <button class="close-sidebar" (click)="closeSidebar()">✖</button>
     <ul>
       <li *ngFor="let option of menuSidebar">
-        <a (click)="closeSidebar()" routerLinkActive="active" [routerLink]="option.path">
+        <a routerLinkActive="active" [routerLink]="option.path">
           {{ option.name | titlecase }}
         </a>
       </li>
@@ -24,7 +25,7 @@
       </button>
     </div>
   </nav>
-  <section class="content" (click)="closeSidebar()">
+  <section class="content" [ngClass]="{'shifted': sidebarActive}">
     <router-outlet></router-outlet>
   </section>
 </main>

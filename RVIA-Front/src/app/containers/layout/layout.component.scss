@@ -25,10 +25,10 @@
 .user-info {
   display: flex;
   align-items: center;
-  direction: rtl; 
+  direction: rtl;
 
   .username, .userposition {
-    margin-left: 10px; /* Cambia margin-right a margin-left */
+    margin-left: 10px;
     white-space: nowrap;
   }
 
@@ -38,17 +38,17 @@
   }
 
   .separator {
-    margin-left: 10px; /* Ajusta el espaciado según sea necesario */
-    color: white; 
-    direction: ltr; 
+    margin-left: 10px;
+    color: white;
+    direction: ltr;
   }
 }
 
 .sidebar {
   position: fixed;
   top: 0;
-  left: -200px; // Cambia este valor a -100% en pantallas pequeñas
-  width: 200px;
+  left: -250px; 
+  width: 250px;
   height: 100%;
   background-color: #333;
   color: white;
@@ -88,6 +88,16 @@
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.1);
   }
+}
+
+.close-sidebar {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  align-self: flex-end;
+  padding: 10px;
 }
 
 .active {
@@ -139,6 +149,11 @@
   height: calc(100%);
   overflow-y: auto;
   transition: margin-left 0.3s ease;
+  margin-left: 0;
+}
+
+.content.shifted {
+  margin-left: 250px; 
 }
 
 @media (max-width: 768px) {
@@ -147,7 +162,7 @@
     left: -100%;
 
     &.active {
-      width: 200px;
+      width: 250px;
       left: 0;
       background-color: #333;
     }
@@ -159,5 +174,9 @@
 
   .sidebar-logout {
     display: block;
+  }
+
+  .content.shifted {
+    margin-left: 0;
   }
 }
