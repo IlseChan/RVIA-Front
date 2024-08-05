@@ -37,9 +37,15 @@ export interface AplicationsData {
 }
 
 export interface FormProjectWithPDF{
-    actions: number[];  
+    action: number;  
+    language: number;
     pdfFile: File | null;
     type: string;
     urlGit: string;
     zipFile: File | null;
+}
+
+export interface Language{
+    idu_lenguaje: number;
+    nom_lenguaje: string;
 }

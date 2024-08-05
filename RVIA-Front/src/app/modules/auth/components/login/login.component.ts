@@ -4,12 +4,6 @@ import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-interface User {
-  usernumber: string;
-  password: string;
-  // otros campos que tu usuario pueda tener
-}
-
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -21,6 +15,7 @@ export class LoginComponent {
   usernumber: string = '';
   password: string = '';
   errorMessage: string = '';
+  isLoginDisabled: boolean = true;
 
   @ViewChild('passwordInput', { static: false }) passwordInput!: ElementRef;
 
@@ -30,26 +25,37 @@ export class LoginComponent {
     const trimmedUsernumber = this.usernumber.trim();
     const trimmedPassword = this.password.trim();
 
-    // const users: User[] = this.authService.getUsers();
-    // const user = users.find((u: User) => u.usernumber === trimmedUsernumber && u.password === trimmedPassword);
-
-    // if (user) {
-      // alert('Autenticación exitosa');
-      this.errorMessage = ''; // Limpiar mensaje de error en caso de éxito
-      
-      this.authService.onLogin(trimmedUsernumber,trimmedPassword).subscribe(resp => {
-        this.router.navigate(['/apps/list-apps']);  // Navega a la página de inicio
-      }); 
-    // } else {
-    //   this.errorMessage = 'Número de empleado o contraseña incorrecta';
-    // }
+    this.authService.onLogin(trimmedUsernumber, trimmedPassword).subscribe({
+      next: (resp) => {
+        this.errorMessage = ''; 
+        this.router.navigate(['/apps/list-apps']);  
+      },
+      error: (err) => {
+        if (err.status === 401) { 
+          this.errorMessage = 'Número de empleado o contraseña incorrecta';
+        } else if (err.status === 404) { 
+          this.errorMessage = 'Número de empleado no encontrado';
+        } else {
+          this.errorMessage = 'Número de empleado o Contraseña incorrectos. Por favor de verificar.';
+        }
+      }
+    });
   }
 
   onInputChange(): void {
-    this.errorMessage = ''; // Limpiar mensaje de error al cambiar el input
+    this.errorMessage = '';
+    this.checkInputs();
   }
 
   onRegister(): void {
     this.router.navigate(['/auth/register']);  // Navega a la página de registro
+  }
+
+  private checkInputs(): void {
+    const passwordValid = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{12,}$/.test(this.password);
+    const usernumberInt = parseInt(this.usernumber, 10);
+    const usernumberValid = (usernumberInt > 90000000 && usernumberInt <= 99999999) || usernumberInt < 100000000;
+
+    this.isLoginDisabled = !(passwordValid && usernumberValid);
   }
 }

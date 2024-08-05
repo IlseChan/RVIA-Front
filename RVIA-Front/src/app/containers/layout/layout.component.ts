@@ -1,4 +1,4 @@
-import { NgFor, TitleCasePipe } from '@angular/common';
+import { NgClass, NgFor, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
@@ -8,7 +8,7 @@ import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interfac
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, NgFor, RouterLink, RouterLinkActive, TitleCasePipe],
+  imports: [RouterOutlet, NgFor, RouterLink, RouterLinkActive, TitleCasePipe,NgClass],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
@@ -40,10 +40,10 @@ export class LayoutComponent {
   }
 
   closeSidebar(): void {
-    if (this.sidebarActive) this.sidebarActive = false;
+    this.sidebarActive = false;
   }
 
-  logout():void {
+  logout(): void {
     this.authService.onLogout();
     this.router.navigate(['/auth/login']);
   }
