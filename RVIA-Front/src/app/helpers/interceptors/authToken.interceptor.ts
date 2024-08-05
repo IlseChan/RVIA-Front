@@ -49,7 +49,11 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
         if((token) && checkRegexUsers(url) && methodsUsers.includes(method)){
             return next(newReq);    
         }
-        
+
+        if((token) && url.includes('/languages') && method === 'GET'){
+            return next(newReq);    
+        }
+
         return next(request);
     } catch(e){
         return next(request);

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Aplication, AplicationsData, FormProjectWithPDF } from '../interfaces/aplicaciones.interfaces';
+import { Aplication, AplicationsData, FormProjectWithPDF, Language } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 
 @Injectable({
@@ -97,8 +97,11 @@ export class AplicacionesService {
     
     if(this.token){
 
-      const num_accion = form.actions.length === 2 ? 3 : form.actions[0];
-      formData.append('num_accion',`${num_accion}`); 
+      formData.append('num_accion',form.action.toString()); 
+
+      if(form.action === 3){
+        formData.append('opc_lenguaje',form.language.toString());
+      }
 
       if(form.type === 'zip'){ 
         formData.append('files',form.zipFile!);
@@ -121,5 +124,15 @@ export class AplicacionesService {
     }
 
     return throwError(() => {});
+  }
+
+  getLanguages(): Observable<Language[]> {
+    if(this.token){
+      return this.http.get<Language[]>(`${this.baseUrl}/languages`).pipe(
+        delay(1500)
+      );
+    }
+    
+    return throwError(() => {})
   }
 }
