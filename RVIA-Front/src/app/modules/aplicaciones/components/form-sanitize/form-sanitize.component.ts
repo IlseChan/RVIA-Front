@@ -4,7 +4,6 @@ import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModu
 import { Router } from '@angular/router';
 import { catchError, throwError } from 'rxjs';
 
-import { CheckboxModule } from 'primeng/checkbox';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
@@ -14,9 +13,11 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { DropdownModule } from 'primeng/dropdown';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { Aplication, Language } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 
 @Component({
   selector: 'form-sanitize',
@@ -25,7 +26,8 @@ import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interf
   styleUrl: './form-sanitize.component.scss',
   imports: [CommonModule,ButtonModule,ToastModule,TooltipModule,
     StepperModule,RadioButtonModule,InputTextModule,ReactiveFormsModule,
-    InputGroupModule,InputGroupAddonModule,FormsModule,CheckboxModule],
+    InputGroupModule,InputGroupAddonModule,FormsModule, DropdownModule,
+    ProgressSpinnerModule],
   providers: [MessageService]
 })
 export class FormSanitizeComponent implements OnInit {
@@ -44,7 +46,11 @@ export class FormSanitizeComponent implements OnInit {
   actionsOps = [
     { value: 1, txt: 'Actualizar código' },
     { value: 2, txt: 'Sanitizar código' },
+    { value: 3, txt: 'Migrar código' },
   ];
+
+  isLoading: boolean = true;
+  lenguagesOps: Language[] = [];
 
   constructor(
     private aplicacionesService: AplicacionesService, 
@@ -53,12 +59,36 @@ export class FormSanitizeComponent implements OnInit {
   ){}
   
   ngOnInit(): void {
+
+    this.aplicacionesService.getLanguages()
+    .pipe(
+      catchError(e => throwError(() => {}))
+    ).subscribe({
+      next: (resp) => {
+        if(resp){
+          this.initForm();
+          this.lenguagesOps = resp;
+          this.isLoading = false;
+        }
+      },
+      error: (e) => {
+        this.messageService.add({ 
+          severity: 'error', 
+          summary: 'Error al cargar', 
+          detail: 'Ha ocurrido un error al cargar información. Intentalo de nuevo.' 
+        });
+      }
+    });
+  }
+
+  private initForm(): void{
     this.formFiles = new FormGroup({
       type:    new FormControl('zip',[Validators.required]),
       zipFile: new FormControl(null,[this.fileValidation('zip')]),
       urlGit:  new FormControl(null,[this.isValidGitlabUrl as ValidatorFn]),
       pdfFile: new FormControl(null,[this.fileValidation('pdf')]),
-      actions: new FormControl([],[Validators.required])
+      action: new FormControl(1,[Validators.required]),
+      language: new FormControl(null)
     });
   }
 
@@ -146,20 +176,6 @@ export class FormSanitizeComponent implements OnInit {
     }
   }
 
-  get toStringActions(): string {
-    const actions = this.formFiles.controls['actions'].value;
-    if(actions.length === 2){
-      return `Actualizar y Sanitizar código`;
-    }
-
-    if(actions.length === 1){
-      const opc = actions[0] - 1;
-      return this.actionsOps[opc].txt;
-    }
-
-    return 'error';
-  }
-
   get projectName(): string {
     if(this.formFiles.controls['type'].value === 'zip'){
       return this.formFiles.controls['zipFile'].value.name
@@ -178,9 +194,11 @@ export class FormSanitizeComponent implements OnInit {
     this.isUploadProject = true;
     const values = this.formFiles.value;
     
+    if(![1,2,3].includes(values.action)) return;
     if(values.type === 'zip' && !values.zipFile) return;
     if(values.type === 'git' && !values.urlGit) return;
-
+    if(values.action === 3 && !values.language) return;
+    
     this.aplicacionesService.saveProjectWitPDF(this.formFiles.value)
       .pipe(
         catchError(e =>  throwError(() => e)),
@@ -191,7 +209,7 @@ export class FormSanitizeComponent implements OnInit {
             this.handleResponse('success', resp);
           }
         },
-        error: (e) => {          
+        error: (e) => {      
           this.handleResponse('error');
         }
       });
