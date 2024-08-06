@@ -27,7 +27,7 @@ export class UsuariosService {
     return token || null;
   }
 
-  clearDataUsers():void {
+  clearDataUsers(): void {
     this.allUsers.data = [];
     this.allUsers.total = -1;
   }
