@@ -28,14 +28,14 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
             return next(request);
         }
         
-        if((checkRegexDown(url) && token) && method === 'GET'){
-            return next(request);
-        }
-        
         const newReq = request.clone({
             headers: request.headers.set('Authorization',`Bearer ${token}`)
         })
 
+        if((checkRegexDown(url) && token) && method === 'GET'){
+            return next(newReq);
+        }
+        
         if((token) && url.includes('applications/files') && method === 'POST'){
             return next(newReq);
         }
