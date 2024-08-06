@@ -65,12 +65,10 @@
                     <td *ngIf="user!.position.nom_puesto !== 'Invitado'">
                         <a 
                             *ngIf="app.applicationstatus.idu_estatus_aplicacion === 3"
-                            href="{{baseUrl}}/applications/zip/{{app.idu_aplicacion}}"
-                            download
                             pTooltip="Descargar ZIP" 
                             tooltipPosition="top" 
-                            target="_blank"
-                            class="c-pointer icon-down">
+                            class="c-pointer icon-down"
+                            (click)="onDownloadFile(app)">
                             <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
                         </a>
                     </td>

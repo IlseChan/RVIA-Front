@@ -135,4 +135,13 @@ export class AplicacionesService {
     
     return throwError(() => {})
   }
+
+  downloadFile(id: number): Observable<Blob> {
+    if(this.token){
+      return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' });
+      ;
+    } 
+    
+    return throwError(() => {})
+  }
 }
