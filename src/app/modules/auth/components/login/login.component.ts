@@ -1,8 +1,9 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -48,7 +49,7 @@ export class LoginComponent {
   }
 
   onRegister(): void {
-    this.router.navigate(['/auth/register']);  // Navega a la página de registro
+    this.router.navigate(['/auth/register']);
   }
 
   private checkInputs(): void {

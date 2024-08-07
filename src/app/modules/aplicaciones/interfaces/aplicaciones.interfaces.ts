@@ -9,7 +9,7 @@ export enum StatusApps {
 
 export interface OpcsStatus {
     firstValue: number;
-    newStatus: number;
+    newStatus:  number;
 }
 
 export interface Aplication {
@@ -32,17 +32,17 @@ export interface Sourcecode {
 }
 
 export interface AplicationsData {
-    data: Aplication[];
+    data:  Aplication[];
     total: number
 }
 
 export interface FormProjectWithPDF{
-    action: number;  
+    action:   number;  
     language: number;
-    pdfFile: File | null;
-    type: string;
-    urlGit: string;
-    zipFile: File | null;
+    pdfFile:  File | null;
+    type:     string;
+    urlGit:   string;
+    zipFile:  File | null;
 }
 
 export interface Language{

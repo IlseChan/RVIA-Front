@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
+import { catchError, Subscription, throwError } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
@@ -13,12 +13,12 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { Aplication, StatusApps } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
 import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'list-apps',
@@ -31,13 +31,17 @@ import { environment } from 'src/environments/environment';
   styleUrl: './list-apps.component.scss',
   providers: [ConfirmationService, MessageService],
 })
-export class ListAppsComponent implements OnInit {
+export class ListAppsComponent implements OnInit, OnDestroy {
   readonly baseUrl: string = environment.baseURL;
   user!: Usuario | null;
   aplications: Aplication[] = [];
   
-  currentPage: number = 1;
-  totalItems: number = 0;
+  Nom_Puestos = Nom_Puesto;
+  StatusApps  = StatusApps;
+
+  currentPage:    number = 1;
+  totalItems:     number = 0;
+  elementPerPage: number = 0;
 
   colums: string[] = ['ID','Nombre','Estatus'];
 
@@ -51,6 +55,9 @@ export class ListAppsComponent implements OnInit {
   isChangeStatus: boolean = false;
   indexChange: number = -1;
 
+  downloadSub!: Subscription;
+  isDownload: boolean = false;
+  
   constructor(
     private aplicacionService: AplicacionesService,
     private authService: AuthService,
@@ -81,6 +88,7 @@ export class ListAppsComponent implements OnInit {
       if(!data) return
       this.aplications = [...data];
       this.totalItems  = total;
+      this.elementPerPage = this.aplicacionService.elementPerPage;
       this.isLoading = false;
     });
   }
@@ -185,5 +193,39 @@ export class ListAppsComponent implements OnInit {
       summary, 
       detail 
     });
+  }
+
+  onDownloadFile(app: Aplication): void {
+    if(this.isDownload) return;
+    this.isDownload = true;
+    this.downloadSub = this.aplicacionService.downloadFile(app.idu_aplicacion)
+      .pipe(
+        catchError(e => throwError(() => ({ error: true })))
+      )  
+      .subscribe( {
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const anchor = document.createElement('a');
+          anchor.href = url;
+          anchor.download = `${app.nom_aplicacion}.zip`;
+          document.body.appendChild(anchor);
+          anchor.click();
+          document.body.removeChild(anchor);
+          window.URL.revokeObjectURL(url);
+          this.isDownload = false;
+        },
+        error: (e) => {
+          this.messageService.add({ 
+            severity: 'error', 
+            summary: 'Error al descargar', 
+            detail: `Upss, ocurrio un error al descargar el zip de ${app.nom_aplicacion}` 
+          });
+          this.isDownload = false;
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    if(this.downloadSub) this.downloadSub.unsubscribe();
   }
 }

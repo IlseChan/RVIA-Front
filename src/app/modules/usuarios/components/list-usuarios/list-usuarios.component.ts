@@ -38,7 +38,8 @@ export class ListUsuariosComponent implements OnInit {
 
   currentPage: number = 1;
   totalItems: number = 0;
-
+  elementPerPage:number = 0;
+  
   constructor(
     private usuariosService: UsuariosService,
     private router: Router,
@@ -61,6 +62,7 @@ export class ListUsuariosComponent implements OnInit {
       next: ({data,total}) => {
         this.users = data;
         this.totalItems = total;
+        this.elementPerPage = this.usuariosService.elementPerPage;
       },
       error: (e) => {
         this.users = [];
@@ -79,7 +81,7 @@ export class ListUsuariosComponent implements OnInit {
     this.router.navigate([`/users/edit/${idUser}`]);
   }
 
-  onDeleteUsuario(user: Usuario){
+  onDeleteUsuario(user: Usuario): void{
     if(this.isDeleting) return;
     
     this.isDeleting = true; 
@@ -90,9 +92,9 @@ export class ListUsuariosComponent implements OnInit {
       message,
       header: 'Eliminar usuario',
       icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-danger',
+      acceptButtonStyleClass: 'p-button-danger my-2',
       acceptLabel: 'Sí, eliminar',
-      rejectButtonStyleClass: 'p-button-outlined',
+      rejectButtonStyleClass: 'p-button-outlined my-2',
       rejectLabel: 'No, cancelar',
       accept: () => {
         this.usuariosService.deleteUsuario(user.idu_usuario)

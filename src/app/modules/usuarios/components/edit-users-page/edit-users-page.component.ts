@@ -136,11 +136,11 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
     this.userForm.reset(this.initalValues);
   }
 
-  back():void {
+  back(): void{
     this.router.navigate(['users/list-users'],{ replaceUrl: true });
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy(): void{
     if(this.userSub) this.userSub.unsubscribe();
   }
 }

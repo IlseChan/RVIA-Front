@@ -19,6 +19,7 @@ export class UsuariosService {
     total: -1 
   }
   private changes: boolean = false;
+  elementPerPage: number = 5;
 
   constructor(private http: HttpClient){}
 
@@ -27,7 +28,7 @@ export class UsuariosService {
     return token || null;
   }
 
-  clearDataUsers():void {
+  clearDataUsers(): void {
     this.allUsers.data = [];
     this.allUsers.total = -1;
   }
@@ -50,8 +51,8 @@ export class UsuariosService {
   }
 
   private getUserByPage(users: Usuario[], page: number): UsersData {
-    const from = ( page -1 ) * 5;
-    const to = from + 5;
+    const from = ( page -1 ) * this.elementPerPage;
+    const to = from + this.elementPerPage;
 
     return {
       data: users.slice(from, to),

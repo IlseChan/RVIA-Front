@@ -6,6 +6,6 @@ export interface UsersData {
 }
 
 export interface InitalValuesFormEdits {
-    nom_usuario: string;
     idu_puesto:  Idu_Puesto;
+    nom_usuario: string;
 }

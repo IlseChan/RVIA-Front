@@ -17,6 +17,7 @@ export class AplicacionesService {
     data: [],
     total: -1 
   }
+  elementPerPage: number = 5;
 
   constructor(private http: HttpClient){}
 
@@ -41,7 +42,7 @@ export class AplicacionesService {
           }),
           map(apps => this.getAppsByPage(apps,page)),
           delay(1000),
-          catchError(e => of({ data: [], total: 0}))
+          catchError(e => of({ data: [], total: 0 }))
         )
       }
       else{
@@ -52,8 +53,8 @@ export class AplicacionesService {
   }
  
   private getAppsByPage(apps: Aplication[], page: number): AplicationsData {
-    const from = (page - 1) * 5;
-    const to = from + 5;
+    const from = (page - 1) * this.elementPerPage;
+    const to = from + this.elementPerPage;
     const tmpData = apps.slice(from, to);
     return {
       data: tmpData,
@@ -105,19 +106,14 @@ export class AplicacionesService {
 
       if(form.type === 'zip'){ 
         formData.append('files',form.zipFile!);
- 
-        if(form.pdfFile){
-          formData.append('files',form.pdfFile!);
-        }
+        if(form.pdfFile) formData.append('files',form.pdfFile!);
       
         return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData);
       }
   
       if(form.type === 'git'){
         formData.append('url',form.urlGit);
-        if(form.pdfFile){
-          formData.append('file',form.pdfFile);
-        }
+        if(form.pdfFile) formData.append('file',form.pdfFile);
 
         return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,formData);
       }
@@ -132,6 +128,14 @@ export class AplicacionesService {
         delay(1500)
       );
     }
+    
+    return throwError(() => {})
+  }
+
+  downloadFile(id: number): Observable<Blob> {
+    if(this.token){
+      return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' });
+    } 
     
     return throwError(() => {})
   }
