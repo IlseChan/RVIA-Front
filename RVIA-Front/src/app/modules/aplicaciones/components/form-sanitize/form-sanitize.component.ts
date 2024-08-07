@@ -87,7 +87,7 @@ export class FormSanitizeComponent implements OnInit {
       zipFile: new FormControl(null,[this.fileValidation('zip')]),
       urlGit:  new FormControl(null,[this.isValidGitlabUrl as ValidatorFn]),
       pdfFile: new FormControl(null,[this.fileValidation('pdf')]),
-      action: new FormControl(1,[Validators.required]),
+      action:  new FormControl(1,[Validators.required]),
       language: new FormControl(null)
     });
   }

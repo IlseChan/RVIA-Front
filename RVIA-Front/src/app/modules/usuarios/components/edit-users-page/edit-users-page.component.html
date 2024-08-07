@@ -1,71 +1,87 @@
-<section class="flex my-3">
-    <p-button 
-        label="Volver" 
-        icon="pi pi-arrow-left" 
-        severity="secondary"
-        [text]="true"
-        (onClick)="back()" 
-    />
-   <h1 class="inline text-5xl my-0 mx-auto">Modificar Usuario</h1>
-</section>
+<main class="m-2">
+    <section>
+        <p-button 
+            label="Volver" 
+            icon="pi pi-arrow-left" 
+            severity="secondary"
+            [text]="true"
+            (onClick)="back()"
+        />
+        <div class="text-center">
+            <h1 class="inline text-5xl my-0">Modificar Usuario</h1>
+        </div>
+    </section>
+    
+    <div *ngIf="isLoading; else form" class="card flex justify-content-center my-6">
+        <p-progressSpinner ariaLabel="loading" />
+    </div>
 
-<div *ngIf="isLoading; else form" class="card flex justify-content-center">
-    <p-progressSpinner ariaLabel="loading" />
-</div>
-
-<ng-template #form>
-    <section class="flex flex-column p-4" >
-        <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
-            <div class="field grid justify-content-center mb-2" >
-                <p for="numero_empleado-edit" class="col-fixed my-auto text-right" style="width:200px">Número de Empleado</p>
-                <div class="col-3">
-                    <input 
-                        pInputText id="numero_empleado-edit"
-                        type="text" [disabled]="true" readonly
-                        [value]="originalUser.numero_empleado"/>
-                </div>
-            </div>
-            <div class="field grid justify-content-center mb-2" >
-                <p for="nom_usuario-edit" class="col-fixed my-auto text-right" style="width:200px">Nombre</p>
-                <div class="col-3">
-                    <div class="flex flex-column">
-                        <input pInputText id="nom_usuario-edit" 
-                            formControlName="nom_usuario" type="text"/>
-                        <small class="mt-2 text-red" *ngIf="isValidField('nom_usuario')">Nombre invalido</small>
+    <ng-template #form>
+        <section class="flex flex-column p-1 mt-2 md:p-4">
+            <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
+                <div class="field grid justify-content-center m-0 py-2">
+                    <p  for="numero_empleado-edit" 
+                        class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
+                            Número de Empleado
+                    </p>
+                    <div class="col-12 md:col-2">
+                        <input 
+                            class="w-full"
+                            pInputText id="numero_empleado-edit"
+                            type="text" [disabled]="true" readonly
+                            [value]="originalUser.numero_empleado"/>
                     </div>
                 </div>
-            </div>
-            <div class="field grid justify-content-center mb-2" >
-                <p for="position-edit" class="col-fixed text-right" style="width:200px">Tipo de usuario</p>
-                <div class="col-3">
-                    <div class="flex flex-column my-auto mx-auto">
+                <div class="field grid justify-content-center m-0 py-2">
+                    <p  for="nom_usuario-edit" 
+                        class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
+                            Nombre
+                    </p>
+                    <div class="col-12 md:col-2">
+                        <div class="flex flex-column">
+                            <input
+                                class="w-full" 
+                                [ngClass]="{'ng-invalid ng-dirty': isValidField('nom_usuario')}"
+                                pInputText id="nom_usuario-edit" 
+                                formControlName="nom_usuario" type="text"/>
+                            <small class="mt-3 text-red" *ngIf="isValidField('nom_usuario')">Nombre invalido</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="field grid justify-content-center m-0 py-2">
+                    <p  for="position-edit" 
+                        class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
+                        Tipo de usuario
+                    </p>
+                    <div class="col-12 md:col-2">
                         <p-dropdown
                             id="position-edit"
                             formControlName="idu_puesto" 
                             [options]="typesUsers"  
                             optionLabel="nom_puesto" 
                             optionValue="idu_usuario"
-                            placeholder="Select a type" />
+                            placeholder="Select a type" 
+                        />
                     </div>
-                </div>
+                </div>     
+            </form>
+            <div class="flex justify-content-evenly mt-5 py-2">
+                <p-button 
+                    type="button"
+                    (click)="onCancel()"
+                    label="Cancelar" 
+                    [outlined]="true"
+                    [disabled]="isUpdate"
+                    />
+                <p-button 
+                    (click)="onSubmit()"
+                    type='submit'
+                    [loading]="isUpdate"
+                    [disabled]="userForm.invalid || !hasFormChanges || isUpdate"
+                    [label]="isUpdate ? 'Actualizando...' : 'Actualizar'" 
+                    />
             </div>
-        </form>
-        <div class="flex justify-content-center mt-5 ">
-            <p-button 
-                type="button"
-                (click)="onCancel()"
-                label="Cancelar" 
-                [outlined]="true"
-                [disabled]="isUpdate"
-                class="mr-8"/>
-            <p-button 
-                (click)="onSubmit()"
-                type='submit'
-                [loading]="isUpdate"
-                [disabled]="userForm.invalid || !hasFormChanges || isUpdate"
-                [label]="isUpdate ? 'Actualizando...' : 'Actualizar'" 
-                class="ml-8"/>
-        </div>
-    </section>
-</ng-template>
-<p-toast /> 
+        </section>
+    </ng-template>
+    <p-toast [breakpoints]="{ '920px': { width: '90%', right: '5' } }"/> 
+</main>

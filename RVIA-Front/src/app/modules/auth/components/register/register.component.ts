@@ -30,14 +30,12 @@ export class RegisterComponent {
     const trimmedConfirmPassword = this.confirmPassword.trim();
     const trimmedEmail = this.email.trim();
 
-     // Validación para asegurar que usernumber sea > 90000000 y <= 99999999 o < 100000000
      const usernumberInt = parseInt(trimmedUsernumber, 10);
      if (!((usernumberInt > 90000000 && usernumberInt <= 99999999) || usernumberInt < 100000000)) {
        this.errorMessage = 'El número de empleado debe ser mayor a 90000000 y menor o igual a 99999999, o menor a 100000000';
        return;
      }
  
-     // Validación para la contraseña
      if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{12,}$/.test(trimmedPassword)) {
        this.errorMessage = 'La contraseña debe tener al menos 12 caracteres, una letra mayúscula, un número y un caracter especial';
        return;
@@ -61,21 +59,20 @@ export class RegisterComponent {
     this.authService.register(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
       .subscribe({
         next: () => {
-          // alert('Registro exitoso');
-          this.errorMessage = ''; // Limpiar mensaje de error en caso de éxito
-          this.router.navigate(['/apps/list-apps']);  // Navega a la página de login
+          this.errorMessage = '';
+          this.router.navigate(['/apps/list-apps']);
         },
-        error: (error: Error) => { // Especificar el tipo de error
+        error: (error: Error) => {
           this.errorMessage = error.message;
         }
       });
   }
 
   onInputChange(): void {
-    this.errorMessage = ''; // Limpiar mensaje de error al cambiar el input
+    this.errorMessage = '';
   }
 
   onBack(): void {
-    this.router.navigate(['/auth/login']); // Navega a la página de login
+    this.router.navigate(['/auth/login']);
   }
 }

@@ -5,10 +5,10 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-  <div class="title">
-    <h1>¡Bienvenido!</h1>
+  <div class="flex align-items-center h-full justify-content-center">
+    <h1 class="text-8xl underline m-0">¡Bienvenido!</h1>
   </div>`,
-  styleUrl: './home.component.scss'
+  styles: [] 
 })
 export class HomeComponent {
 

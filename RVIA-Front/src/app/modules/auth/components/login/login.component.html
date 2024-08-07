@@ -1,18 +1,20 @@
-<div class="login-container">
-  <div class="login-box">
-    <h2>Acceso</h2>
-    <div class="form-group">
-      <label for="usernumber">Número de Empleado:</label>
-      <input type="text" id="usernumber" [(ngModel)]="usernumber" name="usernumber" (input)="onInputChange()" required />
-    </div>
-    <div class="form-group">
-      <label for="password">Contraseña:</label>
-      <input id="password" type="password" [(ngModel)]="password" (input)="onInputChange()" #passwordInput />
-    </div>
-    <div *ngIf="errorMessage" class="error-message">{{ errorMessage }}</div>
-    <div class="button-group">
-      <button (click)="onLogin()" [disabled]="isLoginDisabled">Ingresar</button>
-      <button type="button" (click)="onRegister()">Registrar</button>
+<main class="w-full h-full flex justify-content-center main-container">
+  <div class="login-container w-25rem mx-auto mt-7 p-4 text-center">
+    <div class="login-box p-4 border-round-lg text-white">
+      <h2 class="mb-4">Acceso</h2>
+      <div class="form-group mb-4 text-left text-white">
+        <label for="usernumber" class="mb-1 block">Número de Empleado:</label>
+        <input type="text" id="usernumber" [(ngModel)]="usernumber" name="usernumber" (input)="onInputChange()" required />
+      </div>
+      <div class="form-group mb-4 text-left text-white">
+        <label for="password" class="mb-1 block">Contraseña:</label>
+        <input id="password" type="password" [(ngModel)]="password" (input)="onInputChange()" #passwordInput />
+      </div>
+      <div *ngIf="errorMessage" class="mb-2 text-red">{{ errorMessage }}</div>
+      <div class="button-group flex flex-column gap-3 mt-6">
+        <button (click)="onLogin()" [disabled]="isLoginDisabled">Ingresar</button>
+        <button type="button" (click)="onRegister()">Registrar</button>
+      </div>
     </div>
   </div>
-</div>
+</main>

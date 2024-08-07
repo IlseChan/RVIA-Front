@@ -12,11 +12,11 @@ export const NewAplicationGuard = (): boolean => {
     const currentUser = authService.userLogged;
      
     if(!currentUser){
-        router.navigate(['/auth/login'])
+        router.navigate(['/auth/login']);
     }
 
-    if (currentUser && !validRol.includes(currentUser!.position.nom_puesto) ){
-        router.navigate(['/apps/list-apps'])
+    if (currentUser && !validRol.includes(currentUser!.position.nom_puesto)){
+        router.navigate(['/apps/list-apps']);
         return false;
     }
 
