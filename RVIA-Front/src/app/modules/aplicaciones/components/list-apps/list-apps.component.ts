@@ -37,11 +37,11 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   aplications: Aplication[] = [];
   
   Nom_Puestos = Nom_Puesto;
-  StatusApps = StatusApps;
+  StatusApps  = StatusApps;
 
-  currentPage: number = 1;
-  totalItems: number = 0;
-  elementPerPage:number = 0;
+  currentPage:    number = 1;
+  totalItems:     number = 0;
+  elementPerPage: number = 0;
 
   colums: string[] = ['ID','Nombre','Estatus'];
 

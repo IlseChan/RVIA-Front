@@ -81,7 +81,7 @@ export class ListUsuariosComponent implements OnInit {
     this.router.navigate([`/users/edit/${idUser}`]);
   }
 
-  onDeleteUsuario(user: Usuario){
+  onDeleteUsuario(user: Usuario): void{
     if(this.isDeleting) return;
     
     this.isDeleting = true; 

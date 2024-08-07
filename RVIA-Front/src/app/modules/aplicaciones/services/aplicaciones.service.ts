@@ -135,7 +135,6 @@ export class AplicacionesService {
   downloadFile(id: number): Observable<Blob> {
     if(this.token){
       return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' });
-      ;
     } 
     
     return throwError(() => {})

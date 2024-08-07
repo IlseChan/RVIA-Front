@@ -1,31 +1,36 @@
-<main class="layout">
-  <nav class="navbar">
-    <button class="hamburger" (click)="toggleSidebar()">
+<main class="flex flex-column h-full w-full">
+  <nav class="navbar flex justify-content-between align-items-center p-3 text-white">
+    <button class="hamburger c-pointer text-white text-2xl" (click)="toggleSidebar()">
       ☰
     </button>
-    <div class="user-info">
-      <span class="username">{{ userLogged?.nom_usuario }}</span>
-      <span class="separator">|</span>
-      <span class="userposition">{{ userLogged?.position?.nom_puesto }}</span>
+    <div class="user-info flex align-items-center">
+      <span class="white-space-nowrap ml-2">{{ userLogged?.nom_usuario }}</span>
+      <span class="separator ml-2 text-white">|</span>
+      <span class="userposition white-space-nowrap font-italic ml-2">{{ userLogged?.position?.nom_puesto }}</span>
     </div>
   </nav>
-  <nav class="sidebar" [ngClass]="{'active': sidebarActive}">
-    <button class="close-sidebar" (click)="closeSidebar()">✖</button>
-    <ul>
+  <nav class="sidebar fixed flex flex-column h-full text-white justify-content-between" [ngClass]="{'active': sidebarActive}">
+    <button class="close-sidebar text-white text-2xl c-pointer p-3" (click)="closeSidebar()">✖</button>
+    <ul class="p-0 my-0 list-none">
       <li *ngFor="let option of menuSidebar">
-        <a routerLinkActive="active" [routerLink]="option.path">
+        <a 
+          routerLinkActive="active" 
+          [routerLink]="option.path"
+          class="text-white text-base block p-3 text-center">
           {{ option.name | titlecase }}
         </a>
       </li>
     </ul>
-    <div class="logout-button sidebar-logout">
-      <button (click)="logout()">
-        <i class="pi pi-power-off"></i>
-        <span class="ml-2">Cerrar sesión</span>
+    <div class="logout-button mt-auto p-4 text-center sidebar-logout">
+      <button 
+        class="flex align-items-center justify-content-center text-white py-3 px-2 w-full text-base c-pointer"
+        (click)="logout()">
+          <i class="pi pi-power-off mr-2"></i>
+          <span class="ml-2">Cerrar sesión</span>
       </button>
     </div>
   </nav>
-  <section class="content md:px-4 md:py-5" [ngClass]="{'shifted': sidebarActive}">
+  <section class="content flex-grow-1 h-full overflow-y-auto md:px-4 md:py-5" [ngClass]="{'shifted': sidebarActive}">
     <router-outlet></router-outlet>
   </section>
 </main>

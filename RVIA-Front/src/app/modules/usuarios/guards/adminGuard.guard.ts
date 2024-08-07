@@ -11,12 +11,12 @@ export const AdminGuard = (): boolean => {
     const currentUser = authService.userLogged;
     
     if(!currentUser){
-        router.navigate(['/auth/login'])
+        router.navigate(['/auth/login']);
         return false;
     }
 
     if (currentUser && currentUser.position.nom_puesto !== Nom_Puesto.ADMINISTRADOR){
-        router.navigate(['/apps/home'])
+        router.navigate(['/apps/home']);
         return false;
     }
 
