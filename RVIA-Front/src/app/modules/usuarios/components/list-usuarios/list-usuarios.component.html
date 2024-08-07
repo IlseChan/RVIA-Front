@@ -1,6 +1,6 @@
 
 <main class="m-2">
-    <section class="flex mt-3">
+    <section class="flex justify-content-center md:justify-content-start  mt-3">
         <h1 class="inline text-5xl my-0">Lista de Usuarios</h1>
     </section>
     
@@ -48,10 +48,10 @@
         <p-paginator 
             (onPageChange)="onPageChange($event)" 
             [first]="0"
-            [rows]="5" 
+            [rows]="elementPerPage" 
             [totalRecords]="totalItems" 
         />
     </section>
     <p-confirmDialog/>
-    <p-toast />
+    <p-toast [breakpoints]="{ '920px': { width: '90%', right: '5' } }"/>
 </main>

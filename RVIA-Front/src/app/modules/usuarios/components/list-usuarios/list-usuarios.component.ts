@@ -38,7 +38,8 @@ export class ListUsuariosComponent implements OnInit {
 
   currentPage: number = 1;
   totalItems: number = 0;
-
+  elementPerPage:number = 0;
+  
   constructor(
     private usuariosService: UsuariosService,
     private router: Router,
@@ -61,6 +62,7 @@ export class ListUsuariosComponent implements OnInit {
       next: ({data,total}) => {
         this.users = data;
         this.totalItems = total;
+        this.elementPerPage = this.usuariosService.elementPerPage;
       },
       error: (e) => {
         this.users = [];
