@@ -1,0 +1,24 @@
+.main-container, .container-stepper{
+  background-color: #fff;
+}
+
+.container-stepper{
+    .label-btn{
+      border: none; 
+      cursor: pointer;
+    
+      img {
+        height: 50px;
+        width: 50px;
+      }
+    }
+  
+    .conteiner-panel{
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding-inline: 1rem;
+    }
+  }
+  
