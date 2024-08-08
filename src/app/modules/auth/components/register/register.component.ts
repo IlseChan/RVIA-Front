@@ -2,12 +2,16 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { BadgeModule } from 'primeng/badge';
+import { TooltipModule } from 'primeng/tooltip';
+
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [NgIf, FormsModule],
+  imports: [NgIf, FormsModule,BadgeModule,TooltipModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })

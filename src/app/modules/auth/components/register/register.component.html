@@ -36,7 +36,20 @@
         />
       </div>
       <div class=" flex flex-column mb-3">
-        <label class="font-bold mb-2" for="password">Contraseña</label>
+        <div class="flex mb-2" >
+          <label class="font-bold mt-auto" for="password">Contraseña</label>
+          <p-badge
+            class="ml-2"
+            [pTooltip]="tooltipContent"  
+            value="i" severity="contrast"
+            tooltipPosition="right" 
+            [style]="{'min-width': '20px', 'height': '22px', 'vertical-align': 'middle'}" />
+            <ng-template #tooltipContent>
+                <div class="flex align-items-center">
+                  <p>Crea una contraseña segura con almenos <b>12 caracteres, letras, números y símbolos combinados.</b></p>
+                </div>
+            </ng-template>
+        </div>
         <input 
           type="password" 
           id="password" 
