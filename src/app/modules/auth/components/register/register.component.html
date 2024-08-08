@@ -1,5 +1,5 @@
 <main class="main-container min-h-full px-4 py-5">
-  <section class="register-container w-27rem p-4 my-3 mx-auto border-round-lg">
+  <section class="register-container w-auto md:w-27rem p-4 my-3 mx-auto border-round-lg">
     <h2 class="text-center mt-0 mb-4">Registro</h2>
     <form (ngSubmit)="onRegister()" #registerForm="ngForm">
       <div class="flex flex-column mb-3">
@@ -11,6 +11,7 @@
           name="usernumber" 
           required
           placeholder="Ej. 98322XXX"
+          autocomplete="off"
         />
       </div>
       <div class=" flex flex-column mb-3">
@@ -22,6 +23,7 @@
           name="username" 
           required
           placeholder="Tu nombre"
+          autocomplete="off"
         />
       </div>
       <div class="  flex flex-column mb-3">
@@ -33,6 +35,7 @@
           name="email" 
           required
           placeholder="ejemplo@coppel.com"
+          autocomplete="off"
         />
       </div>
       <div class=" flex flex-column mb-3">
@@ -45,7 +48,7 @@
             tooltipPosition="right" 
             [style]="{'min-width': '20px', 'height': '22px', 'vertical-align': 'middle'}" />
             <ng-template #tooltipContent>
-                <div class="flex align-items-center">
+                <div class="flex align-items-center text-sm">
                   <p>Crea una contraseña segura con almenos <b>12 caracteres, letras, números y símbolos combinados.</b></p>
                 </div>
             </ng-template>
@@ -57,6 +60,7 @@
           name="password" 
           required
           placeholder="Contraseña"
+          autocomplete="off"
         />
       </div>
       <div class=" flex flex-column mb-3">
@@ -68,14 +72,24 @@
           name="confirmPassword" 
           required
           placeholder="Confirma tu contraseña"
+          autocomplete="off"
         />
       </div>
       <div *ngIf="errorMessage" class="mb-3 text-red text-center">
         {{ errorMessage }}
       </div>
       <div class="flex flex-column mt-3">
-        <button type="submit" class="btn-register c-pointer register-button" [disabled]="registerForm.form.invalid">Registrar</button>
-        <button (click)="onBack()" class="btn-register c-pointer back-button">Regresar</button>
+        <button 
+          type="submit" 
+          class="btn-register c-pointer register-button" 
+          [disabled]="registerForm.form.invalid">
+            Registrar
+        </button>
+        <p-button 
+          class="text-center mt-2" 
+          label="Iniciar Sesión" 
+          [link]="true" 
+          (onClick)="onBack()"/>
       </div>
     </form>
   </section>

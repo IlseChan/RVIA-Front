@@ -3,12 +3,14 @@ import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { ButtonModule } from 'primeng/button';
+
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [NgIf, FormsModule],
+  imports: [NgIf, FormsModule, ButtonModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })

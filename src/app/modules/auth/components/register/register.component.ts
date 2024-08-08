@@ -5,13 +5,14 @@ import { Router } from '@angular/router';
 
 import { BadgeModule } from 'primeng/badge';
 import { TooltipModule } from 'primeng/tooltip';
+import { ButtonModule } from 'primeng/button';
 
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [NgIf, FormsModule,BadgeModule,TooltipModule],
+  imports: [NgIf, FormsModule,BadgeModule,TooltipModule,ButtonModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })

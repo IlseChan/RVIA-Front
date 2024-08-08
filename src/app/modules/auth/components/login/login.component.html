@@ -28,7 +28,12 @@
       <div *ngIf="errorMessage" class="mb-2 text-red">{{ errorMessage }}</div>
       <div class="button-group flex flex-column gap-3 mt-6">
         <button (click)="onLogin()" [disabled]="isLoginDisabled">Ingresar</button>
-        <button type="button" (click)="onRegister()">Registrar</button>
+        <p-button 
+          [link]="true" 
+          class="text-center mt-2 btn-reg" 
+          label="Crear cuenta" 
+          [style]="{'color': '#fff'}"
+          (onClick)="onRegister()"/>
       </div>
     </div>
   </div>
