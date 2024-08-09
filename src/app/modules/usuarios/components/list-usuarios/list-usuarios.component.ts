@@ -13,6 +13,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 import { Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
+import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 
 @Component({
   selector: 'app-list-usuarios',
@@ -38,7 +39,7 @@ export class ListUsuariosComponent implements OnInit {
 
   currentPage: number = 1;
   totalItems: number = 0;
-  elementPerPage:number = 0;
+  elementPerPage:number = elementPerPage;
   
   constructor(
     private usuariosService: UsuariosService,
@@ -62,7 +63,6 @@ export class ListUsuariosComponent implements OnInit {
       next: ({data,total}) => {
         this.users = data;
         this.totalItems = total;
-        this.elementPerPage = this.usuariosService.elementPerPage;
       },
       error: (e) => {
         this.users = [];

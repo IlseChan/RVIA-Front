@@ -5,12 +5,15 @@ import { BehaviorSubject, delay, map, Observable, of, switchMap, tap, throwError
 import { Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { UsersData } from '../interfaces/usuarios.interface';
 import { environment } from '../../../../environments/environment';
+import { token } from '@modules/shared/helpers/getToken';
+import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuariosService {  
   private readonly baseUrl = environment.baseURL;
+  private changes: boolean = false;
   userEditSubject = new BehaviorSubject<Usuario|null>(null);
   userEdit$: Observable<Usuario|null> = this.userEditSubject.asObservable();
 
@@ -18,15 +21,8 @@ export class UsuariosService {
     data: [],
     total: -1 
   }
-  private changes: boolean = false;
-  elementPerPage: number = 5;
 
   constructor(private http: HttpClient){}
-
-  get token(): string | null {
-    const token = localStorage.getItem('token');
-    return token || null;
-  }
 
   clearDataUsers(): void {
     this.allUsers.data = [];
@@ -34,29 +30,28 @@ export class UsuariosService {
   }
 
   getUsuarios(page: number = 1): Observable<UsersData> {
-    if((this.token && this.allUsers.data.length === 0 || this.changes)){
+    if((token() && this.allUsers.data.length === 0) || (token() && this.changes)){
       return this.http.get<Usuario[]>(`${this.baseUrl}/auth`)
         .pipe(
-          tap((r) => {
-            this.allUsers.data = r;
-            this.allUsers.total = r.length;
+          tap(users => {
+            this.allUsers.data = users;
+            this.allUsers.total = users.length;
             this.changes = false;
           }),
-          map(users =>  this.getUserByPage(users,page))
+          map(users => {
+            return {
+              data: dataPerPage([...users],page) as Usuario[],
+              total: this.allUsers.total
+            }
+          } )
         )
     }else{
       return of(
-        this.getUserByPage([...this.allUsers.data],page))
-    }
-  }
-
-  private getUserByPage(users: Usuario[], page: number): UsersData {
-    const from = ( page -1 ) * this.elementPerPage;
-    const to = from + this.elementPerPage;
-
-    return {
-      data: users.slice(from, to),
-      total: this.allUsers.total
+        {
+          data: dataPerPage([...this.allUsers.data],page) as Usuario[],
+          total: this.allUsers.total
+        }
+      )
     }
   }
 
@@ -65,8 +60,8 @@ export class UsuariosService {
     this.userEditSubject.next(user ? user : null);
   }
 
-  getUsuarioById(id: number): Observable<Usuario>{
-    if(this.token){
+  getUsuarioById(id: number): Observable<Usuario> {
+    if(token()){
       return this.userEdit$.pipe(
         switchMap( user => {        
           if(user && user.idu_usuario === id){
@@ -81,7 +76,7 @@ export class UsuariosService {
   }
 
   updateUsuario(originalUser: Usuario,changes: Usuario): Observable<Usuario> {
-    if(this.token){
+    if(token()){
       return this.http.patch<Usuario>(`${this.baseUrl}/auth/${originalUser.idu_usuario}`,changes)
         .pipe(
           tap(() => this.changes = true),
@@ -93,11 +88,11 @@ export class UsuariosService {
   }
 
   deleteUsuario(id: number): Observable<Usuario> {
-    if(this.token){
+    if(token()){
       return this.http.delete<Usuario>(`${this.baseUrl}/auth/${id}`)
         .pipe(
           tap(() => this.changes = true),
-          delay(2000)
+          delay(1000)
         )
     }
 
