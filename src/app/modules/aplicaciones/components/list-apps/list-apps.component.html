@@ -9,6 +9,7 @@
             routerLink="/apps/new-app"
             pTooltip="Subir una aplicación" 
             tooltipPosition="left"  
+            tooltipStyleClass="text-sm" 
             class="p-button font-bold mx-auto mt-4 md:mt-0 md:ml-auto md:mr-0 bnt-new">
             <span class="pi pi-plus-circle mr-2" style="font-size: 1.4rem"></span>
             Nueva
@@ -68,13 +69,19 @@
                             </ng-template>
                          </td>
                          <ng-template #authStatus>
-                             <td>{{ app.applicationstatus.idu_estatus_aplicacion | statusApp}}</td>
+                            <td>
+                                <p-tag 
+                                    [severity]="app.applicationstatus.idu_estatus_aplicacion | statusAppLabel" 
+                                    [value]="app.applicationstatus.idu_estatus_aplicacion | statusApp"
+                                />
+                            </td>
                          </ng-template>
                         <td *ngIf="user!.position.nom_puesto !== Nom_Puestos.INVITADO">
                             <a 
                                 *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
                                 pTooltip="Descargar ZIP" 
-                                tooltipPosition="top" 
+                                tooltipPosition="top"
+                                tooltipStyleClass="text-sm" 
                                 class="c-pointer icon-down"
                                 (click)="onDownloadFile(app)">
                                 <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
