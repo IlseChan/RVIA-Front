@@ -66,20 +66,22 @@
                                     (onChange)="onChangeStatus($event, app,index)"
                                 />  
                             </ng-template>
-                            
                          </td>
                          <ng-template #authStatus>
                              <td>{{ app.applicationstatus.idu_estatus_aplicacion | statusApp}}</td>
                          </ng-template>
                         <td *ngIf="user!.position.nom_puesto !== Nom_Puestos.INVITADO">
                             <a 
-                                *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE"
+                                *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
                                 pTooltip="Descargar ZIP" 
                                 tooltipPosition="top" 
                                 class="c-pointer icon-down"
                                 (click)="onDownloadFile(app)">
                                 <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
                             </a>
+                            <ng-template #empty>
+                                <p class="m-0" style="padding-block: 3.5px;"><b>N/A</b></p>
+                            </ng-template>
                         </td>
                     </tr>
                 </ng-template>

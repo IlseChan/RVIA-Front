@@ -19,6 +19,7 @@ import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
 import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { environment } from '../../../../../environments/environment';
+import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 
 @Component({
   selector: 'list-apps',
@@ -41,7 +42,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
 
   currentPage:    number = 1;
   totalItems:     number = 0;
-  elementPerPage: number = 0;
+  elementPerPage: number = elementPerPage;
 
   colums: string[] = ['ID','Nombre','Estatus'];
 
@@ -88,7 +89,6 @@ export class ListAppsComponent implements OnInit, OnDestroy {
       if(!data) return
       this.aplications = [...data];
       this.totalItems  = total;
-      this.elementPerPage = this.aplicacionService.elementPerPage;
       this.isLoading = false;
     });
   }

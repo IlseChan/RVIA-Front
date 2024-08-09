@@ -227,7 +227,6 @@ export class FormSanitizeComponent implements OnInit {
     if( severity === 'success'){
       summary = 'Aplicativo guardado';
       detail = `¡El aplicativo ${app?.nom_aplicacion} se a subido con éxito!`; 
-      this.aplicacionesService.changeListSubject.next(true);
     }
 
     this.messageService.add({ 
