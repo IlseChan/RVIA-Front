@@ -1,12 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { catchError, finalize, throwError } from 'rxjs';
+import { finalize } from 'rxjs';
 
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
-import { ToastModule } from 'primeng/toast';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
@@ -16,14 +15,14 @@ import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 
 @Component({
-  selector: 'app-list-usuarios',
+  selector: 'list-usuarios',
   standalone: true,
   imports: [TableModule, PaginatorModule,RouterLink,
-    ConfirmDialogModule,ToastModule,PaginatorModule
+    ConfirmDialogModule, PaginatorModule
     ,CommonModule,ProgressSpinnerModule,TooltipModule],
   templateUrl: './list-usuarios.component.html',
   styleUrl: './list-usuarios.component.scss',
-  providers: [ConfirmationService,MessageService],
+  providers: [ConfirmationService],
 })
 export class ListUsuariosComponent implements OnInit {
 
@@ -45,7 +44,6 @@ export class ListUsuariosComponent implements OnInit {
     private usuariosService: UsuariosService,
     private router: Router,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService 
   ){}
    
   ngOnInit(): void {
@@ -57,21 +55,15 @@ export class ListUsuariosComponent implements OnInit {
     this.usuariosService.getUsuarios(this.currentPage)
     .pipe(
       finalize(()=> this.isLoading = false),
-      catchError(e => throwError(() => {}))
     )
     .subscribe({
       next: ({data,total}) => {
         this.users = data;
         this.totalItems = total;
       },
-      error: (e) => {
+      error: () => {
         this.users = [];
         this.totalItems  = 0;
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Error', 
-          detail: `Error al cargar los usuarios` 
-        });
       }});  
   }
 
@@ -97,28 +89,13 @@ export class ListUsuariosComponent implements OnInit {
       rejectButtonStyleClass: 'p-button-outlined my-2',
       rejectLabel: 'No, cancelar',
       accept: () => {
-        this.usuariosService.deleteUsuario(user.idu_usuario)
+        this.usuariosService.deleteUsuario(user)
           .pipe(
             finalize(() => this.resetValues()),
-            catchError(e => throwError(() => {}))
           )
-          .subscribe({
-            next: (r) => {
-              this.messageService.add({ 
-                severity: 'success', 
-                summary: 'Usuario eliminado', 
-                detail: `El usuario ${user.nom_usuario} se elimino correctamente.` 
-              });
-              this.currentPage = 1;
-              this.onGetUsuarios();
-            },
-            error: (e) => {
-              this.messageService.add({ 
-                severity: 'error', 
-                summary: 'Error', 
-                detail: `Error al eliminar al usuario ${user.nom_usuario}.` 
-             });
-           }
+          .subscribe(() => {
+            this.currentPage = 1;
+            this.onGetUsuarios();
           });
       },
       reject: () => {

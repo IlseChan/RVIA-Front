@@ -2,10 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { catchError, throwError } from 'rxjs';
 
-import { ToastModule } from 'primeng/toast';
-import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 import { StepperModule } from 'primeng/stepper';
@@ -17,18 +14,17 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { Aplication, Language } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { Language } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 
 @Component({
   selector: 'form-sanitize',
   standalone: true,
   templateUrl: './form-sanitize.component.html',
   styleUrl: './form-sanitize.component.scss',
-  imports: [CommonModule,ButtonModule,ToastModule,TooltipModule,
+  imports: [CommonModule,ButtonModule,TooltipModule,
     StepperModule,RadioButtonModule,InputTextModule,ReactiveFormsModule,
     InputGroupModule,InputGroupAddonModule,FormsModule, DropdownModule,
-    ProgressSpinnerModule],
-  providers: [MessageService]
+    ProgressSpinnerModule]
 })
 export class FormSanitizeComponent implements OnInit {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
@@ -55,28 +51,18 @@ export class FormSanitizeComponent implements OnInit {
   constructor(
     private aplicacionesService: AplicacionesService, 
     private router: Router,
-    private messageService: MessageService 
   ){}
   
   ngOnInit(): void {
 
     this.aplicacionesService.getLanguages()
-    .pipe(
-      catchError(e => throwError(() => {}))
-    ).subscribe({
+    .subscribe({
       next: (resp) => {
         if(resp){
           this.initForm();
           this.lenguagesOps = resp;
           this.isLoading = false;
         }
-      },
-      error: (e) => {
-        this.messageService.add({ 
-          severity: 'error', 
-          summary: 'Error al cargar', 
-          detail: 'Ha ocurrido un error al cargar información. Intentalo de nuevo.' 
-        });
       }
     });
   }
@@ -200,46 +186,18 @@ export class FormSanitizeComponent implements OnInit {
     if(values.action === 3 && !values.language) return;
     
     this.aplicacionesService.saveProjectWitPDF(this.formFiles.value)
-      .pipe(
-        catchError(e =>  throwError(() => e)),
-      )
       .subscribe({
-        next: (resp) => {
-          if(resp){
-            this.handleResponse('success', resp);
-          }
+        next: () => {
+          setTimeout(() => {
+            this.back();
+          },3200);
         },
-        error: (e) => {      
-          this.handleResponse('error');
+        error: () => {      
+          setTimeout(() => {
+            this.isUploadProject = false
+          },3200);
         }
       });
-  }
-
-  private handleResponse(severity: string, app?: Aplication): void {
-    let detail = '';
-    let summary = '';
-
-    if( severity === 'error'){
-      summary = 'Error al guardar';
-      detail = `Ocurio un error al guardar el aplicativo.`;
-    }
-
-    if( severity === 'success'){
-      summary = 'Aplicativo guardado';
-      detail = `¡El aplicativo ${app?.nom_aplicacion} se a subido con éxito!`; 
-    }
-
-    this.messageService.add({ 
-      severity, 
-      summary, 
-      detail 
-    });
-
-    setTimeout(() => {
-      severity === 'error' 
-      ? this.isUploadProject = false
-      : this.back();
-    },3200);
   }
 
   back(): void{
