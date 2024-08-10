@@ -2,14 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { catchError, Subscription, switchMap, throwError } from 'rxjs';
+import { Subscription, switchMap } from 'rxjs';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
-import { ToastModule } from 'primeng/toast';
 
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { Idu_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
@@ -19,11 +17,9 @@ import { InitalValuesFormEdits } from '@modules/usuarios/interfaces/usuarios.int
   selector: 'edit-users-page',
   standalone: true,
   imports: [CommonModule, InputTextModule, DropdownModule, 
-    ButtonModule, DropdownModule,ReactiveFormsModule,
-    ToastModule,ProgressSpinnerModule],
+    ButtonModule, DropdownModule,ReactiveFormsModule, ProgressSpinnerModule],
   templateUrl: './edit-users-page.component.html',
   styleUrl: './edit-users-page.component.scss',
-  providers: [MessageService]
 })
 export class EditUsersPageComponent implements OnInit, OnDestroy {
   userForm!:  FormGroup;
@@ -47,8 +43,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private usuariosService: UsuariosService,
-    private activedRoute: ActivatedRoute,
-    private messageService: MessageService 
+    private activedRoute: ActivatedRoute
   ){}
 
   ngOnInit(): void {
@@ -57,7 +52,6 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
     this.userSub = this.activedRoute.params  
       .pipe(
         switchMap(({id}) => this.usuariosService.getUsuarioById(+id)),
-        catchError(e => throwError(() => {})),
       )
       .subscribe({
         next: (user) => {
@@ -65,12 +59,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
           this.originalUser = user;
           this.isLoading = false; 
         },
-        error: (e) => {
-          this.messageService.add({ 
-            severity: 'error', 
-            summary: 'Error', 
-            detail: `Error al cargar información` 
-          });
+        error: () => {
           setTimeout(() => {
             this.router.navigate(['users/list-users'])
           }, 2800);
@@ -105,28 +94,14 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
     const user = this.userForm.value;
         
     this.usuariosService.updateUsuario(this.originalUser,user)
-      .pipe(
-        catchError(e =>  throwError(() => e)),
-      )
       .subscribe({
-        next: (resp) => {
-          this.messageService.add({ 
-            severity: 'success', 
-            summary: 'Actualización Exitosa', 
-            detail: `El usuario ${resp.numero_empleado} - ${resp.nom_usuario} con posición ${resp.position.nom_puesto} se actualizó correctamente` 
-          });
+        next: () => {
           setTimeout(() => {
             this.router.navigate(['users/list-users'],{ replaceUrl: true });
             this.usuariosService.userEditSubject.next(null);
           },2800)
         },
-        error: (e) => {
-          const detail = `Error al actualizar al usaurio. ${e.error.message}`;
-          this.messageService.add({ 
-            severity: 'error', 
-            summary: 'Error al actualizar', 
-            detail
-          });
+        error: () => {
           this.isUpdate = false;
         }
       });

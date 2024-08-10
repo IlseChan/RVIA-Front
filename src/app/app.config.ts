@@ -5,12 +5,14 @@ import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 import { routes } from './app.routes';
 import { AuthInterceptor } from './helpers/interceptors/authToken.interceptor';
+import { MessageService } from 'primeng/api';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimationsAsync(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([AuthInterceptor]))
+    provideHttpClient(withInterceptors([AuthInterceptor])),
+    MessageService
   ]
 };
