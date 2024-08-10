@@ -12,6 +12,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
+import { TagModule } from 'primeng/tag';
 
 import { Aplication, StatusApps } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
@@ -20,6 +21,7 @@ import { StatusAppPipe } from "../../pipes/status-app.pipe";
 import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { environment } from '../../../../../environments/environment';
 import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
+import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label.pipe';
 
 @Component({
   selector: 'list-apps',
@@ -27,7 +29,7 @@ import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
   imports: [ButtonModule, TableModule, CommonModule, 
     PaginatorModule, StatusAppPipe,RouterLink,
     DropdownModule,ConfirmDialogModule,ProgressSpinnerModule,
-    ToastModule, TooltipModule],
+    ToastModule, TooltipModule,TagModule, StatusAppLabelPipe],
   templateUrl: './list-apps.component.html',
   styleUrl: './list-apps.component.scss',
   providers: [ConfirmationService, MessageService],

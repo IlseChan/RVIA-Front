@@ -1,8 +1,14 @@
-.icon-down{
-    color: #7ed957;
+.icon{
+    &-down{
+        color: #7ed957;
+    
+        &:hover{
+            color: #65af46;
+        }
+    }
 
-    &:hover{
-        color: #65af46;
+    &-disable{
+        color: #cecece;
     }
 }
 
