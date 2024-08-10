@@ -6,6 +6,15 @@ import { Aplication, AplicationsData, FormProjectWithPDF, Language } from '../in
 import { environment } from '../../../../environments/environment';
 import { token } from '@modules/shared/helpers/getToken';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
+import { NotificationsService } from '@modules/shared/services/notifications.service';
+
+enum OriginMethod {
+  GETAPPS = 'GETAPPS',
+  GETDOWNLOAD = 'GETDOWNLOAD',
+  GETLANGUAGES = 'GETLANGUAGES',
+  POSTSAVEFILE = 'POSTSAVEFILE',
+  UPDATESTATUS = 'UPDATESTATUS', 
+}
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +28,10 @@ export class AplicacionesService {
     total: -1 
   }
 
-  constructor(private http: HttpClient){}
+  constructor(
+    private http: HttpClient,
+    private notificationsService: NotificationsService
+  ){}
 
   clearDataApps(): void {
     this.allApps.data = [];
@@ -42,7 +54,7 @@ export class AplicacionesService {
             }
           }),
           delay(1000),
-          catchError(e => of({ data: [], total: 0 }))
+          catchError(error => this.handleError(error, OriginMethod.GETAPPS))
         )
       }
       else{
@@ -60,30 +72,17 @@ export class AplicacionesService {
       const body = { estatusId: newStatus };
       return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body)
         .pipe(
-          delay(1000)
+          tap(() => {
+            const title = 'Estatus actualizado';
+            const content = `¡El estado de la aplicación ${app.nom_aplicacion} se a actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`
+            this.notificationsService.successMessage(title,content);
+          }),
+          delay(1000),
+          catchError(error => this.handleError(error, OriginMethod.UPDATESTATUS,app.nom_aplicacion))
         );
     }
 
-    return throwError(() => {});
-  }
-
-  saveGitLabUrl(url: string): Observable<Aplication> {
-    if(token()){
-      return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,{ url });
-    }
-
-    return throwError(() => {});
-  }
-
-  saveZipFile(file: File): Observable<Aplication> {
-    if(token()){
-      const formData = new FormData();
-      formData.append('file',file);
-
-      return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData);
-    }
-    
-    return throwError(() => {});
+    return this.handleError(new Error('No Token'), OriginMethod.UPDATESTATUS);
   }
 
   saveProjectWitPDF(form: FormProjectWithPDF): Observable<Aplication> {
@@ -103,7 +102,13 @@ export class AplicacionesService {
       
         return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData)
           .pipe(
-            tap(() => this.changes = true)
+            tap(() => this.changes = true),
+            tap((resp) => {
+              const title = 'Aplicativo guardado';
+              const content = `¡El aplicativo ${resp.nom_aplicacion} se a subido con éxito!`
+              this.notificationsService.successMessage(title,content);
+            }),
+            catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
           );
       }
   
@@ -113,30 +118,55 @@ export class AplicacionesService {
 
         return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,formData)
           .pipe(
-            tap(() => this.changes = true)
+            tap(() => this.changes = true),
+            tap((resp) => {
+              const title = 'Aplicativo guardado';
+              const content = `¡El aplicativo ${resp.nom_aplicacion} se a subido con éxito!`
+              this.notificationsService.successMessage(title,content);
+            }),
+            catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
           );
       }
     }
 
-    return throwError(() => {});
+    return this.handleError(new Error('No Token'), OriginMethod.POSTSAVEFILE);
   }
 
   getLanguages(): Observable<Language[]> {
     if(token()){
       return this.http.get<Language[]>(`${this.baseUrl}/languages`)
       .pipe(
-        delay(1000)
+        delay(1000),
+        catchError(error => this.handleError(error, OriginMethod.GETLANGUAGES))
       );
     }
     
-    return throwError(() => {});
+    return this.handleError(new Error('No Token'), OriginMethod.GETLANGUAGES);
   }
 
   downloadFile(id: number): Observable<Blob> {
     if(token()){
-      return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' });
+      return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' })
+        .pipe(
+          catchError(error => this.handleError(error, OriginMethod.GETDOWNLOAD))
+        );
     } 
     
-    return throwError(() => {});
+    return this.handleError(new Error('No Token'),OriginMethod.GETDOWNLOAD);
+  }
+
+  handleError(error: Error, origin: OriginMethod, extra?: string | number) {
+    const title = 'Error';
+    
+    const errorsMessages = {
+      GETAPPS: 'Error al cargar información', 
+      GETDOWNLOAD: 'Error al descargar el zip',
+      GETLANGUAGES: 'Ha ocurrido un error al cargar información. Intentalo de nuevo.',
+      POSTSAVEFILE: `Ocurio un error al guardar el aplicativo.`,
+      UPDATESTATUS: `¡El estado de la aplicacion ${extra} no se pudo actualizar!`
+    };
+
+    this.notificationsService.errorMessage(title,errorsMessages[origin]);
+    return throwError(() => 'ERROR ERROR ERROR');
   }
 }
