@@ -6,13 +6,14 @@ import { finalize } from 'rxjs';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 
 import { Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
+import { AuthService } from '@modules/auth/services/auth.service';
 
 @Component({
   selector: 'list-usuarios',
@@ -39,14 +40,17 @@ export class ListUsuariosComponent implements OnInit {
   currentPage: number = 1;
   totalItems: number = 0;
   elementPerPage:number = elementPerPage;
-  
+
+  userLogged!: Usuario | null;
   constructor(
     private usuariosService: UsuariosService,
     private router: Router,
     private confirmationService: ConfirmationService,
+    private authService: AuthService
   ){}
    
   ngOnInit(): void {
+    this.userLogged = this.authService.userLogged;
     this.onGetUsuarios();
   }
   
@@ -75,6 +79,7 @@ export class ListUsuariosComponent implements OnInit {
 
   onDeleteUsuario(user: Usuario): void{
     if(this.isDeleting) return;
+    if(user.idu_usuario === this.userLogged?.idu_usuario) return;
     
     this.isDeleting = true; 
     this.idToDelete  = user.numero_empleado;

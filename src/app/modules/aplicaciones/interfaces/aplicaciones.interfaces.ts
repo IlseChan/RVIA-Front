@@ -49,3 +49,11 @@ export interface Language{
     idu_lenguaje: number;
     nom_lenguaje: string;
 }
+
+export enum OriginMethod {
+    GETAPPS = 'GETAPPS',
+    GETDOWNLOAD = 'GETDOWNLOAD',
+    GETLANGUAGES = 'GETLANGUAGES',
+    POSTSAVEFILE = 'POSTSAVEFILE',
+    UPDATESTATUS = 'UPDATESTATUS', 
+}

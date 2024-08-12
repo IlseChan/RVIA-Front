@@ -2,19 +2,10 @@ import { Injectable } from '@angular/core';
 import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Aplication, AplicationsData, FormProjectWithPDF, Language } from '../interfaces/aplicaciones.interfaces';
+import { Aplication, AplicationsData, FormProjectWithPDF, Language, OriginMethod } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
-import { token } from '@modules/shared/helpers/getToken';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-
-enum OriginMethod {
-  GETAPPS = 'GETAPPS',
-  GETDOWNLOAD = 'GETDOWNLOAD',
-  GETLANGUAGES = 'GETLANGUAGES',
-  POSTSAVEFILE = 'POSTSAVEFILE',
-  UPDATESTATUS = 'UPDATESTATUS', 
-}
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +30,7 @@ export class AplicacionesService {
   }
 
   getAplicaciones(page: number = 1): Observable<AplicationsData> {
-    if((token() && this.allApps.data.length === 0) || (token() && this.changes)){
+    if(this.allApps.data.length === 0 || this.changes){
       return this.http.get<Aplication[]>(`${this.baseUrl}/applications`)
         .pipe(
           tap(apps => {
@@ -68,91 +59,78 @@ export class AplicacionesService {
   }
  
   setNewStatus(app: Aplication, newStatus: number): Observable<Aplication> {
-    if(token()){
-      const body = { estatusId: newStatus };
-      return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body)
-        .pipe(
-          tap(() => {
-            const title = 'Estatus actualizado';
-            const content = `¡El estado de la aplicación ${app.nom_aplicacion} se a actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`
-            this.notificationsService.successMessage(title,content);
-          }),
-          delay(1000),
-          catchError(error => this.handleError(error, OriginMethod.UPDATESTATUS,app.nom_aplicacion))
-        );
-    }
-
-    return this.handleError(new Error('No Token'), OriginMethod.UPDATESTATUS);
+    const body = { estatusId: newStatus };
+    return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body)
+      .pipe(
+        tap(() => {
+          const title = 'Estatus actualizado';
+          const content = `¡El estado de la aplicación ${app.nom_aplicacion} 
+            se a actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`
+          this.notificationsService.successMessage(title,content);
+        }),
+        delay(1000),
+        catchError(error => this.handleError(error, OriginMethod.UPDATESTATUS,app.nom_aplicacion))
+      );
   }
 
   saveProjectWitPDF(form: FormProjectWithPDF): Observable<Aplication> {
     const formData = new FormData();
     
-    if(token()){
+    formData.append('num_accion',form.action.toString()); 
 
-      formData.append('num_accion',form.action.toString()); 
-
-      if(form.action === 3){
-        formData.append('opc_lenguaje',form.language.toString());
-      }
-
-      if(form.type === 'zip'){ 
-        formData.append('files',form.zipFile!);
-        if(form.pdfFile) formData.append('files',form.pdfFile!);
-      
-        return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData)
-          .pipe(
-            tap(() => this.changes = true),
-            tap((resp) => {
-              const title = 'Aplicativo guardado';
-              const content = `¡El aplicativo ${resp.nom_aplicacion} se a subido con éxito!`
-              this.notificationsService.successMessage(title,content);
-            }),
-            catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
-          );
-      }
-  
-      if(form.type === 'git'){
-        formData.append('url',form.urlGit);
-        if(form.pdfFile) formData.append('file',form.pdfFile);
-
-        return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,formData)
-          .pipe(
-            tap(() => this.changes = true),
-            tap((resp) => {
-              const title = 'Aplicativo guardado';
-              const content = `¡El aplicativo ${resp.nom_aplicacion} se a subido con éxito!`
-              this.notificationsService.successMessage(title,content);
-            }),
-            catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
-          );
-      }
+    if(form.action === 3){
+      formData.append('opc_lenguaje',form.language.toString());
     }
 
-    return this.handleError(new Error('No Token'), OriginMethod.POSTSAVEFILE);
+    if(form.type === 'zip'){ 
+      formData.append('files',form.zipFile!);
+      if(form.pdfFile) formData.append('files',form.pdfFile!);
+    
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData)
+        .pipe(
+          tap(() => this.changes = true),
+          tap((resp) => {
+            const title = 'Aplicativo guardado';
+            const content = `¡El aplicativo ${resp.nom_aplicacion} se a subido con éxito!`
+            this.notificationsService.successMessage(title,content);
+          }),
+          catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
+        );
+    }
+
+    if(form.type === 'git'){
+      formData.append('url',form.urlGit);
+      if(form.pdfFile) formData.append('file',form.pdfFile);
+
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,formData)
+        .pipe(
+          tap(() => this.changes = true),
+          tap((resp) => {
+            const title = 'Aplicativo guardado';
+            const content = `¡El aplicativo ${resp.nom_aplicacion} se a subido con éxito!`
+            this.notificationsService.successMessage(title,content);
+          }),
+          catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
+        );
+    }
+
+    return this.handleError(new Error('Error load new app'), OriginMethod.POSTSAVEFILE);
   }
 
+
   getLanguages(): Observable<Language[]> {
-    if(token()){
-      return this.http.get<Language[]>(`${this.baseUrl}/languages`)
-      .pipe(
-        delay(1000),
-        catchError(error => this.handleError(error, OriginMethod.GETLANGUAGES))
-      );
-    }
-    
-    return this.handleError(new Error('No Token'), OriginMethod.GETLANGUAGES);
+    return this.http.get<Language[]>(`${this.baseUrl}/languages`)
+    .pipe(
+      delay(1000),
+      catchError(error => this.handleError(error, OriginMethod.GETLANGUAGES))
+    );    
   }
 
   downloadFile(id: number): Observable<Blob> {
-    if(token()){
-      return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' })
-        .pipe(
-          catchError(error => this.handleError(error, OriginMethod.GETDOWNLOAD))
-        );
-    } 
-    
-    return this.handleError(new Error('No Token'),OriginMethod.GETDOWNLOAD);
+    return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' })
+      .pipe(
+        catchError(error => this.handleError(error, OriginMethod.GETDOWNLOAD))
+      );
   }
 
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {

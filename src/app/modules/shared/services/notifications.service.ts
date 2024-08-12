@@ -8,7 +8,6 @@ export class NotificationsService {
 
   constructor(private messageService: MessageService) { }
 
-  //TODO mensaje para exito
   successMessage(summary: string, detail: string): void {
     this.messageService.add({ 
       severity: 'success', 
@@ -17,7 +16,6 @@ export class NotificationsService {
     });
   }
 
-  //TODO mensaje para error
   errorMessage(summary: string, detail: string): void {
     this.messageService.add({ 
       severity: 'error', 
