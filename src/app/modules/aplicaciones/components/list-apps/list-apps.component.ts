@@ -1,24 +1,25 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { catchError, Subscription, throwError } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
 import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ToastModule } from 'primeng/toast';
 import { TooltipModule } from 'primeng/tooltip';
+import { TagModule } from 'primeng/tag';
 
 import { Aplication, StatusApps } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
 import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
-import { environment } from '../../../../../environments/environment';
+import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
+import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label.pipe';
 
 @Component({
   selector: 'list-apps',
@@ -26,13 +27,12 @@ import { environment } from '../../../../../environments/environment';
   imports: [ButtonModule, TableModule, CommonModule, 
     PaginatorModule, StatusAppPipe,RouterLink,
     DropdownModule,ConfirmDialogModule,ProgressSpinnerModule,
-    ToastModule, TooltipModule],
+    TooltipModule,TagModule, StatusAppLabelPipe],
   templateUrl: './list-apps.component.html',
   styleUrl: './list-apps.component.scss',
-  providers: [ConfirmationService, MessageService],
+  providers: [ConfirmationService],
 })
 export class ListAppsComponent implements OnInit, OnDestroy {
-  readonly baseUrl: string = environment.baseURL;
   user!: Usuario | null;
   aplications: Aplication[] = [];
   
@@ -41,7 +41,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
 
   currentPage:    number = 1;
   totalItems:     number = 0;
-  elementPerPage: number = 0;
+  elementPerPage: number = elementPerPage;
 
   colums: string[] = ['ID','Nombre','Estatus'];
 
@@ -62,7 +62,6 @@ export class ListAppsComponent implements OnInit, OnDestroy {
     private aplicacionService: AplicacionesService,
     private authService: AuthService,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService 
   ){}
   
   ngOnInit(): void {
@@ -84,13 +83,20 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   onGetAplicaciones(): void {
     this.isLoading = true;
     this.aplicacionService.getAplicaciones(this.currentPage)
-    .subscribe(({data, total}) => {
-      if(!data) return
-      this.aplications = [...data];
-      this.totalItems  = total;
-      this.elementPerPage = this.aplicacionService.elementPerPage;
-      this.isLoading = false;
-    });
+    .pipe(
+      finalize(()=> this.isLoading = false),
+    )
+    .subscribe({
+      next: ({data,total}) => {
+        if(!data) return
+        this.aplications = [...data];
+        this.totalItems  = total;
+      },
+      error: () => {
+        this.aplications = [];
+        this.totalItems  = 0;
+      }}
+    );  
   }
 
   onChangeStatus({value}: DropdownChangeEvent, app: Aplication, index: number): void{
@@ -100,22 +106,18 @@ export class ListAppsComponent implements OnInit, OnDestroy {
     if(value === 4){
       this.dialogConfirmation(app,index,value);
     }else{
-      this.aplicacionService.setNewStatus({...app},value).
-      pipe(
-        catchError(e => throwError(() => ({ error: true })))
-      )
+      this.aplicacionService.setNewStatus({...app},value)
       .subscribe({ 
         next: (appUp) => {
           if(appUp){
-            this.showMessage(appUp,'success');
             this.updateValue(value,index);
           }         
         },
-        error: (e) => {
-          this.showMessage(app,'error');
+        error: () => {
+          this.updateValue(app.applicationstatus.idu_estatus_aplicacion,index);
           setTimeout(() => {
             this.isChangeStatus = false;
-          },1000)
+          },2800)
         }
       });
     }
@@ -142,23 +144,17 @@ export class ListAppsComponent implements OnInit, OnDestroy {
       rejectLabel: 'No, cancelar',
       accept: () => {
         this.aplicacionService.setNewStatus({...app},newValue)
-        .pipe(
-          catchError(e => throwError(() => ({ error: true })))
-        )  
         .subscribe({
             next: (appUp) => {
               if(appUp){
-                this.showMessage(appUp,'success');
                 this.updateValue(newValue,index);
               }         
             },
             error: () => {
-              this.showMessage(app,'error');
               this.updateValue(app.applicationstatus.idu_estatus_aplicacion,index);
-
               setTimeout(() => {
                 this.isChangeStatus = false;
-              },1000)
+              },2800)
             }
           });
       },
@@ -175,33 +171,10 @@ export class ListAppsComponent implements OnInit, OnDestroy {
     this.onGetAplicaciones(); 
   }
   
-  showMessage(app: Aplication, severity: string): void{
-    let detail = '';
-    let summary = '';
-
-    if(severity === 'success'){
-      detail = `¡El estado de la aplicación ${app.nom_aplicacion} se a actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`; 
-      summary = 'Estatus actualizado';
-    }
-    if(severity === 'error'){
-      detail = `¡El estado no se pudo actualizar`; 
-      summary = 'Error actualizando';
-    }
-    
-    this.messageService.add({ 
-      severity, 
-      summary, 
-      detail 
-    });
-  }
-
   onDownloadFile(app: Aplication): void {
     if(this.isDownload) return;
     this.isDownload = true;
-    this.downloadSub = this.aplicacionService.downloadFile(app.idu_aplicacion)
-      .pipe(
-        catchError(e => throwError(() => ({ error: true })))
-      )  
+    this.downloadSub = this.aplicacionService.downloadFile(app.idu_aplicacion)  
       .subscribe( {
         next: (blob) => {
           const url = window.URL.createObjectURL(blob);
@@ -214,12 +187,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
           window.URL.revokeObjectURL(url);
           this.isDownload = false;
         },
-        error: (e) => {
-          this.messageService.add({ 
-            severity: 'error', 
-            summary: 'Error al descargar', 
-            detail: `Upss, ocurrio un error al descargar el zip de ${app.nom_aplicacion}` 
-          });
+        error: () => {
           this.isDownload = false;
         }
       });

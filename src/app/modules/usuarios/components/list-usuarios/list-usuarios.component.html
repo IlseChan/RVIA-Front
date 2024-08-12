@@ -33,12 +33,18 @@
                                 class="c-pointer icon-edit mr-3">
                                     <i class="pi pi-user-edit" style="font-size: 1.6rem"></i>
                             </a>
-                            <a  pTooltip="Eliminar usuario" 
-    
+                            <a  *ngIf="userLogged?.idu_usuario !== user.idu_usuario else delete"
+                                pTooltip="Eliminar usuario" 
                                 (click)="onDeleteUsuario(user)"
                                 class="c-pointer icon-del">
                                     <i class="pi pi-trash" style="font-size: 1.6rem"></i>
                             </a>
+                            <ng-template #delete>
+                               <a pTooltip="No disponible"
+                                  class="icon-del-disabled">
+                                    <i class="pi pi-trash" style="font-size: 1.6rem"></i>
+                                </a>
+                            </ng-template>
                         </td>
                     </tr>
                 </ng-template>
@@ -52,5 +58,4 @@
         />
     </section>
     <p-confirmDialog/>
-    <p-toast [breakpoints]="{ '920px': { width: '90%', right: '5' } }"/>
 </main>

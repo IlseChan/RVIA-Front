@@ -1,142 +1,150 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Aplication, AplicationsData, FormProjectWithPDF, Language } from '../interfaces/aplicaciones.interfaces';
+import { Aplication, AplicationsData, FormProjectWithPDF, Language, OriginMethod } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
+import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
+import { NotificationsService } from '@modules/shared/services/notifications.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AplicacionesService {
   private readonly baseUrl = environment.baseURL;
+  private changes: boolean = false;
 
-  changeListSubject = new BehaviorSubject<boolean>(false);
-
-  allAppsResp: AplicationsData = {
+  allApps: AplicationsData = {
     data: [],
     total: -1 
   }
-  elementPerPage: number = 5;
 
-  constructor(private http: HttpClient){}
-
-  get token(): string | null {
-    const token = localStorage.getItem('token');
-    return token || null;
-  }
+  constructor(
+    private http: HttpClient,
+    private notificationsService: NotificationsService
+  ){}
 
   clearDataApps(): void {
-    this.allAppsResp.data = [];
-    this.allAppsResp.total = -1; 
+    this.allApps.data = [];
+    this.allApps.total = -1; 
   }
 
   getAplicaciones(page: number = 1): Observable<AplicationsData> {
-    if((this.token && this.allAppsResp.data.length === 0) || (this.token && this.changeListSubject.getValue())){
+    if(this.allApps.data.length === 0 || this.changes){
       return this.http.get<Aplication[]>(`${this.baseUrl}/applications`)
         .pipe(
           tap(apps => {
-            this.allAppsResp.data = apps;
-            this.allAppsResp.total = apps.length;
-            this.changeListSubject.next(false);
+            this.allApps.data = apps;
+            this.allApps.total = apps.length;
+            this.changes = false;
           }),
-          map(apps => this.getAppsByPage(apps,page)),
+          map(apps => {
+            return {
+              data: dataPerPage([...apps],page) as Aplication[],
+              total: this.allApps.total
+            }
+          }),
           delay(1000),
-          catchError(e => of({ data: [], total: 0 }))
+          catchError(error => this.handleError(error, OriginMethod.GETAPPS))
         )
       }
       else{
         return of(
-          this.getAppsByPage([...this.allAppsResp.data],page)
+          {
+            data: dataPerPage([...this.allApps.data],page) as Aplication[],
+            total: this.allApps.total
+          }
         )
       }
   }
  
-  private getAppsByPage(apps: Aplication[], page: number): AplicationsData {
-    const from = (page - 1) * this.elementPerPage;
-    const to = from + this.elementPerPage;
-    const tmpData = apps.slice(from, to);
-    return {
-      data: tmpData,
-      total: this.allAppsResp.total
-    };
-  }
-
   setNewStatus(app: Aplication, newStatus: number): Observable<Aplication> {
-    if(this.token){
-      const body = { estatusId: newStatus };
-      return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body)
-        .pipe(
-          delay(1000)
-        );
-    }
-
-    return throwError(() => {})
-  }
-
-  saveGitLabUrl(url: string): Observable<Aplication>{
-    if(this.token){
-      return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,{ url })
-    }
-
-    return throwError(() => {})
-  }
-
-  saveZipFile(file: File): Observable<Aplication>{
-    if(this.token){
-      const formData = new FormData();
-      formData.append('file',file);
-
-      return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData)
-    }
-    
-    return throwError(() => {})
+    const body = { estatusId: newStatus };
+    return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body)
+      .pipe(
+        tap(() => {
+          const title = 'Estatus actualizado';
+          const content = `¡El estado de la aplicación ${app.nom_aplicacion} 
+            se a actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`
+          this.notificationsService.successMessage(title,content);
+        }),
+        delay(1000),
+        catchError(error => this.handleError(error, OriginMethod.UPDATESTATUS,app.nom_aplicacion))
+      );
   }
 
   saveProjectWitPDF(form: FormProjectWithPDF): Observable<Aplication> {
     const formData = new FormData();
     
-    if(this.token){
+    formData.append('num_accion',form.action.toString()); 
 
-      formData.append('num_accion',form.action.toString()); 
-
-      if(form.action === 3){
-        formData.append('opc_lenguaje',form.language.toString());
-      }
-
-      if(form.type === 'zip'){ 
-        formData.append('files',form.zipFile!);
-        if(form.pdfFile) formData.append('files',form.pdfFile!);
-      
-        return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData);
-      }
-  
-      if(form.type === 'git'){
-        formData.append('url',form.urlGit);
-        if(form.pdfFile) formData.append('file',form.pdfFile);
-
-        return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,formData);
-      }
+    if(form.action === 3){
+      formData.append('opc_lenguaje',form.language.toString());
     }
 
-    return throwError(() => {});
+    if(form.type === 'zip'){ 
+      formData.append('files',form.zipFile!);
+      if(form.pdfFile) formData.append('files',form.pdfFile!);
+    
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData)
+        .pipe(
+          tap(() => this.changes = true),
+          tap((resp) => {
+            const title = 'Aplicativo guardado';
+            const content = `¡El aplicativo ${resp.nom_aplicacion} se a subido con éxito!`
+            this.notificationsService.successMessage(title,content);
+          }),
+          catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
+        );
+    }
+
+    if(form.type === 'git'){
+      formData.append('url',form.urlGit);
+      if(form.pdfFile) formData.append('file',form.pdfFile);
+
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,formData)
+        .pipe(
+          tap(() => this.changes = true),
+          tap((resp) => {
+            const title = 'Aplicativo guardado';
+            const content = `¡El aplicativo ${resp.nom_aplicacion} se a subido con éxito!`
+            this.notificationsService.successMessage(title,content);
+          }),
+          catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
+        );
+    }
+
+    return this.handleError(new Error('Error load new app'), OriginMethod.POSTSAVEFILE);
   }
 
+
   getLanguages(): Observable<Language[]> {
-    if(this.token){
-      return this.http.get<Language[]>(`${this.baseUrl}/languages`).pipe(
-        delay(1500)
-      );
-    }
-    
-    return throwError(() => {})
+    return this.http.get<Language[]>(`${this.baseUrl}/languages`)
+    .pipe(
+      delay(1000),
+      catchError(error => this.handleError(error, OriginMethod.GETLANGUAGES))
+    );    
   }
 
   downloadFile(id: number): Observable<Blob> {
-    if(this.token){
-      return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' });
-    } 
+    return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' })
+      .pipe(
+        catchError(error => this.handleError(error, OriginMethod.GETDOWNLOAD))
+      );
+  }
+
+  handleError(error: Error, origin: OriginMethod, extra?: string | number) {
+    const title = 'Error';
     
-    return throwError(() => {})
+    const errorsMessages = {
+      GETAPPS: 'Error al cargar información', 
+      GETDOWNLOAD: 'Error al descargar el zip',
+      GETLANGUAGES: 'Ha ocurrido un error al cargar información. Intentalo de nuevo.',
+      POSTSAVEFILE: `Ocurio un error al guardar el aplicativo.`,
+      UPDATESTATUS: `¡El estado de la aplicacion ${extra} no se pudo actualizar!`
+    };
+
+    this.notificationsService.errorMessage(title,errorsMessages[origin]);
+    return throwError(() => 'ERROR ERROR ERROR');
   }
 }

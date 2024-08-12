@@ -9,3 +9,10 @@ export interface InitalValuesFormEdits {
     idu_puesto:  Idu_Puesto;
     nom_usuario: string;
 }
+
+export enum OriginMethod {
+    DELETEUSERS = 'DELETEUSERS',
+    GETUSER = 'GETUSER',
+    GETUSERS = 'GETUSERS',
+    UPDATEUSER = 'UPDATEUSER' 
+}

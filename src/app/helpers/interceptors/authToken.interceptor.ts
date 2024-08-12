@@ -1,5 +1,7 @@
 import { HttpHandlerFn, HttpRequest } from "@angular/common/http";
-
+import { inject } from "@angular/core";
+import { AuthService } from "@modules/auth/services/auth.service";
+        
 const regexApps = /\/applications|\/applications\/\d+|\/applications\/git/;
 const methodsApps = ['GET','PATCH','POST'];
 const checkRegex = (url: string): boolean => {
@@ -18,7 +20,7 @@ const checkRegexDown = (url: string): boolean => {
 }
 
 export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandlerFn) => {       
-    const token = localStorage.getItem('token') || null;
+    const authService = inject(AuthService);
     
     try{
         const url = request.url;
@@ -28,30 +30,38 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
             return next(request);
         }
         
+        const token: string | null =  localStorage.getItem('token') || null;
         const newReq = request.clone({
             headers: request.headers.set('Authorization',`Bearer ${token}`)
-        })
+        });
 
-        if((checkRegexDown(url) && token) && method === 'GET'){
+        if(url.includes('/auth/check-status') && method === 'GET'){
             return next(newReq);
         }
-        
-        if((token) && url.includes('applications/files') && method === 'POST'){
-            return next(newReq);
-        }
+ 
+        if(token && authService.userLogged){
 
-        newReq.headers.set( 'Content-Type','application/json');
+            if(checkRegexDown(url) && method === 'GET'){
+                return next(newReq);
+            }
 
-        if((token) && checkRegex(url) && methodsApps.includes(method)){
-            return next(newReq);
-        }
+            if(url.includes('applications/files') && method === 'POST'){
+                return next(newReq);
+            }
 
-        if((token) && checkRegexUsers(url) && methodsUsers.includes(method)){
-            return next(newReq);    
-        }
+            newReq.headers.set( 'Content-Type','application/json');
+            
+            if(checkRegex(url) && methodsApps.includes(method)){
+                return next(newReq);
+            }
 
-        if((token) && url.includes('/languages') && method === 'GET'){
-            return next(newReq);    
+            if(checkRegexUsers(url) && methodsUsers.includes(method)){
+                return next(newReq);    
+            }
+
+            if(url.includes('/languages') && method === 'GET'){
+                return next(newReq);    
+            }
         }
 
         return next(request);

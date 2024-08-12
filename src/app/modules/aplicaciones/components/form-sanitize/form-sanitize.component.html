@@ -53,7 +53,7 @@
                     </div>
               </div>
               <div class="flex pt-4 justify-content-end">
-                <p-button label="Siguinte" icon="pi pi-arrow-right" 
+                <p-button label="Siguiente" icon="pi pi-arrow-right" 
                   iconPos="right" (onClick)="nextCallback.emit()"
                   [disabled]="formFiles.controls['action'].errors || 
                     (formFiles.controls['action'].value === 3 && formFiles.controls['language'].value === null)"
@@ -85,7 +85,7 @@
                 <div class="flex pt-4 justify-content-between">
                   <p-button label="Regresar" [outlined]="true" 
                   icon="pi pi-arrow-left" (onClick)="prevCallback.emit()"/>
-                <p-button label="Siguinte" icon="pi pi-arrow-right" iconPos="right" (onClick)="nextCallback.emit()" />
+                <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (onClick)="nextCallback.emit()" />
               </div>
             </ng-template>
           </p-stepperPanel>
@@ -229,4 +229,3 @@
     </div>
   </ng-template>
 </main>
-<p-toast [breakpoints]="{ '920px': { width: '90%', right: '5' } }"/>

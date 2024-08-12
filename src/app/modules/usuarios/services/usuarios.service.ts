@@ -1,16 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
 import { Usuario } from '@modules/shared/interfaces/usuario.interface';
-import { UsersData } from '../interfaces/usuarios.interface';
+import { OriginMethod, UsersData } from '../interfaces/usuarios.interface';
 import { environment } from '../../../../environments/environment';
+import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
+import { NotificationsService } from '@modules/shared/services/notifications.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuariosService {  
   private readonly baseUrl = environment.baseURL;
+  private changes: boolean = false;
   userEditSubject = new BehaviorSubject<Usuario|null>(null);
   userEdit$: Observable<Usuario|null> = this.userEditSubject.asObservable();
 
@@ -18,15 +21,11 @@ export class UsuariosService {
     data: [],
     total: -1 
   }
-  private changes: boolean = false;
-  elementPerPage: number = 5;
 
-  constructor(private http: HttpClient){}
-
-  get token(): string | null {
-    const token = localStorage.getItem('token');
-    return token || null;
-  }
+  constructor(
+    private http: HttpClient,
+    private notificationsService: NotificationsService
+  ){}
 
   clearDataUsers(): void {
     this.allUsers.data = [];
@@ -34,29 +33,29 @@ export class UsuariosService {
   }
 
   getUsuarios(page: number = 1): Observable<UsersData> {
-    if((this.token && this.allUsers.data.length === 0 || this.changes)){
+    if(this.allUsers.data.length === 0 || this.changes){
       return this.http.get<Usuario[]>(`${this.baseUrl}/auth`)
         .pipe(
-          tap((r) => {
-            this.allUsers.data = r;
-            this.allUsers.total = r.length;
+          tap(users => {
+            this.allUsers.data = users;
+            this.allUsers.total = users.length;
             this.changes = false;
           }),
-          map(users =>  this.getUserByPage(users,page))
+          map(users => {
+            return {
+              data: dataPerPage([...users],page) as Usuario[],
+              total: this.allUsers.total
+            }
+          }),
+          catchError(error => this.handleError(error, OriginMethod.GETUSERS))
         )
     }else{
       return of(
-        this.getUserByPage([...this.allUsers.data],page))
-    }
-  }
-
-  private getUserByPage(users: Usuario[], page: number): UsersData {
-    const from = ( page -1 ) * this.elementPerPage;
-    const to = from + this.elementPerPage;
-
-    return {
-      data: users.slice(from, to),
-      total: this.allUsers.total
+        {
+          data: dataPerPage([...this.allUsers.data],page) as Usuario[],
+          total: this.allUsers.total
+        }
+      )
     }
   }
 
@@ -65,42 +64,58 @@ export class UsuariosService {
     this.userEditSubject.next(user ? user : null);
   }
 
-  getUsuarioById(id: number): Observable<Usuario>{
-    if(this.token){
-      return this.userEdit$.pipe(
-        switchMap( user => {        
-          if(user && user.idu_usuario === id){
-            return of(user);
-          }
-          return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`)
-        })
-      );
-    }
-
-    return throwError(() => {});
+  getUsuarioById(id: number): Observable<Usuario> {
+    return this.userEdit$.pipe(
+      switchMap( user => {        
+        if(user && user.idu_usuario === id){
+          return of(user);
+        }
+        return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`)
+      }),
+      catchError(error => this.handleError(error, OriginMethod.GETUSER))
+    );
   }
 
   updateUsuario(originalUser: Usuario,changes: Usuario): Observable<Usuario> {
-    if(this.token){
-      return this.http.patch<Usuario>(`${this.baseUrl}/auth/${originalUser.idu_usuario}`,changes)
-        .pipe(
-          tap(() => this.changes = true),
-          delay(1000)
-        )
-    }
-
-    return throwError(() => {});
+    return this.http.patch<Usuario>(`${this.baseUrl}/auth/${originalUser.idu_usuario}`,changes)
+      .pipe(
+        tap(() => this.changes = true),
+        tap((resp) => {
+          const title = 'Actualización Exitosa';
+          const content = `El usuario ${resp.numero_empleado} - ${resp.nom_usuario} con posición 
+            ${resp.position.nom_puesto} se actualizó correctamente`
+          this.notificationsService.successMessage(title,content);
+        }),
+        delay(1000),
+        catchError(error => this.handleError(error, OriginMethod.UPDATEUSER,originalUser.nom_usuario))
+      );
   }
 
-  deleteUsuario(id: number): Observable<Usuario> {
-    if(this.token){
-      return this.http.delete<Usuario>(`${this.baseUrl}/auth/${id}`)
-        .pipe(
-          tap(() => this.changes = true),
-          delay(2000)
-        )
-    }
+  deleteUsuario(user: Usuario): Observable<Usuario> {
+    return this.http.delete<Usuario>(`${this.baseUrl}/auth/${user.idu_usuario}`)
+      .pipe(
+        tap(() => this.changes = true),
+        tap(() => {
+          const title = 'Usuario eliminado';
+          const content = `El usuario ${user.nom_usuario} se elimino correctamente.`
+          this.notificationsService.successMessage(title,content);
+        }),
+        delay(1000),
+        catchError(error => this.handleError(error, OriginMethod.DELETEUSERS,user.nom_usuario))
+      );
+  }
 
-    return throwError(() => {});
+  handleError(error: Error, origin: OriginMethod, extra?: string | number) {
+    const title = 'Error';
+    
+    const errorsMessages = {
+      DELETEUSERS: `Error al eliminar al usuario ${extra}`,
+      GETUSER: 'Error al cargar información', 
+      GETUSERS: 'Error al obtener los usuarios, intenta de nuevo',
+      UPDATEUSER: `Error al actualizar al usaurio ${extra}`
+    };
+
+    this.notificationsService.errorMessage(title,errorsMessages[origin]);
+    return throwError(() => 'ERROR ERROR ERROR');
   }
 }
