@@ -3,18 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
 import { Usuario } from '@modules/shared/interfaces/usuario.interface';
-import { UsersData } from '../interfaces/usuarios.interface';
+import { OriginMethod, UsersData } from '../interfaces/usuarios.interface';
 import { environment } from '../../../../environments/environment';
-import { token } from '@modules/shared/helpers/getToken';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-
-enum OriginMethod {
-  DELETEUSERS = 'DELETEUSERS',
-  GETUSER = 'GETUSER',
-  GETUSERS = 'GETUSERS',
-  UPDATEUSER = 'UPDATEUSER' 
-}
 
 @Injectable({
   providedIn: 'root'
@@ -41,7 +33,7 @@ export class UsuariosService {
   }
 
   getUsuarios(page: number = 1): Observable<UsersData> {
-    if((token() && this.allUsers.data.length === 0) || (token() && this.changes)){
+    if(this.allUsers.data.length === 0 || this.changes){
       return this.http.get<Usuario[]>(`${this.baseUrl}/auth`)
         .pipe(
           tap(users => {
@@ -73,55 +65,44 @@ export class UsuariosService {
   }
 
   getUsuarioById(id: number): Observable<Usuario> {
-    if(token()){
-      return this.userEdit$.pipe(
-        switchMap( user => {        
-          if(user && user.idu_usuario === id){
-            return of(user);
-          }
-          return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`)
-        }),
-        catchError(error => this.handleError(error, OriginMethod.GETUSER))
-      );
-    }
-
-    return this.handleError(new Error('No Token'),OriginMethod.GETUSER,id);
+    return this.userEdit$.pipe(
+      switchMap( user => {        
+        if(user && user.idu_usuario === id){
+          return of(user);
+        }
+        return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`)
+      }),
+      catchError(error => this.handleError(error, OriginMethod.GETUSER))
+    );
   }
 
   updateUsuario(originalUser: Usuario,changes: Usuario): Observable<Usuario> {
-    if(token()){
-      return this.http.patch<Usuario>(`${this.baseUrl}/auth/${originalUser.idu_usuario}`,changes)
-        .pipe(
-          tap(() => this.changes = true),
-          tap((resp) => {
-            const title = 'Actualización Exitosa';
-            const content = `El usuario ${resp.numero_empleado} - ${resp.nom_usuario} con posición ${resp.position.nom_puesto} se actualizó correctamente`
-            this.notificationsService.successMessage(title,content);
-          }),
-          delay(1000),
-          catchError(error => this.handleError(error, OriginMethod.UPDATEUSER,originalUser.nom_usuario))
-        );
-    }
-
-    return this.handleError(new Error('No Token'),OriginMethod.UPDATEUSER,originalUser.nom_usuario);
+    return this.http.patch<Usuario>(`${this.baseUrl}/auth/${originalUser.idu_usuario}`,changes)
+      .pipe(
+        tap(() => this.changes = true),
+        tap((resp) => {
+          const title = 'Actualización Exitosa';
+          const content = `El usuario ${resp.numero_empleado} - ${resp.nom_usuario} con posición 
+            ${resp.position.nom_puesto} se actualizó correctamente`
+          this.notificationsService.successMessage(title,content);
+        }),
+        delay(1000),
+        catchError(error => this.handleError(error, OriginMethod.UPDATEUSER,originalUser.nom_usuario))
+      );
   }
 
   deleteUsuario(user: Usuario): Observable<Usuario> {
-    if(token()){
-      return this.http.delete<Usuario>(`${this.baseUrl}/auth/${user.idu_usuario}`)
-        .pipe(
-          tap(() => this.changes = true),
-          tap(() => {
-            const title = 'Usuario eliminado';
-            const content = `El usuario ${user.nom_usuario} se elimino correctamente.`
-            this.notificationsService.successMessage(title,content);
-          }),
-          delay(1000),
-          catchError(error => this.handleError(error, OriginMethod.DELETEUSERS,user.nom_usuario))
-        );
-    }
-
-    return this.handleError(new Error('No Token'),OriginMethod.DELETEUSERS,user.nom_usuario);
+    return this.http.delete<Usuario>(`${this.baseUrl}/auth/${user.idu_usuario}`)
+      .pipe(
+        tap(() => this.changes = true),
+        tap(() => {
+          const title = 'Usuario eliminado';
+          const content = `El usuario ${user.nom_usuario} se elimino correctamente.`
+          this.notificationsService.successMessage(title,content);
+        }),
+        delay(1000),
+        catchError(error => this.handleError(error, OriginMethod.DELETEUSERS,user.nom_usuario))
+      );
   }
 
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
