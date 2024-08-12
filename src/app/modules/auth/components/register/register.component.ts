@@ -61,13 +61,15 @@ export class RegisterComponent {
       return;
     }
 
-    this.authService.register(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
+    this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
       .subscribe({
         next: () => {
           this.errorMessage = '';
-          this.router.navigate(['/apps/list-apps']);
+          setTimeout(() => {
+            this.router.navigate(['/apps/list-apps']);            
+          }, 3000);
         },
-        error: (error: Error) => {
+        error: (error : Error) => {
           this.errorMessage = error.message;
         }
       });

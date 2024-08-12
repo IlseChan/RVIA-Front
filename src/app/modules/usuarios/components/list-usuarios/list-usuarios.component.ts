@@ -78,9 +78,8 @@ export class ListUsuariosComponent implements OnInit {
   }
 
   onDeleteUsuario(user: Usuario): void{
-    if(this.isDeleting) return;
-    if(user.idu_usuario === this.userLogged?.idu_usuario) return;
-    
+    if(this.isDeleting || user.idu_usuario === this.userLogged?.idu_usuario) return;
+
     this.isDeleting = true; 
     this.idToDelete  = user.numero_empleado;
   
