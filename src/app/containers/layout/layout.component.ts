@@ -44,7 +44,7 @@ export class LayoutComponent {
   }
 
   logout(): void {
-    this.authService.onLogout();
+    this.authService.logoutUser();
     this.router.navigate(['/auth/login']);
   }
 }

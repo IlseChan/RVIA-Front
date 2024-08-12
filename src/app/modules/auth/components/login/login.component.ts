@@ -28,8 +28,8 @@ export class LoginComponent {
     const trimmedUsernumber = this.usernumber.trim();
     const trimmedPassword = this.password.trim();
 
-    this.authService.onLogin(trimmedUsernumber, trimmedPassword).subscribe({
-      next: (resp) => {
+    this.authService.loginUser(trimmedUsernumber, trimmedPassword).subscribe({
+      next: () => {
         this.errorMessage = ''; 
         this.router.navigate(['/apps/list-apps']);  
       },
