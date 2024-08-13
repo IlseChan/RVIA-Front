@@ -7,6 +7,12 @@ export enum StatusApps {
     REFUSED  = 4,
 }
 
+export enum NumberAction {
+    UPDATECODE   = 1,
+    SANITIZECODE = 2,
+    MIGRATION    = 3,
+}
+
 export interface OpcsStatus {
     firstValue: number;
     newStatus:  number;
@@ -16,6 +22,8 @@ export interface Aplication {
     applicationstatus: Applicationstatus;
     idu_aplicacion:    number;
     nom_aplicacion:    string;
+    num_accion:        number;
+    opc_lenguaje:      number | null;
     sourcecode:        Sourcecode;
     user:              Usuario;
 }
@@ -51,9 +59,24 @@ export interface Language{
 }
 
 export enum OriginMethod {
-    GETAPPS = 'GETAPPS',
-    GETDOWNLOAD = 'GETDOWNLOAD',
+    GETAPPS      = 'GETAPPS',
+    GETCSVAPP    = 'GETCSVAPP', 
+    GETDOWNLOAD  = 'GETDOWNLOAD',
     GETLANGUAGES = 'GETLANGUAGES',
+    POSTSAVECSV  = 'POSTSAVECSV', 
     POSTSAVEFILE = 'POSTSAVEFILE',
     UPDATESTATUS = 'UPDATESTATUS', 
+}
+
+export interface FormCSV {
+    csvFile: File
+}
+
+export interface CheckmarxCSV {
+    idu_checkmarx:  number;
+    nom_checkmarx:  string;
+    nom_directorio: string;
+} 
+export interface ResponseSaveCSV extends CheckmarxCSV {
+    application: Aplication;
 }
