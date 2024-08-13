@@ -77,9 +77,15 @@
                                 />
                             </td>
                          </ng-template>
+                        <td>
+                            <p-tag 
+                                styleClass="text-sm" 
+                                [severity]="app.num_accion | statusAppLabel" 
+                                [value]="app.num_accion | actionApp"
+                            />
+                        </td>
                         <td *ngIf="user!.position.nom_puesto !== Nom_Puestos.INVITADO">
-                            <a 
-                                *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
+                            <a  *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
                                 pTooltip="Descargar ZIP" 
                                 tooltipPosition="top"
                                 tooltipStyleClass="text-sm" 
@@ -87,9 +93,17 @@
                                 (click)="onDownloadFile(app)">
                                 <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
                             </a>
+                            <a  *ngIf="app.num_accion === NumberAction.SANITIZECODE &&
+                                    user!.position.nom_puesto !== Nom_Puestos.USUARIO"
+                                pTooltip="Subir CSV" 
+                                tooltipPosition="top"
+                                tooltipStyleClass="text-sm"
+                                class="c-pointer icon-up mx-2"
+                                (click)="showFormUploadCSV(app)">
+                                <i class="pi pi-file-arrow-up" style="font-size: 1.6rem"></i>
+                            </a>
                             <ng-template #empty>
-                                <a 
-                                    pTooltip="Descarga no disponible" 
+                                <a  pTooltip="Descarga no disponible" 
                                     tooltipPosition="top"
                                     tooltipStyleClass="text-sm" 
                                     class="icon-disable">

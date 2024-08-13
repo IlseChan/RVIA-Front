@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Aplication, AplicationsData, FormProjectWithPDF, Language, OriginMethod } from '../interfaces/aplicaciones.interfaces';
+import { Aplication, AplicationsData, CheckmarxCSV, FormCSV, FormProjectWithPDF, Language, OriginMethod, ResponseSaveCSV } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
@@ -13,6 +13,9 @@ import { NotificationsService } from '@modules/shared/services/notifications.ser
 export class AplicacionesService {
   private readonly baseUrl = environment.baseURL;
   private changes: boolean = false;
+
+  appCSVSubject = new BehaviorSubject<Aplication | null>(null);
+  appCSV$: Observable<Aplication | null> = this.appCSVSubject.asObservable();
 
   allApps: AplicationsData = {
     data: [],
@@ -91,7 +94,7 @@ export class AplicacionesService {
           tap(() => this.changes = true),
           tap((resp) => {
             const title = 'Aplicativo guardado';
-            const content = `¡El aplicativo ${resp.nom_aplicacion} se a subido con éxito!`
+            const content = `¡El aplicativo ${resp.nom_aplicacion} se ha subido con éxito!`
             this.notificationsService.successMessage(title,content);
           }),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
@@ -107,7 +110,7 @@ export class AplicacionesService {
           tap(() => this.changes = true),
           tap((resp) => {
             const title = 'Aplicativo guardado';
-            const content = `¡El aplicativo ${resp.nom_aplicacion} se a subido con éxito!`
+            const content = `¡El aplicativo ${resp.nom_aplicacion} se ha subido con éxito!`
             this.notificationsService.successMessage(title,content);
           }),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
@@ -117,6 +120,29 @@ export class AplicacionesService {
     return this.handleError(new Error('Error load new app'), OriginMethod.POSTSAVEFILE);
   }
 
+  saveCSVFile(form: FormCSV, app: Aplication): Observable<ResponseSaveCSV> {
+    
+    const formData = new FormData();
+    formData.append('idu_aplicacion',app.idu_aplicacion.toString());
+    formData.append('file',form.csvFile);
+    
+    return this.http.post<ResponseSaveCSV>(`${this.baseUrl}/checkmarx`,formData)
+    .pipe(
+      tap(() => {
+        const title = 'Archivo CSV guardado';
+        const content = `¡El archivo .CSV del aplicativo ${app.nom_aplicacion} se ha subido con éxito!`
+        this.notificationsService.successMessage(title,content);
+      }),
+      catchError(error => this.handleError(error, OriginMethod.POSTSAVECSV))
+    );
+  }
+
+  getCSVAplication(id: number): Observable<CheckmarxCSV> {
+    return this.http.get<CheckmarxCSV>(`${this.baseUrl}/checkmarx/${id}`)
+    .pipe(
+      catchError(error => this.handleError(error, OriginMethod.GETCSVAPP))
+    );
+  }
 
   getLanguages(): Observable<Language[]> {
     return this.http.get<Language[]>(`${this.baseUrl}/languages`)
@@ -138,10 +164,12 @@ export class AplicacionesService {
     
     const errorsMessages = {
       GETAPPS: 'Error al cargar información', 
+      GETCSVAPP: 'Error al cargar información del CSV',
       GETDOWNLOAD: 'Error al descargar el zip',
       GETLANGUAGES: 'Ha ocurrido un error al cargar información. Intentalo de nuevo.',
-      POSTSAVEFILE: `Ocurio un error al guardar el aplicativo.`,
-      UPDATESTATUS: `¡El estado de la aplicacion ${extra} no se pudo actualizar!`
+      POSTSAVECSV: `Ocurió un error al guardar el archivo CSV. Inténtalo de nuevo`,
+      POSTSAVEFILE: `Ocurió un error al guardar el aplicativo. Inténtalo de nuevo`,
+      UPDATESTATUS: `¡El estado de la aplicación ${extra} no se pudo actualizar!`
     };
 
     this.notificationsService.errorMessage(title,errorsMessages[origin]);
