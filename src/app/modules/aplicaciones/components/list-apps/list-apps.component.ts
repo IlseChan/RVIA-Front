@@ -12,14 +12,17 @@ import { ConfirmationService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 import { TagModule } from 'primeng/tag';
+import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
 
-import { Aplication, StatusApps } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { Aplication, NumberAction, StatusApps } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
-import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
+import { Nom_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label.pipe';
+import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
+import { FormCsvComponent } from '../form-csv/form-csv.component';
 
 @Component({
   selector: 'list-apps',
@@ -27,23 +30,25 @@ import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label
   imports: [ButtonModule, TableModule, CommonModule, 
     PaginatorModule, StatusAppPipe,RouterLink,
     DropdownModule,ConfirmDialogModule,ProgressSpinnerModule,
-    TooltipModule,TagModule, StatusAppLabelPipe],
+    TooltipModule,TagModule, StatusAppLabelPipe,ActionAppPipe,
+    DynamicDialogModule ],
   templateUrl: './list-apps.component.html',
   styleUrl: './list-apps.component.scss',
-  providers: [ConfirmationService],
+  providers: [ConfirmationService, DialogService],
 })
 export class ListAppsComponent implements OnInit, OnDestroy {
   user!: Usuario | null;
   aplications: Aplication[] = [];
   
-  Nom_Puestos = Nom_Puesto;
+  Nom_Rols = Nom_Rol;
   StatusApps  = StatusApps;
+  NumberAction = NumberAction;
 
   currentPage:    number = 1;
   totalItems:     number = 0;
   elementPerPage: number = elementPerPage;
 
-  colums: string[] = ['ID','Nombre','Estatus'];
+  colums: string[] = ['ID','Nombre','Estatus','Proceso'];
 
   statusOpcs = [
     { name: 'En proceso', code : 1 },
@@ -57,11 +62,14 @@ export class ListAppsComponent implements OnInit, OnDestroy {
 
   downloadSub!: Subscription;
   isDownload: boolean = false;
-  
+
+  ref: DynamicDialogRef | undefined;
+
   constructor(
     private aplicacionService: AplicacionesService,
     private authService: AuthService,
     private confirmationService: ConfirmationService,
+    private dialogService: DialogService
   ){}
   
   ngOnInit(): void {
@@ -71,10 +79,10 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   }
 
   setColumns():void {
-    if(this.user && this.user.position.nom_puesto !== Nom_Puesto.INVITADO){
+    if(this.user && this.user.position.nom_rol !== Nom_Rol.INVITADO){
       this.colums.push('Acciones');
 
-      if(this.user.position.nom_puesto !== Nom_Puesto.USUARIO){
+      if(this.user.position.nom_rol !== Nom_Rol.USUARIO){
         this.colums.splice(2,0,'Usuario');
       }
     }
@@ -193,7 +201,22 @@ export class ListAppsComponent implements OnInit, OnDestroy {
       });
   }
 
+  showFormUploadCSV(app: Aplication) {
+    this.aplicacionService.appCSVSubject.next(app);
+    this.ref = this.dialogService.open(FormCsvComponent, {
+        header: 'Upload CSV',
+        width: '50vw',
+        contentStyle: { overflow: 'auto' },
+        breakpoints: {
+            '960px': '75vw',
+            '640px': '90vw'
+        },
+        maximizable: false,
+    });
+  }
+
   ngOnDestroy(): void {
     if(this.downloadSub) this.downloadSub.unsubscribe();
+    if(this.ref) this.ref.close();
   }
 }

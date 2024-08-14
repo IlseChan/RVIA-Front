@@ -4,7 +4,7 @@
             Lista de Aplicaciones
         </h1>
         <a
-            *ngIf="user!.position.nom_puesto !== Nom_Puestos.INVITADO"
+            *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO"
             pRipple 
             routerLink="/apps/new-app"
             pTooltip="Subir una aplicación" 
@@ -40,12 +40,12 @@
                     <tr [ngClass]="{'change': isChangeStatus }" >
                         <td>{{ app.idu_aplicacion }}</td>
                         <td>{{ app.nom_aplicacion }}</td>
-                        <td *ngIf="user!.position.nom_puesto !== Nom_Puestos.INVITADO && 
-                                   user!.position.nom_puesto !== Nom_Puestos.USUARIO">
+                        <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO && 
+                                   user!.position.nom_rol !== Nom_Rols.USUARIO">
                             {{ app.user.nom_usuario }}
                         </td>
-                        <td *ngIf="user!.position.nom_puesto === Nom_Puestos.AUTORIZADOR || 
-                                   user!.position.nom_puesto === Nom_Puestos.ADMINISTRADOR; 
+                        <td *ngIf="user!.position.nom_rol === Nom_Rols.AUTORIZADOR || 
+                                   user!.position.nom_rol === Nom_Rols.ADMINISTRADOR; 
                             else authStatus">
                             <p-dropdown
                                 [id]="app.idu_aplicacion + 'selectInputFin'"
@@ -77,9 +77,15 @@
                                 />
                             </td>
                          </ng-template>
-                        <td *ngIf="user!.position.nom_puesto !== Nom_Puestos.INVITADO">
-                            <a 
-                                *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
+                        <td>
+                            <p-tag 
+                                styleClass="text-sm" 
+                                [severity]="app.num_accion | statusAppLabel" 
+                                [value]="app.num_accion | actionApp"
+                            />
+                        </td>
+                        <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
+                            <a  *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
                                 pTooltip="Descargar ZIP" 
                                 tooltipPosition="top"
                                 tooltipStyleClass="text-sm" 
@@ -87,9 +93,17 @@
                                 (click)="onDownloadFile(app)">
                                 <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
                             </a>
+                            <a  *ngIf="app.num_accion === NumberAction.SANITIZECODE &&
+                                    user!.position.nom_rol !== Nom_Rols.USUARIO"
+                                pTooltip="Subir CSV" 
+                                tooltipPosition="top"
+                                tooltipStyleClass="text-sm"
+                                class="c-pointer icon-up mx-2"
+                                (click)="showFormUploadCSV(app)">
+                                <i class="pi pi-file-arrow-up" style="font-size: 1.6rem"></i>
+                            </a>
                             <ng-template #empty>
-                                <a 
-                                    pTooltip="Descarga no disponible" 
+                                <a  pTooltip="Descarga no disponible" 
                                     tooltipPosition="top"
                                     tooltipStyleClass="text-sm" 
                                     class="icon-disable">

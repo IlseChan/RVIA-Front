@@ -8,6 +8,12 @@ const checkRegex = (url: string): boolean => {
     return regexApps.test(url);
 }
 
+const regexCheckmarx = /\/checkmarx|\/checkmarx\/\d+/;
+const methodsCheck = ['GET','POST'];
+const checkRegexCheck = (url: string): boolean => {
+    return regexCheckmarx.test(url);
+}
+
 const regexUsers = /\/auth\/\d+|\/auth/;
 const methodsUsers = ['GET','PATCH','DELETE'];
 const checkRegexUsers = (url: string): boolean => {
@@ -47,6 +53,11 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
 
             if(url.includes('applications/files') && method === 'POST'){
                 return next(newReq);
+            }
+
+            
+            if(checkRegexCheck(url) && methodsCheck.includes(method)){
+                return next(newReq);    
             }
 
             newReq.headers.set( 'Content-Type','application/json');

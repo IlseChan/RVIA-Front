@@ -25,7 +25,7 @@
                     <tr [ngClass]="{'deleting': isDeleting && user.numero_empleado === idToDelete}">
                         <td>{{ user.numero_empleado }}</td>
                         <td>{{ user.nom_usuario }}</td>
-                        <td>{{ user.position.nom_puesto }}</td>
+                        <td>{{ user.position.nom_rol }}</td>
                         <td>
                             <a  pTooltip="Editar usuario" 
                                 tooltipPosition="left"  

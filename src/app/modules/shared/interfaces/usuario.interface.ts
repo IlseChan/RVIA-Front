@@ -1,11 +1,11 @@
-export enum Nom_Puesto {
+export enum Nom_Rol {
     ADMINISTRADOR = 'Administrador',  
     AUTORIZADOR   = 'Autorizador',
     INVITADO      = 'Invitado',
     USUARIO       = 'Usuario',
 }
 
-export enum Idu_Puesto {
+export enum Idu_Rol {
     ADMINISTRADOR = 1,
     AUTORIZADOR   = 2,
     USUARIO       = 3,
@@ -23,6 +23,6 @@ export interface Usuario {
 }
 
 export interface Position {
-    idu_puesto: Idu_Puesto;
-    nom_puesto: Nom_Puesto
+    idu_rol: Idu_Rol;
+    nom_rol: Nom_Rol
 }

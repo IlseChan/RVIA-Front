@@ -10,7 +10,7 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
-import { Idu_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
+import { Idu_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { InitalValuesFormEdits } from '@modules/usuarios/interfaces/usuarios.interface';
 
 @Component({
@@ -25,15 +25,15 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   userForm!:  FormGroup;
   initalValues: InitalValuesFormEdits = {
     nom_usuario: '',
-    idu_puesto: Idu_Puesto.INVITADO
+    idu_rol: Idu_Rol.INVITADO
   };
   
   isLoading: boolean = true;
   typesUsers = [
-    { idu_usuario: 1, nom_puesto: 'Administrador' },
-    { idu_usuario: 2, nom_puesto: 'Autorizador' },
-    { idu_usuario: 3, nom_puesto: 'Usuario' },
-    { idu_usuario: 4, nom_puesto: 'Invitado' },
+    { idu_usuario: 1, nom_rol: 'Administrador' },
+    { idu_usuario: 2, nom_rol: 'Autorizador' },
+    { idu_usuario: 3, nom_rol: 'Usuario' },
+    { idu_usuario: 4, nom_rol: 'Invitado' },
   ];
 
   userSub!: Subscription;
@@ -70,7 +70,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   initForm(user: Usuario): void {
     this.userForm = new FormGroup({
       nom_usuario: new FormControl<string>(user.nom_usuario,[Validators.required, Validators.minLength(3)]),
-      idu_puesto: new FormControl<Idu_Puesto>(user.position.idu_puesto,[Validators.required])
+      idu_rol: new FormControl<Idu_Rol>(user.position.idu_rol,[Validators.required])
     });
   
     this.initalValues = this.userForm.value;
