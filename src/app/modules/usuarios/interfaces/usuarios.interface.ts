@@ -1,4 +1,4 @@
-import { Idu_Puesto, Usuario } from "@modules/shared/interfaces/usuario.interface";
+import { Idu_Rol, Usuario } from "@modules/shared/interfaces/usuario.interface";
 
 export interface UsersData {
     data:  Usuario[];
@@ -6,13 +6,13 @@ export interface UsersData {
 }
 
 export interface InitalValuesFormEdits {
-    idu_puesto:  Idu_Puesto;
+    idu_rol:     Idu_Rol;
     nom_usuario: string;
 }
 
 export enum OriginMethod {
     DELETEUSERS = 'DELETEUSERS',
-    GETUSER = 'GETUSER',
-    GETUSERS = 'GETUSERS',
-    UPDATEUSER = 'UPDATEUSER' 
+    GETUSER     = 'GETUSER',
+    GETUSERS    = 'GETUSERS',
+    UPDATEUSER  = 'UPDATEUSER' 
 }

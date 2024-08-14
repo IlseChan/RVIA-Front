@@ -18,7 +18,7 @@ import { Aplication, NumberAction, StatusApps } from '@modules/aplicaciones/inte
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
-import { Nom_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
+import { Nom_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label.pipe';
 import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
@@ -40,7 +40,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   user!: Usuario | null;
   aplications: Aplication[] = [];
   
-  Nom_Puestos = Nom_Puesto;
+  Nom_Rols = Nom_Rol;
   StatusApps  = StatusApps;
   NumberAction = NumberAction;
 
@@ -79,10 +79,10 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   }
 
   setColumns():void {
-    if(this.user && this.user.position.nom_puesto !== Nom_Puesto.INVITADO){
+    if(this.user && this.user.position.nom_rol !== Nom_Rol.INVITADO){
       this.colums.push('Acciones');
 
-      if(this.user.position.nom_puesto !== Nom_Puesto.USUARIO){
+      if(this.user.position.nom_rol !== Nom_Rol.USUARIO){
         this.colums.splice(2,0,'Usuario');
       }
     }

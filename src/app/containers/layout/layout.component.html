@@ -6,7 +6,7 @@
     <div class="user-info flex align-items-center">
       <span class="white-space-nowrap ml-2">{{ userLogged?.nom_usuario }}</span>
       <span class="separator ml-2 text-white">|</span>
-      <span class="userposition white-space-nowrap font-italic ml-2">{{ userLogged?.position?.nom_puesto }}</span>
+      <span class="userposition white-space-nowrap font-italic ml-2">{{ userLogged?.position?.nom_rol }}</span>
     </div>
   </nav>
   <nav class="sidebar fixed flex flex-column h-full text-white justify-content-between" [ngClass]="{'active': sidebarActive}">

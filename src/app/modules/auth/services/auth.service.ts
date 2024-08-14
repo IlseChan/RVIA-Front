@@ -5,7 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
-import { Idu_Puesto, Usuario } from '@modules/shared/interfaces/usuario.interface';
+import { Idu_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
 
 @Injectable({
@@ -27,12 +27,12 @@ export class AuthService {
   }
 
   registerUser(numero_empleado: string, nom_usuario: string, nom_contrasena: string, nom_correo: string): Observable<Usuario> {
-    const idu_puesto = Idu_Puesto.INVITADO; 
+    const idu_rol = Idu_Rol.INVITADO; 
     return this.http.post<Usuario>(`${this.baseUrl}/auth/register`, {
       numero_empleado,
       nom_usuario,
       nom_contrasena,
-      idu_puesto,
+      idu_rol,
       nom_correo
     })
     .pipe( 
@@ -43,7 +43,7 @@ export class AuthService {
       }),
       tap(user => {
         const title = 'Registro exitoso';
-        const content = `¡Se ha registrado exitosamente el usuario ${user.numero_empleado}¡ Será redirigido en un momento`
+        const content = `¡Se ha registrado exitosamente el usuario ${user.numero_empleado}!  Será redirigido en un momento`
         this.notificationsService.successMessage(title,content);
       }),
       catchError(this.handleError)
