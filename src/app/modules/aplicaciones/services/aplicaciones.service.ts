@@ -105,7 +105,16 @@ export class AplicacionesService {
       formData.append('url',form.urlGit);
       if(form.pdfFile) formData.append('file',form.pdfFile);
 
-      return this.http.post<Aplication>(`${this.baseUrl}/applications/git`,formData)
+      let endPoint: string;
+      if(form.urlGit.includes('github.com')){
+        endPoint = 'git';
+      }else if(form.urlGit.includes('gitlab.com')){
+        endPoint = 'gitlab';
+      }else{
+        return this.handleError(new Error('Error url'), OriginMethod.POSTSAVEFILE);
+      }
+
+      return this.http.post<Aplication>(`${this.baseUrl}/applications/${endPoint}`,formData)
         .pipe(
           tap(() => this.changes = true),
           tap((resp) => {
