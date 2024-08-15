@@ -59,13 +59,15 @@ export interface Language{
 }
 
 export enum OriginMethod {
-    GETAPPS      = 'GETAPPS',
-    GETCSVAPP    = 'GETCSVAPP', 
-    GETDOWNLOAD  = 'GETDOWNLOAD',
-    GETLANGUAGES = 'GETLANGUAGES',
-    POSTSAVECSV  = 'POSTSAVECSV', 
-    POSTSAVEFILE = 'POSTSAVEFILE',
-    UPDATESTATUS = 'UPDATESTATUS', 
+    GETAPPS         = 'GETAPPS',
+    GETCSVAPP       = 'GETCSVAPP', 
+    GETDOWNLOAD     = 'GETDOWNLOAD',
+    GETDOWNLOADCSV  = 'GETDOWNLOADCSV',
+    GETLANGUAGES    = 'GETLANGUAGES',
+    POSTMAKECSV     = 'POSTMAKECSV', 
+    POSTSAVECSV     = 'POSTSAVECSV', 
+    POSTSAVEFILE    = 'POSTSAVEFILE',
+    UPDATESTATUS    = 'UPDATESTATUS', 
 }
 
 export interface FormCSV {
@@ -77,6 +79,17 @@ export interface CheckmarxCSV {
     nom_checkmarx:  string;
     nom_directorio: string;
 } 
-export interface ResponseSaveCSV extends CheckmarxCSV {
+
+export interface ResponseSaveFile extends CheckmarxCSV {
     application: Aplication;
+}
+
+export interface AppsSanitizadasSelect {
+    value: number;
+    name:  string;
+}
+
+export interface FormPDFtoCSV {
+    appId:   number;
+    pdfFile: File;
 }

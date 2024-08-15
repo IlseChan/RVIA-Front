@@ -1,69 +1,77 @@
 import { NgIf } from '@angular/common';
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { Subscription } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { DividerModule } from 'primeng/divider';
+import { DropdownModule } from 'primeng/dropdown';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
+
+import { Aplication, AppsSanitizadasSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-pdf-to-csv-form',
   standalone: true,
   imports: [DividerModule, InputGroupModule,InputGroupAddonModule,
-    ButtonModule, NgIf, InputTextModule, ReactiveFormsModule
+    ButtonModule, NgIf, InputTextModule, ReactiveFormsModule,
+    DropdownModule,FormsModule,ProgressSpinnerModule
   ],
   templateUrl: './pdf-to-csv-form.component.html',
   styleUrl: './pdf-to-csv-form.component.scss'
 })
-export class PdfToCsvFormComponent implements OnInit{
+export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   @ViewChild('pdfFile', { static: false }) pdfInput !: ElementRef;
 
   formFile!: FormGroup;
   isLoading: boolean = false;
   isUploadFile: boolean = false;
   sizeFile: number = 0;
+  isLoadingData: boolean = true;
+  
+  showDownOpc: boolean = false;
+  infoDownloadFile: {name: string, id: number} = {name: '',id: -1};
+  isDownload: boolean = false;
+  downloadSub!: Subscription;
+
+  apps: Aplication[] = [];
+  appsOpcs: AppsSanitizadasSelect[] = [];
+  appsSub!: Subscription;
 
   constructor(
     private aplicacionesService: AplicacionesService, 
   ){}
 
   ngOnInit(): void {
-    this.initForm();
-
+    this.appsSub = this.aplicacionesService.getSanitationApps()
+      .subscribe((resp) => {        
+        if(resp){
+          this.appsOpcs = resp;
+          this.initForm();
+          this.isLoadingData = false;
+        }
+      });
   }
 
   private initForm(): void {
     this.formFile = new FormGroup({
+      appId: new FormControl(null,[Validators.required]),
       pdfFile: new FormControl(null,[Validators.required, this.fileValidation as ValidatorFn]),
     });
   }
 
   private fileValidation(control: FormControl): ValidationErrors | null {
-      console.log(control);
-            
-      // if(file){
-      //   const fileType = file.type;
-        
-      //   if(fileType === ''){
-      //     const elemts = file.name.split('.');
-      //     const ext = elemts[elemts.length -1];
+    const file = control.value;
+      if(file){
+        const fileType = file.type;
+        const types = ['application/pdf'];
 
-      //     return ext === '7z' ? null : { invalidType7z: true } 
-      //   }
-
-      //   if(type === 'zip'){
-      //     const types = ['application/zip','application/x-zip-compressed'];
-      //     return types.includes(fileType) ? null : { invalidTypeZip: true } 
-      //   }
-        
-      //   if(type === 'pdf'){
-      //     const types = ['application/pdf'];
-      //     return types.includes(fileType) ? null : { invalidTypePdf: true }
-      //   }
-      // }
+        return types.includes(fileType) ? null : { invalidTypePdf: true }
+      }
       return null;
   }
 
@@ -77,7 +85,7 @@ export class PdfToCsvFormComponent implements OnInit{
     if(file){
       setTimeout(() => {
         this.formFile.patchValue({
-          csvFile: file
+          pdfFile: file
         });
         this.sizeFile = file.size / (1024 * 1024);
         this.isLoading = false;
@@ -101,20 +109,51 @@ export class PdfToCsvFormComponent implements OnInit{
     if(this.isUploadFile) return;
     this.isUploadFile = true;
 
-    // this.aplicacionesService.
-    // .subscribe({
-    //   next: () => {
-    //     // setTimeout(()=> {
-    //     //   this.ref.close();
-    //     //   this.aplicacionService.appCSVSubject.next(null);
-    //     // },1500)
-    //   },
-    //   error: () => {              
-    //     // setTimeout(() => {
-    //     //   this.isUploadFile = false
-    //     // },3200);
-    //   }
-    // });
+    this.aplicacionesService.makeCSVFile(this.formFile.value)
+    .subscribe({
+      next: (resp) => {
+        this.showDownOpc = true;
+        this.infoDownloadFile.id = resp.idu_checkmarx ;
+        this.infoDownloadFile.name = resp.nom_checkmarx; 
+      },
+      error: () => {              
+        setTimeout(() => {
+          this.isUploadFile = false
+        },3200);
+      }
+    });
   }
 
+  onDownloadFile(): void {
+    if(this.isDownload) return;
+    this.isDownload = true;
+    this.downloadSub = this.aplicacionesService.downloadCSVFile(this.infoDownloadFile.id)  
+      .subscribe( {
+        next: (blob) => {
+          const url = window.URL.createObjectURL(blob);
+          const anchor = document.createElement('a');
+          anchor.href = url;
+          anchor.download = `${this.infoDownloadFile.name}`;
+          document.body.appendChild(anchor);
+          anchor.click();
+          document.body.removeChild(anchor);
+          window.URL.revokeObjectURL(url);
+        },
+        error: () => {
+          this.isDownload = false;
+        }
+      });
+  }
+
+  reset(): void {
+    this.cancel();
+    this.showDownOpc = false;
+    this.infoDownloadFile = {name: '',id: -1};
+    this.isDownload = false;
+  }
+
+  ngOnDestroy(): void {
+   if(this.appsSub) this.appsSub.unsubscribe();
+   if(this.downloadSub) this.downloadSub.unsubscribe();
+  }
 }
