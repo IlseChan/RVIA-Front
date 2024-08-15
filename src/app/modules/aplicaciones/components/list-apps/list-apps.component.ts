@@ -204,7 +204,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   showFormUploadCSV(app: Aplication) {
     this.aplicacionService.appCSVSubject.next(app);
     this.ref = this.dialogService.open(FormCsvComponent, {
-        header: 'Upload CSV',
+        header: 'Subir archivo .csv',
         width: '50vw',
         contentStyle: { overflow: 'auto' },
         breakpoints: {

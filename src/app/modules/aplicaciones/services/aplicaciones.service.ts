@@ -161,7 +161,7 @@ export class AplicacionesService {
 
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
     const title = 'Error';
-    
+    console.log(error)
     const errorsMessages = {
       GETAPPS: 'Error al cargar información', 
       GETCSVAPP: 'Error al cargar información del CSV',
