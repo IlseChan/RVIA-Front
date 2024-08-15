@@ -1,0 +1,110 @@
+<main class="m-2">
+    <section class="flex flex-column mb-4 pb-2 border-title">
+        <h1 class="text-5xl my-0">Recovery PDF</h1> 
+    </section>
+    <section class="text-justify vertical-align-middle mb-4">
+        <p class="m-0">
+            <b>Recovery PDF</b> es una herramienta para convertir tu archivo de vulnerabilidades de Checkmarx <b>.pdf</b> a
+            un archivo <b>.csv</b> el cual es válido para el uso de <b>RVIA</b>.
+        </p>
+        <p>
+            Este archivo generado se podrá subir en las acciones de la tabla de aplicaciones 
+            <span class="icon-up"><i class="pi pi-file-arrow-up" style="font-size: 1.2rem"></i></span>.
+        </p>
+        <p> Además, se guardará dentro del registro de tu aplicación a sanitizar.</p>
+    </section>
+    
+    <div *ngIf="isLoadingData" class="card flex justify-content-center my-6">
+        <p-progressSpinner ariaLabel="loading" />
+    </div>
+    
+    <div *ngIf="!isLoadingData && !showDownOpc"> 
+        <form [formGroup]="formFile" (ngSubmit)="onSubmit()">
+            <section class="flex flex-column align-items-center mb-3">
+                <p>Selecciona la aplicación de tu pdf:</p>
+                <p-dropdown
+                    id="select-apps"
+                    formControlName="appId"
+                    optionLabel="name"
+                    [options]="appsOpcs"
+                    optionValue="value"
+                    placeholder="Selecciona una app"
+                />
+                <span *ngIf="formFile.controls['appId'].errors && formFile.controls['appId'].touched"
+                    class="font-italic text-red-500 mt-2">
+                        Debes seleccionar una aplicación.
+                </span>
+            </section>
+            <section *ngIf="formFile.controls['appId'].value !== null" class="flex flex-column justify-content-center mb-4">
+                <p class="mt-0 text-center">Selecciona el archivo <b>.pdf</b> de vulnerabilidades a convertir:</p>
+                <div class="flex-auto flex flex-column justify-content-center align-items-center"> 
+                    <p-inputGroup class="mx-auto w-3">
+                        <button 
+                            type="button" pButton 
+                            label="Buscar" 
+                            (click)="openSearch()">
+                        </button>
+                        <input type="text" pInputText 
+                            id="inputNamePDF-CSV"
+                            placeholder="Selecciona tu archivo" 
+                            disabled="true" readonly
+                            [value]="formFile.controls['pdfFile'].value?.name ?? ''"
+                        />
+                    </p-inputGroup>
+                    <span *ngIf="isLoading" class="mt-2 font-italic text-500">Cargando ...</span>
+                    <span *ngIf="!formFile.controls['pdfFile'].errors && formFile.controls['pdfFile'].value && !isLoading" 
+                        class="mt-2 text-500">
+                        Tamaño: {{ sizeFile.toFixed(2)}} MB 
+                    </span>
+                    <span *ngIf="formFile.controls['pdfFile'].errors?.['invalidTypePdf']"
+                        class="mt-3 font-italic text-red-500">
+                        Error al cargar el archivo, extensiones válidas <b>.pdf</b>
+                    </span>
+                    <input id="input-pdf-csv" type="file" #pdfFile accept=".pdf" (change)="onFileSelected($event)" style="display: none;">
+                </div>
+                <div *ngIf="!formFile.controls['pdfFile'].errors && formFile.controls['pdfFile'].value && !isLoading" 
+                    class="flex justify-content-center gap-6 mt-6">
+                    <p-button 
+                        label="Cancelar" 
+                        [link]="true"
+                        (onClick)="cancel()"
+                    />
+                    <p-button 
+                        [label]="isUploadFile ? 'Conviertiendo...' : 'Convertir'" 
+                        [loading]="isUploadFile" 
+                        severity="success" 
+                        icon="pi pi-upload" 
+                        iconPos="right"
+                        type="submit"
+                    />
+                </div>
+            </section>
+        </form>
+    </div>
+
+    <div *ngIf="showDownOpc" class="flex flex-column justify-content-center align-content-center">
+        <p class="mx-auto my-0 text-5xl">¡Listo!</p>
+        <span class="mx-auto my-4">
+            <i class="pi pi-file-arrow-up text-7xl"></i>
+        </span>
+        <p class="mx-auto">
+            ¡Se ha generado el archivo <b>{{ infoDownloadFile.name }}</b>, se ha guardado y ya puedes descargarlo!
+        </p>
+        <div class="flex flex-column justify-content-center align-items-center">
+            <p-button 
+                [label]="isDownload ? 'Descargando...' : 'Descargar'" 
+                icon="pi pi-download"
+                iconPos="right" 
+                severity="success" 
+                type="submit"
+                [loading]="isDownload"
+                (onClick)="onDownloadFile()"
+            />
+            <p-button 
+                label="Limpiar" 
+                [link]="true"
+                (onClick)="reset()"
+            />
+        </div>
+    </div>
+</main>

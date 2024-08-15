@@ -36,7 +36,7 @@ export class FormSanitizeComponent implements OnInit {
 
   radioOps = [
     { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
-    { value: 'git', image: 'gitlab.webp', tooltip: 'URL de Git Lab'}
+    { value: 'git', image: 'gitlab.webp', tooltip: 'URL de Gitlab o Github'}
   ];
 
   actionsOps = [
@@ -112,7 +112,7 @@ export class FormSanitizeComponent implements OnInit {
   } 
  
   isValidGitlabUrl(control: FormControl): ValidationErrors | null {
-    const regex = /^(https:\/\/|http:\/\/)?(www\.)?github\.com\/[\w\-]+\/[\w\-]+\.git$/;
+    const regex = /^(https?:\/\/)?(www\.)?(github|gitlab)\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(-[A-Za-z0-9_.-]*)?\.git$/;
     
     const value = control.value;
     if(value){
