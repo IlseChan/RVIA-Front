@@ -2,7 +2,7 @@ import { HttpHandlerFn, HttpRequest } from "@angular/common/http";
 import { inject } from "@angular/core";
 import { AuthService } from "@modules/auth/services/auth.service";
         
-const regexApps = /\/applications|\/applications\/\d+|\/applications\/git/;
+const regexApps = /\/applications|\/applications\/\d+|\/applications\/git|\/applications\/gitlab/;
 const methodsApps = ['GET','PATCH','POST'];
 const checkRegex = (url: string): boolean => {
     return regexApps.test(url);

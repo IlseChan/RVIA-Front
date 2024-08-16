@@ -1,24 +1,34 @@
-import { NgClass, NgFor, TitleCasePipe } from '@angular/common';
+import { NgClass, NgFor, NgIf, TitleCasePipe } from '@angular/common';
 import { Component } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
+import { DividerModule } from 'primeng/divider';
+
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Nom_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
+import { PrimeIcons } from 'primeng/api';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [RouterOutlet, NgFor, RouterLink, RouterLinkActive, TitleCasePipe,NgClass],
+  imports: [RouterOutlet, NgFor, RouterLink, 
+    RouterLinkActive, TitleCasePipe,NgClass, 
+    DividerModule, NgIf],
   templateUrl: './layout.component.html',
   styleUrl: './layout.component.scss'
 })
 export class LayoutComponent {
   userLogged!: Usuario | null;
   menuSidebar = [
-    { path: '/apps/home', name: 'Inicio'},
-    { path: '/apps/list-apps', name: 'Aplicaciones'},
+    { path: '/apps/home', name: 'Inicio', icon: PrimeIcons.HOME},
+    { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
+  ];
+  menuAdmin = [
+    { path: '/users/list-users', name: 'Usuarios', icon: PrimeIcons.USERS },
+    { path: '/tools/recoveryPDF', name: 'Convertir a .csv', icon: PrimeIcons.FILE_EXCEL },
   ];
 
+  Nom_rol = Nom_Rol;
   sidebarActive = false;
 
   constructor(
@@ -27,12 +37,6 @@ export class LayoutComponent {
   
   ngOnInit(): void {
     this.userLogged = this.authService.userLogged;
-
-    if(this.userLogged && this.userLogged.position.nom_rol === Nom_Rol.ADMINISTRADOR){
-      this.menuSidebar.push(
-        { path: '/users/list-users', name: 'Usuarios'},
-      )
-    }
   }
   
   toggleSidebar(): void {

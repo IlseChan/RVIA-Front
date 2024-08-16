@@ -11,19 +11,41 @@
   </nav>
   <nav class="sidebar fixed flex flex-column h-full text-white justify-content-between" [ngClass]="{'active': sidebarActive}">
     <button class="close-sidebar text-white text-2xl c-pointer p-3" (click)="closeSidebar()">✖</button>
-    <ul class="p-0 my-0 list-none">
+    <small class="px-3 mb-2 text-divider">Menú</small>
+    <ul class="px-3 list-none">
       <li *ngFor="let option of menuSidebar">
         <a 
-          routerLinkActive="active" 
-          [routerLink]="option.path"
-          class="text-white text-base block p-3 text-center">
-          {{ option.name | titlecase }}
+        routerLinkActive="active" 
+        [routerLink]="option.path"
+        class="text-white text-base block px-3 py-2 flex align-items-center border-round">
+          <i class="mr-2 text-sm" [ngClass]="option.icon" ></i>
+          <span>{{ option.name | titlecase }}</span> 
         </a>
       </li>
     </ul>
-    <div class="logout-button mt-auto p-4 text-center sidebar-logout">
+    <div class="px-3 mb-auto">
+      <p-divider type="solid"/>
+    </div>
+    <div
+      *ngIf="userLogged && userLogged.position.nom_rol === Nom_rol.ADMINISTRADOR" 
+      class="px-3">
+      <small class="mb-2 text-divider">Administrador</small>
+      <ul class="list-none p-0">
+        <li *ngFor="let option of menuAdmin">
+          <a 
+            routerLinkActive="active" 
+            [routerLink]="option.path"
+            class="text-white text-base block px-3 py-2 flex align-items-center border-round">
+              <i class="mr-2 text-sm" [ngClass]="option.icon" ></i>
+              <span>{{ option.name }}</span> 
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="logout-button text-center p-3 pt-0 sidebar-logout">
+      <p-divider type="solid"/>
       <button 
-        class="flex align-items-center justify-content-center text-white py-3 px-2 w-full text-base c-pointer"
+        class="flex align-items-center justify-content-center text-white py-3 px-2 w-full text-base c-pointer border-round"
         (click)="logout()">
           <i class="pi pi-power-off mr-2"></i>
           <span class="ml-2">Cerrar sesión</span>

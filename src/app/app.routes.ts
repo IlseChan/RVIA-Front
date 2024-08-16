@@ -25,6 +25,11 @@ export const routes: Routes = [
                 loadChildren: () => import('@modules/usuarios/usuarios.routes').then(m => m.usuariosRoutes)
             },
             {
+                path: 'tools',
+                canActivate: [AdminGuard],
+                loadChildren: () => import('@modules/herramientas/herramientas.routes').then(m => m.herramientasRoutes)
+            },
+            {
                 path: '',
                 redirectTo: 'apps',
                 pathMatch: 'full'
