@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Aplication, AplicationsData, AppsSanitizadasSelect, CheckmarxCSV, FormCSV, FormPDFtoCSV, 
+import { Aplication, AplicationsData, AppsSanitizadasSelect, CheckmarxCSV, FormCSV, 
   FormProjectWithPDF, Language, NumberAction, OriginMethod, ResponseSaveFile } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
@@ -87,7 +87,6 @@ export class AplicacionesService {
       })
   }
   
-
   getCSVAplication(id: number): Observable<CheckmarxCSV> {
     return this.http.get<CheckmarxCSV>(`${this.baseUrl}/checkmarx/${id}`)
     .pipe(
@@ -110,14 +109,6 @@ export class AplicacionesService {
       );
   }
 
-  downloadCSVFile(id: number): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/checkmarx/download/${id}`,{ responseType: 'blob' })
-      .pipe(
-        catchError(error => this.handleError(error, OriginMethod.GETDOWNLOAD))
-      );
-  }
-
-  
   //POST
   saveProjectWitPDF(form: FormProjectWithPDF): Observable<Aplication> {
     const formData = new FormData();
@@ -189,18 +180,6 @@ export class AplicacionesService {
     );
   }
 
-  makeCSVFile(form: FormPDFtoCSV): Observable<ResponseSaveFile> {
-    
-    const formData = new FormData();
-    formData.append('idu_aplicacion',form.appId.toString());
-    formData.append('file',form.pdfFile);
-    
-    return this.http.post<ResponseSaveFile>(`${this.baseUrl}/checkmarx/recoverypdf`,formData)
-    .pipe(
-      catchError(error => this.handleError(error, OriginMethod.POSTMAKECSV))
-    );
-  }
-
   //PATCH
   setNewStatus(app: Aplication, newStatus: number): Observable<Aplication> {
     const body = { estatusId: newStatus };
@@ -224,9 +203,7 @@ export class AplicacionesService {
       GETAPPS: 'Error al cargar información', 
       GETCSVAPP: 'Error al cargar información del CSV',
       GETDOWNLOAD: 'Error al descargar el zip',
-      GETDOWNLOADCSV: 'Error al descargar el CSV',
       GETLANGUAGES: 'Ha ocurrido un error al cargar información. Intentalo de nuevo.',
-      POSTMAKECSV: 'Ha ocurrido un error al genear el CSV de del PDf', 
       POSTSAVECSV: `Ocurió un error al guardar el archivo CSV. Inténtalo de nuevo`,
       POSTSAVEFILE: `Ocurió un error al guardar el aplicativo. Inténtalo de nuevo`,
       UPDATESTATUS: `¡El estado de la aplicación ${extra} no se pudo actualizar!`

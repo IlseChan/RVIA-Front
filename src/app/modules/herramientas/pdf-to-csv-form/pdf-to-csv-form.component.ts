@@ -13,6 +13,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { Aplication, AppsSanitizadasSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { HerramientasService } from '../services/herramientas.service';
 
 @Component({
   selector: 'app-pdf-to-csv-form',
@@ -34,7 +35,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   isLoadingData: boolean = true;
   
   showDownOpc: boolean = false;
-  infoDownloadFile: {name: string, id: number} = {name: '',id: -1};
+  infoDownloadFile: { name: string, id: number } = { name: '',id: -1 };
   isDownload: boolean = false;
   downloadSub!: Subscription;
 
@@ -44,6 +45,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
 
   constructor(
     private aplicacionesService: AplicacionesService, 
+    private herramientasService: HerramientasService
   ){}
 
   ngOnInit(): void {
@@ -98,6 +100,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   cancel(): void {
     this.formFile.reset();
     this.sizeFile = 0;
+    this.isUploadFile = false;
   }
 
   onSubmit(): void { 
@@ -109,7 +112,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
     if(this.isUploadFile) return;
     this.isUploadFile = true;
 
-    this.aplicacionesService.makeCSVFile(this.formFile.value)
+    this.herramientasService.makeCSVFile(this.formFile.value)
     .subscribe({
       next: (resp) => {
         this.showDownOpc = true;
@@ -127,7 +130,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   onDownloadFile(): void {
     if(this.isDownload) return;
     this.isDownload = true;
-    this.downloadSub = this.aplicacionesService.downloadCSVFile(this.infoDownloadFile.id)  
+    this.downloadSub = this.herramientasService.downloadCSVFile(this.infoDownloadFile.id)  
       .subscribe( {
         next: (blob) => {
           const url = window.URL.createObjectURL(blob);
@@ -138,6 +141,9 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
           anchor.click();
           document.body.removeChild(anchor);
           window.URL.revokeObjectURL(url);
+          setTimeout(() => {
+            this.isDownload = false;
+          },2000);
         },
         error: () => {
           this.isDownload = false;
@@ -148,7 +154,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   reset(): void {
     this.cancel();
     this.showDownOpc = false;
-    this.infoDownloadFile = {name: '',id: -1};
+    this.infoDownloadFile = { name: '',id: -1 };
     this.isDownload = false;
   }
 
