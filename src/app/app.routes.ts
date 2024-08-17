@@ -3,6 +3,7 @@ import { SessionGuard } from '@modules/auth/guards/session.guard';
 import { UserAuthGuard } from '@modules/auth/guards/userAuthGuard.guard';
 import { LayoutComponent } from './containers/layout/layout.component';
 import { AdminGuard } from '@modules/usuarios/guards/adminGuard.guard';
+import { ToolsGuard } from '@modules/herramientas/guards/toolsGuard.guard';
 
 export const routes: Routes = [
     {
@@ -26,7 +27,7 @@ export const routes: Routes = [
             },
             {
                 path: 'tools',
-                canActivate: [AdminGuard],
+                canActivate: [ToolsGuard],
                 loadChildren: () => import('@modules/herramientas/herramientas.routes').then(m => m.herramientasRoutes)
             },
             {

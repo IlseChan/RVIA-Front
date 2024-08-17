@@ -23,4 +23,12 @@ export class NotificationsService {
       detail 
     });
   }
+
+  warmMessage(summary: string, detail: string): void {
+    this.messageService.add({ 
+      severity: 'warm', 
+      summary, 
+      detail 
+    });
+  }
 }

@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Aplication, AplicationsData, AppsSanitizadasSelect, CheckmarxCSV, FormCSV, 
-  FormProjectWithPDF, Language, NumberAction, OriginMethod, ResponseSaveFile } from '../interfaces/aplicaciones.interfaces';
+import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV, FormCSV, 
+  FormProjectWithPDF, Language, NumberAction, OriginMethod, ResponseSaveFile, StatusApps } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
@@ -63,7 +63,7 @@ export class AplicacionesService {
       }
   }
 
-  getSanitationApps(): Observable<AppsSanitizadasSelect[]> {
+  getSanitationApps(): Observable<AppsToUseSelect[]> {
     return of(this.allApps)
       .pipe(
         switchMap(infoApps => {
@@ -79,7 +79,31 @@ export class AplicacionesService {
       );
   }
 
-  private filterSanitationApps(data: Aplication[]): AppsSanitizadasSelect[]{
+  getWaitingApps(){
+    return of(this.allApps)
+    .pipe(
+      switchMap(infoApps => {
+        if(infoApps.total !== -1){
+          return of(this.filterWaitingApps([...infoApps.data]))
+        }
+        return this.getAplicaciones().pipe(
+          map(() => {
+            return this.filterWaitingApps([...this.allApps.data])
+          })
+        )
+      })
+    );
+  }
+
+  private filterWaitingApps(data: Aplication[]): AppsToUseSelect[] {
+    return data
+      .filter(app => app.applicationstatus.idu_estatus_aplicacion === StatusApps.ONHOLD )
+      .map( app => {
+        return { value: app.idu_aplicacion, name: `${app.idu_aplicacion} - ${app.nom_aplicacion}`}
+      })
+  }
+
+  private filterSanitationApps(data: Aplication[]): AppsToUseSelect[]{
     return data
       .filter(app => app.num_accion === NumberAction.SANITIZECODE)
       .map( app => {
@@ -125,12 +149,7 @@ export class AplicacionesService {
     
       return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData)
         .pipe(
-          tap(() => this.changes = true),
-          tap((resp) => {
-            const title = 'Aplicativo guardado';
-            const content = `¡El aplicativo ${resp.nom_aplicacion} se ha subido con éxito!`
-            this.notificationsService.successMessage(title,content);
-          }),
+          tap((resp) => this.savedSuccessfully(resp)),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
         );
     }
@@ -150,12 +169,8 @@ export class AplicacionesService {
 
       return this.http.post<Aplication>(`${this.baseUrl}/applications/${endPoint}`,formData)
         .pipe(
-          tap(() => this.changes = true),
-          tap((resp) => {
-            const title = 'Aplicativo guardado';
-            const content = `¡El aplicativo ${resp.nom_aplicacion} se ha subido con éxito!`
-            this.notificationsService.successMessage(title,content);
-          }),
+          tap((resp) => console.log(resp)),
+          tap((resp) => this.savedSuccessfully(resp)),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
         );
     }
@@ -194,6 +209,15 @@ export class AplicacionesService {
         delay(1000),
         catchError(error => this.handleError(error, OriginMethod.UPDATESTATUS,app.nom_aplicacion))
       );
+  }
+
+  private savedSuccessfully(app: Aplication){
+    this.changes = true
+    const title = 'Aplicativo guardado';
+    const content = `¡El aplicativo ${app.nom_aplicacion} se ha subido con éxito!`
+    this.notificationsService.successMessage(title,content);
+    // TODO AGREGAR Notificacion de advertencia
+
   }
 
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {

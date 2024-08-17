@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { catchError, Observable, throwError } from 'rxjs';
+import { catchError, Observable, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
 import { HttpClient } from '@angular/common/http';
-import { FormPDFtoCSV, OriginMethod } from '../interfaces/herramientas.interfaces';
-import { ResponseSaveFile } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { FormAddonCall, FormPDFtoCSV, OriginMethod } from '../interfaces/herramientas.interfaces';
+import { Aplication, ResponseSaveFile } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -37,12 +37,26 @@ export class HerramientasService {
     );
   }
 
+  addonsCall(form: FormAddonCall){
+    const body = { ...form };
+    return this.http.post<Aplication>(`${this.baseUrl}/rvia`,body)
+    .pipe(
+      tap((app) => {
+        const title = 'Proceso iniciado';
+        const content = `¡El proceso para de la aplicación ${app.idu_aplicacion} ha con éxito!`
+        this.notificationsService.successMessage(title,content);
+      }),
+      catchError(error => this.handleError(error, OriginMethod.POSTSTARTADDON))
+    );
+  }
+
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
     const title = 'Error';
     
     const errorsMessages = {
       GETDOWNLOADCSV: 'Error al descargar el CSV',
-      POSTMAKECSV: 'Ha ocurrido un error al genear el CSV de del PDf', 
+      POSTMAKECSV: 'Ha ocurrido un error al genear el CSV de del PDf',
+      POSTSTARTADDON: 'Ha ocurrido un error al iniciar el proceso. Inentalo más tarde' 
     };
 
     this.notificationsService.errorMessage(title,errorsMessages[origin]);

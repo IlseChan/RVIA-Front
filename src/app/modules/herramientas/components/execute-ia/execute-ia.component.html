@@ -1,0 +1,59 @@
+<main class="m-2">
+    <section class="flex flex-column mb-4 pb-2 border-title">
+        <h1 class="text-5xl my-0">Iniciar proceso</h1> 
+    </section>
+    <section class="text-justify vertical-align-middle mb-4">
+        <p class="m-0">
+            A continuación llena el siguiente formulario para iniciar el proceso de trabajo del aplicativo.
+        </p>
+    </section>
+    
+    <div *ngIf="isLoadingData" class="card flex justify-content-center my-6">
+        <p-progressSpinner ariaLabel="loading" />
+    </div>
+
+    <section *ngIf="!isLoadingData"> 
+        <form [formGroup]="formIA" (ngSubmit)="onSubmit()">
+            <section class="flex flex-column align-items-center mb-3">
+                <p>Selecciona el aplicativo a a trabajar:</p>
+                <p-dropdown
+                    id="select-apps"
+                    formControlName="idu_aplicacion"
+                    optionLabel="name"
+                    [options]="appsOpcs"
+                    optionValue="value"
+                    placeholder="Selecciona una app"
+                />
+                <span *ngIf="formIA.controls['idu_aplicacion'].errors && formIA.controls['idu_aplicacion'].touched"
+                    class="font-italic text-red-500 mt-2">
+                        Debes seleccionar una aplicación.
+                </span>
+            </section>
+            <section *ngIf="formIA.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">
+                <p class="mt-0 text-center">¿Quieres que se trabaje con Inteligencia Artificial?</p>
+                <div class="flex justify-content-center gap-3">
+                    <div *ngFor="let opc of actionsOps" class="field-checkbox">
+                      <p-radioButton 
+                        [value]="opc.value" 
+                        formControlName="conIA" 
+                        [inputId]="opc.txt"/>
+                        <label [for]="opc.txt" class="ml-2">
+                          {{ opc.txt }}
+                        </label>
+                    </div>
+                </div>
+                <div class="flex justify-content-center mt-4">
+                    <p-button 
+                        [label]="label"
+                        [loading]="isRequest && label === 'Iniciando'"
+                        [disabled]="isRequest && label === 'Iniciado'" 
+                        severity="success" 
+                        icon="pi pi-check" 
+                        iconPos="right"
+                        type="submit"
+                    />
+                </div>
+            </section>
+        </form>
+    </section>
+</main> 

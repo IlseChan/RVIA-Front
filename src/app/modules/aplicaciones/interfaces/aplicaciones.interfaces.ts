@@ -82,7 +82,7 @@ export interface ResponseSaveFile extends CheckmarxCSV {
     application: Aplication;
 }
 
-export interface AppsSanitizadasSelect {
+export interface AppsToUseSelect {
     value: number;
     name:  string;
 }

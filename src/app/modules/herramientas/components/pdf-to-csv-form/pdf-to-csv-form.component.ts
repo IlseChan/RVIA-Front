@@ -10,10 +10,10 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { Aplication, AppsSanitizadasSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { Aplication, AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { HerramientasService } from '../services/herramientas.service';
+import { HerramientasService } from '../../services/herramientas.service';
 
 @Component({
   selector: 'app-pdf-to-csv-form',
@@ -40,7 +40,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   downloadSub!: Subscription;
 
   apps: Aplication[] = [];
-  appsOpcs: AppsSanitizadasSelect[] = [];
+  appsOpcs: AppsToUseSelect[] = [];
   appsSub!: Subscription;
 
   constructor(

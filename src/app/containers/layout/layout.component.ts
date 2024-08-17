@@ -25,8 +25,11 @@ export class LayoutComponent {
   ];
   menuAdmin = [
     { path: '/users/list-users', name: 'Usuarios', icon: PrimeIcons.USERS },
-    { path: '/tools/recoveryPDF', name: 'Convertir a .csv', icon: PrimeIcons.FILE_EXCEL },
   ];
+  menuTools = [
+    { path: '/tools/recoveryPDF', name: 'Convertir a .csv', icon: PrimeIcons.FILE_EXCEL },
+    { path: '/tools/execute-ia', name: 'Ejecutar IA', icon:PrimeIcons.MICROCHIP_AI }
+  ]
 
   Nom_rol = Nom_Rol;
   sidebarActive = false;
