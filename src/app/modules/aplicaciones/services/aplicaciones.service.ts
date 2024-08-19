@@ -218,7 +218,7 @@ export class AplicacionesService {
 
     if(!resp.checkmarx){
       const title = 'Archivo .csv no generado';
-      const content = `¡El aplicativo se ha guardado correctamente pero el archivo .csv del aplicativo ${resp.application.nom_aplicacion}, no se genero correctamente.`
+      const content = `¡El aplicativo se ha guardado correctamente pero el archivo .csv no se genero.`
       this.notificationsService.warnMessage(title,content);
     }
   }
