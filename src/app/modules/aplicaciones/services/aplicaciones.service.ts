@@ -3,7 +3,7 @@ import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap
 import { HttpClient } from '@angular/common/http';
 
 import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV, FormCSV, 
-  FormProjectWithPDF, Language, NumberAction, OriginMethod, ResponseSaveFile, StatusApps } from '../interfaces/aplicaciones.interfaces';
+  FormProjectWithPDF, Language, NumberAction, OriginMethod, ResponseAddApp, ResponseSaveFile, StatusApps } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
@@ -134,7 +134,7 @@ export class AplicacionesService {
   }
 
   //POST
-  saveProjectWitPDF(form: FormProjectWithPDF): Observable<Aplication> {
+  saveProjectWitPDF(form: FormProjectWithPDF): Observable<ResponseAddApp> {
     const formData = new FormData();
     
     formData.append('num_accion',form.action.toString()); 
@@ -147,7 +147,7 @@ export class AplicacionesService {
       formData.append('files',form.zipFile!);
       if(form.pdfFile) formData.append('files',form.pdfFile!);
     
-      return this.http.post<Aplication>(`${this.baseUrl}/applications/files`,formData)
+      return this.http.post<ResponseAddApp>(`${this.baseUrl}/applications/files`,formData)
         .pipe(
           tap((resp) => this.savedSuccessfully(resp)),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
@@ -167,9 +167,8 @@ export class AplicacionesService {
         return this.handleError(new Error('Error url'), OriginMethod.POSTSAVEFILE);
       }
 
-      return this.http.post<Aplication>(`${this.baseUrl}/applications/${endPoint}`,formData)
+      return this.http.post<ResponseAddApp>(`${this.baseUrl}/applications/${endPoint}`,formData)
         .pipe(
-          tap((resp) => console.log(resp)),
           tap((resp) => this.savedSuccessfully(resp)),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
         );
@@ -211,13 +210,17 @@ export class AplicacionesService {
       );
   }
 
-  private savedSuccessfully(app: Aplication){
+  private savedSuccessfully(resp: ResponseAddApp){
     this.changes = true
     const title = 'Aplicativo guardado';
-    const content = `¡El aplicativo ${app.nom_aplicacion} se ha subido con éxito!`
+    const content = `¡El aplicativo ${resp.application.nom_aplicacion} se ha subido con éxito!`
     this.notificationsService.successMessage(title,content);
-    // TODO AGREGAR Notificacion de advertencia
 
+    if(!resp.checkmarx){
+      const title = 'Archivo .csv no generado';
+      const content = `¡El aplicativo se ha guardado correctamente pero el archivo .csv no se genero.`
+      this.notificationsService.warnMessage(title,content);
+    }
   }
 
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {

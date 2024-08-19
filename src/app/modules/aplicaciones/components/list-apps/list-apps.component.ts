@@ -202,17 +202,19 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   }
 
   showFormUploadCSV(app: Aplication) {
-    this.aplicacionService.appCSVSubject.next(app);
-    this.ref = this.dialogService.open(FormCsvComponent, {
-        header: 'Subir archivo .csv',
-        width: '50vw',
-        contentStyle: { overflow: 'auto' },
-        breakpoints: {
-            '960px': '75vw',
-            '640px': '90vw'
-        },
-        maximizable: false,
-    });
+    if(app.applicationstatus.idu_estatus_aplicacion !== StatusApps.DONE){
+      this.aplicacionService.appCSVSubject.next(app);
+      this.ref = this.dialogService.open(FormCsvComponent, {
+          header: 'Subir archivo .csv',
+          width: '50vw',
+          contentStyle: { overflow: 'auto' },
+          breakpoints: {
+              '960px': '75vw',
+              '640px': '90vw'
+          },
+          maximizable: false,
+      });
+    }
   }
 
   ngOnDestroy(): void {

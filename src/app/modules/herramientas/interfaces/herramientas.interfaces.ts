@@ -6,6 +6,7 @@ export interface FormPDFtoCSV {
 export enum OriginMethod { 
     GETDOWNLOADCSV = 'GETDOWNLOADCSV',
     POSTMAKECSV    = 'POSTMAKECSV', 
+    POSTMAKECSVPY  = 'POSTMAKECSVPY', 
     POSTSTARTADDON = 'POSTSTARTADDON', 
 }
  
