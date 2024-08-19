@@ -98,7 +98,8 @@
                                 pTooltip="Subir CSV" 
                                 tooltipPosition="top"
                                 tooltipStyleClass="text-sm"
-                                class="c-pointer icon-up mx-2"
+                                class="c-pointer mx-2"
+                                [ngClass]="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE ? 'icon-disable' : 'icon-up'"
                                 (click)="showFormUploadCSV(app)">
                                 <i class="pi pi-file-arrow-up" style="font-size: 1.6rem"></i>
                             </a>

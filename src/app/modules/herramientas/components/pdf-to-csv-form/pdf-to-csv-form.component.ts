@@ -115,9 +115,14 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
     this.herramientasService.makeCSVFile(this.formFile.value)
     .subscribe({
       next: (resp) => {
-        this.showDownOpc = true;
-        this.infoDownloadFile.id = resp.idu_checkmarx ;
-        this.infoDownloadFile.name = resp.nom_checkmarx; 
+        if(resp && resp.isValid && resp.checkmarx){
+          this.showDownOpc = true;
+          this.infoDownloadFile.id = resp.checkmarx.idu_checkmarx ;
+          this.infoDownloadFile.name = resp.checkmarx.nom_checkmarx; 
+        }else if(resp && !resp.isValid){
+          this.isUploadFile = false;
+          this.showDownOpc = false;
+        }
       },
       error: () => {              
         setTimeout(() => {
