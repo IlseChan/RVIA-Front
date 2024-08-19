@@ -10,10 +10,10 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { Aplication, AppsSanitizadasSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { Aplication, AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { HerramientasService } from '../services/herramientas.service';
+import { HerramientasService } from '../../services/herramientas.service';
 
 @Component({
   selector: 'app-pdf-to-csv-form',
@@ -40,7 +40,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   downloadSub!: Subscription;
 
   apps: Aplication[] = [];
-  appsOpcs: AppsSanitizadasSelect[] = [];
+  appsOpcs: AppsToUseSelect[] = [];
   appsSub!: Subscription;
 
   constructor(
@@ -115,9 +115,14 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
     this.herramientasService.makeCSVFile(this.formFile.value)
     .subscribe({
       next: (resp) => {
-        this.showDownOpc = true;
-        this.infoDownloadFile.id = resp.idu_checkmarx ;
-        this.infoDownloadFile.name = resp.nom_checkmarx; 
+        if(resp && resp.isValid && resp.checkmarx){
+          this.showDownOpc = true;
+          this.infoDownloadFile.id = resp.checkmarx.idu_checkmarx ;
+          this.infoDownloadFile.name = resp.checkmarx.nom_checkmarx; 
+        }else if(resp && !resp.isValid){
+          this.isUploadFile = false;
+          this.showDownOpc = false;
+        }
       },
       error: () => {              
         setTimeout(() => {

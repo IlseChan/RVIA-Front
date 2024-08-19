@@ -6,13 +6,15 @@ import { MessageService } from 'primeng/api';
 })
 export class NotificationsService {
 
+  lifeNotification: number = 10000; 
   constructor(private messageService: MessageService) { }
 
   successMessage(summary: string, detail: string): void {
     this.messageService.add({ 
       severity: 'success', 
       summary, 
-      detail 
+      detail,
+      life: this.lifeNotification 
     });
   }
 
@@ -20,7 +22,17 @@ export class NotificationsService {
     this.messageService.add({ 
       severity: 'error', 
       summary, 
-      detail 
+      detail,
+      life: this.lifeNotification 
+    });
+  }
+
+  warnMessage(summary: string, detail: string): void {
+    this.messageService.add({ 
+      severity: 'warn', 
+      summary, 
+      detail,
+      life: this.lifeNotification
     });
   }
 }

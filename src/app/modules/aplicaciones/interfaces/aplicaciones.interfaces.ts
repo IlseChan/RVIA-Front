@@ -1,3 +1,4 @@
+import { CheckmarxInfo } from "@modules/shared/interfaces/checkmarx.interface";
 import { Usuario } from "@modules/shared/interfaces/usuario.interface";
 
 export enum StatusApps {
@@ -82,7 +83,13 @@ export interface ResponseSaveFile extends CheckmarxCSV {
     application: Aplication;
 }
 
-export interface AppsSanitizadasSelect {
+export interface AppsToUseSelect {
     value: number;
     name:  string;
+}
+
+export interface ResponseAddApp {
+    application:    Aplication;
+    checkmarx?:     CheckmarxInfo;
+    esSanitizacion: boolean;
 }

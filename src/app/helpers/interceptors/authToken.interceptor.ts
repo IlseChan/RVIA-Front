@@ -8,7 +8,7 @@ const checkRegex = (url: string): boolean => {
     return regexApps.test(url);
 }
 
-const regexCheckmarx = /\/checkmarx|\/checkmarx\/\d+/;
+const regexCheckmarx = /\/checkmarx|\/checkmarx\/recoverypdf|\/checkmarx\/\d+/;
 const methodsCheck = ['GET','POST'];
 const checkRegexCheck = (url: string): boolean => {
     return regexCheckmarx.test(url);
@@ -55,7 +55,6 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
                 return next(newReq);
             }
 
-            
             if(checkRegexCheck(url) && methodsCheck.includes(method)){
                 return next(newReq);    
             }

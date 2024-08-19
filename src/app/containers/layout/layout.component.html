@@ -42,6 +42,22 @@
         </li>
       </ul>
     </div>
+    <div
+      *ngIf="userLogged && (userLogged.position.nom_rol === Nom_rol.ADMINISTRADOR  || userLogged.position.nom_rol === Nom_rol.AUTORIZADOR)" 
+      class="px-3">
+      <small class="mb-2 text-divider">Herramientas</small>
+      <ul class="list-none p-0">
+        <li *ngFor="let option of menuTools">
+          <a 
+            routerLinkActive="active" 
+            [routerLink]="option.path"
+            class="text-white text-base block px-3 py-2 flex align-items-center border-round">
+              <i class="mr-2 text-sm" [ngClass]="option.icon" ></i>
+              <span>{{ option.name }}</span> 
+          </a>
+        </li>
+      </ul>
+    </div>
     <div class="logout-button text-center p-3 pt-0 sidebar-logout">
       <p-divider type="solid"/>
       <button 
