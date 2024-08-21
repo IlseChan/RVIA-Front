@@ -6,13 +6,17 @@ import { Router } from '@angular/router';
 import { BadgeModule } from 'primeng/badge';
 import { TooltipModule } from 'primeng/tooltip';
 import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
 
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [NgIf, FormsModule,BadgeModule,TooltipModule,ButtonModule],
+  imports: [NgIf, FormsModule,BadgeModule,TooltipModule,ButtonModule,
+    InputTextModule,PasswordModule
+  ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
@@ -24,7 +28,7 @@ export class RegisterComponent {
   email: string = '';
   errorMessage: string = '';
 
-  @ViewChild('passwordInput', { static: false }) passwordInput!: ElementRef;
+  isRegister: boolean = false;
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -61,6 +65,7 @@ export class RegisterComponent {
       return;
     }
 
+    this.isRegister = true;
     this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
       .subscribe({
         next: () => {
@@ -71,6 +76,7 @@ export class RegisterComponent {
         },
         error: (error : Error) => {
           this.errorMessage = error.message;
+          this.isRegister = false;
         }
       });
   }
