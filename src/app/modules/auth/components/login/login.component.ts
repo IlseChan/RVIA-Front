@@ -1,16 +1,20 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule } from 'primeng/button';
+import { InputTextModule } from 'primeng/inputtext';
+import { PasswordModule } from 'primeng/password';
 
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [NgIf, FormsModule, ButtonModule],
+  imports: [NgIf, FormsModule, ButtonModule, InputTextModule,
+    PasswordModule
+  ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
@@ -19,16 +23,18 @@ export class LoginComponent {
   password: string = '';
   errorMessage: string = '';
   isLoginDisabled: boolean = true;
-
-  @ViewChild('passwordInput', { static: false }) passwordInput!: ElementRef;
+  isLogging: boolean = false;
 
   constructor(private authService: AuthService, private router: Router) {}
 
   onLogin(): void {
+    if(this.isLogging) return;
     const trimmedUsernumber = this.usernumber.trim();
     const trimmedPassword = this.password.trim();
 
-    this.authService.loginUser(trimmedUsernumber, trimmedPassword).subscribe({
+    this.isLogging = true;
+    this.authService.loginUser(trimmedUsernumber, trimmedPassword)
+    .subscribe({
       next: () => {
         this.errorMessage = ''; 
         this.router.navigate(['/apps/list-apps']);  
@@ -41,6 +47,7 @@ export class LoginComponent {
         } else {
           this.errorMessage = 'Número de empleado o Contraseña incorrectos. Por favor de verificar.';
         }
+        this.isLogging = false;
       }
     });
   }
@@ -57,7 +64,7 @@ export class LoginComponent {
   private checkInputs(): void {
     const passwordValid = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{12,}$/.test(this.password);
     const usernumberInt = parseInt(this.usernumber, 10);
-    const usernumberValid = (usernumberInt > 90000000 && usernumberInt <= 99999999) || usernumberInt < 100000000;
+    const usernumberValid = (usernumberInt > 90000000 && usernumberInt < 100000000);
 
     this.isLoginDisabled = !(passwordValid && usernumberValid);
   }

@@ -2,45 +2,49 @@
   <section class="register-container w-auto md:w-27rem p-4 my-3 mx-auto border-round-lg">
     <h2 class="text-center mt-0 mb-4">Registro</h2>
     <form (ngSubmit)="onRegister()" #registerForm="ngForm">
-      <div class="flex flex-column mb-3">
-        <label class="font-bold mb-2" for="usernumber">Número de Empleado</label>
+      <div class="flex flex-column gap-2 mb-3">
+        <p class="m-0 font-bold">Número de Empleado</p>
         <input 
-          type="text" 
-          id="usernumber" 
+          pInputText
+          id="usernumber-reg"
+          name="usernumber-reg"
+          aria-describedby="usernumber-reg-input"
           [(ngModel)]="usernumber" 
-          name="usernumber" 
           required
           placeholder="Ej. 98322XXX"
           autocomplete="off"
         />
       </div>
-      <div class=" flex flex-column mb-3">
-        <label class="font-bold mb-2" for="username">Nombre de Usuario</label>
+      <div class="flex flex-column gap-2 mb-3">
+        <p class="m-0 font-bold">Nombre de Usuario</p>
         <input 
-          type="text" 
-          id="username" 
+          pInputText
+          id="username-reg"
+          name="username-reg"
+          aria-describedby="username-reg-input"
           [(ngModel)]="username" 
-          name="username" 
           required
           placeholder="Tu nombre"
           autocomplete="off"
         />
       </div>
-      <div class="  flex flex-column mb-3">
-        <label class="font-bold mb-2" for="email">Correo Electrónico</label>
+      <div class="flex flex-column gap-2 mb-3">
+        <p class="m-0 font-bold">Correo Electrónico</p>
         <input 
-          type="email" 
-          id="email" 
-          [(ngModel)]="email"
-          name="email" 
+          pInputText
+          type="email"
+          id="email-reg"
+          name="email-reg"
+          aria-describedby="email-reg-input"
+          [(ngModel)]="email" 
           required
           placeholder="ejemplo@coppel.com"
           autocomplete="off"
         />
       </div>
-      <div class=" flex flex-column mb-3">
+      <div class=" flex flex-column gap-2 mb-3">
         <div class="flex mb-2" >
-          <label class="font-bold mt-auto" for="password">Contraseña</label>
+          <p class=" m-0 font-bold mt-auto">Contraseña</p>
           <p-badge
             class="ml-2"
             [pTooltip]="tooltipContent"  
@@ -53,23 +57,31 @@
                 </div>
             </ng-template>
         </div>
-        <input 
-          type="password" 
-          id="password" 
+        <p-password 
+          inputId="passworduser-reg"
+          name="passworduser-reg"
+          aria-describedby="passworduser-reg-input"
+          [style]="{width : '100%'}"
+          [inputStyle]="{width : '100%'}"
           [(ngModel)]="password" 
-          name="password" 
+          [feedback]="false" 
+          [toggleMask]="true"
           required
           placeholder="Contraseña"
           autocomplete="off"
         />
       </div>
-      <div class=" flex flex-column mb-3">
-        <label class="font-bold mb-2" for="confirmPassword">Confirmar Contraseña</label>
-        <input 
-          type="password" 
-          id="confirmPassword" 
+      <div class=" flex flex-column gap-2 mb-3">
+        <p class="m-0 font-bold">Confirmar Contraseña</p>
+        <p-password 
+          inputId="passworduserconf-reg"
+          name="passworduserconf-reg"
+          aria-describedby="passworduserconf-reg-input"
+          [style]="{width : '100%'}"
+          [inputStyle]="{width : '100%'}"
           [(ngModel)]="confirmPassword" 
-          name="confirmPassword" 
+          [feedback]="false" 
+          [toggleMask]="true"
           required
           placeholder="Confirma tu contraseña"
           autocomplete="off"
@@ -78,15 +90,16 @@
       <div *ngIf="errorMessage" class="mb-3 text-red text-center">
         {{ errorMessage }}
       </div>
-      <div class="flex flex-column mt-3">
-        <button 
-          type="submit" 
-          class="btn-register c-pointer register-button" 
-          [disabled]="registerForm.form.invalid">
-            Registrar
-        </button>
+      <div class="flex flex-column gap-3 mt-4">
         <p-button 
-          class="text-center mt-2" 
+          type="submit"  
+          [label]="isRegister ? 'Registrando...' : 'Registrar'" 
+          styleClass="w-full"
+          iconPos="right"
+          [disabled]="registerForm.form.invalid || isRegister" 
+        />
+        <p-button 
+          class="text-center" 
           label="Iniciar Sesión" 
           [link]="true" 
           (onClick)="onBack()"/>
