@@ -52,6 +52,7 @@ src/
 │    ├── modules/ # Módulos de la aplicación 
 │    │     ├── aplicaciones/ # Módulo de aplicaciones 
 │    │     ├── auth/ # Módulo de autenticación 
+│    │     ├── herramientas/ # Módulo de herramientas 
 │    │     ├── shared/ # Módulo compartido 
 │    │     └── usuarios/ # Módulo de usuarios 
 ├── environments/ # Configuraciones de entorno 
