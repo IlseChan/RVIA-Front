@@ -88,11 +88,10 @@ export class FormSanitizeComponent implements OnInit {
       const file = control.value;
       
       if(file){
-        console.log(file);
         
         const fileType = file.type;
         
-        if(fileType === ''){
+        if(fileType === 'application/x-compressed' || fileType === ''){
           const elemts = file.name.split('.');
           const ext = elemts[elemts.length -1];
 
