@@ -62,9 +62,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
           this.isLoading = false; 
         },
         error: () => {
-          setTimeout(() => {
-            this.router.navigate(['users/list-users'])
-          }, 2800);
+          this.back();
         }
       });  
   }
@@ -104,10 +102,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
     this.usuariosService.updateUsuario(this.originalUser,user)
       .subscribe({
         next: () => {
-          setTimeout(() => {
-            this.router.navigate(['users/list-users'],{ replaceUrl: true });
-            this.usuariosService.userEditSubject.next(null);
-          },2800)
+          this.back();
         },
         error: () => {
           this.isUpdate = false;

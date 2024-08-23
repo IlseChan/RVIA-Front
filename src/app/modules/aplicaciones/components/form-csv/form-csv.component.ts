@@ -116,10 +116,8 @@ export class FormCsvComponent implements OnInit, OnDestroy {
     this.aplicacionService.saveCSVFile(this.formFile.value, this.app)
     .subscribe({
       next: () => {
-        setTimeout(()=> {
-          this.ref.close();
-          this.aplicacionService.appCSVSubject.next(null);
-        },1500)
+        this.ref.close();
+        this.aplicacionService.appCSVSubject.next(null);
       },
       error: () => {              
         setTimeout(() => {

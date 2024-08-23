@@ -151,9 +151,7 @@ export class FormSanitizeComponent implements OnInit {
     this.aplicacionesService.saveProjectWitPDF(this.formFiles.value)
       .subscribe({
         next: () => {
-          setTimeout(() => {
-            this.back();
-          },3200);
+          this.back();
         },
         error: () => {      
           setTimeout(() => {

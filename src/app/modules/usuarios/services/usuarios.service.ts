@@ -72,7 +72,7 @@ export class UsuariosService {
         }
         return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`)
       }),
-      catchError(error => this.handleError(error, OriginMethod.GETUSER))
+      catchError(error => this.handleError(error, OriginMethod.GETUSER,id))
     );
   }
 
@@ -86,7 +86,8 @@ export class UsuariosService {
             ${resp.position.nom_rol} se actualizó correctamente`
           this.notificationsService.successMessage(title,content);
         }),
-        delay(1000),
+        tap(() =>  this.userEditSubject.next(null)),
+        delay(1500),
         catchError(error => this.handleError(error, OriginMethod.UPDATEUSER,originalUser.nom_usuario))
       );
   }
@@ -110,9 +111,9 @@ export class UsuariosService {
     
     const errorsMessages = {
       DELETEUSERS: `Error al eliminar al usuario ${extra}`,
-      GETUSER: 'Error al cargar información', 
+      GETUSER: `Error al cargar información. Usuario id: ${extra}`, 
       GETUSERS: 'Error al obtener los usuarios, intenta de nuevo',
-      UPDATEUSER: `Error al actualizar al usaurio ${extra}`
+      UPDATEUSER: `Error al actualizar al usuario ${extra}`
     };
 
     this.notificationsService.errorMessage(title,errorsMessages[origin]);

@@ -115,10 +115,10 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
           this.showDownOpc = false;
         }
       },
-      error: () => {              
+      error: () => {
         setTimeout(() => {
           this.isUploadFile = false
-        },3200);
+        },1200);
       }
     });
   }

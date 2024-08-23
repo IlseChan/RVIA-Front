@@ -150,6 +150,7 @@ export class AplicacionesService {
       return this.http.post<ResponseAddApp>(`${this.baseUrl}/applications/files`,formData)
         .pipe(
           tap((resp) => this.savedSuccessfully(resp)),
+          delay(2800),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
         );
     }
@@ -190,6 +191,7 @@ export class AplicacionesService {
         const content = `¡El archivo .CSV del aplicativo ${app.nom_aplicacion} se ha subido con éxito!`
         this.notificationsService.successMessage(title,content);
       }),
+      delay(1500),
       catchError(error => this.handleError(error, OriginMethod.POSTSAVECSV))
     );
   }
@@ -199,13 +201,13 @@ export class AplicacionesService {
     const body = { estatusId: newStatus };
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body)
       .pipe(
+        delay(1000),
         tap(() => {
           const title = 'Estatus actualizado';
           const content = `¡El estado de la aplicación ${app.nom_aplicacion} 
-            se a actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`
+          se a actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`
           this.notificationsService.successMessage(title,content);
         }),
-        delay(1000),
         catchError(error => this.handleError(error, OriginMethod.UPDATESTATUS,app.nom_aplicacion))
       );
   }

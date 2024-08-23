@@ -36,8 +36,7 @@ export class LoginComponent {
     this.authService.loginUser(trimmedUsernumber, trimmedPassword)
     .subscribe({
       next: () => {
-        this.errorMessage = ''; 
-        this.router.navigate(['/apps/list-apps']);  
+        this.errorMessage = '';
       },
       error: (err) => {
         if (err.status === 401) { 
