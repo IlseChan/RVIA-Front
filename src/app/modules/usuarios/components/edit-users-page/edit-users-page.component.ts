@@ -12,6 +12,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { Idu_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { InitalValuesFormEdits } from '@modules/usuarios/interfaces/usuarios.interface';
+import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
   selector: 'edit-users-page',
@@ -43,6 +44,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private usuariosService: UsuariosService,
+    private vldtnSrv: ValidationService,
     private activedRoute: ActivatedRoute
   ){}
 
@@ -69,7 +71,10 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   
   initForm(user: Usuario): void {
     this.userForm = new FormGroup({
-      nom_usuario: new FormControl<string>(user.nom_usuario,[Validators.required, Validators.minLength(3)]),
+      nom_usuario: new FormControl<string>(user.nom_usuario,[
+        Validators.required, 
+        Validators.minLength(3),
+        this.vldtnSrv.noBlankValidation()]),
       idu_rol: new FormControl<Idu_Rol>(user.position.idu_rol,[Validators.required])
     });
   
@@ -89,6 +94,9 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
       this.userForm.markAllAsTouched();
       return;
     }
+
+    const trimName = this.userForm.get('nom_usuario')?.value.trim();
+    this.userForm.get('nom_usuario')?.setValue(trimName);
 
     this.isUpdate = true;
     const user = this.userForm.value;

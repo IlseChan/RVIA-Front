@@ -64,5 +64,13 @@ export class ValidationService {
       return null
     }
   }
+
+  noBlankValidation(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = (control.value || '').trim().length === 0;
+
+      return !value ? null : { whitespace: true };
+    }
+  } 
  
 }

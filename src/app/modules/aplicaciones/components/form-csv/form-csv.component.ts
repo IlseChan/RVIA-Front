@@ -1,6 +1,6 @@
 import { CommonModule  } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { combineLatest, of, Subscription, switchMap } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
