@@ -88,24 +88,25 @@ export class FormSanitizeComponent implements OnInit {
       const file = control.value;
       
       if(file){
-        
         const fileType = file.type;
-        
-        if(fileType === 'application/x-compressed' || fileType === ''){
-          const elemts = file.name.split('.');
-          const ext = elemts[elemts.length -1];
-
-          return ext === '7z' ? null : { invalidType7z: true } 
-        }
 
         if(type === 'zip'){
-          const types = ['application/zip','application/x-zip-compressed'];
-          return types.includes(fileType) ? null : { invalidTypeZip: true } 
+          const zipTypes = ['application/zip','application/x-zip-compressed','multipart/x-zip','application/x-compressed'];
+          const sevenZipTypes = ['application/x-7z-compressed','application/x-compressed','application/x-7z'];
+          
+          if(fileType === '' || sevenZipTypes.includes(fileType)){
+            const elemts = file.name.split('.');
+            const ext = elemts[elemts.length -1];
+
+            return ext === '7z' ? null : { invalidType7z: true };
+          }
+
+          return zipTypes.includes(fileType) ? null : { invalidTypeZip: true };
         }
         
         if(type === 'pdf'){
-          const types = ['application/pdf'];
-          return types.includes(fileType) ? null : { invalidTypePdf: true }
+          const pdfTypes = ['application/pdf','application/x-pdf','application/acrobat','text/pdf','text/x-pdf'];
+          return pdfTypes.includes(fileType) ? null : { invalidTypePdf: true };
         }
       }
       return null;

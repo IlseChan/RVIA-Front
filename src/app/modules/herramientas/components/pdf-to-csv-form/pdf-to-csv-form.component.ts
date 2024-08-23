@@ -70,9 +70,9 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
     const file = control.value;
       if(file){
         const fileType = file.type;
-        const types = ['application/pdf'];
+        const pdfTypes = ['application/pdf','application/x-pdf','application/acrobat','text/pdf','text/x-pdf'];
 
-        return types.includes(fileType) ? null : { invalidTypePdf: true }
+        return pdfTypes.includes(fileType) ? null : { invalidTypePdf: true }
       }
       return null;
   }

@@ -1,17 +1,17 @@
 import { CommonModule  } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { combineLatest, of, Subscription, switchMap, tap } from 'rxjs';
+import { combineLatest, of, Subscription, switchMap } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { Aplication, CheckmarxCSV } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'form-csv',
@@ -78,7 +78,7 @@ export class FormCsvComponent implements OnInit, OnDestroy {
         const fileType = file.type;
         
         if(type === 'csv'){
-          const types = ['text/csv'];
+          const types = ['text/csv','application/csv','application/vnd.ms-excel'];
           return types.includes(fileType) ? null : { invalidTypeCSV: true }
         }
       }
