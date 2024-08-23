@@ -1,14 +1,16 @@
 <main class="m-2">
-  <section>
-    <p-button 
-      label="Volver" 
-      icon="pi pi-arrow-left" 
-      severity="secondary"
-      [text]="true"
-      (onClick)="back()" 
-    />
-    <div class="flex justify-content-center mb-4">
-      <h1 class="inline text-5xl my-0">Nueva aplicación</h1>
+  <section class="flex flex-column md:flex-row  md:align-items-center justify-content-between mb-5">
+    <div class="flex flex-grow-1 align-items-center flex-basis-0">
+      <p-button 
+        label="Volver" 
+        icon="pi pi-arrow-left" 
+        severity="secondary"
+        [text]="true"
+        (onClick)="back()" 
+      />
+    </div>
+    <div class="flex flex-grow-1 align-items-center justify-content-center md:justify-content-start">
+      <h1 class="text-5xl my-0">Nueva aplicación</h1>
     </div>
   </section>
   
@@ -16,7 +18,7 @@
     <p-progressSpinner ariaLabel="loading" />
   </div>
 
-  <ng-template #newAppForm class="main-container mt-5">
+  <ng-template #newAppForm class="main-container mt-6">
     <div class="container-stepper font-medium p-1 mt-2 md:p-4">
       <form [formGroup]="formFiles">
         <p-stepper [linear]="true">
