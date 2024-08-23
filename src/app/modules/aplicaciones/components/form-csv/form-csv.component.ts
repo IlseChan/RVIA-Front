@@ -12,6 +12,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { Aplication, CheckmarxCSV } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
+import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
   selector: 'form-csv',
@@ -36,7 +37,10 @@ export class FormCsvComponent implements OnInit, OnDestroy {
   isUploadFile: boolean = false;
   isLoadingData: boolean = true;
 
-  constructor(private aplicacionService: AplicacionesService,private ref: DynamicDialogRef) {}
+  constructor(
+    private aplicacionService: AplicacionesService,
+    private vldtnSrv: ValidationService,
+    private ref: DynamicDialogRef) {}
   
   ngOnInit(): void {
     this.appSub = combineLatest([
@@ -62,28 +66,11 @@ export class FormCsvComponent implements OnInit, OnDestroy {
   private initForm(): void {
     
     this.formFile = new FormGroup({
-      csvFile: new FormControl(null,[Validators.required,this.fileValidation('csv')]),
+      csvFile: new FormControl(null,[Validators.required,this.vldtnSrv.fileValidation('csv')]),
     });
 
     if(!Array.isArray(this.csvInfo)){
       this.fileName = this.csvInfo.nom_checkmarx;
-    }
-  }
-
-  fileValidation(type:string): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const file = control.value;
-      
-      if(file){
-        const fileType = file.type;
-        
-        if(type === 'csv'){
-          const types = ['text/csv','application/csv','application/vnd.ms-excel'];
-          return types.includes(fileType) ? null : { invalidTypeCSV: true }
-        }
-      }
-
-      return null;
     }
   }
   

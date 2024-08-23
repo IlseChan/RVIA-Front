@@ -15,6 +15,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { Language } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
   selector: 'form-sanitize',
@@ -50,6 +51,7 @@ export class FormSanitizeComponent implements OnInit {
 
   constructor(
     private aplicacionesService: AplicacionesService, 
+    private vldtnSrv: ValidationService,
     private router: Router,
   ){}
   
@@ -70,9 +72,9 @@ export class FormSanitizeComponent implements OnInit {
   private initForm(): void{
     this.formFiles = new FormGroup({
       type:    new FormControl('zip',[Validators.required]),
-      zipFile: new FormControl(null,[this.fileValidation('zip')]),
-      urlGit:  new FormControl(null,[this.isValidGitlabUrl as ValidatorFn]),
-      pdfFile: new FormControl(null,[this.fileValidation('pdf')]),
+      zipFile: new FormControl(null,[this.vldtnSrv.fileValidation('zip')]),
+      urlGit:  new FormControl(null,[this.vldtnSrv.isValidGitlabUrl()]),
+      pdfFile: new FormControl(null,[this.vldtnSrv.fileValidation('pdf')]),
       action:  new FormControl(1,[Validators.required]),
       language: new FormControl(null)
     });
@@ -82,48 +84,7 @@ export class FormSanitizeComponent implements OnInit {
     if(type === 'zip') this.zipInput.nativeElement.click();
     if(type === 'pdf') this.pdfInput.nativeElement.click();
   }
-
-  fileValidation(type:string): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const file = control.value;
-      
-      if(file){
-        const fileType = file.type;
-
-        if(type === 'zip'){
-          const zipTypes = ['application/zip','application/x-zip-compressed','multipart/x-zip','application/x-compressed'];
-          const sevenZipTypes = ['application/x-7z-compressed','application/x-compressed','application/x-7z'];
-          
-          if(fileType === '' || sevenZipTypes.includes(fileType)){
-            const elemts = file.name.split('.');
-            const ext = elemts[elemts.length -1];
-
-            return ext === '7z' ? null : { invalidType7z: true };
-          }
-
-          return zipTypes.includes(fileType) ? null : { invalidTypeZip: true };
-        }
-        
-        if(type === 'pdf'){
-          const pdfTypes = ['application/pdf','application/x-pdf','application/acrobat','text/pdf','text/x-pdf'];
-          return pdfTypes.includes(fileType) ? null : { invalidTypePdf: true };
-        }
-      }
-      return null;
-    }
-  } 
- 
-  isValidGitlabUrl(control: FormControl): ValidationErrors | null {
-    const regex = /^(https?:\/\/)?(www\.)?(github|gitlab)\.com\/[A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+(-[A-Za-z0-9_.-]*)?\.git$/;
-    
-    const value = control.value;
-    if(value){
-      return regex.test(value) ? null : { invalidUrl: true }
-    }
-
-    return null
-  }
-
+  
   onFileSelected(event:any, formOption:string): void {
     this.isUploadFile = true;    
     const file = event.target.files[0];

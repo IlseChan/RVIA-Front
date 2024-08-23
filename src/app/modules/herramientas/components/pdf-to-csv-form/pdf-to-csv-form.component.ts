@@ -14,6 +14,7 @@ import { Aplication, AppsToUseSelect } from '@modules/aplicaciones/interfaces/ap
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { HerramientasService } from '../../services/herramientas.service';
+import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
   selector: 'app-pdf-to-csv-form',
@@ -45,6 +46,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
 
   constructor(
     private aplicacionesService: AplicacionesService, 
+    private vldtnSrv: ValidationService,
     private herramientasService: HerramientasService
   ){}
 
@@ -62,19 +64,8 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   private initForm(): void {
     this.formFile = new FormGroup({
       appId: new FormControl(null,[Validators.required]),
-      pdfFile: new FormControl(null,[Validators.required, this.fileValidation as ValidatorFn]),
+      pdfFile: new FormControl(null,[Validators.required, this.vldtnSrv.fileValidation('pdf')]),
     });
-  }
-
-  private fileValidation(control: FormControl): ValidationErrors | null {
-    const file = control.value;
-      if(file){
-        const fileType = file.type;
-        const pdfTypes = ['application/pdf','application/x-pdf','application/acrobat','text/pdf','text/x-pdf'];
-
-        return pdfTypes.includes(fileType) ? null : { invalidTypePdf: true }
-      }
-      return null;
   }
 
   openSearch(): void {
