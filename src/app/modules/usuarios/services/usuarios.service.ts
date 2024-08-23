@@ -83,7 +83,7 @@ export class UsuariosService {
         tap((resp) => {
           const title = 'Actualización Exitosa';
           const content = `El usuario ${resp.numero_empleado} - ${resp.nom_usuario} con posición 
-            ${resp.position.nom_rol} se actualizó correctamente`
+            ${resp.position.nom_rol} se actualizó correctamente.`
           this.notificationsService.successMessage(title,content);
         }),
         tap(() =>  this.userEditSubject.next(null)),
@@ -98,7 +98,7 @@ export class UsuariosService {
         tap(() => this.changes = true),
         tap(() => {
           const title = 'Usuario eliminado';
-          const content = `El usuario ${user.nom_usuario} se elimino correctamente.`
+          const content = `El usuario ${user.nom_usuario} se eliminó correctamente.`
           this.notificationsService.successMessage(title,content);
         }),
         delay(1000),
@@ -110,9 +110,9 @@ export class UsuariosService {
     const title = 'Error';
     
     const errorsMessages = {
-      DELETEUSERS: `Error al eliminar al usuario ${extra}`,
-      GETUSER: `Error al cargar información. Usuario id: ${extra}`, 
-      GETUSERS: 'Error al obtener los usuarios, intenta de nuevo',
+      DELETEUSERS: `Error al eliminar al usuario ${extra}.`,
+      GETUSER: `Error al cargar información. Usuario id: ${extra}.`, 
+      GETUSERS: 'Error al obtener los usuarios, inténtalo más tarde.',
       UPDATEUSER: `Error al actualizar al usuario ${extra}`
     };
 

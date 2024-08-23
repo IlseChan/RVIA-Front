@@ -44,7 +44,7 @@ export class LoginComponent {
         } else if (err.status === 404) { 
           this.errorMessage = 'Número de empleado no encontrado';
         } else {
-          this.errorMessage = 'Número de empleado o Contraseña incorrectos. Por favor de verificar.';
+          this.errorMessage = 'Número de empleado o contraseña incorrectos. Favor de verificar.';
         }
         this.isLogging = false;
       }

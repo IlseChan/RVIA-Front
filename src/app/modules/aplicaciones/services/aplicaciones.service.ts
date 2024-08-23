@@ -205,7 +205,7 @@ export class AplicacionesService {
         tap(() => {
           const title = 'Estatus actualizado';
           const content = `¡El estado de la aplicación ${app.nom_aplicacion} 
-          se a actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`
+          se ha actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`
           this.notificationsService.successMessage(title,content);
         }),
         catchError(error => this.handleError(error, OriginMethod.UPDATESTATUS,app.nom_aplicacion))
@@ -232,9 +232,9 @@ export class AplicacionesService {
       GETAPPS: 'Error al cargar información', 
       GETCSVAPP: 'Error al cargar información del CSV',
       GETDOWNLOAD: 'Error al descargar el zip',
-      GETLANGUAGES: 'Ha ocurrido un error al cargar información. Intentalo de nuevo.',
-      POSTSAVECSV: `Ocurió un error al guardar el archivo CSV. Inténtalo de nuevo`,
-      POSTSAVEFILE: `Ocurió un error al guardar el aplicativo. Inténtalo de nuevo`,
+      GETLANGUAGES: 'Ha ocurrido un error al cargar información. Inténtalo de nuevo.',
+      POSTSAVECSV: `Ocurrió un error al guardar el archivo CSV. Inténtalo de nuevo`,
+      POSTSAVEFILE: `Ocurrió un error al guardar el aplicativo. Inténtalo de nuevo`,
       UPDATESTATUS: `¡El estado de la aplicación ${extra} no se pudo actualizar!`
     };
 
