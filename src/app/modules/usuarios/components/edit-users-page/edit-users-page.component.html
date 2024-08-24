@@ -1,14 +1,16 @@
 <main class="m-2">
-    <section>
-        <p-button 
+    <section class="flex flex-column md:flex-row  md:align-items-center justify-content-between">
+        <div class="flex flex-grow-1 align-items-center flex-basis-0">
+          <p-button 
             label="Volver" 
             icon="pi pi-arrow-left" 
             severity="secondary"
             [text]="true"
-            (onClick)="back()"
-        />
-        <div class="text-center">
-            <h1 class="inline text-5xl my-0">Modificar Usuario</h1>
+            (onClick)="back()" 
+          />
+        </div>
+        <div class="flex flex-grow-1 align-items-center justify-content-center md:justify-content-start">
+          <h1 class="text-5xl my-0">Modificar Usuario</h1>
         </div>
     </section>
     
@@ -20,11 +22,10 @@
         <section class="flex flex-column p-1 mt-2 md:p-4">
             <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
                 <div class="field grid justify-content-center m-0 py-2">
-                    <p  for="numero_empleado-edit" 
-                        class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
-                            Número de Empleado
+                    <p class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
+                       Número de Empleado
                     </p>
-                    <div class="col-12 md:col-2">
+                    <div class="col-12 md:col-3">
                         <input
                             placeholder="Ej. 98322XXX"
                             class="w-full"
@@ -34,11 +35,10 @@
                     </div>
                 </div>
                 <div class="field grid justify-content-center m-0 py-2">
-                    <p  for="nom_usuario-edit" 
-                        class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
-                            Nombre
+                    <p class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
+                       Nombre
                     </p>
-                    <div class="col-12 md:col-2">
+                    <div class="col-12 md:col-3">
                         <div class="flex flex-column">
                             <input
                                 class="w-full" placeholder="Tu nombre"
@@ -50,18 +50,18 @@
                     </div>
                 </div>
                 <div class="field grid justify-content-center m-0 py-2">
-                    <p  for="position-edit" 
-                        class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
+                    <p class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
                         Tipo de usuario
                     </p>
-                    <div class="col-12 md:col-2">
+                    <div class="col-12 md:col-3">
                         <p-dropdown
                             id="position-edit"
                             formControlName="idu_rol" 
                             [options]="typesUsers"  
                             optionLabel="nom_rol" 
                             optionValue="idu_usuario"
-                            placeholder="Select a type" 
+                            placeholder="Select a type"
+                            [style]="{width : '100%'}" 
                         />
                     </div>
                 </div>     

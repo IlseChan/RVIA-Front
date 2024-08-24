@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, of, tap, throwError } from 'rxjs';
+import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
@@ -7,6 +7,7 @@ import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { Idu_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,8 @@ export class AuthService {
     private http: HttpClient, 
     private aplicacionesServices: AplicacionesService,
     private usuariosService: UsuariosService,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private router: Router
   ) {}
 
   get userLogged(): Usuario | null {
@@ -42,10 +44,12 @@ export class AuthService {
           localStorage.setItem('token', this.currentUser.token)
       }),
       tap(user => {
-        const title = 'Registro exitoso';
-        const content = `¡Se ha registrado exitosamente el usuario ${user.numero_empleado}!  Será redirigido en un momento`
+        const title = 'Registró exitoso';
+        const content = `¡Se ha registrado exitosamente el usuario ${user.numero_empleado}!`
         this.notificationsService.successMessage(title,content);
       }),
+      delay(2000),
+      tap(() => this.router.navigate(['/apps/list-apps'])),
       catchError(this.handleError)
     );
   }
@@ -61,6 +65,8 @@ export class AuthService {
         if(this.currentUser.token)
           localStorage.setItem('token', this.currentUser.token)
       }),
+      delay(1000),
+      tap(() => this.router.navigate(['/apps/list-apps'])),
       catchError(e => throwError(() => e))
     )
   }

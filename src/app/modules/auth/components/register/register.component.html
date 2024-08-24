@@ -93,10 +93,10 @@
       <div class="flex flex-column gap-3 mt-4">
         <p-button 
           type="submit"  
-          [label]="isRegister ? 'Registrando...' : 'Registrar'" 
+          [label]="btnLabel" 
           styleClass="w-full"
           iconPos="right"
-          [disabled]="registerForm.form.invalid || isRegister" 
+          [disabled]="registerForm.form.invalid || isRegister || isReady" 
         />
         <p-button 
           class="text-center" 

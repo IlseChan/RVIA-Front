@@ -1,17 +1,18 @@
 import { CommonModule  } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
-import { combineLatest, of, Subscription, switchMap, tap } from 'rxjs';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { combineLatest, of, Subscription, switchMap } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
+import { DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 import { Aplication, CheckmarxCSV } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
   selector: 'form-csv',
@@ -35,8 +36,12 @@ export class FormCsvComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   isUploadFile: boolean = false;
   isLoadingData: boolean = true;
+  isDisabled: boolean = false;
 
-  constructor(private aplicacionService: AplicacionesService,private ref: DynamicDialogRef) {}
+  constructor(
+    private aplicacionService: AplicacionesService,
+    private vldtnSrv: ValidationService,
+    private ref: DynamicDialogRef) {}
   
   ngOnInit(): void {
     this.appSub = combineLatest([
@@ -62,28 +67,11 @@ export class FormCsvComponent implements OnInit, OnDestroy {
   private initForm(): void {
     
     this.formFile = new FormGroup({
-      csvFile: new FormControl(null,[Validators.required,this.fileValidation('csv')]),
+      csvFile: new FormControl(null,[Validators.required,this.vldtnSrv.fileValidation('csv')]),
     });
 
     if(!Array.isArray(this.csvInfo)){
       this.fileName = this.csvInfo.nom_checkmarx;
-    }
-  }
-
-  fileValidation(type:string): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const file = control.value;
-      
-      if(file){
-        const fileType = file.type;
-        
-        if(type === 'csv'){
-          const types = ['text/csv'];
-          return types.includes(fileType) ? null : { invalidTypeCSV: true }
-        }
-      }
-
-      return null;
     }
   }
   
@@ -123,16 +111,18 @@ export class FormCsvComponent implements OnInit, OnDestroy {
 
   onSubmit(): void { 
     if(this.formFile.invalid) return;
-    if(this.isUploadFile) return;
+    if(this.isUploadFile || this.isDisabled) return;
     this.isUploadFile = true;
 
     this.aplicacionService.saveCSVFile(this.formFile.value, this.app)
     .subscribe({
       next: () => {
-        setTimeout(()=> {
+        this.isDisabled = true;
+        this.isUploadFile = false;
+        setTimeout(() => {
           this.ref.close();
           this.aplicacionService.appCSVSubject.next(null);
-        },1500)
+        }, 1000);
       },
       error: () => {              
         setTimeout(() => {

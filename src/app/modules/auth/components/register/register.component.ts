@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 
 import { AuthService } from '../../services/auth.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -29,6 +30,8 @@ export class RegisterComponent {
   errorMessage: string = '';
 
   isRegister: boolean = false;
+  isReady: boolean = false;
+  btnLabel: string = 'Registrar';
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -41,12 +44,12 @@ export class RegisterComponent {
 
     const usernumberInt = parseInt(trimmedUsernumber, 10);
     if (!((usernumberInt > 90000000 && usernumberInt <= 99999999) || usernumberInt < 100000000)) {
-      this.errorMessage = 'El número de empleado debe ser mayor a 90000000 y menor o igual a 99999999, o menor a 100000000';
+      this.errorMessage = 'El número de empleado debe ser mayor a 90000000 y menor a 100000000';
       return;
     }
 
     if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{12,}$/.test(trimmedPassword)) {
-      this.errorMessage = 'La contraseña debe tener al menos 12 caracteres, una letra mayúscula, un número y un caracter especial';
+      this.errorMessage = 'La contraseña debe tener al menos 12 caracteres, una letra mayúscula, un número y un carácter especial';
       return;
     }
 
@@ -71,16 +74,20 @@ export class RegisterComponent {
       return;
     }
 
+    this.isRegister = true;
+    this.btnLabel = 'Registrando...';
     this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
-      .subscribe({
+    .pipe(
+      finalize(() => this.btnLabel = 'Registrar')
+    )  
+    .subscribe({
         next: () => {
           this.errorMessage = '';
-          setTimeout(() => {
-            this.router.navigate(['/apps/list-apps']);
-          }, 3000);
+          this.isReady = true;
         },
         error: (error: Error) => {
           this.errorMessage = error.message;
+          this.isRegister = false;
         }
       });
   }
