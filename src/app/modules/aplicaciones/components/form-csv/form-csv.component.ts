@@ -36,6 +36,7 @@ export class FormCsvComponent implements OnInit, OnDestroy {
   isLoading: boolean = false;
   isUploadFile: boolean = false;
   isLoadingData: boolean = true;
+  isDisabled: boolean = false;
 
   constructor(
     private aplicacionService: AplicacionesService,
@@ -110,14 +111,18 @@ export class FormCsvComponent implements OnInit, OnDestroy {
 
   onSubmit(): void { 
     if(this.formFile.invalid) return;
-    if(this.isUploadFile) return;
+    if(this.isUploadFile || this.isDisabled) return;
     this.isUploadFile = true;
 
     this.aplicacionService.saveCSVFile(this.formFile.value, this.app)
     .subscribe({
       next: () => {
-        this.ref.close();
-        this.aplicacionService.appCSVSubject.next(null);
+        this.isDisabled = true;
+        this.isUploadFile = false;
+        setTimeout(() => {
+          this.ref.close();
+          this.aplicacionService.appCSVSubject.next(null);
+        }, 1000);
       },
       error: () => {              
         setTimeout(() => {

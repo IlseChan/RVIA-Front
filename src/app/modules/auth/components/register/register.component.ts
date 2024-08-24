@@ -10,6 +10,7 @@ import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 
 import { AuthService } from '../../services/auth.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-register',
@@ -29,6 +30,8 @@ export class RegisterComponent {
   errorMessage: string = '';
 
   isRegister: boolean = false;
+  isReady: boolean = false;
+  btnLabel: string = 'Registrar';
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -72,10 +75,15 @@ export class RegisterComponent {
     }
 
     this.isRegister = true;
+    this.btnLabel = 'Registrando...';
     this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
-      .subscribe({
+    .pipe(
+      finalize(() => this.btnLabel = 'Registrar')
+    )  
+    .subscribe({
         next: () => {
           this.errorMessage = '';
+          this.isReady = true;
         },
         error: (error: Error) => {
           this.errorMessage = error.message;

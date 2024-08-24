@@ -87,7 +87,6 @@ export class UsuariosService {
           this.notificationsService.successMessage(title,content);
         }),
         tap(() =>  this.userEditSubject.next(null)),
-        delay(1500),
         catchError(error => this.handleError(error, OriginMethod.UPDATEUSER,originalUser.nom_usuario))
       );
   }

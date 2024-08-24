@@ -150,7 +150,6 @@ export class AplicacionesService {
       return this.http.post<ResponseAddApp>(`${this.baseUrl}/applications/files`,formData)
         .pipe(
           tap((resp) => this.savedSuccessfully(resp)),
-          delay(2800),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
         );
     }
@@ -191,7 +190,6 @@ export class AplicacionesService {
         const content = `¡El archivo .CSV del aplicativo ${app.nom_aplicacion} se ha subido con éxito!`
         this.notificationsService.successMessage(title,content);
       }),
-      delay(1500),
       catchError(error => this.handleError(error, OriginMethod.POSTSAVECSV))
     );
   }

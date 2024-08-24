@@ -44,8 +44,8 @@ export class AuthService {
           localStorage.setItem('token', this.currentUser.token)
       }),
       tap(user => {
-        const title = 'Registro exitoso';
-        const content = `¡Se ha registrado exitosamente el usuario ${user.numero_empleado}!  Será redirigido en un momento`
+        const title = 'Registró exitoso';
+        const content = `¡Se ha registrado exitosamente el usuario ${user.numero_empleado}!`
         this.notificationsService.successMessage(title,content);
       }),
       delay(2000),
