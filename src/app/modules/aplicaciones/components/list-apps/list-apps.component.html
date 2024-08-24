@@ -67,6 +67,7 @@
                                     placeholder="Select a status"
                                     (onChange)="onChangeStatus($event, app,index)"
                                     [style]="{width : '80%'}"
+                                    [disabled]="isChangeStatus"
                                 />  
                             </ng-template>
                          </td>

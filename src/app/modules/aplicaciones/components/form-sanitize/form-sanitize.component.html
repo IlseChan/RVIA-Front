@@ -1,14 +1,16 @@
 <main class="m-2">
-  <section>
-    <p-button 
-      label="Volver" 
-      icon="pi pi-arrow-left" 
-      severity="secondary"
-      [text]="true"
-      (onClick)="back()" 
-    />
-    <div class="flex justify-content-center mb-4">
-      <h1 class="inline text-5xl my-0">Nueva aplicación</h1>
+  <section class="flex flex-column md:flex-row  md:align-items-center justify-content-between mb-5">
+    <div class="flex flex-grow-1 align-items-center flex-basis-0">
+      <p-button 
+        label="Volver" 
+        icon="pi pi-arrow-left" 
+        severity="secondary"
+        [text]="true"
+        (onClick)="back()" 
+      />
+    </div>
+    <div class="flex flex-grow-1 align-items-center justify-content-center md:justify-content-start">
+      <h1 class="text-5xl my-0">Nueva aplicación</h1>
     </div>
   </section>
   
@@ -16,7 +18,7 @@
     <p-progressSpinner ariaLabel="loading" />
   </div>
 
-  <ng-template #newAppForm class="main-container mt-5">
+  <ng-template #newAppForm class="main-container mt-6">
     <div class="container-stepper font-medium p-1 mt-2 md:p-4">
       <form [formGroup]="formFiles">
         <p-stepper [linear]="true">
@@ -64,7 +66,7 @@
           <p-stepperPanel header="Tipo de proyecto">
             <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
               <div class="flex flex-column justify-content-center align-items-center h-18rem border-round surface-ground px-3">
-                <p>Selecciona el tipo de proyecto que se subira:</p>
+                <p>Selecciona el tipo de proyecto que se subirá:</p>
                 <div class="flex-auto flex justify-content-center align-items-center">
                   <div class="flex align-items-center mx-3 py-2 px-3" *ngFor="let option of radioOps">
                     <p-radioButton 
@@ -169,10 +171,10 @@
           <p-stepperPanel header="Resumen">
             <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
               <div class="flex flex-column justify-content-center align-items-center  h-18rem border-round surface-ground px-3">
-                <p>Se subira tu proyecto son los siguientes elementos: </p>
+                <p>Se subirá tu proyecto son los siguientes elementos: </p>
                 <div>
                   <p>
-                    Accion(es): 
+                    Acción: 
                       <strong>
                         {{ actionsOps[formFiles.controls['action'].value - 1].txt  }}
                       </strong>
@@ -194,7 +196,7 @@
                     </strong>
                   </p>
                   <p>
-                    Projecto en: 
+                    Proyecto en: 
                     <strong>
                       {{ projectName }}
                     </strong>

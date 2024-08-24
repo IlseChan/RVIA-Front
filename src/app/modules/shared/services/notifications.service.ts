@@ -6,7 +6,7 @@ import { MessageService } from 'primeng/api';
 })
 export class NotificationsService {
 
-  lifeNotification: number = 10000; 
+  lifeNotification: number = 3000; 
   constructor(private messageService: MessageService) { }
 
   successMessage(summary: string, detail: string): void {
