@@ -9,7 +9,11 @@ export const appsRoutes: Routes = [
         path: '',
         children: [
             { path: 'home', component: HomeComponent },
-            { path: 'list-apps', component: ListAppsComponent },
+            { 
+                path: 'list-apps', 
+                component: ListAppsComponent,
+                canActivate: [NewAplicationGuard] 
+            },
             { 
                 path: 'new-app', 
                 component: FormSanitizeComponent,

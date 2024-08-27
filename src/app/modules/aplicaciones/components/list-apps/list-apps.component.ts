@@ -74,12 +74,14 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   
   ngOnInit(): void {
     this.user = this.authService.userLogged;
+    if(this.user?.position.nom_rol === Nom_Rol.INVITADO) return
+    
     this.setColumns();
     this.onGetAplicaciones();
   }
 
   setColumns():void {
-    if(this.user && this.user.position.nom_rol !== Nom_Rol.INVITADO){
+    if(this.user){
       this.colums.push('Acciones');
 
       if(this.user.position.nom_rol !== Nom_Rol.USUARIO){

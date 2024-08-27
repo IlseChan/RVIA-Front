@@ -72,7 +72,7 @@ export class FormSanitizeComponent implements OnInit {
   private initForm(): void{
     this.formFiles = new FormGroup({
       type:    new FormControl('zip',[Validators.required]),
-      zipFile: new FormControl(null,[this.vldtnSrv.fileValidation('zip')]),
+      zipFile: new FormControl(null,[this.vldtnSrv.fileValidation('zip'),this.vldtnSrv.noWhitespaceValidation()]),
       urlGit:  new FormControl(null,[this.vldtnSrv.isValidGitlabUrl()]),
       pdfFile: new FormControl(null,[this.vldtnSrv.fileValidation('pdf')]),
       action:  new FormControl(1,[Validators.required]),

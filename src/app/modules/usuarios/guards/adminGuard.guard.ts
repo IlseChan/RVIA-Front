@@ -16,7 +16,7 @@ export const AdminGuard = (): boolean => {
     }
 
     if (currentUser && currentUser.position.nom_rol !== Nom_Rol.ADMINISTRADOR){
-        router.navigate(['/apps/home']);
+        router.navigate(['/apps/list-apps']);
         return false;
     }
 
