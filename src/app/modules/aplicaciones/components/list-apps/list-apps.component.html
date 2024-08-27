@@ -16,11 +16,11 @@
         </a>
     </section>
     
-    <div *ngIf="isLoading" class="card flex justify-content-center my-6">
+    <div *ngIf="isLoading && user!.position.nom_rol !== Nom_Rols.INVITADO" class="card flex justify-content-center my-6">
         <p-progressSpinner ariaLabel="loading" />
     </div>
     
-    <div *ngIf="!isLoading && aplications.length === 0" class="my-6">
+    <div *ngIf="!isLoading && aplications.length === 0 || user!.position.nom_rol === Nom_Rols.INVITADO" class="my-6">
         <h2 class="text-center">
             ¡No hay aplicaciones para listar!
         </h2>
