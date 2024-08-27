@@ -26,8 +26,7 @@
     <div class="px-3 mb-auto">
       <p-divider type="solid"/>
     </div>
-    <div
-      *ngIf="userLogged && userLogged.position.nom_rol === Nom_rol.ADMINISTRADOR" 
+    <div *ngIf="userLogged && userLogged.position.nom_rol === Nom_rol.ADMINISTRADOR" 
       class="px-3">
       <small class="mb-2 text-divider">Administrador</small>
       <ul class="list-none p-0">
@@ -41,10 +40,6 @@
           </a>
         </li>
       </ul>
-    </div>
-    <div
-      *ngIf="userLogged && (userLogged.position.nom_rol === Nom_rol.ADMINISTRADOR  || userLogged.position.nom_rol === Nom_rol.AUTORIZADOR)" 
-      class="px-3">
       <small class="mb-2 text-divider">Herramientas</small>
       <ul class="list-none p-0">
         <li *ngFor="let option of menuTools">
@@ -57,7 +52,7 @@
           </a>
         </li>
       </ul>
-    </div>
+    </div> 
     <div class="logout-button text-center p-3 pt-0 sidebar-logout">
       <p-divider type="solid"/>
       <button 

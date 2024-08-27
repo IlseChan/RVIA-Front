@@ -21,7 +21,6 @@ export class LayoutComponent {
   userLogged!: Usuario | null;
   menuSidebar = [
     { path: '/apps/home', name: 'Inicio', icon: PrimeIcons.HOME},
-    { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
   ];
   menuAdmin = [
     { path: '/users/list-users', name: 'Usuarios', icon: PrimeIcons.USERS },
@@ -40,6 +39,11 @@ export class LayoutComponent {
   
   ngOnInit(): void {
     this.userLogged = this.authService.userLogged;
+    if(this.userLogged?.position.nom_rol !== Nom_Rol.INVITADO){
+      this.menuSidebar.push(
+        { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
+      );
+    }
   }
   
   toggleSidebar(): void {

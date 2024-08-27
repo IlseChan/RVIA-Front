@@ -91,7 +91,7 @@
               </div>
             </ng-template>
           </p-stepperPanel>
-          <p-stepperPanel header="Seleccionar Proyecto">
+          <p-stepperPanel header="Seleccionar proyecto">
             <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
               <div *ngIf="formFiles.get('type')?.value === 'zip'" class="h-18rem border-round surface-ground conteiner-panel">
                 <p class="">Selecciona el archivo <strong>.zip</strong> o <strong>.7z</strong> de tu proyecto</p>
@@ -107,8 +107,11 @@
                     <span *ngIf="isUploadFile" class="mt-2 font-italic text-500" >Cargando ...</span>
                   <p-button *ngIf="formFiles.controls['zipFile'].value !== null" 
                   label="Limpiar" [link]="true" (onClick)="onBack('project')"/>
-                  <span *ngIf="formFiles.controls['zipFile'].errors" class="mt-3 font-italic text-red-500" >Error al cargar el archivo, extensiones validas <strong>.zip</strong> y <strong>.7z</strong></span>
                   <input id="input-zip" type="file" #zipInput accept=".zip, .7z" (change)="onFileSelected($event, 'zipFile')" style="display: none;">
+                </div>
+                <div class="flex-auto flex flex-column justify-content-center align-items-center">
+                  <span *ngIf="formFiles.controls['zipFile'].errors?.['invalidType']" class="mt-1 font-italic text-red-500" >Error al cargar el archivo, extensiones validas <b>.zip</b> y <b>.7z</b></span>
+                  <span *ngIf="formFiles.controls['zipFile'].errors?.['invalidName']" class="mt-1 font-italic text-red-500" >Error al cargar el archivo, el archivo <b> no puede contener espacios</b> en el nombre.</span>
                 </div>
               </div>
               <div *ngIf="formFiles.get('type')?.value === 'git'" class="h-18rem border-round surface-ground conteiner-panel">
@@ -117,6 +120,8 @@
                   <input type="text" pInputText formControlName="urlGit" placeholder="URl de tu proyecto" id="inputUrlGit"/>
                   <p-button *ngIf="formFiles.controls['urlGit'].value !== null" 
                   label="Limpiar" [link]="true" (onClick)="onBack('project')"/>
+                </div>
+                <div class="flex-auto flex flex-column justify-content-center align-items-center">
                   <span *ngIf="formFiles.controls['urlGit'].errors" class="mt-3 font-italic text-red-500" >URL invalida</span>
                 </div>
               </div>
@@ -146,10 +151,12 @@
                   </span>
                   <p-button *ngIf="formFiles.controls['pdfFile'].value !== null" 
                   label="Limpiar" [link]="true" (onClick)="onBack('pdf')"/>
+                  <input id="input-pdf" type="file" #pdfInput accept=".pdf" (change)="onFileSelected($event, 'pdfFile')" style="display: none;">
+                </div>
+                <div class="flex-auto flex flex-column justify-content-center align-items-center">
                   <span *ngIf="formFiles.controls['pdfFile'].errors" class="font-italic text-red-500" >
                     Error al cargar el archivo, extensión valida <strong>.pdf</strong> 
                   </span>
-                  <input id="input-pdf" type="file" #pdfInput accept=".pdf" (change)="onFileSelected($event, 'pdfFile')" style="display: none;">
                 </div>
               </div>
               <div class="flex pt-4 justify-content-between">

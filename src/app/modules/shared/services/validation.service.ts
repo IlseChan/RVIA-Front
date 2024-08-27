@@ -28,12 +28,12 @@ export class ValidationService {
         if(type === 'zip'){
           
           if(fileType === '' || this.sevenZipTypes.includes(fileType)){
-            return ext === '7z' ? null : { invalidType7z: true };
+            return ext === '7z' ? null : { invalidType: true };
           }
 
           return (ext === 'zip' && this.zipTypes.includes(fileType)) 
             ? null
-            : { invalidTypeZip: true };
+            : { invalidType: true };
         }
         
         if(type === 'pdf'){
@@ -71,6 +71,20 @@ export class ValidationService {
 
       return !value ? null : { whitespace: true };
     }
+  }
+  
+  noWhitespaceValidation(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const file = control.value;
+      
+      if(file){
+        const isWhitespace = (file.name || '').trim().length === 0;
+        const isValid = !/\s/.test(file.name);
+        return isWhitespace || !isValid ? { invalidName: true } : null;
+      }
+      
+      return null
+    };
   } 
  
 }
