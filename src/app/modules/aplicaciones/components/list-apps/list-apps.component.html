@@ -5,40 +5,42 @@
         </h1>
         <a
             *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO"
-            pRipple 
+            pRipple
             routerLink="/apps/new-app"
-            pTooltip="Subir una aplicación" 
-            tooltipPosition="left"  
-            tooltipStyleClass="text-sm" 
+            pTooltip="Subir una aplicación"
+            tooltipPosition="left"
+            tooltipStyleClass="text-sm"
             class="p-button font-bold mx-auto mt-4 md:mt-0 md:ml-auto md:mr-0 bnt-new">
             <span class="pi pi-plus-circle mr-2" style="font-size: 1.4rem"></span>
             Nueva
         </a>
     </section>
-    
+
     <div *ngIf="isLoading && user!.position.nom_rol !== Nom_Rols.INVITADO" class="card flex justify-content-center my-6">
         <p-progressSpinner ariaLabel="loading" />
     </div>
-    
+
     <div *ngIf="!isLoading && aplications.length === 0 || user!.position.nom_rol === Nom_Rols.INVITADO" class="my-6">
         <h2 class="text-center">
             ¡No hay aplicaciones para listar!
         </h2>
     </div>
-    
+
     <section *ngIf="!isLoading && aplications.length > 0" class="mt-4">
         <div class="card">
-            <p-table [value]="aplications" [tableStyle]="{ 'min-width': '50rem'}" [lazy]="true" >
+            <p-table [value]="aplications" [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }" [lazy]="true">
                 <ng-template pTemplate="header">
                     <tr>
                         <th *ngFor="let col of colums">
                             {{ col }}
                         </th>
+                        <th>Costos</th> <!-- Nueva columna para costos -->
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-app let-index="rowIndex">
-                    <tr [ngClass]="{'change': isChangeStatus }" >
-                        <td>{{ app.idu_aplicacion }}</td>
+                    <tr [ngClass]="{'change': isChangeStatus }">
+                        <td>{{ app.sequentialId }}</td>
+                        <td>{{ app.idu_proyecto }}</td>
                         <td>{{ app.nom_aplicacion }}</td>
                         <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO && 
                                    user!.position.nom_rol !== Nom_Rols.USUARIO">
@@ -48,7 +50,7 @@
                                    user!.position.nom_rol === Nom_Rols.ADMINISTRADOR; 
                             else authStatus">
                             <p-dropdown
-                                [id]="app.idu_aplicacion + 'selectInputFin'"
+                                [id]="app.idu_proyecto + 'selectInputFin'"
                                 *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else selectStatus"
                                 [options]="[{name: 'Finalizado', code: StatusApps.DONE}]"
                                 [ngModel]="app.applicationstatus.idu_estatus_aplicacion"
@@ -59,71 +61,76 @@
                             />
                             <ng-template #selectStatus>
                                 <p-dropdown
-                                    [id]="app.idu_aplicacion + 'selectInput'"
+                                    [id]="app.idu_proyecto + 'selectInput'"
                                     [options]="statusOpcs"
                                     [ngModel]="app.applicationstatus.idu_estatus_aplicacion"
-                                    optionLabel="name"  
+                                    optionLabel="name"
                                     optionValue="code"
                                     placeholder="Select a status"
                                     (onChange)="onChangeStatus($event, app,index)"
                                     [style]="{width : '80%'}"
                                     [disabled]="isChangeStatus"
-                                />  
+                                />
                             </ng-template>
-                         </td>
-                         <ng-template #authStatus>
+                        </td>
+                        <ng-template #authStatus>
                             <td>
-                                <p-tag 
-                                    styleClass="text-sm" 
-                                    [severity]="app.applicationstatus.idu_estatus_aplicacion | statusAppLabel" 
+                                <p-tag
+                                    styleClass="text-sm"
+                                    [severity]="app.applicationstatus.idu_estatus_aplicacion | statusAppLabel"
                                     [value]="app.applicationstatus.idu_estatus_aplicacion | statusApp"
                                 />
                             </td>
-                         </ng-template>
+                        </ng-template>
                         <td>
-                            <p-tag 
-                                styleClass="text-sm" 
-                                [severity]="app.num_accion | statusAppLabel" 
+                            <p-tag
+                                styleClass="text-sm"
+                                [severity]="app.num_accion | statusAppLabel"
                                 [value]="app.num_accion | actionApp"
                             />
                         </td>
                         <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
-                            <a  *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
-                                pTooltip="Descargar ZIP" 
-                                tooltipPosition="top"
-                                tooltipStyleClass="text-sm" 
-                                class="c-pointer icon-down"
-                                (click)="onDownloadFile(app)">
+                            <a *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
+                               pTooltip="Descargar ZIP"
+                               tooltipPosition="top"
+                               tooltipStyleClass="text-sm"
+                               class="c-pointer icon-down"
+                               (click)="onDownloadFile(app)">
                                 <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
                             </a>
-                            <a  *ngIf="app.num_accion === NumberAction.SANITIZECODE &&
-                                    user!.position.nom_rol !== Nom_Rols.USUARIO"
-                                [pTooltip]="app.checkmarx.length > 0 ? 'Ya se registró csv' : 'Subir PDF'" 
-                                tooltipPosition="top"
-                                tooltipStyleClass="text-sm"
-                                class="mx-2"
-                                [ngClass]="app.checkmarx.length > 0 ?'icon-disable' : 'icon-up'"
-                                (click)="showFormUploadCSV(app)">
-                                <i class="pi pi-file-pdf" style="font-size: 1.6rem"></i>
+                            <a *ngIf="app.num_accion === NumberAction.SANITIZECODE &&
+                                      user!.position.nom_rol !== Nom_Rols.USUARIO"
+                               pTooltip="Subir CSV"
+                               tooltipPosition="top"
+                               tooltipStyleClass="text-sm"
+                               class="c-pointer mx-2"
+                               [ngClass]="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE ? 'icon-disable' : 'icon-up'"
+                               (click)="showFormUploadCSV(app)">
+                                <i class="pi pi-file-arrow-up" style="font-size: 1.6rem"></i>
                             </a>
                             <ng-template #empty>
-                                <a  pTooltip="Descarga no disponible" 
-                                    tooltipPosition="top"
-                                    tooltipStyleClass="text-sm" 
-                                    class="icon-disable">
+                                <a pTooltip="Descarga no disponible"
+                                   tooltipPosition="top"
+                                   tooltipStyleClass="text-sm"
+                                   class="icon-disable">
                                     <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
                                 </a>
                             </ng-template>
+                        </td>
+                        <!-- Columna de Costos con símbolo de dinero centrado hacia la izquierda -->
+                        <td class="costs-column">
+                            <!-- Mostrar símbolo de $ cuando no hay datos -->
+                            <span class="cost-symbol">$</span>
                         </td>
                     </tr>
                 </ng-template>
             </p-table>
         </div>
-        <p-paginator 
-            (onPageChange)="onPageChange($event)" 
+        <p-paginator
+            (onPageChange)="onPageChange($event)"
             [first]="0"
-            [rows]="elementPerPage" 
-            [totalRecords]="totalItems" 
+            [rows]="elementPerPage"
+            [totalRecords]="totalItems"
         />
     </section>
     <p-confirmDialog [style]="{'padding': '10px'}"/>

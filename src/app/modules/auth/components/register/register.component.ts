@@ -15,9 +15,7 @@ import { finalize } from 'rxjs';
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [NgIf, FormsModule,BadgeModule,TooltipModule,ButtonModule,
-    InputTextModule,PasswordModule
-  ],
+  imports: [NgIf, FormsModule, BadgeModule, TooltipModule, ButtonModule, InputTextModule, PasswordModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
@@ -74,13 +72,19 @@ export class RegisterComponent {
       return;
     }
 
+    // Validación de nombre completo (al menos un nombre y dos apellidos con mayúsculas al principio)
+    if (!/^[A-Z][a-z]+(?:\s+[A-Z][a-z]+){2,}$/.test(trimmedUsername)) {
+      this.errorMessage = 'Escribe nombre completo, con al menos un nombre y dos apellidos, todos comenzando con letra mayúscula';
+      return;
+    }
+
     this.isRegister = true;
     this.btnLabel = 'Registrando...';
     this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
-    .pipe(
-      finalize(() => this.btnLabel = 'Registrar')
-    )  
-    .subscribe({
+      .pipe(
+        finalize(() => this.btnLabel = 'Registrar')
+      )
+      .subscribe({
         next: () => {
           this.errorMessage = '';
           this.isReady = true;
