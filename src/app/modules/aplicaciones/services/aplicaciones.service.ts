@@ -15,10 +15,8 @@ import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface'
 })
 export class AplicacionesService {
   private readonly baseUrl = environment.baseURL;
-  private changes: boolean = false;
+  changes: boolean = false;
 
-  appCSVSubject = new BehaviorSubject<Aplication | null>(null);
-  appCSV$: Observable<Aplication | null> = this.appCSVSubject.asObservable();
   appPDFSubject = new BehaviorSubject<Aplication | null>(null);
   appPDF$: Observable<Aplication | null> = this.appPDFSubject.asObservable();
 
@@ -71,7 +69,7 @@ export class AplicacionesService {
     return of(this.allApps)
       .pipe(
         switchMap(infoApps => {
-          if(infoApps.total !== -1){
+          if(infoApps.total !== -1 && !this.changes){
             return of(this.filterSanitationApps([...infoApps.data]))
           }
           return this.getAplicaciones().pipe(
@@ -103,15 +101,16 @@ export class AplicacionesService {
     return data
       .filter(app => app.applicationstatus.idu_estatus_aplicacion === StatusApps.ONHOLD )
       .map( app => {
-        return { value: app.idu_aplicacion, name: `${app.idu_aplicacion} - ${app.nom_aplicacion}`}
+        return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
       })
   }
 
   private filterSanitationApps(data: Aplication[]): AppsToUseSelect[]{
     return data
       .filter(app => app.num_accion === NumberAction.SANITIZECODE)
+      .filter(app => app.checkmarx.length === 0)
       .map( app => {
-        return { value: app.idu_aplicacion, name: `${app.idu_aplicacion} - ${app.nom_aplicacion}`}
+        return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
       })
   }
   

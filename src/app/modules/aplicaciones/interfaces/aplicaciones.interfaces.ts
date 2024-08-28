@@ -23,6 +23,7 @@ export interface Aplication {
     applicationstatus: Applicationstatus;
     checkmarx:         CheckmarxCSV[];
     idu_aplicacion:    number;
+    idu_proyecto:      string;
     nom_aplicacion:    string;
     num_accion:        number;
     opc_lenguaje:      number | null;

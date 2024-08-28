@@ -7,11 +7,7 @@
             <b>Recovery PDF</b> es una herramienta para convertir tu archivo de vulnerabilidades de Checkmarx <b>.pdf</b> a
             un archivo <b>.csv</b> el cual es válido para el uso de <b>RVIA</b>.
         </p>
-        <p>
-            Este archivo generado se podrá subir en las acciones de la tabla de aplicaciones 
-            <span class="icon-up"><i class="pi pi-file-arrow-up" style="font-size: 1.2rem"></i></span>.
-        </p>
-        <p> Además, se guardará dentro del registro de tu aplicación a sanitizar.</p>
+        <p>Este archivo se guardará dentro del registro de tu aplicación a sanitizar.</p>
     </section>
     
     <div *ngIf="isLoadingData" class="card flex justify-content-center my-6">
@@ -29,6 +25,7 @@
                     [options]="appsOpcs"
                     optionValue="value"
                     placeholder="Selecciona una app"
+                    [style]="{width : '20rem'}"
                 />
                 <span *ngIf="formFile.controls['appId'].errors && formFile.controls['appId'].touched"
                     class="font-italic text-red-500 mt-2">
