@@ -53,6 +53,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   statusOpcs = [
     { name: 'En proceso', code : 1 },
     { name: 'En espera',  code : 2 },
+    { name: 'Finalizado',  code : 3 },
     { name: 'Rechazado',  code : 4 },
   ];
 
@@ -74,14 +75,12 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   
   ngOnInit(): void {
     this.user = this.authService.userLogged;
-    if(this.user?.position.nom_rol === Nom_Rol.INVITADO) return
-    
     this.setColumns();
     this.onGetAplicaciones();
   }
 
   setColumns():void {
-    if(this.user){
+    if(this.user && this.user.position.nom_rol !== Nom_Rol.INVITADO){
       this.colums.push('Acciones');
 
       if(this.user.position.nom_rol !== Nom_Rol.USUARIO){
