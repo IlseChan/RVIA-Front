@@ -1,6 +1,4 @@
 .icon{
-    transition: color 0.2s ease;
-
     &-down{
         color: #4edf0f;
     
@@ -14,12 +12,7 @@
     }
 
     &-up{
-        color: #FF0000;
-        cursor: pointer;
-        
-        &:hover{
-            color: #CC0000;
-        }
+        color: #0000ff;
     }
 }
 
@@ -49,4 +42,16 @@
     a{
         pointer-events: none;
     }
+}
+
+.costs-column {
+    text-align: left;  /* Alinea todo el contenido hacia la izquierda */
+    padding-left: 10px; /* Ajusta el espacio a la izquierda según sea necesario */
+}
+.cost-symbol {
+    font-size: 1.2rem;
+    color: #4edf0f;
+    font-weight: bold;
+    margin-left: -10px; /* Ajusta este valor para centrar más hacia la izquierda */
+    display: inline-block;
 }

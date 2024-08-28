@@ -74,7 +74,7 @@ export class RegisterComponent {
 
     // Validación de nombre completo (al menos un nombre y dos apellidos con mayúsculas al principio)
     if (!/^[A-Z][a-z]+(?:\s+[A-Z][a-z]+){2,}$/.test(trimmedUsername)) {
-      this.errorMessage = 'Escribe nombre completo, todos comenzando con letra mayúscula';
+      this.errorMessage = 'Escribe nombre completo, con al menos un nombre y dos apellidos, todos comenzando con letra mayúscula';
       return;
     }
 
