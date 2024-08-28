@@ -22,7 +22,7 @@ import { Nom_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label.pipe';
 import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
-import { FormCsvComponent } from '../form-csv/form-csv.component';
+import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
 
 @Component({
   selector: 'list-apps',
@@ -99,7 +99,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
       next: ({data,total}) => {
         if(!data) return
         this.aplications = [...data];
-        this.totalItems  = total;
+        this.totalItems  = total;    
       },
       error: () => {
         this.aplications = [];
@@ -203,10 +203,11 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   }
 
   showFormUploadCSV(app: Aplication) {
-    if(app.applicationstatus.idu_estatus_aplicacion !== StatusApps.DONE){
-      this.aplicacionService.appCSVSubject.next(app);
-      this.ref = this.dialogService.open(FormCsvComponent, {
-          header: 'Subir archivo .csv',
+    if(app.applicationstatus.idu_estatus_aplicacion !== StatusApps.DONE && 
+      app.checkmarx.length === 0){
+      this.aplicacionService.appPDFSubject.next(app);
+      this.ref = this.dialogService.open(FormUpPdfComponent, {
+          header: 'Subir archivo .pdf',
           width: '50vw',
           contentStyle: { overflow: 'auto' },
           breakpoints: {
@@ -215,6 +216,13 @@ export class ListAppsComponent implements OnInit, OnDestroy {
           },
           maximizable: false,
       });
+
+      this.ref.onClose.subscribe((resp) => {
+        if(resp) {
+          this.currentPage = 1;
+          this.onGetAplicaciones();
+        }
+      })
     }
   }
 

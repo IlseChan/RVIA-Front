@@ -51,6 +51,11 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   ){}
 
   ngOnInit(): void {
+    this.getApps();
+  }
+
+  getApps(){
+    this.isLoadingData = true;
     this.appsSub = this.aplicacionesService.getSanitationApps()
       .subscribe((resp) => {        
         if(resp){
@@ -109,7 +114,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
         if(resp && resp.isValid && resp.checkmarx){
           this.showDownOpc = true;
           this.infoDownloadFile.id = resp.checkmarx.idu_checkmarx ;
-          this.infoDownloadFile.name = resp.checkmarx.nom_checkmarx; 
+          this.infoDownloadFile.name = resp.checkmarx.nom_checkmarx;
         }else if(resp && !resp.isValid){
           this.isUploadFile = false;
           this.showDownOpc = false;
@@ -152,6 +157,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
     this.showDownOpc = false;
     this.infoDownloadFile = { name: '',id: -1 };
     this.isDownload = false;
+    this.getApps();
   }
 
   ngOnDestroy(): void {

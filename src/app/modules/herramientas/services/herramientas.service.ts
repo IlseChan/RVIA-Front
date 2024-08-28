@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormAddonCall, FormPDFtoCSV, OriginMethod } from '../interfaces/herramientas.interfaces';
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
+import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,8 @@ export class HerramientasService {
 
   constructor(
     private http: HttpClient,
-    private notificationsService: NotificationsService
+    private notificationsService: NotificationsService,
+    private aplicacionesService :AplicacionesService
   ) { }
 
   downloadCSVFile(id: number): Observable<Blob> {
@@ -38,6 +40,10 @@ export class HerramientasService {
       tap(resp => {
         if(resp && !resp.isValid){
           this.handleError(new Error('PDF no válido'), OriginMethod.POSTMAKECSVPY)
+        }
+
+        if(resp && resp.isValid && resp.checkmarx){
+          this.aplicacionesService.changes = true;
         }
       }), 
       catchError(error => this.handleError(error, OriginMethod.POSTMAKECSV))

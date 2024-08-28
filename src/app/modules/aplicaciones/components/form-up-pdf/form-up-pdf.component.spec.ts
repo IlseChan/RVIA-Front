@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormCsvComponent } from './form-csv.component';
+import { FormUpPdfComponent } from './form-up-pdf.component';
 
-describe('FormCsvComponent', () => {
-  let component: FormCsvComponent;
-  let fixture: ComponentFixture<FormCsvComponent>;
+describe('FormUpPdfComponent', () => {
+  let component: FormUpPdfComponent;
+  let fixture: ComponentFixture<FormUpPdfComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [FormCsvComponent]
+      imports: [FormUpPdfComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(FormCsvComponent);
+    fixture = TestBed.createComponent(FormUpPdfComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
