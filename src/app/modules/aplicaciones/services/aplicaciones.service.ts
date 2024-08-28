@@ -17,6 +17,8 @@ export class AplicacionesService {
 
   appCSVSubject = new BehaviorSubject<Aplication | null>(null);
   appCSV$: Observable<Aplication | null> = this.appCSVSubject.asObservable();
+  appPDFSubject = new BehaviorSubject<Aplication | null>(null);
+  appPDF$: Observable<Aplication | null> = this.appPDFSubject.asObservable();
 
   allApps: AplicationsData = {
     data: [],

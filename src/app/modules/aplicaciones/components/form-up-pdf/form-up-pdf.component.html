@@ -1,18 +1,11 @@
-
 <main class="px-4 pb-4">
-    <div *ngIf="isLoadingData; else formCSV" class="card flex justify-content-center my-6">
+    <div *ngIf="isLoadingData || app.checkmarx.length > 0; else formPDF" class="card flex justify-content-center my-6">
         <p-progressSpinner ariaLabel="loading" />
     </div>
- 
-    <ng-template #formCSV>
+    
+    <ng-template #formPDF>
         <section class="flex flex-column justify-content-center">
-            <div *ngIf="fileName && !isCsvInfoArray()" class="flex justify-content-center align-items-center">
-                <i class="pi pi-exclamation-triangle mr-3 text-2xl" ></i>
-                <p class="m-0">Actualmente este proyecto ya tiene un archivo .csv llamado <b>{{ fileName }}</b>. 
-                    Puedes subir otro archivo que lo sobreescribirá.
-                </p>
-            </div>
-            <p>Selecciona el archivo <b>.csv</b> de las vulnerabilidades para el aplicativo <b>{{ app.nom_aplicacion }}.</b></p>
+            <p>Selecciona el archivo <b>.pdf</b> de las vulnerabilidades para el aplicativo <b>{{ app.nom_aplicacion }}.</b></p>
             <form [formGroup]="formFile" (ngSubmit)="onSubmit()">
                 <div class="flex-auto flex flex-column justify-content-center align-items-center"> 
                     <p-inputGroup class="mx-auto w-7 mt-4">
@@ -22,23 +15,23 @@
                             (click)="openSearch()">
                         </button>
                         <input type="text" pInputText 
-                          id="inputNameZip"
+                          id="inputNamePDF"
                           placeholder="Selecciona tu archivo" 
                           disabled="true" readonly
-                          [value]="fileName"/>
+                          [value]="formFile.controls['pdfFile'].value?.name ?? ''"/>
                     </p-inputGroup>
-                    <span *ngIf="isLoading" class="mt-2 font-italic text-500">Cargando ...</span>
-                    <span *ngIf="!formFile.controls['csvFile'].errors && formFile.controls['csvFile'].value && !isLoading" 
+                    <span *ngIf="isLoadingFile" class="mt-2 font-italic text-500">Cargando ...</span>
+                    <span *ngIf="!formFile.controls['pdfFile'].errors && formFile.controls['pdfFile'].value && !isLoadingFile" 
                         class="mt-2 text-500">
                             Tamaño: {{ sizeFile.toFixed(2)}} MB 
                     </span>
-                    <span *ngIf="formFile.controls['csvFile'].errors?.['invalidTypeCSV']"
+                    <span *ngIf="formFile.controls['pdfFile'].errors?.['invalidTypePdf']"
                         class="mt-3 font-italic text-red-500">
-                        Error al cargar el archivo, extensiones válidas <b>.csv</b>
+                        Error al cargar el archivo, extensiones válidas <b>.pdf</b>
                     </span>
-                    <input id="input-csv" type="file" accept=".csv" #csvFile (change)="onFileSelected($event)" style="display: none;">
+                    <input id="input-csv" type="file" #pdfFile (change)="onFileSelected($event)" style="display: none;">
                 </div>
-                <div *ngIf="!formFile.controls['csvFile'].errors && formFile.controls['csvFile'].value && !isLoading" 
+                <div *ngIf="!formFile.controls['pdfFile'].errors && formFile.controls['pdfFile'].value && !isLoadingFile" 
                     class="flex justify-content-evenly mt-3">
                     <p-button 
                         label="Cancelar" 

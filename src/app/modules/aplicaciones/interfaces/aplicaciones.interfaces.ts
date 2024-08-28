@@ -21,6 +21,7 @@ export interface OpcsStatus {
 
 export interface Aplication {
     applicationstatus: Applicationstatus;
+    checkmarx:         CheckmarxCSV[];
     idu_aplicacion:    number;
     nom_aplicacion:    string;
     num_accion:        number;

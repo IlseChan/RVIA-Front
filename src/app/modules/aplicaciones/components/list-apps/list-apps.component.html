@@ -98,13 +98,13 @@
                             </a>
                             <a  *ngIf="app.num_accion === NumberAction.SANITIZECODE &&
                                     user!.position.nom_rol !== Nom_Rols.USUARIO"
-                                pTooltip="Subir CSV" 
+                                [pTooltip]="app.checkmarx.length > 0 ? 'Ya se registró csv' : 'Subir PDF'" 
                                 tooltipPosition="top"
                                 tooltipStyleClass="text-sm"
-                                class="c-pointer mx-2"
-                                [ngClass]="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE ? 'icon-disable' : 'icon-up'"
+                                class="mx-2"
+                                [ngClass]="app.checkmarx.length > 0 ?'icon-disable' : 'icon-up'"
                                 (click)="showFormUploadCSV(app)">
-                                <i class="pi pi-file-arrow-up" style="font-size: 1.6rem"></i>
+                                <i class="pi pi-file-pdf" style="font-size: 1.6rem"></i>
                             </a>
                             <ng-template #empty>
                                 <a  pTooltip="Descarga no disponible" 
