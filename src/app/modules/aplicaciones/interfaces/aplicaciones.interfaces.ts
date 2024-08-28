@@ -61,17 +61,17 @@ export interface Language{
 }
 
 export enum OriginMethod {
-    GETAPPS         = 'GETAPPS',
-    GETCSVAPP       = 'GETCSVAPP', 
-    GETDOWNLOAD     = 'GETDOWNLOAD',
-    GETLANGUAGES    = 'GETLANGUAGES',
-    POSTSAVECSV     = 'POSTSAVECSV', 
-    POSTSAVEFILE    = 'POSTSAVEFILE',
-    UPDATESTATUS    = 'UPDATESTATUS', 
+    GETAPPS      = 'GETAPPS',
+    GETCSVAPP    = 'GETCSVAPP', 
+    GETDOWNLOAD  = 'GETDOWNLOAD',
+    GETLANGUAGES = 'GETLANGUAGES',
+    POSTSAVEPDF  = 'POSTSAVEPDF', 
+    POSTSAVEFILE = 'POSTSAVEFILE',
+    UPDATESTATUS = 'UPDATESTATUS', 
 }
 
-export interface FormCSV {
-    csvFile: File
+export interface FormPDF {
+    pdfFile: File
 }
 
 export interface CheckmarxCSV {

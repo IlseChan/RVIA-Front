@@ -48,7 +48,6 @@ export class AuthService {
         const content = `¡Se ha registrado exitosamente el usuario ${user.numero_empleado}!`
         this.notificationsService.successMessage(title,content);
       }),
-      delay(2000),
       tap(() => this.router.navigate(['/apps/list-apps'])),
       catchError(this.handleError)
     );

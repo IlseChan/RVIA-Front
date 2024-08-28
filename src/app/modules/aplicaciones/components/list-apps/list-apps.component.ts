@@ -101,7 +101,6 @@ export class ListAppsComponent implements OnInit, OnDestroy {
         if(!data) return
         this.aplications = [...data];
         this.totalItems  = total;    
-        console.log(data)    
       },
       error: () => {
         this.aplications = [];
@@ -218,6 +217,13 @@ export class ListAppsComponent implements OnInit, OnDestroy {
           },
           maximizable: false,
       });
+
+      this.ref.onClose.subscribe((resp) => {
+        if(resp) {
+          this.currentPage = 1;
+          this.onGetAplicaciones();
+        }
+      })
     }
   }
 

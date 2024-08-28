@@ -2,11 +2,13 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV, FormCSV, 
-  FormProjectWithPDF, Language, NumberAction, OriginMethod, ResponseAddApp, ResponseSaveFile, StatusApps } from '../interfaces/aplicaciones.interfaces';
+import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV,  
+  FormPDF, FormProjectWithPDF, Language, NumberAction, OriginMethod,
+  ResponseAddApp, ResponseSaveFile, StatusApps } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
+import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -179,23 +181,29 @@ export class AplicacionesService {
     return this.handleError(new Error('Error load new app'), OriginMethod.POSTSAVEFILE);
   }
 
-  saveCSVFile(form: FormCSV, app: Aplication): Observable<ResponseSaveFile> {
+  savePDFFile(form: FormPDF, app: Aplication): Observable<any> {
     
     const formData = new FormData();
     formData.append('idu_aplicacion',app.idu_aplicacion.toString());
-    formData.append('file',form.csvFile);
+    formData.append('file',form.pdfFile);
     
-    return this.http.post<ResponseSaveFile>(`${this.baseUrl}/checkmarx`,formData)
+    return this.http.post<CheckmarxPDFCSV>(`${this.baseUrl}/checkmarx/upload-pdf`,formData)
     .pipe(
-      tap(() => {
-        const title = 'Archivo CSV guardado';
-        const content = `¡El archivo .CSV del aplicativo ${app.nom_aplicacion} se ha subido con éxito!`
-        this.notificationsService.successMessage(title,content);
-      }),
-      catchError(error => this.handleError(error, OriginMethod.POSTSAVECSV))
+      tap(resp => {
+        if(resp && !resp.isValid){
+          this.handleError(new Error('PDF no válido'), OriginMethod.POSTSAVEPDF)
+        }
+
+        if(resp && resp.isValid){
+          const title = 'Archivo PDF guardado';
+          const content = `¡El archivo .PDF del aplicativo ${app.nom_aplicacion} se ha subido con éxito!`
+          this.notificationsService.successMessage(title,content);
+          this.changes = true;
+        }
+      }), 
+      catchError(error => this.handleError(error, OriginMethod.POSTSAVEPDF))
     );
   }
-
   //PATCH
   setNewStatus(app: Aplication, newStatus: number): Observable<Aplication> {
     const body = { estatusId: newStatus };
@@ -233,7 +241,7 @@ export class AplicacionesService {
       GETCSVAPP: 'Error al cargar información del CSV',
       GETDOWNLOAD: 'Error al descargar el zip',
       GETLANGUAGES: 'Ha ocurrido un error al cargar información. Inténtalo de nuevo.',
-      POSTSAVECSV: `Ocurrió un error al guardar el archivo CSV. Inténtalo de nuevo`,
+      POSTSAVEPDF: `Ocurrió un error al guardar el archivo PDF. Inténtalo de nuevo`,
       POSTSAVEFILE: `Ocurrió un error al guardar el aplicativo. Inténtalo de nuevo`,
       UPDATESTATUS: `¡El estado de la aplicación ${extra} no se pudo actualizar!`
     };

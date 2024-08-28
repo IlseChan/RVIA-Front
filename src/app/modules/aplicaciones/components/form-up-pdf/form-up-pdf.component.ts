@@ -88,26 +88,24 @@ export class FormUpPdfComponent implements OnInit, OnDestroy{
     if(this.formFile.invalid) return;
     if(this.isUploadFile || this.isDisabled) return;
     this.isUploadFile = true;
-
-    console.log('Se subirá');
-    console.log(this.formFile.value);
-
-    // this.aplicacionService.saveCSVFile(this.formFile.value, this.app)
-    // .subscribe({
-    //   next: () => {
-    //     this.isDisabled = true;
-    //     this.isUploadFile = false;
-    //     setTimeout(() => {
-    //       this.ref.close();
-    //       this.aplicacionService.appCSVSubject.next(null);
-    //     }, 1000);
-    //   },
-    //   error: () => {              
-    //     setTimeout(() => {
-    //       this.isUploadFile = false
-    //     },3200);
-    //   }
-    // });
+    
+    this.aplicacionService.savePDFFile(this.formFile.value, this.app)
+    .subscribe({
+      next: (resp) => {
+        if(resp && resp.isValid && resp.checkmarx){
+          this.isDisabled = true;
+          this.isUploadFile = false;
+          this.ref.close(true);
+          this.aplicacionService.appPDFSubject.next(null);
+        }else if(resp && !resp.isValid){
+          this.isUploadFile = false;
+          this.isDisabled = false;
+        }
+      },
+      error: () => {              
+        this.isUploadFile = false;
+      }
+    });
   }
   
   ngOnDestroy(): void {
