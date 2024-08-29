@@ -12,7 +12,7 @@ export class ValidationService {
   private csvTypes = ['text/csv','application/csv','application/vnd.ms-excel'];
   
   private rgxUrlGit = /^(https?:\/\/)?(www\.)?(github|gitlab)\.com\/[\w.-]+\/[\w.-]+(-[\w.-]*)?\.git$/;
-         
+  private rgxNameUser = /^[A-Z][a-z]+(?:\s+[A-Z][a-z]+){2,}$/;       
 
   constructor() { }
 
@@ -86,5 +86,16 @@ export class ValidationService {
       return null
     };
   } 
+
+  completeUserName(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {      
+      const value = control.value;
+      if(value){
+        return this.rgxNameUser.test(value) ? null : { invalidName: true }
+      }
+
+      return null
+    }
+  }
  
 }

@@ -1,8 +1,15 @@
-.main-container, .container-stepper{
+.main-container, .stepper-opcs{
   background-color: #fff;
 }
 
-.container-stepper{
+.stepper-panel {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-inline: 1rem;
+  margin-top: 0.5rem;
+
   .label-btn{
     border: none; 
     cursor: pointer;
@@ -12,12 +19,4 @@
       width: 50px;
     }
   }
-
-  .conteiner-panel{
-    align-items: center;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding-inline: 1rem;
-  }
-}  
+}

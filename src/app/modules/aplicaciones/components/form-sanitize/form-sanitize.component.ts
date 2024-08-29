@@ -1,20 +1,20 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
-import { StepperModule } from 'primeng/stepper';
-import { RadioButtonModule } from 'primeng/radiobutton';
+import { RadioButtonClickEvent, RadioButtonModule } from 'primeng/radiobutton';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { StepsModule } from 'primeng/steps';
 
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { Language } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { Language, OptAction, OptRadio, OptStepper } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
@@ -23,9 +23,9 @@ import { ValidationService } from '@modules/shared/services/validation.service';
   templateUrl: './form-sanitize.component.html',
   styleUrl: './form-sanitize.component.scss',
   imports: [CommonModule,ButtonModule,TooltipModule,
-    StepperModule,RadioButtonModule,InputTextModule,ReactiveFormsModule,
-    InputGroupModule,InputGroupAddonModule,FormsModule, DropdownModule,
-    ProgressSpinnerModule]
+    RadioButtonModule,InputTextModule,ReactiveFormsModule,
+    InputGroupModule,InputGroupAddonModule, DropdownModule,
+    ProgressSpinnerModule,StepsModule]
 })
 export class FormSanitizeComponent implements OnInit {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
@@ -35,12 +35,12 @@ export class FormSanitizeComponent implements OnInit {
   isUploadFile: boolean = false;
   isUploadProject: boolean = false;
 
-  radioOps = [
+  radioOps: OptRadio[] = [
     { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
     { value: 'git', image: 'gitlab.webp', tooltip: 'URL de Gitlab o Github'}
   ];
 
-  actionsOps = [
+  actionsOps: OptAction[] = [
     { value: 1, txt: 'Actualizar código (Migración de versión a la más actual del mismo lenguaje)' },
     { value: 2, txt: 'Sanitizar código (Mitigación de vulnerabilidades checkmarx)' },
     { value: 3, txt: 'Migrar código (Migración de un lenguaje de programación a otro)' },
@@ -49,6 +49,16 @@ export class FormSanitizeComponent implements OnInit {
   isLoading: boolean = true;
   lenguagesOps: Language[] = [];
 
+  activeIndex: number = 0;
+  selectedValue: number = 1;
+  readonly itemsBase: OptStepper[] = [
+    { label: 'Acciones'},
+    { label: 'Tipo de proyecto'},
+    { label: 'Seleccionar proyecto'},
+    { label: 'Resumen'},
+  ]; 
+  items: OptStepper[] = [...this.itemsBase];
+
   constructor(
     private aplicacionesService: AplicacionesService, 
     private vldtnSrv: ValidationService,
@@ -56,7 +66,6 @@ export class FormSanitizeComponent implements OnInit {
   ){}
   
   ngOnInit(): void {
-
     this.aplicacionesService.getLanguages()
     .subscribe({
       next: (resp) => {
@@ -100,29 +109,78 @@ export class FormSanitizeComponent implements OnInit {
     }
   } 
 
-  isInputValid(): boolean {
-    const opt = this.formFiles.controls['type'].value;
-    const formZip = this.formFiles.controls['zipFile'];
-    const zipValid = !formZip.errors && formZip.value !== null;
-    const formGit = this.formFiles.controls['urlGit'];
-    const gitValid = !formGit.errors && formGit.value !== null;
+  changeRadioAction({ value }: RadioButtonClickEvent): void {
+    if(this.selectedValue === value) return;
     
-    return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
+    this.selectedValue = value;
+    if(this.selectedValue === 2){
+      let itemsOpc = [...this.itemsBase];
+      itemsOpc.splice(3,0, {label: 'Seleccionar PDF*'});
+      this.items = [...itemsOpc];       
+    }else if(this.items.length === 5){
+      this.items = [...this.itemsBase];
+    }
   }
 
-  onBack(step: string): void {
-    if(step === 'project'){
+  changeStep(value: number) {
+    if(this.activeIndex === 1 && value < 0){
+      this.cleanInput('type');
+    }
+
+    if(this.activeIndex === 2 && value < 0){
+      this.cleanInput('project');
+    }
+
+    if(this.activeIndex === 3 && this.selectedValue === 2 && value < 0){
+      this.cleanInput('pdf');
+    }
+
+    this.activeIndex += value;
+  }
+
+  cleanInput(type: string): void {
+    if(type === 'project'){
       this.formFiles.patchValue({
         zipFile: null,
         urlGit: null
       })
-      return;
     }
 
-    if(step === 'pdf'){
+    if(type === 'pdf'){
       this.formFiles.patchValue({ pdfFile: null });
-      return;
     }
+
+    if(type === 'type'){
+      this.formFiles.patchValue({ type: 'zip' });
+    }
+  }
+
+  checkDisabled(): boolean {
+    
+    if(this.activeIndex === 0 && this.selectedValue === 3){
+     return this.formFiles.controls['language'].value === null
+    }
+
+    if(this.activeIndex === 1){
+     return !(this.formFiles.controls['type'].value === 'zip' 
+        || this.formFiles.controls['type'].value === 'git')  
+    }
+
+    if(this.activeIndex === 2){
+      const opt = this.formFiles.controls['type'].value;
+      const formZip = this.formFiles.controls['zipFile'];
+      const zipValid = !formZip.errors && formZip.value !== null;
+      const formGit = this.formFiles.controls['urlGit'];
+      const gitValid = !formGit.errors && formGit.value !== null;
+    
+      return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
+    }
+
+    if(this.activeIndex === 3 && this.selectedValue === 2){
+      return !!this.formFiles.controls['pdfFile'].errors 
+    }
+
+    return false;
   }
 
   get projectName(): string {
@@ -137,7 +195,28 @@ export class FormSanitizeComponent implements OnInit {
     return 'error'
   }
 
-  uploadFiles(): void{
+  get projectAction(): string {
+    return this.actionsOps[this.selectedValue - 1].txt
+  }
+
+  get projectLanguage(): string {
+    const num = this.formFiles.controls['language'].value - 1;
+    return this.lenguagesOps[num].nom_lenguaje
+  }
+
+  get projectType(): string {
+    return this.formFiles.controls['type'].value === 'zip' 
+      ? this.radioOps[0].tooltip 
+      : this.radioOps[1].tooltip 
+  }
+
+  get projectPDF(): string {
+    return this.formFiles.controls['pdfFile'].value 
+      ? this.formFiles.controls['pdfFile'].value.name 
+      : 'No aplica'
+  }
+
+  uploadFiles(): void {
     if(this.isUploadProject) return;
 
     this.isUploadProject = true;
@@ -154,14 +233,12 @@ export class FormSanitizeComponent implements OnInit {
           this.back();
         },
         error: () => {      
-          setTimeout(() => {
-            this.isUploadProject = false
-          },3200);
+          this.isUploadProject = false
         }
       });
   }
 
-  back(): void{
+  back(): void {
     this.router.navigate(['apps/list-apps'],{ replaceUrl: true });
   }
 }
