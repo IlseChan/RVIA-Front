@@ -1,7 +1,7 @@
 <main class="m-2">
     <section class="flex flex-column mt-3 md:flex-row">
         <h1 class="inline text-4xl text-center my-0 md:text-5xl md:text-left">
-            Lista de Aplicaciones
+            Lista de aplicaciones
         </h1>
         <a
             *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO"
@@ -12,7 +12,7 @@
             tooltipStyleClass="text-sm"
             class="p-button font-bold mx-auto mt-4 md:mt-0 md:ml-auto md:mr-0 bnt-new">
             <span class="pi pi-plus-circle mr-2" style="font-size: 1.4rem"></span>
-            Nueva
+            Nueva aplicación
         </a>
     </section>
 
@@ -98,15 +98,16 @@
                                (click)="onDownloadFile(app)">
                                 <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
                             </a>
-                            <a *ngIf="app.num_accion === NumberAction.SANITIZECODE &&
-                                      user!.position.nom_rol !== Nom_Rols.USUARIO"
-                               pTooltip="Subir CSV"
-                               tooltipPosition="top"
-                               tooltipStyleClass="text-sm"
-                               class="c-pointer mx-2"
-                               [ngClass]="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE ? 'icon-disable' : 'icon-up'"
-                               (click)="showFormUploadCSV(app)">
-                                <i class="pi pi-file-arrow-up" style="font-size: 1.6rem"></i>
+                            <a  *ngIf="app.num_accion === NumberAction.SANITIZECODE &&
+                                    user!.position.nom_rol !== Nom_Rols.USUARIO"
+                                [pTooltip]="app.checkmarx.length > 0 ? 'Ya se registró csv' : 'Subir PDF'" 
+                                tooltipPosition="top"
+                                tooltipStyleClass="text-sm"
+                                class=" mx-2"
+                                [ngClass]="(app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE || app.checkmarx.length > 0) ? 'icon-disable' : 'icon-up'"
+                                class="mx-2"
+                                (click)="showFormUploadPDF(app)">
+                                <i class="pi pi-file-pdf" style="font-size: 1.6rem"></i>
                             </a>
                             <ng-template #empty>
                                 <a pTooltip="Descarga no disponible"
