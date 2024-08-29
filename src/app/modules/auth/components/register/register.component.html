@@ -3,7 +3,7 @@
     <h2 class="text-center mt-0 mb-4">Registro</h2>
     <form (ngSubmit)="onRegister()" #registerForm="ngForm">
       <div class="flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Número de Empleado</p>
+        <p class="m-0 font-bold">Número de empleado</p>
         <input 
           pInputText
           id="usernumber-reg"
@@ -16,7 +16,7 @@
         />
       </div>
       <div class="flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Nombre de Usuario</p>
+        <p class="m-0 font-bold">Nombre de usuario</p>
         <input 
           pInputText
           id="username-reg"
@@ -24,12 +24,12 @@
           aria-describedby="username-reg-input"
           [(ngModel)]="username" 
           required
-          placeholder="Nombre Completo"
+          placeholder="Nombre completo"
           autocomplete="off"
         />
       </div>
       <div class="flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Correo Electrónico</p>
+        <p class="m-0 font-bold">Correo electrónico</p>
         <input 
           pInputText
           type="email"
@@ -72,7 +72,7 @@
         />
       </div>
       <div class=" flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Confirmar Contraseña</p>
+        <p class="m-0 font-bold">Confirmar contraseña</p>
         <p-password 
           inputId="passworduserconf-reg"
           name="passworduserconf-reg"
@@ -100,7 +100,7 @@
         />
         <p-button 
           class="text-center" 
-          label="Iniciar Sesión" 
+          label="Iniciar sesión" 
           [link]="true" 
           (onClick)="onBack()"/>
       </div>

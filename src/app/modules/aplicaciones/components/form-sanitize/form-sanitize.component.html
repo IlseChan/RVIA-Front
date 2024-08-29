@@ -127,7 +127,10 @@
               </div>
               <div class="flex pt-4 justify-content-between">
                 <p-button label="Regresar" [outlined]="true" 
-                icon="pi pi-arrow-left" (onClick)="prevCallback.emit()"/>
+                  icon="pi pi-arrow-left" 
+                  (onClick)="prevCallback.emit()"
+                  (onClick)="onBack('project')"
+                />
                 <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right"
                       [disabled]="isInputValid()" 
                       [outlined]="isInputValid()"
@@ -163,6 +166,7 @@
                 <p-button label="Regresar" icon="pi pi-arrow-left" 
                     *ngIf="!isUploadProject"  [outlined]="true"
                     (onClick)="prevCallback.emit()" 
+                    (onClick)="onBack('pdf')"
                     />
                   <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right"
                     [disabled]="formFiles.controls['pdfFile'].errors"

@@ -15,7 +15,7 @@
     <section *ngIf="!isLoadingData"> 
         <form [formGroup]="formIA" (ngSubmit)="onSubmit()">
             <section class="flex flex-column align-items-center mb-3">
-                <p>Selecciona el aplicativo a a trabajar:</p>
+                <p>Selecciona el aplicativo a trabajar:</p>
                 <p-dropdown
                     id="select-apps"
                     formControlName="idu_aplicacion"

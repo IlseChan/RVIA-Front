@@ -21,7 +21,9 @@ export interface OpcsStatus {
 
 export interface Aplication {
     applicationstatus: Applicationstatus;
+    checkmarx:         CheckmarxCSV[];
     idu_aplicacion:    number;
+    idu_proyecto:      string;
     nom_aplicacion:    string;
     num_accion:        number;
     opc_lenguaje:      number | null;
@@ -60,17 +62,17 @@ export interface Language{
 }
 
 export enum OriginMethod {
-    GETAPPS         = 'GETAPPS',
-    GETCSVAPP       = 'GETCSVAPP', 
-    GETDOWNLOAD     = 'GETDOWNLOAD',
-    GETLANGUAGES    = 'GETLANGUAGES',
-    POSTSAVECSV     = 'POSTSAVECSV', 
-    POSTSAVEFILE    = 'POSTSAVEFILE',
-    UPDATESTATUS    = 'UPDATESTATUS', 
+    GETAPPS      = 'GETAPPS',
+    GETCSVAPP    = 'GETCSVAPP', 
+    GETDOWNLOAD  = 'GETDOWNLOAD',
+    GETLANGUAGES = 'GETLANGUAGES',
+    POSTSAVEPDF  = 'POSTSAVEPDF', 
+    POSTSAVEFILE = 'POSTSAVEFILE',
+    UPDATESTATUS = 'UPDATESTATUS', 
 }
 
-export interface FormCSV {
-    csvFile: File
+export interface FormPDF {
+    pdfFile: File
 }
 
 export interface CheckmarxCSV {

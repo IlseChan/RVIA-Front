@@ -41,9 +41,9 @@ export class FormSanitizeComponent implements OnInit {
   ];
 
   actionsOps = [
-    { value: 1, txt: 'Actualizar código' },
-    { value: 2, txt: 'Sanitizar código' },
-    { value: 3, txt: 'Migrar código' },
+    { value: 1, txt: 'Actualizar código (Migración de versión a la más actual del mismo lenguaje)' },
+    { value: 2, txt: 'Sanitizar código (Mitigación de vulnerabilidades checkmarx)' },
+    { value: 3, txt: 'Migrar código (Migración de un lenguaje de programación a otro)' },
   ];
 
   isLoading: boolean = true;
