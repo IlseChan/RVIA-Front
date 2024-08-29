@@ -1,11 +1,10 @@
 import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
-import { StepperModule } from 'primeng/stepper';
 import { RadioButtonClickEvent, RadioButtonModule } from 'primeng/radiobutton';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -14,9 +13,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { StepsModule } from 'primeng/steps';
 
-
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { Language } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { Language, OptAction, OptRadio, OptStepper } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
@@ -26,8 +24,8 @@ import { ValidationService } from '@modules/shared/services/validation.service';
   styleUrl: './form-sanitize.component.scss',
   imports: [CommonModule,ButtonModule,TooltipModule,
     RadioButtonModule,InputTextModule,ReactiveFormsModule,
-    InputGroupModule,InputGroupAddonModule,FormsModule, DropdownModule,
-    ProgressSpinnerModule,StepsModule,StepperModule]
+    InputGroupModule,InputGroupAddonModule, DropdownModule,
+    ProgressSpinnerModule,StepsModule]
 })
 export class FormSanitizeComponent implements OnInit {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
@@ -37,12 +35,12 @@ export class FormSanitizeComponent implements OnInit {
   isUploadFile: boolean = false;
   isUploadProject: boolean = false;
 
-  radioOps = [
+  radioOps: OptRadio[] = [
     { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
     { value: 'git', image: 'gitlab.webp', tooltip: 'URL de Gitlab o Github'}
   ];
 
-  actionsOps = [
+  actionsOps: OptAction[] = [
     { value: 1, txt: 'Actualizar código (Migración de versión a la más actual del mismo lenguaje)' },
     { value: 2, txt: 'Sanitizar código (Mitigación de vulnerabilidades checkmarx)' },
     { value: 3, txt: 'Migrar código (Migración de un lenguaje de programación a otro)' },
@@ -53,13 +51,13 @@ export class FormSanitizeComponent implements OnInit {
 
   activeIndex: number = 0;
   selectedValue: number = 1;
-  readonly itemsBase = [
+  readonly itemsBase: OptStepper[] = [
     { label: 'Acciones'},
     { label: 'Tipo de proyecto'},
     { label: 'Seleccionar proyecto'},
     { label: 'Resumen'},
   ]; 
-  items: any[] = [...this.itemsBase];
+  items: OptStepper[] = [...this.itemsBase];
 
   constructor(
     private aplicacionesService: AplicacionesService, 
@@ -197,6 +195,27 @@ export class FormSanitizeComponent implements OnInit {
     return 'error'
   }
 
+  get projectAction(): string {
+    return this.actionsOps[this.selectedValue - 1].txt
+  }
+
+  get projectLanguage(): string {
+    const num = this.formFiles.controls['language'].value - 1;
+    return this.lenguagesOps[num].nom_lenguaje
+  }
+
+  get projectType(): string {
+    return this.formFiles.controls['type'].value === 'zip' 
+      ? this.radioOps[0].tooltip 
+      : this.radioOps[1].tooltip 
+  }
+
+  get projectPDF(): string {
+    return this.formFiles.controls['pdfFile'].value 
+      ? this.formFiles.controls['pdfFile'].value.name 
+      : 'No aplica'
+  }
+
   uploadFiles(): void {
     if(this.isUploadProject) return;
 
@@ -214,14 +233,12 @@ export class FormSanitizeComponent implements OnInit {
           this.back();
         },
         error: () => {      
-          setTimeout(() => {
-            this.isUploadProject = false
-          },3200);
+          this.isUploadProject = false
         }
       });
   }
 
-  back(): void{
+  back(): void {
     this.router.navigate(['apps/list-apps'],{ replaceUrl: true });
   }
 }

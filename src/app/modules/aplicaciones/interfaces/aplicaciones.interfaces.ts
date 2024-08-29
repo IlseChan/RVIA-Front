@@ -95,3 +95,18 @@ export interface ResponseAddApp {
     checkmarx?:     CheckmarxInfo;
     esSanitizacion: boolean;
 }
+
+export interface OptStepper {
+    label: string;
+}
+
+export interface OptRadio{
+    image:   string;
+    tooltip: string;
+    value:   string;
+}
+
+export interface OptAction{
+    txt:   string;
+    value: number;
+}

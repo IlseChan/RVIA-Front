@@ -39,7 +39,7 @@
               </label>
             </div>
           </div>
-          <div *ngIf="formFiles.controls['action'].value === 3" class="flex flex-column justify-content-center align-items-center mb-3">
+          <div *ngIf="formFiles.get('action')?.value === 3" class="flex flex-column justify-content-center align-items-center mb-3">
             <p>Selecciona el lenguaje al que se quiere migrar:</p>
             <div class="w-16rem"> 
               <p-dropdown 
@@ -52,11 +52,11 @@
               />
             </div>
             <span class="font-italic text-red-500 mt-2"
-              *ngIf="formFiles.controls['language'].value === null && formFiles.controls['language'].touched" >
+              *ngIf="formFiles.get('language')?.value === null && formFiles.get('language')?.touched" >
                 Debes seleccionar un lenguaje.
             </span>
           </div>
-        </section>
+        </section><!-- Panel Accion del proyecto -->
 
         <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground">
           <p>Selecciona el tipo de proyecto que se subirá:</p>
@@ -76,7 +76,7 @@
               </label>
             </div>
           </div>
-        </section>
+        </section><!-- Panel Tipo de proyecto -->
 
         <section *ngIf="activeIndex === 2" class="stepper-panel h-23rem border-round surface-ground">
           <div *ngIf="formFiles.get('type')?.value === 'zip'">
@@ -89,19 +89,19 @@
                     id="inputNameZip"
                     placeholder="Selecciona tu proyecto" 
                     readonly disabled="true"
-                    [value]="formFiles.controls['zipFile'].value?.name ?? ''"/>
+                    [value]="formFiles.get('zipFile')?.value?.name ?? ''"/>
                 </p-inputGroup>
               </div>
               <span *ngIf="isUploadFile" class="mt-2 font-italic text-500" >Cargando ...</span>
-              <p-button *ngIf="formFiles.controls['zipFile'].value !== null && !isUploadFile" 
+              <p-button *ngIf="formFiles.get('zipFile')?.value !== null && !isUploadFile" 
                 label="Limpiar" [link]="true" (onClick)="cleanInput('project')"/>
               <input id="input-zip" type="file" #zipInput accept=".zip, .7z" (change)="onFileSelected($event, 'zipFile')" style="display: none;">
             </div>
             <div class="flex-auto flex flex-column justify-content-center align-items-center">
-              <span *ngIf="formFiles.controls['zipFile'].errors?.['invalidType']" class="mt-1 font-italic text-red-500">
+              <span *ngIf="formFiles.get('zipFile')?.errors?.['invalidType']" class="mt-1 font-italic text-red-500">
                 Error al cargar el archivo, extensiones validas <b>.zip</b> y <b>.7z</b>
               </span>
-              <span *ngIf="formFiles.controls['zipFile'].errors?.['invalidName']" class="mt-1 font-italic text-red-500">
+              <span *ngIf="formFiles.get('zipFile')?.errors?.['invalidName']" class="mt-1 font-italic text-red-500">
                 Error al cargar el archivo, el archivo <b> no puede contener espacios</b> en el nombre.
               </span>
             </div>
@@ -110,16 +110,16 @@
             <p class="text-center">Ingresa la <b>URL</b> del repositorio de tu proyecto en Gitlab o Github:</p>
             <div class="flex-auto flex flex-column justify-content-center align-items-center">
               <input type="text" pInputText formControlName="urlGit" placeholder="URl de tu proyecto" id="inputUrlGit"/>
-              <p-button *ngIf="formFiles.controls['urlGit'].value !== null" 
+              <p-button *ngIf="formFiles.get('urlGit')?.value !== null" 
                 label="Limpiar" [link]="true" (onClick)="cleanInput('project')"/>
             </div>
             <div class="flex-auto flex flex-column justify-content-center align-items-center">
-              <span *ngIf="formFiles.controls['urlGit'].errors" class="mt-3 font-italic text-red-500">
+              <span *ngIf="formFiles.get('urlGit')?.errors" class="mt-3 font-italic text-red-500">
                 URL inválida.
               </span>
             </div>
           </div>
-        </section>
+        </section> <!-- Panel Projecto zip/7z o github/gitlab-->
 
         <section *ngIf="activeIndex === 3 && selectedValue === 2" class="stepper-panel h-23rem border-round surface-ground">
           <div class="flex flex-column align-items-center justify-content-center">
@@ -129,16 +129,16 @@
                 <button type="button" pButton label="Buscar" (click)="triggerFileInput('pdf')"></button>
                 <input type="text" pInputText placeholder="Selecciona tu pdf"
                 readonly disabled="true" id="inputpdfFile"
-                [value]="formFiles.controls['pdfFile'].value?.name ?? ''"/>
+                [value]="formFiles.get('pdfFile')?.value.name ?? ''"/>
               </p-inputGroup>
             </div>
             <span *ngIf="isUploadFile" class="mt-2 font-italic text-500" >
               Cargando ...
             </span>
-            <p-button *ngIf="formFiles.controls['pdfFile'].value !== null && !isUploadFile" 
+            <p-button *ngIf="formFiles.get('pdfFile')?.value !== null && !isUploadFile" 
               label="Limpiar" [link]="true" (onClick)="cleanInput('pdf')"/>
             <input id="input-pdf" type="file" #pdfInput accept=".pdf" (change)="onFileSelected($event, 'pdfFile')" style="display: none;">
-            <span *ngIf="formFiles.controls['pdfFile'].errors" class="mt-4 font-italic text-red-500" >
+            <span *ngIf="formFiles.get('pdfFile')?.errors" class="mt-4 font-italic text-red-500" >
               Error al cargar el archivo, extensión valida <strong>.pdf</strong> 
             </span>
             <div class="flex mt-5 justify-content-center">
@@ -147,42 +147,23 @@
               </span>
             </div>
           </div>
-        </section>
+        </section><!-- Panel PDF opcional -->
         
         <section *ngIf="(activeIndex === 3  && selectedValue !== 2) || (activeIndex === 4  && selectedValue === 2) " 
           class="stepper-panel h-23rem border-round surface-ground">
           <p>Se subirá tu proyecto son los siguientes elementos: </p>
           <div>
-            <p>Acción: <b>{{ actionsOps[selectedValue - 1].txt  }}</b></p>
+            <p>Acción: <b>{{ projectAction  }}</b></p>
             <p *ngIf="selectedValue === 3 && formFiles.get('language')?.value !== null">
-              Lenguaje para migrar: 
-              <b>
-                {{ lenguagesOps[formFiles.controls['language'].value - 1].nom_lenguaje }}
-              </b>
+              Lenguaje para migrar: <b>{{ projectLanguage }}</b>
             </p>
-            <p>
-              Tipo de proyecto: 
-              <b>
-                {{ 
-                  formFiles.controls['type'].value === 'zip' 
-                  ? radioOps[0].tooltip 
-                  : radioOps[1].tooltip 
-                }}
-              </b>
-            </p>
+            <p>Tipo de proyecto: <b>{{ projectType }} </b></p>
             <p> Proyecto en: <b>{{ projectName }}</b> </p>
             <p *ngIf="selectedValue === 2">
-              PDF:
-               <b>
-                {{ 
-                  formFiles.controls['pdfFile'].value 
-                  ? formFiles.controls['pdfFile'].value.name 
-                  : 'No aplica'
-                }}
-               </b>
+              PDF: <b> {{ projectPDF }} </b>
             </p>
           </div> 
-        </section> 
+        </section> <!-- Panel Resumen -->
 
         <section class="flex pt-2">
             <p-button label="Regresar" icon="pi pi-arrow-left"
