@@ -34,7 +34,6 @@
                         <th *ngFor="let col of colums">
                             {{ col }}
                         </th>
-                        <th>Costos</th> <!-- Nueva columna para costos -->
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-app let-index="rowIndex">
@@ -118,11 +117,7 @@
                                 </a>
                             </ng-template>
                         </td>
-                        <!-- Columna de Costos con símbolo de dinero centrado hacia la izquierda -->
-                        <td class="costs-column">
-                            <!-- Mostrar símbolo de $ cuando no hay datos -->
-                            <span class="cost-symbol">$</span>
-                        </td>
+                        <td>{{ app.totalCost | currency:'USD':'symbol' }}</td>
                     </tr>
                 </ng-template>
             </p-table>

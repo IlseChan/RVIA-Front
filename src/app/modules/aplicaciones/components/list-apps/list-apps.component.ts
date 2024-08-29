@@ -48,12 +48,12 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   totalItems:     number = 0;
   elementPerPage: number = elementPerPage;
 
-  colums: string[] = ['ID','Nombre','Estatus','Proceso'];
+  colums: string[] = ['#','ID proyecto','Nombre','Estatus','Proceso'];
 
   statusOpcs = [
     { name: 'En proceso', code : 1 },
     { name: 'En espera',  code : 2 },
-    { name: 'Finalizado',  code : 3 },
+    { name: 'Finalizado', code : 3 },
     { name: 'Rechazado',  code : 4 },
   ];
 
@@ -86,6 +86,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
       if(this.user.position.nom_rol !== Nom_Rol.USUARIO){
         this.colums.splice(2,0,'Usuario');
       }
+      this.colums.push('Costo');
     }
   }
 

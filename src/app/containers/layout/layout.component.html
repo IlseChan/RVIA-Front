@@ -4,9 +4,13 @@
       ☰
     </button>
     <div class="user-info flex align-items-center">
-      <span class="white-space-nowrap ml-2">{{ userLogged?.nom_usuario }}</span>
+      <span *ngIf="generatedNumber" class="white-space-nowrap ml-2">{{ generatedNumber }}</span>
       <span class="separator ml-2 text-white">|</span>
-      <span class="userposition white-space-nowrap font-italic ml-2">{{ userLogged?.position?.nom_rol }}</span>
+      <span class="userposition white-space-nowrap font-italic ml-2">
+        {{ userLogged?.position?.nom_rol }}
+      </span>
+      <span class="separator ml-2 text-white">|</span>
+      <span class="white-space-nowrap ml-2">{{ userLogged?.nom_usuario }}</span>
     </div>
   </nav>
   <nav class="sidebar fixed flex flex-column h-full text-white justify-content-between" [ngClass]="{'active': sidebarActive}">
