@@ -72,7 +72,9 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
       nom_usuario: new FormControl<string>(user.nom_usuario,[
         Validators.required, 
         Validators.minLength(3),
-        this.vldtnSrv.noBlankValidation()]),
+        this.vldtnSrv.noBlankValidation(),
+        this.vldtnSrv.completeUserName()
+      ]),
       idu_rol: new FormControl<Idu_Rol>(user.position.idu_rol,[Validators.required])
     });
   

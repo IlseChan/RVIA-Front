@@ -39,7 +39,6 @@ export class LoginComponent {
         this.errorMessage = '';
       },
       error: (err) => {
-        console.log(err);
         if (err.status === 401) { 
           this.errorMessage = 'Número de empleado o contraseña incorrecta';
         } else if (err.status === 404) { 
@@ -49,6 +48,7 @@ export class LoginComponent {
         } else {
           this.errorMessage = 'Número de empleado o contraseña incorrectos. Favor de verificar.';
         }
+        this.isLogging = false;
       }
     });
   }

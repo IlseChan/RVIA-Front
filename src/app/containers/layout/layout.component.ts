@@ -57,7 +57,6 @@ export class LayoutComponent {
           this.generatedNumber = response;
         },
         error: (error) => {
-          console.error('Error al obtener el número:', error);
           this.generatedNumber = null;
         }
       });
