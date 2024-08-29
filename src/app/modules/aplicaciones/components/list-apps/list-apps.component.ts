@@ -202,7 +202,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
       });
   }
 
-  showFormUploadCSV(app: Aplication) {
+  showFormUploadPDF(app: Aplication) {
     if(app.applicationstatus.idu_estatus_aplicacion !== StatusApps.DONE && 
       app.checkmarx.length === 0){
       this.aplicacionService.appPDFSubject.next(app);
