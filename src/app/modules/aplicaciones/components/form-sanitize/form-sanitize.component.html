@@ -129,7 +129,7 @@
                 <button type="button" pButton label="Buscar" (click)="triggerFileInput('pdf')"></button>
                 <input type="text" pInputText placeholder="Selecciona tu pdf"
                 readonly disabled="true" id="inputpdfFile"
-                [value]="formFiles.get('pdfFile')?.value.name ?? ''"/>
+                [value]="formFiles.get('pdfFile')?.value?.name ?? ''"/>
               </p-inputGroup>
             </div>
             <span *ngIf="isUploadFile" class="mt-2 font-italic text-500" >
