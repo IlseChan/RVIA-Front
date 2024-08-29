@@ -30,6 +30,7 @@ export class RegisterComponent {
   isRegister: boolean = false;
   isReady: boolean = false;
   btnLabel: string = 'Registrar';
+  connectionErrorMessage: string = '';
 
   constructor(private router: Router, private authService: AuthService) {}
 
@@ -89,8 +90,12 @@ export class RegisterComponent {
           this.errorMessage = '';
           this.isReady = true;
         },
-        error: (error: Error) => {
-          this.errorMessage = error.message;
+        error: (err) => {
+          if (err.status === 0) {
+            this.connectionErrorMessage = 'No se pudo conectar con el servidor.'; 
+          } else {
+            this.errorMessage = err.message || 'No se pudo conectar con el servidor. Favor de verificar.'; 
+          }
           this.isRegister = false;
         }
       });
