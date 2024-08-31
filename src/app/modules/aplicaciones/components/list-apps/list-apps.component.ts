@@ -6,8 +6,6 @@ import { finalize, Subscription } from 'rxjs';
 import { ButtonModule } from 'primeng/button';
 import { PaginatorModule, PaginatorState } from 'primeng/paginator';
 import { TableModule } from 'primeng/table';
-import { DropdownChangeEvent, DropdownModule } from 'primeng/dropdown';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
@@ -29,9 +27,8 @@ import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
   standalone: true,
   imports: [ButtonModule, TableModule, CommonModule, 
     PaginatorModule, StatusAppPipe,RouterLink,
-    DropdownModule,ConfirmDialogModule,ProgressSpinnerModule,
-    TooltipModule,TagModule, StatusAppLabelPipe,ActionAppPipe,
-    DynamicDialogModule ],
+    ProgressSpinnerModule,TooltipModule,TagModule, StatusAppLabelPipe,
+    ActionAppPipe, DynamicDialogModule ],
   templateUrl: './list-apps.component.html',
   styleUrl: './list-apps.component.scss',
   providers: [ConfirmationService, DialogService],
@@ -49,17 +46,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   elementPerPage: number = elementPerPage;
 
   colums: string[] = ['#','ID proyecto','Nombre','Estatus','Proceso'];
-
-  statusOpcs = [
-    { name: 'En proceso', code : 1 },
-    { name: 'En espera',  code : 2 },
-    { name: 'Finalizado', code : 3 },
-    { name: 'Rechazado',  code : 4 },
-  ];
-
   isLoading: boolean = true;
-  isChangeStatus: boolean = false;
-  indexChange: number = -1;
 
   downloadSub!: Subscription;
   isDownload: boolean = false;
@@ -69,7 +56,6 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   constructor(
     private aplicacionService: AplicacionesService,
     private authService: AuthService,
-    private confirmationService: ConfirmationService,
     private dialogService: DialogService
   ){}
   
@@ -81,12 +67,11 @@ export class ListAppsComponent implements OnInit, OnDestroy {
 
   setColumns():void {
     if(this.user && this.user.position.nom_rol !== Nom_Rol.INVITADO){
-      this.colums.push('Acciones');
+      this.colums.push('Acciones','Costos');
 
       if(this.user.position.nom_rol !== Nom_Rol.USUARIO){
         this.colums.splice(2,0,'Usuario');
       }
-      this.colums.push('Costo');
     }
   }
 
@@ -108,72 +93,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
       }}
     );  
   }
-
-  onChangeStatus({value}: DropdownChangeEvent, app: Aplication, index: number): void{
-    if(this.isChangeStatus) return;
-    
-    this.isChangeStatus = true;
-    if(value === 4){
-      this.dialogConfirmation(app,index,value);
-    }else{
-      this.aplicacionService.setNewStatus({...app},value)
-      .subscribe({ 
-        next: (appUp) => {
-          if(appUp){
-            this.updateValue(value,index);
-          }         
-        },
-        error: () => {
-          this.updateValue(app.applicationstatus.idu_estatus_aplicacion,index);
-          setTimeout(() => {
-            this.isChangeStatus = false;
-          },2800)
-        }
-      });
-    }
-  }
   
-  updateValue(value: number, index:number): void{ 
-    const temp = { ... this.aplications[index] };
-    temp.applicationstatus.idu_estatus_aplicacion = value;
-    
-    this.aplications[index] = {...temp};
-    this.isChangeStatus = false;
-    this.indexChange = -1;
-  }
-
-  dialogConfirmation(app: Aplication, index: number, newValue: number): void{
-    const message = `¿Deseas rechazar la aplicación ${app.nom_aplicacion}?`;
-    this.confirmationService.confirm({
-      message,
-      header: 'Confirmación de rechazo',
-      icon: 'pi pi-exclamation-triangle',
-      acceptButtonStyleClass: 'p-button-danger',
-      acceptLabel: 'Sí, rechazar',
-      rejectButtonStyleClass: 'p-button-outlined',
-      rejectLabel: 'No, cancelar',
-      accept: () => {
-        this.aplicacionService.setNewStatus({...app},newValue)
-        .subscribe({
-            next: (appUp) => {
-              if(appUp){
-                this.updateValue(newValue,index);
-              }         
-            },
-            error: () => {
-              this.updateValue(app.applicationstatus.idu_estatus_aplicacion,index);
-              setTimeout(() => {
-                this.isChangeStatus = false;
-              },2800)
-            }
-          });
-      },
-      reject: () => {
-        this.updateValue(app.applicationstatus.idu_estatus_aplicacion,index);
-      }
-    });
-  }
-
   onPageChange({ page = 0 }: PaginatorState): void{
     const newPage = page + 1;
     if(newPage === this.currentPage) return;

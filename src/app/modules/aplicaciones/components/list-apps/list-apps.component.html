@@ -37,50 +37,22 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-app let-index="rowIndex">
-                    <tr [ngClass]="{'change': isChangeStatus }">
+                    <tr>
                         <td>{{ app.sequentialId }}</td>
                         <td>{{ app.idu_proyecto }}</td>
-                        <td>{{ app.nom_aplicacion }}</td>
                         <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO && 
                                    user!.position.nom_rol !== Nom_Rols.USUARIO">
                             {{ app.user.nom_usuario }}
                         </td>
-                        <td *ngIf="user!.position.nom_rol === Nom_Rols.AUTORIZADOR || 
-                                   user!.position.nom_rol === Nom_Rols.ADMINISTRADOR; 
-                            else authStatus">
-                            <p-dropdown
-                                [id]="app.idu_proyecto + 'selectInputFin'"
-                                *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else selectStatus"
-                                [options]="[{name: 'Finalizado', code: StatusApps.DONE}]"
-                                [ngModel]="app.applicationstatus.idu_estatus_aplicacion"
-                                optionLabel="name"
-                                optionValue="code"
-                                [disabled]="true"
-                                [style]="{width : '100%'}"
+                        <td>{{ app.nom_aplicacion }}</td>
+                        <td>
+                            <p-tag
+                                styleClass="text-sm"
+                                class="white-space-nowrap overflow-hidden text-overflow-ellipsis"
+                                [severity]="app.applicationstatus.idu_estatus_aplicacion | statusAppLabel"
+                                [value]="app.applicationstatus.idu_estatus_aplicacion | statusApp"
                             />
-                            <ng-template #selectStatus>
-                                <p-dropdown
-                                    [id]="app.idu_proyecto + 'selectInput'"
-                                    [options]="statusOpcs"
-                                    [ngModel]="app.applicationstatus.idu_estatus_aplicacion"
-                                    optionLabel="name"
-                                    optionValue="code"
-                                    placeholder="Select a status"
-                                    (onChange)="onChangeStatus($event, app,index)"
-                                    [style]="{width : '100%'}"
-                                    [disabled]="isChangeStatus"
-                                />
-                            </ng-template>
                         </td>
-                        <ng-template #authStatus>
-                            <td>
-                                <p-tag
-                                    styleClass="text-sm"
-                                    [severity]="app.applicationstatus.idu_estatus_aplicacion | statusAppLabel"
-                                    [value]="app.applicationstatus.idu_estatus_aplicacion | statusApp"
-                                />
-                            </td>
-                        </ng-template>
                         <td>
                             <p-tag
                                 styleClass="text-sm"
@@ -117,7 +89,9 @@
                                 </a>
                             </ng-template>
                         </td>
-                        <td>{{ app.totalCost | currency:'USD':'symbol' }}</td>
+                        <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
+                            {{ app.totalCost | currency:'USD':'symbol' }}
+                        </td>
                     </tr>
                 </ng-template>
             </p-table>
@@ -129,5 +103,4 @@
             [totalRecords]="totalItems"
         />
     </section>
-    <p-confirmDialog [style]="{'padding': '10px'}"/>
 </main>
