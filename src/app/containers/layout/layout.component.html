@@ -4,8 +4,6 @@
       ☰
     </button>
     <div class="user-info flex align-items-center">
-      <span *ngIf="generatedNumber" class="white-space-nowrap ml-2">{{ generatedNumber }}</span>
-      <span class="separator ml-2 text-white">|</span>
       <span class="userposition white-space-nowrap font-italic ml-2">
         {{ userLogged?.position?.nom_rol }}
       </span>
@@ -65,6 +63,9 @@
           <i class="pi pi-power-off mr-2"></i>
           <span class="ml-2">Cerrar sesión</span>
       </button>
+      <small *ngIf="generatedNumber" class="generated-number">
+        {{ 'V.' + generatedNumber }}
+      </small> 
     </div>
   </nav>
   <section class="content flex-grow-1 h-full overflow-y-auto md:px-4 md:py-5" [ngClass]="{'shifted': sidebarActive}">
