@@ -25,18 +25,29 @@
         </a>
       </li>
     </ul>
-    <div class="px-3 mb-auto">
-      <p-divider type="solid"/>
+    <div [ngClass]="userLogged?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto px-3' : 'px-1'">
+      <p-divider type="solid" styleClass="m-0"/>
     </div>
-    
-
-    <div class="px-3" *ngIf="userLogged?.position?.nom_rol !== Nom_rol.INVITADO">
+    <ng-container *ngIf="userLogged?.position?.nom_rol !== Nom_rol.INVITADO">
+      <ul class="px-3 list-none" >
+        <li *ngFor="let option of menuRvia">
+          <a 
+            routerLinkActive="active" 
+            [routerLink]="option.path"
+            class="text-white text-base block px-3 py-2 flex align-items-center border-round">
+            <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
+            <span>{{ option.name | titlecase }}</span> 
+          </a>
+        </li>
+      </ul>
+      <div class="px-1 mb-auto">
+        <p-divider type="solid" styleClass="m-0"/>
+      </div>
+    </ng-container>
+    <div class="px-3" *ngIf="userLogged?.position?.nom_rol === Nom_rol.ADMINISTRADOR">
       <small class="mb-2 text-divider">Herramientas</small>
       <ul class="list-none p-0">
-        <ng-container *ngFor="let option of menuTools">
-          <li *ngIf="userLogged?.position?.nom_rol === Nom_rol.ADMINISTRADOR || 
-                     option.name === 'Documentar proyecto' || 
-                     option.name === 'Casos de Prueba'">
+          <li *ngFor="let option of menuTools">
             <a 
               routerLinkActive="active" 
               [routerLink]="option.path"
@@ -45,26 +56,24 @@
               <span>{{ option.name }}</span> 
             </a>
           </li>
-        </ng-container>
       </ul>
+      <div>
+        <small class="mb-2 text-divider">Administrador</small>
+        <ul class="list-none p-0">
+          <li *ngFor="let option of menuAdmin">
+            <a 
+              routerLinkActive="active" 
+              [routerLink]="option.path"
+              class="text-white text-base block px-3 py-2 flex align-items-center border-round">
+                <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
+                <span>{{ option.name }}</span> 
+            </a>
+          </li>
+        </ul>
+      </div> 
     </div> 
-    <div *ngIf="userLogged?.position?.nom_rol === Nom_rol.ADMINISTRADOR" class="px-3">
-      <small class="mb-2 text-divider">Administrador</small>
-      <ul class="list-none p-0">
-        <li *ngFor="let option of menuAdmin">
-          <a 
-            routerLinkActive="active" 
-            [routerLink]="option.path"
-            class="text-white text-base block px-3 py-2 flex align-items-center border-round">
-              <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
-              <span>{{ option.name }}</span> 
-          </a>
-        </li>
-      </ul>
-    </div> 
-
     <div class="logout-button text-center p-3 pt-0 sidebar-logout">
-      <p-divider type="solid"/>
+      <p-divider type="solid" styleClass="mt-0"/>
       <button 
         class="flex align-items-center justify-content-center text-white py-3 px-2 w-full text-base c-pointer border-round"
         (click)="logout()">

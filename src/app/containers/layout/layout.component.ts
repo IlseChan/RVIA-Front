@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { HttpClientModule } from '@angular/common/http';
+
 import { PrimeIcons } from 'primeng/api';
 import { DividerModule } from 'primeng/divider';
+
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Nom_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { GeneratedNumberService } from '@modules/shared/services/generated-number.service'; 
@@ -13,14 +14,8 @@ import { TitleCasePipe } from '@angular/common';
 @Component({
   selector: 'app-layout',
   standalone: true,
-  imports: [
-    CommonModule, 
-    RouterLink,
-    RouterLinkActive,
-    RouterOutlet,
-    DividerModule,
-    HttpClientModule,
-    TitleCasePipe 
+  imports: [CommonModule, RouterLink, RouterLinkActive,
+    RouterOutlet, DividerModule, TitleCasePipe 
   ],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
@@ -33,11 +28,14 @@ export class LayoutComponent implements OnInit {
   menuAdmin = [
     { path: '/users/list-users', name: 'Usuarios', icon: PrimeIcons.USERS },
   ];
+  menuRvia = [
+    { path: '/tools/execute-documentacion', name: 'Documentar proyecto', icon: PrimeIcons.FILE },
+    { path: '/tools/test-case', name: 'Casos de prueba', icon: PrimeIcons.CLIPBOARD },
+    { path: '/tools/rate-code', name: 'Calificar código', icon: PrimeIcons.CHECK_SQUARE },
+  ];
   menuTools = [
     { path: '/tools/recoveryPDF', name: 'Convertir a .csv', icon: PrimeIcons.FILE_EXCEL },
     { path: '/tools/execute-ia', name: 'Ejecutar IA', icon: PrimeIcons.MICROCHIP_AI },
-    { path: '/tools/execute-documentacion', name: 'Documentar proyecto', icon: PrimeIcons.FILE },
-    { path: '/tools/test-case', name: 'Casos de Prueba', icon: PrimeIcons.CLIPBOARD },
   ];
 
   Nom_rol = Nom_Rol;
@@ -53,26 +51,10 @@ export class LayoutComponent implements OnInit {
   ngOnInit(): void {
     this.userLogged = this.authService.userLogged;
     this.getGeneratedNumber();
-    this.configureMenuForRoles(); 
 
     if (this.userLogged?.position.nom_rol !== Nom_Rol.INVITADO) {
       this.menuSidebar.push(
         { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
-      );
-    }
-  }
-
-  
-  private configureMenuForRoles(): void {
-    if (!this.userLogged) return;
-
-    const { nom_rol } = this.userLogged.position;
-
-    
-    if (nom_rol === Nom_Rol.ADMINISTRADOR) {
-    } else if (nom_rol === Nom_Rol.AUTORIZADOR || nom_rol === Nom_Rol.USUARIO) {
-      this.menuTools = this.menuTools.filter(option => 
-        option.name === 'Documentar proyecto' || option.name === 'Casos de Prueba'
       );
     }
   }

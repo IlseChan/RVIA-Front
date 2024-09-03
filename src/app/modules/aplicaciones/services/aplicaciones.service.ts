@@ -81,7 +81,7 @@ export class AplicacionesService {
       );
   }
 
-  getWaitingApps(){
+  getWaitingApps(): Observable<AppsToUseSelect[]> {
     return of(this.allApps)
     .pipe(
       switchMap(infoApps => {
@@ -91,6 +91,22 @@ export class AplicacionesService {
         return this.getAplicaciones().pipe(
           map(() => {
             return this.filterWaitingApps([...this.allApps.data])
+          })
+        )
+      })
+    );
+  }
+
+  getNoRateApps(): Observable<AppsToUseSelect[]>{
+    return of(this.allApps)
+    .pipe(
+      switchMap(infoApps => {
+        if(infoApps.total !== -1 && !this.changes){
+          return of(this.filterNoRateApps([...infoApps.data]))
+        }
+        return this.getAplicaciones().pipe(
+          map(() => {
+            return this.filterNoRateApps([...this.allApps.data])
           })
         )
       })
@@ -112,6 +128,14 @@ export class AplicacionesService {
       .map( app => {
         return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
       })
+  }
+
+  private filterNoRateApps(data: Aplication[]): AppsToUseSelect[] {
+    return data
+      .filter(app => !app.opc_arquitectura[3])
+      .map( app => {
+        return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
+      });
   }
   
   getCSVAplication(id: number): Observable<CheckmarxCSV> {
