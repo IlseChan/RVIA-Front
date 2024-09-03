@@ -10,15 +10,19 @@ export const AdminGuard = (): boolean => {
 
     const currentUser = authService.userLogged;
     
-    if(!currentUser){
+    if (!currentUser) {
         router.navigate(['/auth/login']);
         return false;
     }
 
-    if (currentUser && currentUser.position.nom_rol !== Nom_Rol.ADMINISTRADOR){
-        router.navigate(['/apps/list-apps']);
-        return false;
+   
+    if (currentUser.position.nom_rol === Nom_Rol.ADMINISTRADOR ||
+        currentUser.position.nom_rol === Nom_Rol.AUTORIZADOR ||
+        currentUser.position.nom_rol === Nom_Rol.USUARIO) {
+        return true;
     }
 
-    return true;
+    
+    router.navigate(['/apps/list-apps']);
+    return false;
 }
