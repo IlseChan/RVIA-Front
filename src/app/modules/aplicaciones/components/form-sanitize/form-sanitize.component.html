@@ -57,8 +57,26 @@
             </span>
           </div>
         </section><!-- Panel Accion del proyecto -->
-
+     
         <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground">
+          <div class="flex flex-column justify-content-center align-items-center mb-3">
+            <p>Servicios adicionales:</p>
+            <div class="card flex justify-content-center">
+              <div class="flex flex-column gap-2">
+                  <div *ngFor="let option of actionArchitec" class="field-checkbox">
+                      <p-checkbox 
+                          [formControlName]="option.form"
+                          [label]="option.txt"
+                          [name]="option.form"
+                          value="true"
+                        />
+                  </div>
+              </div>
+            </div>
+          </div>
+        </section><!-- Panel Arquitectura del proyecto -->
+        
+        <section *ngIf="activeIndex === 2" class="stepper-panel h-23rem border-round surface-ground">
           <p>Selecciona el tipo de proyecto que se subirá:</p>
           <div class="flex gap-3">
             <div class="flex align-items-center mx-3 py-2 px-3" *ngFor="let option of radioOps">
@@ -78,7 +96,7 @@
           </div>
         </section><!-- Panel Tipo de proyecto -->
 
-        <section *ngIf="activeIndex === 2" class="stepper-panel h-23rem border-round surface-ground">
+        <section *ngIf="activeIndex === 3" class="stepper-panel h-23rem border-round surface-ground">
           <div *ngIf="formFiles.get('type')?.value === 'zip'">
             <p class="text-center">Selecciona el archivo <b>.zip</b> o <b>.7z</b> de tu proyecto:</p>
             <div class="flex-auto flex flex-column justify-content-center align-items-center">
@@ -121,7 +139,7 @@
           </div>
         </section> <!-- Panel Projecto zip/7z o github/gitlab-->
 
-        <section *ngIf="activeIndex === 3 && selectedValue === 2" class="stepper-panel h-23rem border-round surface-ground">
+        <section *ngIf="activeIndex === 4 && selectedValue === 2" class="stepper-panel h-23rem border-round surface-ground">
           <div class="flex flex-column align-items-center justify-content-center">
             <p>Puedes añadir el archivo <b>.pdf</b> de las vulnerabilidades de tu proyecto.</p>
             <div class="w-21rem">
@@ -149,11 +167,12 @@
           </div>
         </section><!-- Panel PDF opcional -->
         
-        <section *ngIf="(activeIndex === 3  && selectedValue !== 2) || (activeIndex === 4  && selectedValue === 2) " 
+        <section *ngIf="(activeIndex === 4  && selectedValue !== 2) || (activeIndex === 5  && selectedValue === 2) " 
           class="stepper-panel h-23rem border-round surface-ground">
           <p>Se subirá tu proyecto con los siguientes elementos: </p>
           <div>
             <p>Acción: <b>{{ projectAction  }}</b></p>
+            <p>Servicio adicional: <b>{{ servicesProject }}</b></p>
             <p *ngIf="selectedValue === 3 && formFiles.get('language')?.value !== null">
               Lenguaje para migrar: <b>{{ projectLanguage }}</b>
             </p>
@@ -163,7 +182,7 @@
               PDF: <b> {{ projectPDF }} </b>
             </p>
           </div> 
-        </section> <!-- Panel Resumen -->
+        </section><!-- Panel Resumen--> 
 
         <section class="flex pt-2">
             <p-button label="Regresar" icon="pi pi-arrow-left"
