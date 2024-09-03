@@ -102,17 +102,49 @@ export class AplicacionesService {
     .pipe(
       switchMap(infoApps => {
         if(infoApps.total !== -1 && !this.changes){
-          return of(this.filterNoRateApps([...infoApps.data]))
+          return of(this.filterTypeProcessApps([...infoApps.data],3))
         }
         return this.getAplicaciones().pipe(
           map(() => {
-            return this.filterNoRateApps([...this.allApps.data])
+            return this.filterTypeProcessApps([...this.allApps.data],3)
           })
         )
       })
     );
   }
 
+  getNoTestCasesApps(): Observable<AppsToUseSelect[]>{
+    return of(this.allApps)
+    .pipe(
+      switchMap(infoApps => {
+        if(infoApps.total !== -1 && !this.changes){
+          return of(this.filterTypeProcessApps([...infoApps.data],2))
+        }
+        return this.getAplicaciones().pipe(
+          map(() => {
+            return this.filterTypeProcessApps([...this.allApps.data],2)
+          })
+        )
+      })
+    );
+  }
+  
+  getNodDocumentationApps(): Observable<AppsToUseSelect[]>{
+    return of(this.allApps)
+    .pipe(
+      switchMap(infoApps => {
+        if(infoApps.total !== -1 && !this.changes){
+          return of(this.filterTypeProcessApps([...infoApps.data],1))
+        }
+        return this.getAplicaciones().pipe(
+          map(() => {
+            return this.filterTypeProcessApps([...this.allApps.data],1)
+          })
+        )
+      })
+    );
+  }
+  
   private filterWaitingApps(data: Aplication[]): AppsToUseSelect[] {
     return data
       .filter(app => app.applicationstatus.idu_estatus_aplicacion === StatusApps.ONHOLD )
@@ -130,9 +162,9 @@ export class AplicacionesService {
       })
   }
 
-  private filterNoRateApps(data: Aplication[]): AppsToUseSelect[] {
+  private filterTypeProcessApps(data: Aplication[],type: number): AppsToUseSelect[] {
     return data
-      .filter(app => !app.opc_arquitectura[3])
+      .filter(app => !app.opc_arquitectura[type])
       .map( app => {
         return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
       });

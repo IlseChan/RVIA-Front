@@ -16,7 +16,7 @@ import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
 
 @Component({
-  selector: 'app-test-case',  
+  selector: 'test-case',  
   standalone: true,
   imports: [
     CommonModule,
@@ -34,20 +34,14 @@ import { HerramientasService } from '@modules/herramientas/services/herramientas
   styleUrls: ['./test-case.component.scss'] 
 })
 export class TestCaseComponent implements OnInit, OnDestroy { 
-
   isLoadingData: boolean = true;
   isRequest: boolean = false;
   label: string = 'Iniciar';
 
-  formTestCase!: FormGroup; 
+  form!: FormGroup; 
 
   appsOpcs: AppsToUseSelect[] = [];
   appsSub!: Subscription;
-
-  actionsOps = [
-    { value: 1, txt: 'Si' },
-    { value: 2, txt: 'No' },
-  ];
 
   constructor(
     private aplicacionesService: AplicacionesService,
@@ -56,28 +50,29 @@ export class TestCaseComponent implements OnInit, OnDestroy {
   ){}
 
   ngOnInit(): void {
-    this.appsSub = this.aplicacionesService.getWaitingApps()
+    this.getApps();
+  }
+
+  private getApps(): void {
+    this.appsSub = this.aplicacionesService.getNoTestCasesApps()
       .subscribe((resp) => {        
         if(resp){
           this.appsOpcs = resp;
           this.initForm();
           this.isLoadingData = false;          
-        } else {
-          this.isLoadingData = false; // Asegúrate de desactivar el loading si no hay respuesta
         }
       });
   }
 
   private initForm(): void {
-    this.formTestCase = new FormGroup({  
+    this.form = new FormGroup({  
       idu_aplicacion: new FormControl(null, [Validators.required]),
-      conIA: new FormControl(1, [Validators.required]),
     });
   }
 
   onSubmit(): void { 
-    if(this.formTestCase.invalid || this.isRequest){  
-      this.formTestCase.markAllAsTouched();  
+    if(this.form.invalid || this.isRequest){  
+      this.form.markAllAsTouched();  
       return;
     }
 
@@ -103,18 +98,24 @@ export class TestCaseComponent implements OnInit, OnDestroy {
     this.isRequest = true;
     this.label = 'Iniciando'; 
 
-    this.herramientasService.addonsCall(this.formTestCase.value)  
-      .pipe(finalize(() => this.resetValues())) 
+    this.herramientasService.startProcessDocumentationRVIA(this.form.value)  
       .subscribe({
-        next: (resp) => {
+        next: () => {
           this.label = 'Iniciado'; 
-          // Agregar lógica adicional si es necesario
+          setTimeout(() => {
+            this.reset();
+          }, 1000);
         },
         error: () => {              
-          this.isRequest = false;
-          this.label = 'Iniciar';
+          this.resetValues();
         }
       });
+  }
+
+  reset(): void {
+    this.form.reset();
+    this.resetValues();
+    this.getApps();
   }
 
   resetValues(): void {

@@ -83,6 +83,8 @@ export class RateCodeComponent implements OnInit, OnDestroy {
 
   reset(): void {
     this.form.reset();
+    this.isRequest = false;
+    this.label = 'Iniciar'
     this.getApps();
   }
 
