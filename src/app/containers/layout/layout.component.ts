@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
 import { PrimeIcons } from 'primeng/api';
 import { DividerModule } from 'primeng/divider';
 import { AuthService } from '@modules/auth/services/auth.service';
@@ -18,6 +19,7 @@ import { TitleCasePipe } from '@angular/common';
     RouterLinkActive,
     RouterOutlet,
     DividerModule,
+    HttpClientModule,
     TitleCasePipe 
   ],
   templateUrl: './layout.component.html',
@@ -33,7 +35,9 @@ export class LayoutComponent implements OnInit {
   ];
   menuTools = [
     { path: '/tools/recoveryPDF', name: 'Convertir a .csv', icon: PrimeIcons.FILE_EXCEL },
-    { path: '/tools/execute-ia', name: 'Ejecutar IA', icon: PrimeIcons.MICROCHIP_AI }
+    { path: '/tools/execute-ia', name: 'Ejecutar IA', icon: PrimeIcons.MICROCHIP_AI },
+    { path: '/tools/execute-documentacion', name: 'Documentar proyecto', icon: PrimeIcons.FILE },
+    { path: '/tools/test-case', name: 'Casos de Prueba', icon: PrimeIcons.CLIPBOARD },
   ];
 
   Nom_rol = Nom_Rol;
@@ -49,9 +53,26 @@ export class LayoutComponent implements OnInit {
   ngOnInit(): void {
     this.userLogged = this.authService.userLogged;
     this.getGeneratedNumber();
+    this.configureMenuForRoles(); 
+
     if (this.userLogged?.position.nom_rol !== Nom_Rol.INVITADO) {
       this.menuSidebar.push(
         { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
+      );
+    }
+  }
+
+  
+  private configureMenuForRoles(): void {
+    if (!this.userLogged) return;
+
+    const { nom_rol } = this.userLogged.position;
+
+    
+    if (nom_rol === Nom_Rol.ADMINISTRADOR) {
+    } else if (nom_rol === Nom_Rol.AUTORIZADOR || nom_rol === Nom_Rol.USUARIO) {
+      this.menuTools = this.menuTools.filter(option => 
+        option.name === 'Documentar proyecto' || option.name === 'Casos de Prueba'
       );
     }
   }
