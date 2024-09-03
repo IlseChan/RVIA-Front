@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, delay, from, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV,  
@@ -139,8 +139,9 @@ export class AplicacionesService {
   //POST
   saveProjectWitPDF(form: FormProjectWithPDF): Observable<ResponseAddApp> {
     const formData = new FormData();
-    
+
     formData.append('num_accion',form.action.toString()); 
+    formData.append('opc_arquitectura', JSON.stringify(form.opt_archi))
 
     if(form.action === 3){
       formData.append('opc_lenguaje',form.language.toString());

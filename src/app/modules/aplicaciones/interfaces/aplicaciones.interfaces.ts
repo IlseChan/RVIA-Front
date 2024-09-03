@@ -26,7 +26,8 @@ export interface Aplication {
     idu_proyecto:      string;
     nom_aplicacion:    string;
     num_accion:        number;
-    opc_lenguaje:      number | null;
+    opc_arquitectura:  Opt_architec;
+    opc_lenguaje:      number;
     sourcecode:        Sourcecode;
     user:              Usuario;
 }
@@ -48,14 +49,20 @@ export interface AplicationsData {
 }
 
 export interface FormProjectWithPDF{
-    action:   number;  
-    language: number;
-    pdfFile:  File | null;
-    type:     string;
-    urlGit:   string;
-    zipFile:  File | null;
+    action:    number;  
+    language:  number;
+    opt_archi: Opt_architec; 
+    pdfFile:   File | null;
+    type:      string;
+    urlGit:    string;
+    zipFile:   File | null;
 }
 
+export interface Opt_architec {
+    1: boolean,
+    2: boolean,
+    3: boolean
+}
 export interface Language{
     idu_lenguaje: number;
     nom_lenguaje: string;

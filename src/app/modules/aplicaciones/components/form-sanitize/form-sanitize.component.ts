@@ -12,6 +12,7 @@ import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { DropdownModule } from 'primeng/dropdown';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { StepsModule } from 'primeng/steps';
+import { CheckboxModule } from 'primeng/checkbox';
 
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { Language, OptAction, OptRadio, OptStepper } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
@@ -25,7 +26,7 @@ import { ValidationService } from '@modules/shared/services/validation.service';
   imports: [CommonModule,ButtonModule,TooltipModule,
     RadioButtonModule,InputTextModule,ReactiveFormsModule,
     InputGroupModule,InputGroupAddonModule, DropdownModule,
-    ProgressSpinnerModule,StepsModule]
+    ProgressSpinnerModule,StepsModule,CheckboxModule]
 })
 export class FormSanitizeComponent implements OnInit {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
@@ -41,11 +42,19 @@ export class FormSanitizeComponent implements OnInit {
   ];
 
   actionsOps: OptAction[] = [
+    { value: 0, txt: 'No modificar código' },
     { value: 1, txt: 'Actualizar código (Migración de versión a la más actual del mismo lenguaje)' },
     { value: 2, txt: 'Sanitizar código (Mitigación de vulnerabilidades checkmarx)' },
     { value: 3, txt: 'Migrar código (Migración de un lenguaje de programación a otro)' },
   ];
-
+  actionOpsValues: number[] = this.actionsOps.map(a => a.value);
+  
+  actionArchitec = [
+    { txt: 'Generar documentación', form: 'archiDocOpt' },
+    { txt: 'Generar casos de pruebas', form: 'archiCasesOpt' },
+    { txt: 'Generar calificación de proyecto', form: 'archiRateOpt' },
+  ];
+  
   isLoading: boolean = true;
   lenguagesOps: Language[] = [];
 
@@ -53,6 +62,7 @@ export class FormSanitizeComponent implements OnInit {
   selectedValue: number = 1;
   readonly itemsBase: OptStepper[] = [
     { label: 'Acciones'},
+    { label: 'Arquitectura'},
     { label: 'Tipo de proyecto'},
     { label: 'Seleccionar proyecto'},
     { label: 'Resumen'},
@@ -80,12 +90,15 @@ export class FormSanitizeComponent implements OnInit {
 
   private initForm(): void{
     this.formFiles = new FormGroup({
-      type:    new FormControl('zip',[Validators.required]),
-      zipFile: new FormControl(null,[this.vldtnSrv.fileValidation('zip'),this.vldtnSrv.noWhitespaceValidation()]),
-      urlGit:  new FormControl(null,[this.vldtnSrv.isValidGitlabUrl()]),
-      pdfFile: new FormControl(null,[this.vldtnSrv.fileValidation('pdf')]),
       action:  new FormControl(1,[Validators.required]),
-      language: new FormControl(null)
+      archiCasesOpt: new FormControl([]),
+      archiDocOpt: new FormControl([]),
+      archiRateOpt: new FormControl([]),
+      language: new FormControl(null),
+      pdfFile: new FormControl(null,[this.vldtnSrv.fileValidation('pdf')]),
+      type:    new FormControl('zip',[Validators.required]),
+      urlGit:  new FormControl(null,[this.vldtnSrv.isValidGitlabUrl()]),
+      zipFile: new FormControl(null,[this.vldtnSrv.fileValidation('zip'),this.vldtnSrv.noWhitespaceValidation()]),
     });
   }
 
@@ -115,19 +128,23 @@ export class FormSanitizeComponent implements OnInit {
     this.selectedValue = value;
     if(this.selectedValue === 2){
       let itemsOpc = [...this.itemsBase];
-      itemsOpc.splice(3,0, {label: 'Seleccionar PDF*'});
+      itemsOpc.splice(this.itemsBase.length - 1,0, {label: 'Seleccionar PDF*'});
       this.items = [...itemsOpc];       
-    }else if(this.items.length === 5){
+    }else if(this.items.length === this.itemsBase.length + 1){
       this.items = [...this.itemsBase];
     }
   }
 
   changeStep(value: number) {
     if(this.activeIndex === 1 && value < 0){
-      this.cleanInput('type');
+      this.cleanInput('architec');
     }
 
     if(this.activeIndex === 2 && value < 0){
+      this.cleanInput('type');
+    }
+
+    if(this.activeIndex === 3 && value < 0){
       this.cleanInput('project');
     }
 
@@ -138,7 +155,19 @@ export class FormSanitizeComponent implements OnInit {
     this.activeIndex += value;
   }
 
-  cleanInput(type: string): void {
+  cleanInput(type: string): void {    
+    if(type === 'architec'){
+      this.formFiles.patchValue({
+        archiCasesOpt: false,
+        archiDocOpt:   false,
+        archiRateOpt:  false
+      });
+    }
+    
+    if(type === 'type'){
+      this.formFiles.patchValue({ type: 'zip' });
+    }
+
     if(type === 'project'){
       this.formFiles.patchValue({
         zipFile: null,
@@ -149,10 +178,6 @@ export class FormSanitizeComponent implements OnInit {
     if(type === 'pdf'){
       this.formFiles.patchValue({ pdfFile: null });
     }
-
-    if(type === 'type'){
-      this.formFiles.patchValue({ type: 'zip' });
-    }
   }
 
   checkDisabled(): boolean {
@@ -161,12 +186,17 @@ export class FormSanitizeComponent implements OnInit {
      return this.formFiles.controls['language'].value === null
     }
 
-    if(this.activeIndex === 1){
+    if(this.activeIndex === 1 && this.selectedValue === 0){
+     const { archiCasesOpt, archiDocOpt, archiRateOpt} = this.formFiles.value;     
+     return !archiCasesOpt[0] && !archiDocOpt[0] && !archiRateOpt[0];
+    }
+
+    if(this.activeIndex === 2){
      return !(this.formFiles.controls['type'].value === 'zip' 
         || this.formFiles.controls['type'].value === 'git')  
     }
 
-    if(this.activeIndex === 2){
+    if(this.activeIndex === 3){
       const opt = this.formFiles.controls['type'].value;
       const formZip = this.formFiles.controls['zipFile'];
       const zipValid = !formZip.errors && formZip.value !== null;
@@ -176,7 +206,7 @@ export class FormSanitizeComponent implements OnInit {
       return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
     }
 
-    if(this.activeIndex === 3 && this.selectedValue === 2){
+    if(this.activeIndex === 4 && this.selectedValue === 2){
       return !!this.formFiles.controls['pdfFile'].errors 
     }
 
@@ -196,7 +226,7 @@ export class FormSanitizeComponent implements OnInit {
   }
 
   get projectAction(): string {
-    return this.actionsOps[this.selectedValue - 1].txt
+    return this.actionsOps[this.selectedValue].txt
   }
 
   get projectLanguage(): string {
@@ -216,18 +246,50 @@ export class FormSanitizeComponent implements OnInit {
       : 'No aplica'
   }
 
+  get servicesProject(): string {
+    const { archiCasesOpt, archiDocOpt, archiRateOpt} = this.formFiles.value;     
+    const txtOpc = [];
+
+    
+    if(archiDocOpt[0])   txtOpc.push('Documentación');
+    if(archiCasesOpt[0]) txtOpc.push('Casos de pruebas');
+    if(archiRateOpt[0])  txtOpc.push('Calificación de proyecto');
+
+    if(txtOpc.length === 0) return 'No aplica';
+
+    return txtOpc.join(' - ');
+  }
+
   uploadFiles(): void {
     if(this.isUploadProject) return;
 
     this.isUploadProject = true;
     const values = this.formFiles.value;
     
-    if(![1,2,3].includes(values.action)) return;
+    const opt_archi = {
+      '1': values.archiDocOpt.length   ? true : false,
+      '2': values.archiCasesOpt.length ? true : false,
+      '3': values.archiRateOpt.length  ? true : false 
+    }
+    
+    if(!this.actionOpsValues.includes(values.action)) return;
     if(values.type === 'zip' && !values.zipFile) return;
     if(values.type === 'git' && !values.urlGit) return;
     if(values.action === 3 && !values.language) return;
+
+    let { 
+      archiCasesOpt, 
+      archiDocOpt, 
+      archiRateOpt,
+      ...info
+    } = this.formFiles.value;
     
-    this.aplicacionesService.saveProjectWitPDF(this.formFiles.value)
+    info = {
+      ...info,
+      opt_archi
+    }
+    
+    this.aplicacionesService.saveProjectWitPDF(info)
       .subscribe({
         next: () => {
           this.back();
