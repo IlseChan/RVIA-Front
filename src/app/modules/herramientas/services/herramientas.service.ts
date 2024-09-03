@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { catchError, delay, Observable, tap, throwError } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-import { HttpClient } from '@angular/common/http';
 import { FormAddonCall, FormPDFtoCSV, OriginMethod } from '../interfaces/herramientas.interfaces';
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
@@ -63,14 +63,29 @@ export class HerramientasService {
     );
   }
 
+  startProcessRateCodeRVIA({ idu_aplicacion }: { idu_aplicacion: number }): Observable<Aplication> {
+    const body = { opcArquitectura: 3 };
+    return this.http.patch<Aplication>(`${this.baseUrl}/applications/rate-project/${idu_aplicacion}`,body)
+    .pipe(
+      tap((app) => {
+        const title = 'Proceso iniciado';
+        const content = `¡El proceso para calificar código de la aplicación ${app.nom_aplicacion} ha iniciado con éxito!`
+        this.notificationsService.successMessage(title,content);
+      }),
+      tap(() =>  this.aplicacionesService.changes = true),
+      catchError(error => this.handleError(error, OriginMethod.PATCHRATECODE))
+    );
+  }
+
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
     const title = 'Error';
   
     const errorsMessages = {
       GETDOWNLOADCSV: 'Error al descargar el CSV.',
+      PATCHRATECODE: 'Ha ocurrido un error al iniciar el proceso de calificación de código. Inténtalo más tarde.',
       POSTMAKECSV: 'Ha ocurrido un error al generar el CSV de del PDF.',
-      POSTMAKECSVPY: 'Ha ocurrido un error al generar el CSV, verifica que tu PDF sea válido para vulnerabilidades', 
-      POSTSTARTADDON: 'Ha ocurrido un error al iniciar el proceso. Inténtalo más tarde',
+      POSTMAKECSVPY: 'Ha ocurrido un error al generar el CSV, verifica que tu PDF sea válido para vulnerabilidades.', 
+      POSTSTARTADDON: 'Ha ocurrido un error al iniciar el proceso. Inténtalo más tarde.',
     };
 
     this.notificationsService.errorMessage(title,errorsMessages[origin]);
