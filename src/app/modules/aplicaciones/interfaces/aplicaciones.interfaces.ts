@@ -9,9 +9,16 @@ export enum StatusApps {
 }
 
 export enum NumberAction {
+    NONE         = 0,  
     UPDATECODE   = 1,
     SANITIZECODE = 2,
     MIGRATION    = 3,
+}
+
+export enum ArquitecturaOpciones {
+    DOCUMENTATION = 1, 
+    TEST_CASES = 2,    
+    EVALUATION = 3,    
 }
 
 export interface OpcsStatus {
@@ -45,10 +52,10 @@ export interface Sourcecode {
 
 export interface AplicationsData {
     data:  Aplication[];
-    total: number
+    total: number;
 }
 
-export interface FormProjectWithPDF{
+export interface FormProjectWithPDF {
     action:    number;  
     language:  number;
     opt_archi: Opt_architec; 
@@ -59,11 +66,12 @@ export interface FormProjectWithPDF{
 }
 
 export interface Opt_architec {
-    1: boolean,
-    2: boolean,
-    3: boolean
+    1: boolean;  
+    2: boolean;  
+    3: boolean;  
 }
-export interface Language{
+
+export interface Language {
     idu_lenguaje: number;
     nom_lenguaje: string;
 }
@@ -79,7 +87,7 @@ export enum OriginMethod {
 }
 
 export interface FormPDF {
-    pdfFile: File
+    pdfFile: File;
 }
 
 export interface CheckmarxCSV {
@@ -107,13 +115,13 @@ export interface OptStepper {
     label: string;
 }
 
-export interface OptRadio{
+export interface OptRadio {
     image:   string;
     tooltip: string;
     value:   string;
 }
 
-export interface OptAction{
+export interface OptAction {
     txt:   string;
     value: number;
 }
