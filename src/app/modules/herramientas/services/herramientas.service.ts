@@ -77,9 +77,23 @@ export class HerramientasService {
     );
   }
 
-  startProcessDocumentationRVIA({ idu_aplicacion }: { idu_aplicacion: number }): Observable<Aplication> {
+  startProcessTestCasesRVIA({ idu_aplicacion }: { idu_aplicacion: number }): Observable<Aplication> {
     const body = { opcArquitectura: 2 };
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/test-cases/${idu_aplicacion}`,body)
+    .pipe(
+      tap((app) => {
+        const title = 'Proceso iniciado';
+        const content = `¡El proceso para generar casos de prueba de la aplicación ${app.nom_aplicacion} ha iniciado con éxito!`
+        this.notificationsService.successMessage(title,content);
+      }),
+      tap(() =>  this.aplicacionesService.changes = true),
+      catchError(error => this.handleError(error, OriginMethod.PATCHRTESTCASE))
+    );
+  }
+
+  startProcessDocumentationRVIA({ idu_aplicacion }: { idu_aplicacion: number }): Observable<Aplication> {
+    const body = { opcArquitectura: 1 };
+    return this.http.patch<Aplication>(`${this.baseUrl}/applications/documentation/${idu_aplicacion}`,body)
     .pipe(
       tap((app) => {
         const title = 'Proceso iniciado';
@@ -87,7 +101,7 @@ export class HerramientasService {
         this.notificationsService.successMessage(title,content);
       }),
       tap(() =>  this.aplicacionesService.changes = true),
-      catchError(error => this.handleError(error, OriginMethod.PATCHRTESTCASE))
+      catchError(error => this.handleError(error, OriginMethod.PATCHRDOCCODE))
     );
   }
 

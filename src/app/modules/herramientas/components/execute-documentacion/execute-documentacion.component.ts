@@ -39,15 +39,10 @@ export class ExecuteDocumentacionComponent implements OnInit {
   isRequest: boolean = false;
   label: string = 'Iniciar';
 
-  formIA!: FormGroup;
+  form!: FormGroup;
 
   appsOpcs: AppsToUseSelect[] = [];
   appsSub!: Subscription;
-
-  actionsOps = [
-    { value: 1, txt: 'Si' },
-    { value: 2, txt: 'No' },
-  ];
 
   constructor(
     private aplicacionesService: AplicacionesService,
@@ -56,7 +51,11 @@ export class ExecuteDocumentacionComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    this.appsSub = this.aplicacionesService.getWaitingApps()
+    this.getApps();
+  }
+
+  private getApps(): void {
+    this.appsSub = this.aplicacionesService.getNoDocumentationApps()
       .subscribe((resp) => {        
         if(resp){
           this.appsOpcs = resp;
@@ -67,15 +66,14 @@ export class ExecuteDocumentacionComponent implements OnInit {
   }
 
   private initForm(): void {
-    this.formIA = new FormGroup({
+    this.form = new FormGroup({
       idu_aplicacion: new FormControl(null, [Validators.required]),
-      conIA: new FormControl(1, [Validators.required]),
     });
   }
 
   onSubmit(): void { 
-    if(this.formIA.invalid || this.isRequest){
-      this.formIA.markAllAsTouched();
+    if(this.form.invalid || this.isRequest){
+      this.form.markAllAsTouched();
       return;
     }
 
@@ -100,18 +98,25 @@ export class ExecuteDocumentacionComponent implements OnInit {
   executeDocumentacion(): void {
     this.isRequest = true;
     this.label = 'Iniciando'; 
-
-    this.herramientasService.addonsCall(this.formIA.value)
-      .pipe(finalize(() => this.resetValues())) 
+  
+    this.herramientasService.startProcessDocumentationRVIA(this.form.value)  
       .subscribe({
-        next: (resp) => {
+        next: () => {
           this.label = 'Iniciado'; 
+          setTimeout(() => {
+            this.reset();
+          }, 1000);
         },
         error: () => {              
-          this.isRequest = false;
-          this.label = 'Iniciar';
+          this.resetValues();
         }
       });
+  }
+
+  reset(): void {
+    this.form.reset();
+    this.resetValues();
+    this.getApps();
   }
 
   resetValues(): void {

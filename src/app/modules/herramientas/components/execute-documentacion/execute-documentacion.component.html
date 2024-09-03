@@ -4,7 +4,8 @@
     </section>
     <section class="text-justify vertical-align-middle mb-4">
         <p class="m-0">
-            A continuación llena el siguiente formulario para iniciar el proceso de trabajo del aplicativo.
+            Para iniciar el proceso de documentar, <b>selecciona la aplicación con la que se quiere trabajar</b>.
+            El listado de aplicaciones solo contempla aquellas aplicaciones cuyo proceso inicial no incluye la documentación.
         </p>
     </section>
     
@@ -13,7 +14,7 @@
     </div>
 
     <section *ngIf="!isLoadingData"> 
-        <form [formGroup]="formIA" (ngSubmit)="onSubmit()">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <section class="flex flex-column align-items-center mb-3">
                 <p>Selecciona el aplicativo a trabajar:</p>
                 <p-dropdown
@@ -24,13 +25,13 @@
                     optionValue="value"
                     placeholder="Selecciona una app"
                 ></p-dropdown>
-                <span *ngIf="formIA.controls['idu_aplicacion'].errors && formIA.controls['idu_aplicacion'].touched"
+                <span *ngIf="form.controls['idu_aplicacion'].errors && form.controls['idu_aplicacion'].touched"
                     class="font-italic text-red-500 mt-2">
                         Debes seleccionar una aplicación.
                 </span>
             </section>
 
-            <section *ngIf="formIA.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">
+            <section *ngIf="form.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">
                 <div class="flex justify-content-center mt-4">
                     <p-button 
                         [label]="label"
@@ -47,11 +48,11 @@
     </section>
 
     
-    <p-confirmDialog header="Documentar Proyecto"
-                     icon="pi pi-file" 
-                     acceptButtonStyleClass="p-button-success my-2"
-                     acceptLabel="Sí, continuar"
-                     rejectButtonStyleClass="p-button-outlined my-2"
-                     rejectLabel="No, cancelar">
+    <p-confirmDialog
+        icon="pi pi-file" 
+        acceptButtonStyleClass="p-button-success my-2"
+        acceptLabel="Sí, continuar"
+        rejectButtonStyleClass="p-button-outlined my-2"
+        rejectLabel="No, cancelar">
     </p-confirmDialog>
 </main>

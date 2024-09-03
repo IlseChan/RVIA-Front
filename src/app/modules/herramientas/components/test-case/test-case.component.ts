@@ -98,7 +98,7 @@ export class TestCaseComponent implements OnInit, OnDestroy {
     this.isRequest = true;
     this.label = 'Iniciando'; 
 
-    this.herramientasService.startProcessDocumentationRVIA(this.form.value)  
+    this.herramientasService.startProcessTestCasesRVIA(this.form.value)  
       .subscribe({
         next: () => {
           this.label = 'Iniciado'; 

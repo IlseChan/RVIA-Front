@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV,  
   FormPDF, FormProjectWithPDF, Language, NumberAction, OriginMethod,
-  ResponseAddApp, ResponseSaveFile, StatusApps } from '../interfaces/aplicaciones.interfaces';
+  ResponseAddApp, StatusApps } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
@@ -128,8 +128,8 @@ export class AplicacionesService {
       })
     );
   }
-  
-  getNodDocumentationApps(): Observable<AppsToUseSelect[]>{
+
+  getNoDocumentationApps(): Observable<AppsToUseSelect[]>{
     return of(this.allApps)
     .pipe(
       switchMap(infoApps => {
