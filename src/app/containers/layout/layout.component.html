@@ -21,7 +21,7 @@
           [routerLink]="option.path"
           class="text-white text-base block px-3 py-2 flex align-items-center border-round">
           <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
-          <span>{{ option.name | titlecase }}</span> 
+          <span>{{ option.name }}</span> 
         </a>
       </li>
     </ul>
@@ -36,7 +36,7 @@
             [routerLink]="option.path"
             class="text-white text-base block px-3 py-2 flex align-items-center border-round">
             <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
-            <span>{{ option.name | titlecase }}</span> 
+            <span>{{ option.name }}</span> 
           </a>
         </li>
       </ul>
@@ -78,7 +78,7 @@
         class="flex align-items-center justify-content-center text-white py-3 px-2 w-full text-base c-pointer border-round"
         (click)="logout()">
           <i class="pi pi-power-off mr-2"></i>
-          <span class="ml-2">Cerrar Sesión</span>
+          <span class="ml-2">Cerrar sesión</span>
       </button>
       <small *ngIf="generatedNumber" class="generated-number">
         {{ 'V.' + generatedNumber }}
