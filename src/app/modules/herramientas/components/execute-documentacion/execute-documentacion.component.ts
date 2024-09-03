@@ -55,7 +55,7 @@ export class ExecuteDocumentacionComponent implements OnInit {
   }
 
   private getApps(): void {
-    this.appsSub = this.aplicacionesService.getNoDocumentationApps()
+    this.appsSub = this.aplicacionesService.getSomeArchitecApps(1)
       .subscribe((resp) => {        
         if(resp){
           this.appsOpcs = resp;
@@ -81,7 +81,7 @@ export class ExecuteDocumentacionComponent implements OnInit {
     this.confirmationService.confirm({
       message,
       header: 'Documentar Proyecto',
-      icon: 'pi pi-exclamation-triangle',
+      icon: 'pi pi-file',
       acceptButtonStyleClass: 'p-button-success my-2',
       acceptLabel: 'Sí, continuar',
       rejectButtonStyleClass: 'p-button-outlined my-2',

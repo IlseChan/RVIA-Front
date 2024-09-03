@@ -54,7 +54,7 @@ export class TestCaseComponent implements OnInit, OnDestroy {
   }
 
   private getApps(): void {
-    this.appsSub = this.aplicacionesService.getNoTestCasesApps()
+    this.appsSub = this.aplicacionesService.getSomeArchitecApps(2)
       .subscribe((resp) => {        
         if(resp){
           this.appsOpcs = resp;

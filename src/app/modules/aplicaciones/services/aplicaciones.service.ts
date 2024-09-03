@@ -3,7 +3,7 @@ import { BehaviorSubject, catchError, delay, from, map, Observable, of, switchMa
 import { HttpClient } from '@angular/common/http';
 
 import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV,  
-  FormPDF, FormProjectWithPDF, Language, NumberAction, OriginMethod,
+  FormPDF, FormProjectWithPDF, Language, NumberAction, Opt_architec, OriginMethod,
   ResponseAddApp, StatusApps } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
@@ -96,55 +96,23 @@ export class AplicacionesService {
       })
     );
   }
-
-  getNoRateApps(): Observable<AppsToUseSelect[]>{
-    return of(this.allApps)
-    .pipe(
-      switchMap(infoApps => {
-        if(infoApps.total !== -1 && !this.changes){
-          return of(this.filterTypeProcessApps([...infoApps.data],3))
-        }
-        return this.getAplicaciones().pipe(
-          map(() => {
-            return this.filterTypeProcessApps([...this.allApps.data],3)
-          })
-        )
-      })
-    );
-  }
-
-  getNoTestCasesApps(): Observable<AppsToUseSelect[]>{
-    return of(this.allApps)
-    .pipe(
-      switchMap(infoApps => {
-        if(infoApps.total !== -1 && !this.changes){
-          return of(this.filterTypeProcessApps([...infoApps.data],2))
-        }
-        return this.getAplicaciones().pipe(
-          map(() => {
-            return this.filterTypeProcessApps([...this.allApps.data],2)
-          })
-        )
-      })
-    );
-  }
-
-  getNoDocumentationApps(): Observable<AppsToUseSelect[]>{
-    return of(this.allApps)
-    .pipe(
-      switchMap(infoApps => {
-        if(infoApps.total !== -1 && !this.changes){
-          return of(this.filterTypeProcessApps([...infoApps.data],1))
-        }
-        return this.getAplicaciones().pipe(
-          map(() => {
-            return this.filterTypeProcessApps([...this.allApps.data],1)
-          })
-        )
-      })
-    );
-  }
   
+  getSomeArchitecApps(type: keyof Opt_architec): Observable<AppsToUseSelect[]>{
+    return of(this.allApps)
+    .pipe(
+      switchMap(infoApps => {
+        if(infoApps.total !== -1 && !this.changes){
+          return of(this.filterTypeProcessApps([...infoApps.data],type))
+        }
+        return this.getAplicaciones().pipe(
+          map(() => {
+            return this.filterTypeProcessApps([...this.allApps.data],type)
+          })
+        )
+      })
+    );
+  }
+
   private filterWaitingApps(data: Aplication[]): AppsToUseSelect[] {
     return data
       .filter(app => app.applicationstatus.idu_estatus_aplicacion === StatusApps.ONHOLD )

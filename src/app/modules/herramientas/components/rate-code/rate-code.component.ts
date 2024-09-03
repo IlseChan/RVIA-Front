@@ -42,7 +42,7 @@ export class RateCodeComponent implements OnInit, OnDestroy {
 
   private getApps() {
     this.isLoadingData = true;
-    this.appsSub = this.aplicacionesService.getNoRateApps()
+    this.appsSub = this.aplicacionesService.getSomeArchitecApps(3)
       .subscribe((resp) => {        
         if(resp){
           this.appsOpcs = resp; 
