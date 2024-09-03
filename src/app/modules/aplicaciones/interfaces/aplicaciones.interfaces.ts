@@ -66,9 +66,10 @@ export interface FormProjectWithPDF {
 }
 
 export interface Opt_architec {
-    1: boolean;  
-    2: boolean;  
-    3: boolean;  
+    [key: number]: boolean;
+    1: boolean,
+    2: boolean,
+    3: boolean
 }
 
 export interface Language {

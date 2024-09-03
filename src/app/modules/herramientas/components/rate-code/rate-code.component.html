@@ -1,16 +1,16 @@
 <main class="m-2">
     <section class="flex flex-column mb-4 pb-2 border-title">
-        <h1 class="text-5xl my-0">Casos de prueba</h1> 
+        <h1 class="text-5xl my-0">Calificar código</h1> 
     </section>
     <section class="text-justify vertical-align-middle mb-4">
         <p class="m-0">
-            Para iniciar el proceso de generar casos de prueba de tu proyecto, <b>selecciona la aplicación con la que se quiere trabajar</b>.
-            El listado de aplicaciones solo contempla aquellas aplicaciones cuyo proceso inicial <b>no</b> incluye los casos de prueba.
+            Para iniciar el proceso de calificación de código de tu proyecto, <b>selecciona la aplicación con la que se quiere trabajar</b>.
+            El listado de aplicaciones solo contempla aquellas aplicaciones cuyo proceso <b>no</b> incluye la calificación de código.
         </p>
     </section>
     
     <div *ngIf="isLoadingData" class="card flex justify-content-center my-6">
-        <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+        <p-progressSpinner ariaLabel="loading" />
     </div>
 
     <section *ngIf="!isLoadingData"> 
@@ -24,13 +24,12 @@
                     [options]="appsOpcs"
                     optionValue="value"
                     placeholder="Selecciona una app"
-                ></p-dropdown>
+                />
                 <span *ngIf="form.controls['idu_aplicacion'].errors && form.controls['idu_aplicacion'].touched"
                     class="font-italic text-red-500 mt-2">
                         Debes seleccionar una aplicación.
                 </span>
             </section>
-
             <section *ngIf="form.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">
                 <div class="flex justify-content-center mt-4">
                     <p-button 
@@ -41,10 +40,9 @@
                         icon="pi pi-check" 
                         iconPos="right"
                         type="submit"
-                    ></p-button>
+                    />
                 </div>
             </section>
         </form>
     </section>
-    <p-confirmDialog/>
-</main>
+</main> 
