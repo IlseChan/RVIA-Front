@@ -3,8 +3,8 @@ import { BehaviorSubject, catchError, delay, from, map, Observable, of, switchMa
 import { HttpClient } from '@angular/common/http';
 
 import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV,  
-  FormPDF, FormProjectWithPDF, Language, NumberAction, OriginMethod,
-  ResponseAddApp, ResponseSaveFile, StatusApps } from '../interfaces/aplicaciones.interfaces';
+  FormPDF, FormProjectWithPDF, Language, NumberAction, Opt_architec, OriginMethod,
+  ResponseAddApp, StatusApps } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
@@ -96,17 +96,17 @@ export class AplicacionesService {
       })
     );
   }
-
-  getNoRateApps(): Observable<AppsToUseSelect[]>{
+  
+  getSomeArchitecApps(type: keyof Opt_architec): Observable<AppsToUseSelect[]>{
     return of(this.allApps)
     .pipe(
       switchMap(infoApps => {
         if(infoApps.total !== -1 && !this.changes){
-          return of(this.filterNoRateApps([...infoApps.data]))
+          return of(this.filterTypeProcessApps([...infoApps.data],type))
         }
         return this.getAplicaciones().pipe(
           map(() => {
-            return this.filterNoRateApps([...this.allApps.data])
+            return this.filterTypeProcessApps([...this.allApps.data],type)
           })
         )
       })
@@ -130,9 +130,9 @@ export class AplicacionesService {
       })
   }
 
-  private filterNoRateApps(data: Aplication[]): AppsToUseSelect[] {
+  private filterTypeProcessApps(data: Aplication[],type: number): AppsToUseSelect[] {
     return data
-      .filter(app => !app.opc_arquitectura[3])
+      .filter(app => !app.opc_arquitectura[type])
       .map( app => {
         return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
       });

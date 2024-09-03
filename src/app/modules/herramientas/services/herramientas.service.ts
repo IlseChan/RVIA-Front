@@ -77,11 +77,41 @@ export class HerramientasService {
     );
   }
 
+  startProcessTestCasesRVIA({ idu_aplicacion }: { idu_aplicacion: number }): Observable<Aplication> {
+    const body = { opcArquitectura: 2 };
+    return this.http.patch<Aplication>(`${this.baseUrl}/applications/test-cases/${idu_aplicacion}`,body)
+    .pipe(
+      tap((app) => {
+        const title = 'Proceso iniciado';
+        const content = `¡El proceso para generar casos de prueba de la aplicación ${app.nom_aplicacion} ha iniciado con éxito!`
+        this.notificationsService.successMessage(title,content);
+      }),
+      tap(() =>  this.aplicacionesService.changes = true),
+      catchError(error => this.handleError(error, OriginMethod.PATCHRTESTCASE))
+    );
+  }
+
+  startProcessDocumentationRVIA({ idu_aplicacion }: { idu_aplicacion: number }): Observable<Aplication> {
+    const body = { opcArquitectura: 1 };
+    return this.http.patch<Aplication>(`${this.baseUrl}/applications/documentation/${idu_aplicacion}`,body)
+    .pipe(
+      tap((app) => {
+        const title = 'Proceso iniciado';
+        const content = `¡El proceso para documentar la aplicación ${app.nom_aplicacion} ha iniciado con éxito!`
+        this.notificationsService.successMessage(title,content);
+      }),
+      tap(() =>  this.aplicacionesService.changes = true),
+      catchError(error => this.handleError(error, OriginMethod.PATCHRDOCCODE))
+    );
+  }
+
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
     const title = 'Error';
   
     const errorsMessages = {
       GETDOWNLOADCSV: 'Error al descargar el CSV.',
+      PATCHRDOCCODE: 'Ha ocurrido un error al iniciar el proceso de documentar aplicación. Inténtalo más tarde.',
+      PATCHRTESTCASE:'Ha ocurrido un error al iniciar el proceso de casos de prueba. Inténtalo más tarde.',
       PATCHRATECODE: 'Ha ocurrido un error al iniciar el proceso de calificación de código. Inténtalo más tarde.',
       POSTMAKECSV: 'Ha ocurrido un error al generar el CSV de del PDF.',
       POSTMAKECSVPY: 'Ha ocurrido un error al generar el CSV, verifica que tu PDF sea válido para vulnerabilidades.', 
