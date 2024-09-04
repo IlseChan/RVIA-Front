@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, delay, from, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV,  
-  FormPDF, FormProjectWithPDF, Language, NumberAction, OriginMethod,
-  ResponseAddApp, ResponseSaveFile, StatusApps } from '../interfaces/aplicaciones.interfaces';
+  FormPDF, FormProjectWithPDF, Language, NumberAction, Opt_architec, OriginMethod,
+  ResponseAddApp, StatusApps } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
@@ -81,7 +81,7 @@ export class AplicacionesService {
       );
   }
 
-  getWaitingApps(){
+  getWaitingApps(): Observable<AppsToUseSelect[]> {
     return of(this.allApps)
     .pipe(
       switchMap(infoApps => {
@@ -91,6 +91,22 @@ export class AplicacionesService {
         return this.getAplicaciones().pipe(
           map(() => {
             return this.filterWaitingApps([...this.allApps.data])
+          })
+        )
+      })
+    );
+  }
+  
+  getSomeArchitecApps(type: keyof Opt_architec): Observable<AppsToUseSelect[]>{
+    return of(this.allApps)
+    .pipe(
+      switchMap(infoApps => {
+        if(infoApps.total !== -1 && !this.changes){
+          return of(this.filterTypeProcessApps([...infoApps.data],type))
+        }
+        return this.getAplicaciones().pipe(
+          map(() => {
+            return this.filterTypeProcessApps([...this.allApps.data],type)
           })
         )
       })
@@ -112,6 +128,14 @@ export class AplicacionesService {
       .map( app => {
         return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
       })
+  }
+
+  private filterTypeProcessApps(data: Aplication[],type: number): AppsToUseSelect[] {
+    return data
+      .filter(app => !app.opc_arquitectura[type])
+      .map( app => {
+        return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
+      });
   }
   
   getCSVAplication(id: number): Observable<CheckmarxCSV> {
@@ -139,8 +163,9 @@ export class AplicacionesService {
   //POST
   saveProjectWitPDF(form: FormProjectWithPDF): Observable<ResponseAddApp> {
     const formData = new FormData();
-    
+
     formData.append('num_accion',form.action.toString()); 
+    formData.append('opc_arquitectura', JSON.stringify(form.opt_archi))
 
     if(form.action === 3){
       formData.append('opc_lenguaje',form.language.toString());

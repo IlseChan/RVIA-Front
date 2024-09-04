@@ -54,12 +54,24 @@
                             />
                         </td>
                         <td>
-                            <p-tag
-                                styleClass="text-sm"
-                                [severity]="app.num_accion | statusAppLabel"
-                                [value]="app.num_accion | actionApp"
-                            />
+                            <div class="flex flex-col items-center" 
+                                 (mouseenter)="onDropdownHover(app.sequentialId, index)" 
+                                 (mouseleave)="onDropdownLeave(app.sequentialId, index)">
+                                <p-dropdown 
+                                    #dropdown
+                                    [options]="getArquitecturaOptions(app.opc_arquitectura)"
+                                    [placeholder]="getDropdownPlaceholder(app)"
+                                    [disabled]="getArquitecturaOptions(app.opc_arquitectura).length === 0" 
+                                    styleClass="dropdown-arrow-only w-full text-sm mt-1 dropdown-readonly"
+                                    [style]="{'width': '100px', 'padding': '0 5px'}"
+                                    [attr.data-id]="app.sequentialId + '-' + index">
+                                    <ng-template let-option pTemplate="item">
+                                        <span [ngClass]="option.styleClass" class="p-dropdown-item-custom">{{ option.label }}</span>
+                                    </ng-template>
+                                </p-dropdown>
+                            </div>
                         </td>
+                        
                         <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
                             <a *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
                                pTooltip="Descargar ZIP"
@@ -69,15 +81,14 @@
                                (click)="onDownloadFile(app)">
                                 <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
                             </a>
-                            <a  *ngIf="app.num_accion === NumberAction.SANITIZECODE &&
+                            <a *ngIf="app.num_accion === NumberAction.SANITIZECODE &&
                                     user!.position.nom_rol !== Nom_Rols.USUARIO"
-                                [pTooltip]="app.checkmarx.length > 0 ? 'Ya se registró PDF' : 'Subir PDF'" 
-                                tooltipPosition="top"
-                                tooltipStyleClass="text-sm"
-                                class=" mx-2"
-                                [ngClass]="(app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE || app.checkmarx.length > 0) ? 'icon-disable' : 'icon-up'"
-                                class="mx-2"
-                                (click)="showFormUploadPDF(app)">
+                               [pTooltip]="app.checkmarx.length > 0 ? 'Ya se registró PDF' : 'Subir PDF'" 
+                               tooltipPosition="top"
+                               tooltipStyleClass="text-sm"
+                               class=" mx-2"
+                               [ngClass]="(app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE || app.checkmarx.length > 0) ? 'icon-disable' : 'icon-up'"
+                               (click)="showFormUploadPDF(app)">
                                 <i class="pi pi-file-pdf" style="font-size: 1.6rem"></i>
                             </a>
                             <ng-template #empty>
@@ -104,3 +115,4 @@
         />
     </section>
 </main>
+
