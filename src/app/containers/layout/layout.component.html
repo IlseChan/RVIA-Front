@@ -12,68 +12,77 @@
     </div>
   </nav>
   <nav class="sidebar fixed flex flex-column h-full text-white justify-content-between" [ngClass]="{'active': sidebarActive}">
-    <button class="close-sidebar text-white text-2xl c-pointer p-3" (click)="closeSidebar()">✖</button>
-    <small class="px-3 mb-2 text-divider">Menú</small>
-    <ul class="px-3 list-none">
-      <li *ngFor="let option of menuSidebar">
-        <a 
-          routerLinkActive="active" 
-          [routerLink]="option.path"
-          class="text-white text-base block px-3 py-2 flex align-items-center border-round">
-          <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
-          <span>{{ option.name }}</span> 
-        </a>
-      </li>
-    </ul>
-    <div [ngClass]="userLogged?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto px-3' : 'px-1'">
-      <p-divider type="solid" styleClass="m-0"/>
-    </div>
-    <ng-container *ngIf="userLogged?.position?.nom_rol !== Nom_rol.INVITADO">
-      <ul class="px-3 list-none" >
-        <li *ngFor="let option of menuRvia">
-          <a 
-            routerLinkActive="active" 
-            [routerLink]="option.path"
-            class="text-white text-base block px-3 py-2 flex align-items-center border-round">
-            <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
-            <span>{{ option.name }}</span> 
-          </a>
-        </li>
-      </ul>
-      <div class="px-1 mb-auto">
-        <p-divider type="solid" styleClass="m-0"/>
-      </div>
-    </ng-container>
-    <div class="px-3" *ngIf="userLogged?.position?.nom_rol === Nom_rol.ADMINISTRADOR">
-      <small class="mb-2 text-divider">Herramientas</small>
-      <ul class="list-none p-0">
-          <li *ngFor="let option of menuTools">
+    <button class="close-sidebar text-white text-2xl c-pointer py-3 px-2" (click)="closeSidebar()">✖</button>
+    <section class="flex flex-column p-2 sidebar-content mb-auto">
+      <div>
+        <small class="text-divider">Menú</small>
+        <ul class="p-0 my-2 list-none">
+          <li *ngFor="let option of menuSidebar">
             <a 
               routerLinkActive="active" 
               [routerLink]="option.path"
               class="text-white text-base block px-3 py-2 flex align-items-center border-round">
               <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
-              <span>{{ option.name }}</span> 
+              <span class="menu-item">{{ option.name }}</span> 
             </a>
           </li>
-      </ul>
-      <div>
-        <small class="mb-2 text-divider">Administrador</small>
-        <ul class="list-none p-0">
-          <li *ngFor="let option of menuAdmin">
+        </ul>
+      </div>
+      <div [ngClass]="userLogged?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
+        <p-divider type="solid" styleClass="m-0"/>
+      </div>
+      <ng-container *ngIf="userLogged?.position?.nom_rol !== Nom_rol.INVITADO">
+        <ul class="p-0 my-2 list-none" >
+          <li *ngFor="let option of menuRvia" >
             <a 
               routerLinkActive="active" 
               [routerLink]="option.path"
               class="text-white text-base block px-3 py-2 flex align-items-center border-round">
-                <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
-                <span>{{ option.name }}</span> 
+              <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
+              <span class="menu-item">{{ option.name }}</span> 
             </a>
           </li>
         </ul>
-      </div> 
-    </div> 
-    <div class="logout-button text-center p-3 pt-0 sidebar-logout">
-      <p-divider type="solid" styleClass="mt-0"/>
+        <div class="mb-auto">
+          <p-divider type="solid" styleClass="m-0"/>
+        </div>
+      </ng-container>
+      <ng-container class="mt-auto" *ngIf="userLogged?.position?.nom_rol === Nom_rol.ADMINISTRADOR">
+        <div class="mt-auto">
+          <small class="text-divider">Herramientas</small>
+          <ul class="p-0 my-2 list-none">
+              <li *ngFor="let option of menuTools">
+                <a 
+                  routerLinkActive="active" 
+                  [routerLink]="option.path"
+                  class="text-white text-base block px-3 py-2 flex align-items-center border-round">
+                  <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
+                  <span class="menu-item">{{ option.name }}</span> 
+                </a>
+              </li>
+          </ul>
+        </div>
+        <div>
+          <p-divider type="solid" styleClass="my-2"/>
+        </div>
+        <div>
+          <small class="text-divider">Administrador</small>
+          <ul class="p-0 my-2 list-none">
+            <li *ngFor="let option of menuAdmin">
+              <a 
+                routerLinkActive="active" 
+                [routerLink]="option.path"
+                class="text-white text-base block px-3 py-2 flex align-items-center border-round">
+                  <i class="mr-2 text-sm" [ngClass]="option.icon"></i>
+                  <span class="menu-item">{{ option.name }}</span> 
+              </a>
+            </li>
+          </ul>
+        </div> 
+      </ng-container>
+    </section>
+    <div class="logout-button text-center p-2 pt-0 sidebar-logout">
+      <p-divider type="solid" styleClass="mt-2 mb-2"/>
       <button 
         class="flex align-items-center justify-content-center text-white py-3 px-2 w-full text-base c-pointer border-round"
         (click)="logout()">
