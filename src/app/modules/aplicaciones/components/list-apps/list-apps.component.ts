@@ -17,11 +17,11 @@ import { Aplication, NumberAction, StatusApps, ArquitecturaOpciones, Opt_archite
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
-import { Nom_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label.pipe';
 import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
 import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
+import { Nom_Rol, Usuario } from '@modules/shared/interfaces';
 
 @Component({
   selector: 'list-apps',

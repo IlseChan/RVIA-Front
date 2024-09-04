@@ -2,11 +2,11 @@ import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { AuthService } from "@modules/auth/services/auth.service";
-import { Nom_Rol } from "@modules/shared/interfaces/usuario.interface";
+import { Nom_Rol } from "@modules/shared/interfaces";
 
-const forbiddenRoles = [Nom_Rol.INVITADO,Nom_Rol.USUARIO,]; 
+const forbiddenRoles = [Nom_Rol.INVITADO]; 
 
-export const AdminAutoGuard = (): boolean => {
+export const ToolsGuard = (): boolean => {
     const router = inject(Router);
     const authService = inject(AuthService);
 
