@@ -1,16 +1,5 @@
-export enum Nom_Rol {
-    ADMINISTRADOR = 'Administrador',  
-    AUTORIZADOR   = 'Autorizador',
-    INVITADO      = 'Invitado',
-    USUARIO       = 'Usuario',
-}
-
-export enum Idu_Rol {
-    ADMINISTRADOR = 1,
-    AUTORIZADOR   = 2,
-    USUARIO       = 3,
-    INVITADO      = 4
-}
+import { Idu_Rol } from "./Idu_Rol.enum";
+import { Nom_Rol } from "./Nom_Rol.enum";
 
 export interface Usuario {
     esActivo:        boolean;

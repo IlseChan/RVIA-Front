@@ -7,9 +7,9 @@ import { PrimeIcons } from 'primeng/api';
 import { DividerModule } from 'primeng/divider';
 
 import { AuthService } from '@modules/auth/services/auth.service';
-import { Nom_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { GeneratedNumberService } from '@modules/shared/services/generated-number.service'; 
 import { TitleCasePipe } from '@angular/common'; 
+import { Nom_Rol, Usuario } from '@modules/shared/interfaces';
 
 @Component({
   selector: 'app-layout',

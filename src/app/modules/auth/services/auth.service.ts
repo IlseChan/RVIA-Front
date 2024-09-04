@@ -5,9 +5,9 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
-import { Idu_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
 import { Router } from '@angular/router';
+import { Idu_Rol, Usuario } from '@modules/shared/interfaces';
 
 @Injectable({
   providedIn: 'root'
