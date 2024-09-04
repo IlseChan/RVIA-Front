@@ -11,7 +11,6 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { Idu_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
-import { InitalValuesFormEdits } from '@modules/usuarios/interfaces/usuarios.interface';
 import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
@@ -24,7 +23,7 @@ import { ValidationService } from '@modules/shared/services/validation.service';
 })
 export class EditUsersPageComponent implements OnInit, OnDestroy {
   userForm!:  FormGroup;
-  initalValues: InitalValuesFormEdits = {
+  initalValues = {
     nom_usuario: '',
     idu_rol: Idu_Rol.INVITADO
   };
@@ -70,8 +69,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   initForm(user: Usuario): void {
     this.userForm = new FormGroup({
       nom_usuario: new FormControl<string>(user.nom_usuario,[
-        Validators.required, 
-        Validators.minLength(3),
+        Validators.required,
         this.vldtnSrv.noBlankValidation(),
         this.vldtnSrv.completeUserName()
       ]),
