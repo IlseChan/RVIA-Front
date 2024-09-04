@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, switchMap } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ButtonModule } from 'primeng/button';
@@ -10,9 +10,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { InputTextModule } from 'primeng/inputtext';
 
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
-import { Idu_Rol, Usuario } from '@modules/shared/interfaces/usuario.interface';
-import { InitalValuesFormEdits } from '@modules/usuarios/interfaces/usuarios.interface';
 import { ValidationService } from '@modules/shared/services/validation.service';
+import { Idu_Rol, Nom_Rol, Usuario } from '@modules/shared/interfaces';
 
 @Component({
   selector: 'edit-users-page',
@@ -24,22 +23,22 @@ import { ValidationService } from '@modules/shared/services/validation.service';
 })
 export class EditUsersPageComponent implements OnInit, OnDestroy {
   userForm!:  FormGroup;
-  initalValues: InitalValuesFormEdits = {
+  initalValues = {
     nom_usuario: '',
     idu_rol: Idu_Rol.INVITADO
   };
   
   isLoading: boolean = true;
   typesUsers = [
-    { idu_usuario: 1, nom_rol: 'Administrador' },
-    { idu_usuario: 2, nom_rol: 'Autorizador' },
-    { idu_usuario: 3, nom_rol: 'Usuario' },
-    { idu_usuario: 4, nom_rol: 'Invitado' },
+    { idu_usuario: Idu_Rol.ADMINISTRADOR, nom_rol: Nom_Rol.ADMINISTRADOR },
+    { idu_usuario: Idu_Rol.AUTORIZADOR, nom_rol: Nom_Rol.AUTORIZADOR },
+    { idu_usuario: Idu_Rol.USUARIO, nom_rol: Nom_Rol.USUARIO },
+    { idu_usuario: Idu_Rol.INVITADO, nom_rol: Nom_Rol.INVITADO },
   ];
 
-  userSub!: Subscription;
   isUpdate: boolean = false;
   originalUser!: Usuario;
+  private destroy$ = new Subject<boolean>();
 
   constructor(
     private router: Router,
@@ -51,9 +50,10 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     if(!this.router.url.includes('edit')) return;
 
-    this.userSub = this.activedRoute.params  
+    this.activedRoute.params  
       .pipe(
         switchMap(({id}) => this.usuariosService.getUsuarioById(+id)),
+        takeUntil(this.destroy$)
       )
       .subscribe({
         next: (user) => {
@@ -70,8 +70,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   initForm(user: Usuario): void {
     this.userForm = new FormGroup({
       nom_usuario: new FormControl<string>(user.nom_usuario,[
-        Validators.required, 
-        Validators.minLength(3),
+        Validators.required,
         this.vldtnSrv.noBlankValidation(),
         this.vldtnSrv.completeUserName()
       ]),
@@ -102,6 +101,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
     const user = this.userForm.value;
         
     this.usuariosService.updateUsuario(this.originalUser,user)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {
           this.back();
@@ -116,12 +116,13 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
     this.userForm.reset(this.initalValues);
   }
 
-  back(): void{
+  back(): void {
     this.router.navigate(['users/list-users'],{ replaceUrl: true });
   }
 
   ngOnDestroy(): void{
-    if(this.userSub) this.userSub.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }
 

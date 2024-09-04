@@ -13,11 +13,6 @@ export enum OriginMethod {
     POSTSTARTADDON = 'POSTSTARTADDON', 
 }
  
-export interface FormPDFtoCSV {
-    appId:   number;
-    pdfFile: File;
-}
-
 export interface FormAddonCall {
     idu_aplicacion: number;
     conIA:    number;
