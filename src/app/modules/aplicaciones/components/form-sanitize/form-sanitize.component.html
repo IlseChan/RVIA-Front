@@ -58,19 +58,24 @@
           </div>
         </section><!-- Panel Accion del proyecto -->
      
-        <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground">
-          <div class="flex flex-column justify-content-center align-items-center mb-3">
-            <p>Servicios adicionales:</p>
-            <div class="card flex justify-content-center">
-              <div class="flex flex-column gap-2">
-                  <div *ngFor="let option of actionArchitec" class="field-checkbox">
-                      <p-checkbox 
-                          [formControlName]="option.form"
-                          [label]="option.txt"
-                          [name]="option.form"
-                          value="true"
-                        />
-                  </div>
+        <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground justify-content-evenly gap-3">
+          <div class="flex flex-column justify-content-center align-items-center ">
+            <div class="flex flex-grow-1 align-items-center flex-basis-0 text-bluegray-400 mb-4">
+              <p class="m-0">Acción: <b>{{ projectAction }}</b></p>
+            </div>
+            <div class="flex flex-column flex-grow-1 align-items-center justify-content-center">
+              <p>Servicios adicionales:</p>
+              <div class="card flex justify-content-center">
+                <div class="flex flex-column gap-2">
+                    <div *ngFor="let option of actionArchitec" class="field-checkbox">
+                        <p-checkbox 
+                            [formControlName]="option.form"
+                            [label]="option.txt"
+                            [name]="option.form"
+                            value="true"
+                          />
+                    </div>
+                </div>
               </div>
             </div>
           </div>
