@@ -1,5 +1,4 @@
-import { Idu_Rol } from "./Idu_Rol.enum";
-import { Nom_Rol } from "./Nom_Rol.enum";
+import { Position } from "./usuarioPosition.interface";
 
 export interface Usuario {
     esActivo:        boolean;
@@ -9,9 +8,4 @@ export interface Usuario {
     numero_empleado: number;
     position:        Position;
     token?:          string;
-}
-
-export interface Position {
-    idu_rol: Idu_Rol;
-    nom_rol: Nom_Rol
 }

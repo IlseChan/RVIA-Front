@@ -21,7 +21,7 @@ import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label.pipe';
 import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
 import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
-import { Nom_Rol, Usuario } from '@modules/shared/interfaces';
+import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 
 @Component({
   selector: 'list-apps',

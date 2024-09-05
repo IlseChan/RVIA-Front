@@ -11,7 +11,7 @@ import { InputTextModule } from 'primeng/inputtext';
 
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { ValidationService } from '@modules/shared/services/validation.service';
-import { Idu_Rol, Nom_Rol, Usuario } from '@modules/shared/interfaces';
+import { Idu_Rol, Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 
 @Component({
   selector: 'edit-users-page',
