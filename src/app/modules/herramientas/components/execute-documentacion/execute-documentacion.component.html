@@ -18,12 +18,15 @@
             <section class="flex flex-column align-items-center mb-3">
                 <p>Selecciona el aplicativo a trabajar:</p>
                 <p-dropdown
-                    id="select-apps"
-                    formControlName="idu_aplicacion"
-                    optionLabel="name"
-                    [options]="appsOpcs"
-                    optionValue="value"
-                    placeholder="Selecciona una app"
+                id="select-apps"
+                formControlName="idu_aplicacion"
+                optionLabel="name"
+                [options]="appsOpcs"
+                optionValue="value"
+                placeholder="Selecciona una app"
+                [filter]="true"
+                filterPlaceholder="Buscar aplicación..."
+                [showClear]="true">
                 ></p-dropdown>
                 <span *ngIf="form.controls['idu_aplicacion'].errors && form.controls['idu_aplicacion'].touched"
                     class="font-italic text-red-500 mt-2">
