@@ -1,8 +1,7 @@
 import { NgFor, NgIf, CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Subject, takeUntil } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
@@ -16,7 +15,7 @@ import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
 
 @Component({
-  selector: 'app-execute-documentacion',
+  selector: 'execute-documentacion',
   standalone: true,
   imports: [
     CommonModule,
@@ -33,16 +32,14 @@ import { HerramientasService } from '@modules/herramientas/services/herramientas
   templateUrl: './execute-documentacion.component.html',
   styleUrls: ['./execute-documentacion.component.scss']
 })
-export class ExecuteDocumentacionComponent implements OnInit {
-
+export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   isLoadingData: boolean = true;
   isRequest: boolean = false;
   label: string = 'Iniciar';
 
   form!: FormGroup;
-
   appsOpcs: AppsToUseSelect[] = [];
-  appsSub!: Subscription;
 
   constructor(
     private aplicacionesService: AplicacionesService,
@@ -55,7 +52,8 @@ export class ExecuteDocumentacionComponent implements OnInit {
   }
 
   private getApps(): void {
-    this.appsSub = this.aplicacionesService.getSomeArchitecApps(1)
+    this.aplicacionesService.getSomeArchitecApps(1)
+      .pipe(takeUntil(this.destroy$))  
       .subscribe((resp) => {        
         if(resp){
           this.appsOpcs = resp;
@@ -101,6 +99,7 @@ export class ExecuteDocumentacionComponent implements OnInit {
   
     const idu_aplicacion = this.form.controls['idu_aplicacion'].value;
     this.herramientasService.startProcessDocumentationRVIA(idu_aplicacion)  
+      .pipe(takeUntil(this.destroy$))  
       .subscribe({
         next: () => {
           this.label = 'Iniciado'; 
@@ -126,6 +125,7 @@ export class ExecuteDocumentacionComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    if(this.appsSub) this.appsSub.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

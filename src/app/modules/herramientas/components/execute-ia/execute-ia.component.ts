@@ -1,7 +1,7 @@
 import { NgFor, NgIf } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { ButtonModule } from 'primeng/button';
 import { DropdownModule } from 'primeng/dropdown';
@@ -13,24 +13,22 @@ import { RadioButtonModule } from 'primeng/radiobutton';
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
 
 @Component({
-  selector: 'app-execute-ia',
+  selector: 'execute-ia',
   standalone: true,
   imports: [ProgressSpinnerModule,NgIf,ButtonModule,ReactiveFormsModule,
     DropdownModule,RadioButtonModule,NgFor
   ],
   templateUrl: './execute-ia.component.html',
-  styleUrl: './execute-ia.component.scss'
+  styleUrls: ['./execute-ia.component.scss']
 })
-export class ExecuteIaComponent {
-
+export class ExecuteIaComponent implements OnInit, OnDestroy{
+  private destroy$ = new Subject<void>();
   isLoadingData: boolean = true;
   isRequest: boolean = false;
   label: string = 'Iniciar';
 
   formIA!: FormGroup;
-
   appsOpcs: AppsToUseSelect[] = [];
-  appsSub!: Subscription;
 
   actionsOps = [
     { value: 1, txt: 'Si' },
@@ -43,7 +41,8 @@ export class ExecuteIaComponent {
   ){}
 
   ngOnInit(): void {
-    this.appsSub = this.aplicacionesService.getWaitingApps()
+    this.aplicacionesService.getWaitingApps()
+      .pipe(takeUntil(this.destroy$))  
       .subscribe((resp) => {        
         if(resp){
           this.appsOpcs = resp;
@@ -70,8 +69,9 @@ export class ExecuteIaComponent {
     this.label = 'Iniciando'; 
 
     this.herramientasService.addonsCall(this.formIA.value)
-      .subscribe({
-        next: (resp) => {
+    .pipe(takeUntil(this.destroy$))    
+    .subscribe({
+        next: () => {
           this.label = 'Iniciado'; 
         },
         error: () => {              
@@ -82,6 +82,7 @@ export class ExecuteIaComponent {
   }
 
   ngOnDestroy(): void {
-    if(this.appsSub) this.appsSub.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
    }
 }
