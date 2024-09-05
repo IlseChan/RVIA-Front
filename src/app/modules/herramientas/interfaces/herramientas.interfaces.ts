@@ -1,6 +1,6 @@
 export interface FormPDFtoCSV {
-    appId:   number;
-    pdfFile: File;
+    idu_aplicacion:   number;
+    file: File;
 }
 
 export enum OriginMethod { 

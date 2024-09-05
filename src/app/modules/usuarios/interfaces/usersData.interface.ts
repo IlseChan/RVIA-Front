@@ -1,4 +1,4 @@
-import { Usuario } from "@modules/shared/interfaces/usuario.interface";
+import { Usuario } from "./usuario.interface";
 
 export interface UsersData {
     data:  Usuario[];

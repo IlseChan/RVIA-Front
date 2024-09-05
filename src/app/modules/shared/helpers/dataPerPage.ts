@@ -1,5 +1,5 @@
 import { Aplication } from "@modules/aplicaciones/interfaces/aplicaciones.interfaces"
-import { Usuario } from "../interfaces/usuario.interface";
+import { Usuario } from "@modules/usuarios/interfaces";
 
 export const elementPerPage = 5;
 

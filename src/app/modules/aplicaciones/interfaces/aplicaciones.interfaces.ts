@@ -1,5 +1,5 @@
 import { CheckmarxInfo } from "@modules/shared/interfaces/checkmarx.interface";
-import { Usuario } from "@modules/shared/interfaces/usuario.interface";
+import { Usuario } from "@modules/usuarios/interfaces";
 
 export enum StatusApps {
     PROGRESS = 1,

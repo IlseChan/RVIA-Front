@@ -20,7 +20,7 @@
                 <p>Selecciona la aplicación de tu pdf:</p>
                 <p-dropdown
                     id="select-apps"
-                    formControlName="appId"
+                    formControlName="idu_aplicacion"
                     optionLabel="name"
                     [options]="appsOpcs"
                     optionValue="value"
@@ -28,14 +28,14 @@
                     [style]="{width : '20rem'}"
                     [filter]="true"
                     filterPlaceholder="Buscar aplicación..."
-                    [showClear]="true">
-                </p-dropdown>
-                <span *ngIf="formFile.controls['appId'].errors && formFile.controls['appId'].touched"
+                    [showClear]="true"    
+                />
+                <span *ngIf="formFile.controls['idu_aplicacion'].errors && formFile.controls['idu_aplicacion'].touched"
                     class="font-italic text-red-500 mt-2">
                     Debes seleccionar una aplicación.
                 </span>
             </section>
-            <section *ngIf="formFile.controls['appId'].value !== null" class="flex flex-column justify-content-center mb-4">
+            <section *ngIf="formFile.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">
                 <p class="mt-0 text-center">Selecciona el archivo <b>.pdf</b> de vulnerabilidades a convertir:</p>
                 <div class="flex-auto flex flex-column justify-content-center align-items-center"> 
                     <p-inputGroup class="mx-auto w-3">
@@ -48,21 +48,21 @@
                             id="inputNamePDF-CSV"
                             placeholder="Selecciona tu archivo" 
                             disabled="true" readonly
-                            [value]="formFile.controls['pdfFile'].value?.name ?? ''"
+                            [value]="formFile.controls['file'].value?.name ?? ''"
                         />
                     </p-inputGroup>
                     <span *ngIf="isLoading" class="mt-2 font-italic text-500">Cargando ...</span>
-                    <span *ngIf="!formFile.controls['pdfFile'].errors && formFile.controls['pdfFile'].value && !isLoading" 
+                    <span *ngIf="!formFile.controls['file'].errors && formFile.controls['file'].value && !isLoading" 
                         class="mt-2 text-500">
                         Tamaño: {{ sizeFile.toFixed(2)}} MB 
                     </span>
-                    <span *ngIf="formFile.controls['pdfFile'].errors?.['invalidTypePdf']"
+                    <span *ngIf="formFile.controls['file'].errors?.['invalidTypePdf']"
                         class="mt-3 font-italic text-red-500">
                         Error al cargar el archivo, extensiones válidas <b>.pdf</b>
                     </span>
-                    <input id="input-pdf-csv" type="file" #pdfFile accept=".pdf" (change)="onFileSelected($event)" style="display: none;">
+                    <input id="input-pdf-csv" type="file" #file accept=".pdf" (change)="onFileSelected($event)" style="display: none;">
                 </div>
-                <div *ngIf="!formFile.controls['pdfFile'].errors && formFile.controls['pdfFile'].value && !isLoading" 
+                <div *ngIf="!formFile.controls['file'].errors && formFile.controls['file'].value && !isLoading" 
                     class="flex justify-content-center gap-6 mt-6">
                     <p-button 
                         label="Cancelar" 

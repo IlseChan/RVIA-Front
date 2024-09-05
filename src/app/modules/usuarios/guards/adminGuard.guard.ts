@@ -2,7 +2,7 @@ import { inject } from "@angular/core";
 import { Router } from "@angular/router";
 
 import { AuthService } from "@modules/auth/services/auth.service";
-import { Nom_Rol } from "@modules/shared/interfaces";
+import { Nom_Rol } from "../interfaces";
 
 export const AdminGuard = (): boolean => {
     const router = inject(Router);
