@@ -65,8 +65,9 @@ export class RateCodeComponent implements OnInit, OnDestroy {
     }
     this.isRequest = true;
     this.label = 'Iniciando'; 
-
-    this.herramientasService.startProcessRateCodeRVIA(this.form.value)
+  
+    const idu_aplicacion = this.form.controls['idu_aplicacion'].value;
+    this.herramientasService.startProcessRateCodeRVIA(idu_aplicacion)
       .subscribe({
         next: () => {
           this.label = 'Iniciado'; 

@@ -28,11 +28,11 @@ export class HerramientasService {
       );
   }
 
-  makeCSVFile(form: FormPDFtoCSV): Observable<CheckmarxPDFCSV> {
+  makeCSVFile({ idu_aplicacion, file }: FormPDFtoCSV): Observable<CheckmarxPDFCSV> {
   
     const formData = new FormData();
-    formData.append('idu_aplicacion',form.appId.toString());
-    formData.append('file',form.pdfFile);
+    formData.append('idu_aplicacion',idu_aplicacion.toString());
+    formData.append('file',file);
     
     return this.http.post<CheckmarxPDFCSV>(`${this.baseUrl}/checkmarx/recoverypdf`,formData)
     .pipe(
@@ -63,7 +63,7 @@ export class HerramientasService {
     );
   }
 
-  startProcessRateCodeRVIA({ idu_aplicacion }: { idu_aplicacion: number }): Observable<Aplication> {
+  startProcessRateCodeRVIA(idu_aplicacion: number): Observable<Aplication> {
     const body = { opcArquitectura: 3 };
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/rate-project/${idu_aplicacion}`,body)
     .pipe(
@@ -77,7 +77,7 @@ export class HerramientasService {
     );
   }
 
-  startProcessTestCasesRVIA({ idu_aplicacion }: { idu_aplicacion: number }): Observable<Aplication> {
+  startProcessTestCasesRVIA(idu_aplicacion: number): Observable<Aplication> {
     const body = { opcArquitectura: 2 };
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/test-cases/${idu_aplicacion}`,body)
     .pipe(
@@ -91,7 +91,7 @@ export class HerramientasService {
     );
   }
 
-  startProcessDocumentationRVIA({ idu_aplicacion }: { idu_aplicacion: number }): Observable<Aplication> {
+  startProcessDocumentationRVIA(idu_aplicacion: number): Observable<Aplication> {
     const body = { opcArquitectura: 1 };
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/documentation/${idu_aplicacion}`,body)
     .pipe(

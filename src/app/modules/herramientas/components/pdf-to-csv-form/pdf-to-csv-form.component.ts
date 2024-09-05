@@ -27,7 +27,7 @@ import { ValidationService } from '@modules/shared/services/validation.service';
   styleUrl: './pdf-to-csv-form.component.scss'
 })
 export class PdfToCsvFormComponent implements OnInit, OnDestroy{
-  @ViewChild('pdfFile', { static: false }) pdfInput !: ElementRef;
+  @ViewChild('file', { static: false }) pdfInput !: ElementRef;
 
   formFile!: FormGroup;
   isLoading: boolean = false;
@@ -68,8 +68,8 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
 
   private initForm(): void {
     this.formFile = new FormGroup({
-      appId: new FormControl(null,[Validators.required]),
-      pdfFile: new FormControl(null,[Validators.required, this.vldtnSrv.fileValidation('pdf')]),
+      idu_aplicacion: new FormControl(null,[Validators.required]),
+      file: new FormControl(null,[Validators.required, this.vldtnSrv.fileValidation('pdf')]),
     });
   }
 
@@ -83,7 +83,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
     if(file){
       setTimeout(() => {
         this.formFile.patchValue({
-          pdfFile: file
+          file: file
         });
         this.sizeFile = file.size / (1024 * 1024);
         this.isLoading = false;
