@@ -12,7 +12,9 @@
     </div>
   </nav>
   <nav class="sidebar fixed flex flex-column h-full text-white justify-content-between" [ngClass]="{'active': sidebarActive}">
-    <button class="close-sidebar text-white text-2xl c-pointer py-3 px-2" (click)="closeSidebar()">✖</button>
+    <button class="close-sidebar text-white text-2xl c-pointer py-3 px-2" (click)="closeSidebar()">
+      <i class="pi pi-arrow-left" style="font-size: 1.2rem;"></i>
+    </button>
     <section class="flex flex-column p-2 sidebar-content mb-auto">
       <div>
         <small class="text-divider">Menú</small>
