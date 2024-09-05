@@ -26,10 +26,13 @@
                     optionValue="value"
                     placeholder="Selecciona una aplicación"
                     [style]="{width : '20rem'}"
+                    [filter]="true"
+                    filterPlaceholder="Buscar aplicación..."
+                    [showClear]="true"    
                 />
                 <span *ngIf="formFile.controls['idu_aplicacion'].errors && formFile.controls['idu_aplicacion'].touched"
                     class="font-italic text-red-500 mt-2">
-                        Debes seleccionar una aplicación.
+                    Debes seleccionar una aplicación.
                 </span>
             </section>
             <section *ngIf="formFile.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">

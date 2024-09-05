@@ -24,10 +24,13 @@
                     [options]="appsOpcs"
                     optionValue="value"
                     placeholder="Selecciona una app"
-                />
+                    [filter]="true"
+                    filterPlaceholder="Buscar aplicación..."
+                    [showClear]="true">
+                </p-dropdown>
                 <span *ngIf="form.controls['idu_aplicacion'].errors && form.controls['idu_aplicacion'].touched"
                     class="font-italic text-red-500 mt-2">
-                        Debes seleccionar una aplicación.
+                    Debes seleccionar una aplicación.
                 </span>
             </section>
             <section *ngIf="form.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">
@@ -45,4 +48,4 @@
             </section>
         </form>
     </section>
-</main> 
+</main>
