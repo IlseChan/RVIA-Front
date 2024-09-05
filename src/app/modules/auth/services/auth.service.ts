@@ -7,7 +7,7 @@ import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
 import { Router } from '@angular/router';
-import { Idu_Rol, Usuario } from '@modules/shared/interfaces';
+import { Idu_Rol, Usuario } from '@modules/usuarios/interfaces';
 
 @Injectable({
   providedIn: 'root'

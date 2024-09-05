@@ -10,10 +10,10 @@ import { ConfirmationService } from 'primeng/api';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { Usuario } from '@modules/shared/interfaces/usuario.interface';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 import { AuthService } from '@modules/auth/services/auth.service';
+import { Usuario } from '@modules/usuarios/interfaces';
 
 @Component({
   selector: 'list-usuarios',

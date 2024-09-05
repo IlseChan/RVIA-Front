@@ -99,7 +99,8 @@ export class ExecuteDocumentacionComponent implements OnInit {
     this.isRequest = true;
     this.label = 'Iniciando'; 
   
-    this.herramientasService.startProcessDocumentationRVIA(this.form.value)  
+    const idu_aplicacion = this.form.controls['idu_aplicacion'].value;
+    this.herramientasService.startProcessDocumentationRVIA(idu_aplicacion)  
       .subscribe({
         next: () => {
           this.label = 'Iniciado'; 

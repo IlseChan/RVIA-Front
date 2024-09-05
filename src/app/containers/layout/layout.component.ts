@@ -9,7 +9,7 @@ import { DividerModule } from 'primeng/divider';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { GeneratedNumberService } from '@modules/shared/services/generated-number.service'; 
 import { TitleCasePipe } from '@angular/common'; 
-import { Nom_Rol, Usuario } from '@modules/shared/interfaces';
+import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 
 @Component({
   selector: 'app-layout',
