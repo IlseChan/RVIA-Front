@@ -18,6 +18,7 @@ import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label
 import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
 import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
+import { downloandFile } from '@modules/shared/helpers/downloadFile';
 
 @Component({
   selector: 'list-apps',
@@ -146,14 +147,8 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (blob) => {
-          const url = window.URL.createObjectURL(blob);
-          const anchor = document.createElement('a');
-          anchor.href = url;
-          anchor.download = `${app.nom_aplicacion}.zip`;
-          document.body.appendChild(anchor);
-          anchor.click();
-          document.body.removeChild(anchor);
-          window.URL.revokeObjectURL(url);
+          const fileName = `${app.nom_aplicacion}.zip`;
+          downloandFile(blob,fileName);
           this.isDownload = false;
         },
         error: () => {

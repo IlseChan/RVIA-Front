@@ -8,6 +8,7 @@ import { Aplication, AppsToUseSelect } from '@modules/aplicaciones/interfaces/ap
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { HerramientasService } from '../../services/herramientas.service';
 import { ValidationService } from '@modules/shared/services/validation.service';
+import { downloandFile } from '@modules/shared/helpers/downloadFile';
 
 @Component({
   selector: 'pdf-to-csv-form',
@@ -126,14 +127,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
       .pipe(takeUntil(this.destroy$))
       .subscribe( {
           next: (blob) => {
-            const url = window.URL.createObjectURL(blob);
-            const anchor = document.createElement('a');
-            anchor.href = url;
-            anchor.download = `${this.infoDownloadFile.name}`;
-            document.body.appendChild(anchor);
-            anchor.click();
-            document.body.removeChild(anchor);
-            window.URL.revokeObjectURL(url);
+            downloandFile(blob, this.infoDownloadFile.name);
             setTimeout(() => {
               this.isDownload = false;
             },2000);
