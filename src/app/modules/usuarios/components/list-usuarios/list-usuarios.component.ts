@@ -3,24 +3,19 @@ import { Component, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { finalize } from 'rxjs';
 
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { TableModule } from 'primeng/table';
 import { ConfirmationService } from 'primeng/api';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { TooltipModule } from 'primeng/tooltip';
+import { PaginatorState } from 'primeng/paginator';
 
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Usuario } from '@modules/usuarios/interfaces';
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 
 @Component({
   selector: 'list-usuarios',
   standalone: true,
-  imports: [TableModule, PaginatorModule,RouterLink,
-    ConfirmDialogModule, PaginatorModule
-    ,CommonModule,ProgressSpinnerModule,TooltipModule],
+  imports: [RouterLink, CommonModule, PrimeNGModule],
   templateUrl: './list-usuarios.component.html',
   styleUrl: './list-usuarios.component.scss',
   providers: [ConfirmationService],

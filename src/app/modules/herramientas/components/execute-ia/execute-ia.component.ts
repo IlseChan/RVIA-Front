@@ -3,21 +3,15 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
-import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { RadioButtonModule } from 'primeng/radiobutton';
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
 
 @Component({
   selector: 'execute-ia',
   standalone: true,
-  imports: [ProgressSpinnerModule,NgIf,ButtonModule,ReactiveFormsModule,
-    DropdownModule,RadioButtonModule,NgFor
-  ],
+  imports: [NgIf, ReactiveFormsModule, NgFor, PrimeNGModule],
   templateUrl: './execute-ia.component.html',
   styleUrls: ['./execute-ia.component.scss']
 })

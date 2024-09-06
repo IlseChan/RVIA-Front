@@ -3,13 +3,9 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
-import { ButtonModule } from 'primeng/button';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { ValidationService } from '@modules/shared/services/validation.service';
@@ -17,8 +13,7 @@ import { ValidationService } from '@modules/shared/services/validation.service';
 @Component({
   selector: 'form-up-pdf',
   standalone: true,
-  imports: [CommonModule,InputGroupAddonModule,InputGroupModule,
-    ReactiveFormsModule,ButtonModule,InputTextModule,ProgressSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
   templateUrl: './form-up-pdf.component.html',
   styleUrl: './form-up-pdf.component.scss'
 })

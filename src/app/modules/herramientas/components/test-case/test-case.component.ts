@@ -1,15 +1,11 @@
-import { NgFor, NgIf, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
-import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { ConfirmDialogModule } from 'primeng/confirmdialog'; 
-import { ConfirmationService } from 'primeng/api'; 
+import { ConfirmationService } from 'primeng/api';
 
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
@@ -17,17 +13,7 @@ import { HerramientasService } from '@modules/herramientas/services/herramientas
 @Component({
   selector: 'test-case',  
   standalone: true,
-  imports: [
-    CommonModule,
-    ProgressSpinnerModule,
-    NgIf,
-    ButtonModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    RadioButtonModule,
-    NgFor,
-    ConfirmDialogModule 
-  ],
+  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
   providers: [ConfirmationService], 
   templateUrl: './test-case.component.html', 
   styleUrls: ['./test-case.component.scss'] 

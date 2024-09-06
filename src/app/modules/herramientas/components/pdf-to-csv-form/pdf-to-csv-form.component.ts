@@ -3,26 +3,16 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
-import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
-
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { Aplication, AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { HerramientasService } from '../../services/herramientas.service';
 import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
   selector: 'pdf-to-csv-form',
   standalone: true,
-  imports: [DividerModule, InputGroupModule,InputGroupAddonModule,
-    ButtonModule, NgIf, InputTextModule, ReactiveFormsModule,
-    DropdownModule,FormsModule,ProgressSpinnerModule
-  ],
+  imports: [NgIf, ReactiveFormsModule,FormsModule,PrimeNGModule],
   templateUrl: './pdf-to-csv-form.component.html',
   styleUrls: ['./pdf-to-csv-form.component.scss']
 })

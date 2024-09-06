@@ -3,17 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { ButtonModule } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
-import { RadioButtonClickEvent, RadioButtonModule } from 'primeng/radiobutton';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { DropdownModule } from 'primeng/dropdown';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { StepsModule } from 'primeng/steps';
-import { CheckboxModule } from 'primeng/checkbox';
+import { RadioButtonClickEvent } from 'primeng/radiobutton';
 
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { Language, OptAction, OptRadio, OptStepper } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { ValidationService } from '@modules/shared/services/validation.service';
@@ -23,10 +15,7 @@ import { ValidationService } from '@modules/shared/services/validation.service';
   standalone: true,
   templateUrl: './form-sanitize.component.html',
   styleUrl: './form-sanitize.component.scss',
-  imports: [CommonModule,ButtonModule,TooltipModule,
-    RadioButtonModule,InputTextModule,ReactiveFormsModule,
-    InputGroupModule,InputGroupAddonModule, DropdownModule,
-    ProgressSpinnerModule,StepsModule,CheckboxModule]
+  imports: [CommonModule,ReactiveFormsModule, PrimeNGModule]
 })
 export class FormSanitizeComponent implements OnInit {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
