@@ -14,7 +14,7 @@ import { PrimeNGModule } from '@modules/shared/prime/prime.module';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
   templateUrl: './edit-users-page.component.html',
-  styleUrl: './edit-users-page.component.scss',
+  styleUrls: ['./edit-users-page.component.scss'],
 })
 export class EditUsersPageComponent implements OnInit, OnDestroy {
   userForm!:  FormGroup;
@@ -33,7 +33,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
 
   isUpdate: boolean = false;
   originalUser!: Usuario;
-  private destroy$ = new Subject<boolean>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -116,7 +116,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void{
-    this.destroy$.next(true);
+    this.destroy$.next();
     this.destroy$.complete();
   }
 }

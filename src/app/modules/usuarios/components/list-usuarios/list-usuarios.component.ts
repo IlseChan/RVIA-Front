@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
 
 import { ConfirmationService } from 'primeng/api';
 import { PaginatorState } from 'primeng/paginator';
@@ -17,11 +17,11 @@ import { PrimeNGModule } from '@modules/shared/prime/prime.module';
   standalone: true,
   imports: [RouterLink, CommonModule, PrimeNGModule],
   templateUrl: './list-usuarios.component.html',
-  styleUrl: './list-usuarios.component.scss',
+  styleUrls: ['./list-usuarios.component.scss'],
   providers: [ConfirmationService],
 })
-export class ListUsuariosComponent implements OnInit {
-
+export class ListUsuariosComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   users: Usuario[] = [];
   columns: string[] = [
     '# Empleado', 'Nombre', 'Rol', 'Acciones'
@@ -54,6 +54,7 @@ export class ListUsuariosComponent implements OnInit {
     this.usuariosService.getUsuarios(this.currentPage)
     .pipe(
       finalize(()=> this.isLoading = false),
+      takeUntil(this.destroy$)
     )
     .subscribe({
       next: ({data,total}) => {
@@ -91,6 +92,7 @@ export class ListUsuariosComponent implements OnInit {
         this.usuariosService.deleteUsuario(user)
           .pipe(
             finalize(() => this.resetValues()),
+            takeUntil(this.destroy$)
           )
           .subscribe(() => {
             this.currentPage = 1;
@@ -113,5 +115,10 @@ export class ListUsuariosComponent implements OnInit {
     if(newPage === this.currentPage) return;
     this.currentPage = newPage;
     this.onGetUsuarios();    
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

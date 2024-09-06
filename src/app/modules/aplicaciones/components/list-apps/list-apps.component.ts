@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChildren, QueryList, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { finalize, Subscription } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
 
 import { ConfirmationService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
@@ -29,6 +29,7 @@ import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
   providers: [ConfirmationService, DialogService],
 })
 export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
+  private destroy$ = new Subject<void>();
   user!: Usuario | null;
   aplications: Aplication[] = [];
   
@@ -44,11 +45,8 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   colums: string[] = ['#','ID proyecto','Nombre','Estatus','Proceso'];
   isLoading: boolean = true;
 
-  downloadSub!: Subscription;
   isDownload: boolean = false;
-
   ref: DynamicDialogRef | undefined;
-
 
   @ViewChildren('dropdown') dropdowns!: QueryList<Dropdown>;
   private dropdownMap = new Map<string, Dropdown>(); 
@@ -96,7 +94,10 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   onGetAplicaciones(): void {
     this.isLoading = true;
     this.aplicacionService.getAplicaciones(this.currentPage)
-      .pipe(finalize(() => this.isLoading = false))
+      .pipe(
+        finalize(() => this.isLoading = false),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: ({ data, total }) => {
           if (!data) return;
@@ -112,7 +113,6 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
 
   getArquitecturaOptions(opc_arquitectura: Opt_architec) {
     const options = [];
-    
 
     if (opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION]) {
         options.push({ label: 'Documentación', value: 'Documentación', styleClass: 'tag-info', disabled: true });
@@ -123,7 +123,6 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     if (opc_arquitectura[ArquitecturaOpciones.EVALUATION]) {
         options.push({ label: 'Calificación', value: 'Calificación', styleClass: 'tag-success', disabled: true });
     }
-    
    
     if (options.length === 0) {
         options.push({ label: 'Sin arquitectura', value: 'Sin arquitectura', styleClass: 'tag-secondary', disabled: true });
@@ -143,7 +142,8 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   onDownloadFile(app: Aplication): void {
     if (this.isDownload) return;
     this.isDownload = true;
-    this.downloadSub = this.aplicacionService.downloadFile(app.idu_aplicacion)
+    this.aplicacionService.downloadFile(app.idu_aplicacion)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (blob) => {
           const url = window.URL.createObjectURL(blob);
@@ -209,7 +209,8 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   }
 
   ngOnDestroy(): void {
-    if (this.downloadSub) this.downloadSub.unsubscribe();
     if (this.ref) this.ref.close();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
@@ -15,14 +15,13 @@ import { ValidationService } from '@modules/shared/services/validation.service';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
   templateUrl: './form-up-pdf.component.html',
-  styleUrl: './form-up-pdf.component.scss'
+  styleUrls: ['./form-up-pdf.component.scss']
 })
 export class FormUpPdfComponent implements OnInit, OnDestroy{
   @ViewChild('pdfFile', { static: false }) pdfFileInput!: ElementRef;
+  private destroy$ = new Subject<void>();
   
   app!: Aplication;
-  appSub!: Subscription;
-
   formFile!: FormGroup;
   sizeFile: number = 0;
 
@@ -38,7 +37,8 @@ export class FormUpPdfComponent implements OnInit, OnDestroy{
 
     
   ngOnInit(): void {
-    this.appSub = this.aplicacionService.appPDF$
+    this.aplicacionService.appPDF$
+      .pipe(takeUntil(this.destroy$))
       .subscribe(app => {
         if(app){
           this.app = app;
@@ -85,6 +85,7 @@ export class FormUpPdfComponent implements OnInit, OnDestroy{
     this.isUploadFile = true;
     
     this.aplicacionService.savePDFFile(this.formFile.value, this.app)
+    .pipe(takeUntil(this.destroy$))
     .subscribe({
       next: (resp) => {
         if(resp && resp.isValid && resp.checkmarx){
@@ -104,6 +105,7 @@ export class FormUpPdfComponent implements OnInit, OnDestroy{
   }
   
   ngOnDestroy(): void {
-    if(this.appSub) this.appSub.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
