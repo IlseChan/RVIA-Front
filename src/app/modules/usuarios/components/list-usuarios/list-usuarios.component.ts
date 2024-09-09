@@ -1,32 +1,27 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
 
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { TableModule } from 'primeng/table';
 import { ConfirmationService } from 'primeng/api';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { TooltipModule } from 'primeng/tooltip';
+import { PaginatorState } from 'primeng/paginator';
 
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Usuario } from '@modules/usuarios/interfaces';
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 
 @Component({
   selector: 'list-usuarios',
   standalone: true,
-  imports: [TableModule, PaginatorModule,RouterLink,
-    ConfirmDialogModule, PaginatorModule
-    ,CommonModule,ProgressSpinnerModule,TooltipModule],
+  imports: [RouterLink, CommonModule, PrimeNGModule],
   templateUrl: './list-usuarios.component.html',
-  styleUrl: './list-usuarios.component.scss',
+  styleUrls: ['./list-usuarios.component.scss'],
   providers: [ConfirmationService],
 })
-export class ListUsuariosComponent implements OnInit {
-
+export class ListUsuariosComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   users: Usuario[] = [];
   columns: string[] = [
     '# Empleado', 'Nombre', 'Rol', 'Acciones'
@@ -59,6 +54,7 @@ export class ListUsuariosComponent implements OnInit {
     this.usuariosService.getUsuarios(this.currentPage)
     .pipe(
       finalize(()=> this.isLoading = false),
+      takeUntil(this.destroy$)
     )
     .subscribe({
       next: ({data,total}) => {
@@ -96,6 +92,7 @@ export class ListUsuariosComponent implements OnInit {
         this.usuariosService.deleteUsuario(user)
           .pipe(
             finalize(() => this.resetValues()),
+            takeUntil(this.destroy$)
           )
           .subscribe(() => {
             this.currentPage = 1;
@@ -118,5 +115,10 @@ export class ListUsuariosComponent implements OnInit {
     if(newPage === this.currentPage) return;
     this.currentPage = newPage;
     this.onGetUsuarios();    
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

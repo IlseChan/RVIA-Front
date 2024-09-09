@@ -1,19 +1,12 @@
-import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
-import { ButtonModule } from 'primeng/button';
-import { TooltipModule } from 'primeng/tooltip';
-import { RadioButtonClickEvent, RadioButtonModule } from 'primeng/radiobutton';
-import { InputTextModule } from 'primeng/inputtext';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { DropdownModule } from 'primeng/dropdown';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { StepsModule } from 'primeng/steps';
-import { CheckboxModule } from 'primeng/checkbox';
+import { RadioButtonClickEvent } from 'primeng/radiobutton';
 
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { Language, OptAction, OptRadio, OptStepper } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { ValidationService } from '@modules/shared/services/validation.service';
@@ -22,15 +15,13 @@ import { ValidationService } from '@modules/shared/services/validation.service';
   selector: 'form-sanitize',
   standalone: true,
   templateUrl: './form-sanitize.component.html',
-  styleUrl: './form-sanitize.component.scss',
-  imports: [CommonModule,ButtonModule,TooltipModule,
-    RadioButtonModule,InputTextModule,ReactiveFormsModule,
-    InputGroupModule,InputGroupAddonModule, DropdownModule,
-    ProgressSpinnerModule,StepsModule,CheckboxModule]
+  styleUrls: ['./form-sanitize.component.scss'],
+  imports: [CommonModule,ReactiveFormsModule, PrimeNGModule]
 })
-export class FormSanitizeComponent implements OnInit {
+export class FormSanitizeComponent implements OnInit, OnDestroy {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
   @ViewChild('pdfInput', { static: false }) pdfInput!: ElementRef;
+  private destroy$ = new Subject<void>();
   
   formFiles!: FormGroup;
   isUploadFile: boolean = false;
@@ -50,7 +41,8 @@ export class FormSanitizeComponent implements OnInit {
   actionOpsValues: number[] = this.actionsOps.map(a => a.value);
   
   actionArchitec = [
-    { txt: 'Generar documentación', form: 'archiDocOpt' },
+    { txt: 'Generar documentación overview', form: 'archiDocOverOpt' },
+    { txt: 'Generar documentación de código', form: 'archiDocCodeOpt' },
     { txt: 'Generar casos de pruebas', form: 'archiCasesOpt' },
     { txt: 'Generar calificación de proyecto', form: 'archiRateOpt' },
   ];
@@ -59,7 +51,7 @@ export class FormSanitizeComponent implements OnInit {
   lenguagesOps: Language[] = [];
 
   activeIndex: number = 0;
-  selectedValue: number = 1;
+  selectedValue: number = 0;
   readonly itemsBase: OptStepper[] = [
     { label: 'Acciones'},
     { label: 'Arquitectura'},
@@ -77,6 +69,7 @@ export class FormSanitizeComponent implements OnInit {
   
   ngOnInit(): void {
     this.aplicacionesService.getLanguages()
+    .pipe(takeUntil(this.destroy$))
     .subscribe({
       next: (resp) => {
         if(resp){
@@ -90,9 +83,10 @@ export class FormSanitizeComponent implements OnInit {
 
   private initForm(): void{
     this.formFiles = new FormGroup({
-      action:  new FormControl(1,[Validators.required]),
+      action:  new FormControl(0,[Validators.required]),
+      archiDocOverOpt: new FormControl([]),
+      archiDocCodeOpt: new FormControl([]),
       archiCasesOpt: new FormControl([]),
-      archiDocOpt: new FormControl([]),
       archiRateOpt: new FormControl([]),
       language: new FormControl(null),
       pdfFile: new FormControl(null,[this.vldtnSrv.fileValidation('pdf')]),
@@ -158,9 +152,10 @@ export class FormSanitizeComponent implements OnInit {
   cleanInput(type: string): void {    
     if(type === 'architec'){
       this.formFiles.patchValue({
-        archiCasesOpt: false,
-        archiDocOpt:   false,
-        archiRateOpt:  false
+        archiDocOverOpt: false,
+        archiDocCodeOpt: false,
+        archiCasesOpt:   false,
+        archiRateOpt:    false
       });
     }
     
@@ -187,9 +182,12 @@ export class FormSanitizeComponent implements OnInit {
     }
 
     if(this.activeIndex === 1 && this.selectedValue === 0){
-     const { archiCasesOpt, archiDocOpt, archiRateOpt} = this.formFiles.value;     
-     return !archiCasesOpt[0] && !archiDocOpt[0] && !archiRateOpt[0];
+     const { 
+      archiDocOverOpt, archiDocCodeOpt,
+      archiCasesOpt,archiRateOpt } = this.formFiles.value;     
+     return !archiCasesOpt[0] && !archiDocOverOpt[0] && !archiDocCodeOpt[0] && !archiRateOpt[0];
     }
+
 
     if(this.activeIndex === 2){
      return !(this.formFiles.controls['type'].value === 'zip' 
@@ -247,13 +245,15 @@ export class FormSanitizeComponent implements OnInit {
   }
 
   get servicesProject(): string {
-    const { archiCasesOpt, archiDocOpt, archiRateOpt} = this.formFiles.value;     
+    const { 
+      archiDocOverOpt, archiDocCodeOpt,
+      archiCasesOpt,archiRateOpt } = this.formFiles.value;     
     const txtOpc = [];
 
-    
-    if(archiDocOpt[0])   txtOpc.push('Documentación');
-    if(archiCasesOpt[0]) txtOpc.push('Casos de pruebas');
-    if(archiRateOpt[0])  txtOpc.push('Calificación de proyecto');
+    if(archiDocOverOpt[0]) txtOpc.push('Documentación overview');
+    if(archiDocCodeOpt[0]) txtOpc.push('Documentación por código');
+    if(archiCasesOpt[0])   txtOpc.push('Casos de pruebas');
+    if(archiRateOpt[0])    txtOpc.push('Calificación de proyecto');
 
     if(txtOpc.length === 0) return 'No aplica';
 
@@ -267,9 +267,10 @@ export class FormSanitizeComponent implements OnInit {
     const values = this.formFiles.value;
     
     const opt_archi = {
-      '1': values.archiDocOpt.length   ? true : false,
-      '2': values.archiCasesOpt.length ? true : false,
-      '3': values.archiRateOpt.length  ? true : false 
+      '1': values.archiDocOverOpt.length ? true : false, //1 - Documenacion overview
+      '2': values.archiDocCodeOpt.length ? true : false, //2 - Documentacion por codigo
+      '3': values.archiCasesOpt.length   ? true : false, //3 - Casos de prueba  
+      '4': values.archiRateOpt.length    ? true : false  //4 - Calificación de codigo
     }
     
     if(!this.actionOpsValues.includes(values.action)) return;
@@ -279,7 +280,8 @@ export class FormSanitizeComponent implements OnInit {
 
     let { 
       archiCasesOpt, 
-      archiDocOpt, 
+      archiDocOverOpt, 
+      archiDocCodeOpt,
       archiRateOpt,
       ...info
     } = this.formFiles.value;
@@ -290,6 +292,7 @@ export class FormSanitizeComponent implements OnInit {
     }
     
     this.aplicacionesService.saveProjectWitPDF(info)
+      .pipe(takeUntil(this.destroy$))  
       .subscribe({
         next: () => {
           this.back();
@@ -302,5 +305,10 @@ export class FormSanitizeComponent implements OnInit {
 
   back(): void {
     this.router.navigate(['apps/list-apps'],{ replaceUrl: true });
+  }
+
+  ngOnDestroy(): void{
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,18 +1,14 @@
 import { Component, OnDestroy, OnInit, ViewChildren, QueryList, AfterViewChecked, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
-import { finalize, Subscription } from 'rxjs';
+import { finalize, Subject, takeUntil } from 'rxjs';
 
-import { ButtonModule } from 'primeng/button';
-import { PaginatorModule, PaginatorState } from 'primeng/paginator';
-import { TableModule } from 'primeng/table';
 import { ConfirmationService } from 'primeng/api';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { TooltipModule } from 'primeng/tooltip';
-import { TagModule } from 'primeng/tag';
-import { DialogService, DynamicDialogModule, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { DropdownModule, Dropdown } from 'primeng/dropdown';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { Dropdown } from 'primeng/dropdown';
+import { PaginatorState } from 'primeng/paginator';
 
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { Aplication, NumberAction, StatusApps, ArquitecturaOpciones, Opt_architec } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
@@ -22,19 +18,19 @@ import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label
 import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
 import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
+import { downloandFile } from '@modules/shared/helpers/downloadFile';
 
 @Component({
   selector: 'list-apps',
   standalone: true,
-  imports: [ButtonModule, TableModule, CommonModule, 
-    PaginatorModule, StatusAppPipe, RouterLink,
-    ProgressSpinnerModule, TooltipModule, TagModule, StatusAppLabelPipe,
-    ActionAppPipe, DynamicDialogModule, DropdownModule],
+  imports: [CommonModule, StatusAppPipe, RouterLink,StatusAppLabelPipe,
+    ActionAppPipe, PrimeNGModule],
   templateUrl: './list-apps.component.html',
   styleUrls: ['./list-apps.component.scss'],
   providers: [ConfirmationService, DialogService],
 })
 export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
+  private destroy$ = new Subject<void>();
   user!: Usuario | null;
   aplications: Aplication[] = [];
   
@@ -50,11 +46,8 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   colums: string[] = ['#','ID proyecto','Nombre','Estatus','Proceso'];
   isLoading: boolean = true;
 
-  downloadSub!: Subscription;
   isDownload: boolean = false;
-
   ref: DynamicDialogRef | undefined;
-
 
   @ViewChildren('dropdown') dropdowns!: QueryList<Dropdown>;
   private dropdownMap = new Map<string, Dropdown>(); 
@@ -102,7 +95,10 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   onGetAplicaciones(): void {
     this.isLoading = true;
     this.aplicacionService.getAplicaciones(this.currentPage)
-      .pipe(finalize(() => this.isLoading = false))
+      .pipe(
+        finalize(() => this.isLoading = false),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: ({ data, total }) => {
           if (!data) return;
@@ -118,7 +114,6 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
 
   getArquitecturaOptions(opc_arquitectura: Opt_architec) {
     const options = [];
-    
 
     if (opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION]) {
         options.push({ label: 'Documentación', value: 'Documentación', styleClass: 'tag-info', disabled: true });
@@ -129,7 +124,6 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     if (opc_arquitectura[ArquitecturaOpciones.EVALUATION]) {
         options.push({ label: 'Calificación', value: 'Calificación', styleClass: 'tag-success', disabled: true });
     }
-    
    
     if (options.length === 0) {
         options.push({ label: 'Sin arquitectura', value: 'Sin arquitectura', styleClass: 'tag-secondary', disabled: true });
@@ -149,17 +143,12 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   onDownloadFile(app: Aplication): void {
     if (this.isDownload) return;
     this.isDownload = true;
-    this.downloadSub = this.aplicacionService.downloadFile(app.idu_aplicacion)
+    this.aplicacionService.downloadFile(app.idu_aplicacion)
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (blob) => {
-          const url = window.URL.createObjectURL(blob);
-          const anchor = document.createElement('a');
-          anchor.href = url;
-          anchor.download = `${app.nom_aplicacion}.zip`;
-          document.body.appendChild(anchor);
-          anchor.click();
-          document.body.removeChild(anchor);
-          window.URL.revokeObjectURL(url);
+          const fileName = `${app.nom_aplicacion}.zip`;
+          downloandFile(blob,fileName);
           this.isDownload = false;
         },
         error: () => {
@@ -215,7 +204,8 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   }
 
   ngOnDestroy(): void {
-    if (this.downloadSub) this.downloadSub.unsubscribe();
     if (this.ref) this.ref.close();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

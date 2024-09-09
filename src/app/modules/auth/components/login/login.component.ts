@@ -3,18 +3,13 @@ import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
-
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [NgIf, FormsModule, ButtonModule, InputTextModule,
-    PasswordModule
-  ],
+  imports: [NgIf, FormsModule, PrimeNGModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })
