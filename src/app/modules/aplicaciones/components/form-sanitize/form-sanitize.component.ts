@@ -41,7 +41,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   actionOpsValues: number[] = this.actionsOps.map(a => a.value);
   
   actionArchitec = [
-    { txt: 'Generar documentación', form: 'archiDocOpt' },
+    { txt: 'Generar documentación overview', form: 'archiDocOverOpt' },
+    { txt: 'Generar documentación de código', form: 'archiDocCodeOpt' },
     { txt: 'Generar casos de pruebas', form: 'archiCasesOpt' },
     { txt: 'Generar calificación de proyecto', form: 'archiRateOpt' },
   ];
@@ -50,7 +51,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   lenguagesOps: Language[] = [];
 
   activeIndex: number = 0;
-  selectedValue: number = 1;
+  selectedValue: number = 0;
   readonly itemsBase: OptStepper[] = [
     { label: 'Acciones'},
     { label: 'Arquitectura'},
@@ -82,9 +83,10 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
 
   private initForm(): void{
     this.formFiles = new FormGroup({
-      action:  new FormControl(1,[Validators.required]),
+      action:  new FormControl(0,[Validators.required]),
+      archiDocOverOpt: new FormControl([]),
+      archiDocCodeOpt: new FormControl([]),
       archiCasesOpt: new FormControl([]),
-      archiDocOpt: new FormControl([]),
       archiRateOpt: new FormControl([]),
       language: new FormControl(null),
       pdfFile: new FormControl(null,[this.vldtnSrv.fileValidation('pdf')]),
@@ -150,9 +152,10 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   cleanInput(type: string): void {    
     if(type === 'architec'){
       this.formFiles.patchValue({
-        archiCasesOpt: false,
-        archiDocOpt:   false,
-        archiRateOpt:  false
+        archiDocOverOpt: false,
+        archiDocCodeOpt: false,
+        archiCasesOpt:   false,
+        archiRateOpt:    false
       });
     }
     
@@ -179,9 +182,12 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     }
 
     if(this.activeIndex === 1 && this.selectedValue === 0){
-     const { archiCasesOpt, archiDocOpt, archiRateOpt} = this.formFiles.value;     
-     return !archiCasesOpt[0] && !archiDocOpt[0] && !archiRateOpt[0];
+     const { 
+      archiDocOverOpt, archiDocCodeOpt,
+      archiCasesOpt,archiRateOpt } = this.formFiles.value;     
+     return !archiCasesOpt[0] && !archiDocOverOpt[0] && !archiDocCodeOpt[0] && !archiRateOpt[0];
     }
+
 
     if(this.activeIndex === 2){
      return !(this.formFiles.controls['type'].value === 'zip' 
@@ -239,13 +245,15 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   }
 
   get servicesProject(): string {
-    const { archiCasesOpt, archiDocOpt, archiRateOpt} = this.formFiles.value;     
+    const { 
+      archiDocOverOpt, archiDocCodeOpt,
+      archiCasesOpt,archiRateOpt } = this.formFiles.value;     
     const txtOpc = [];
 
-    
-    if(archiDocOpt[0])   txtOpc.push('Documentación');
-    if(archiCasesOpt[0]) txtOpc.push('Casos de pruebas');
-    if(archiRateOpt[0])  txtOpc.push('Calificación de proyecto');
+    if(archiDocOverOpt[0]) txtOpc.push('Documentación overview');
+    if(archiDocCodeOpt[0]) txtOpc.push('Documentación por código');
+    if(archiCasesOpt[0])   txtOpc.push('Casos de pruebas');
+    if(archiRateOpt[0])    txtOpc.push('Calificación de proyecto');
 
     if(txtOpc.length === 0) return 'No aplica';
 
@@ -259,9 +267,10 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     const values = this.formFiles.value;
     
     const opt_archi = {
-      '1': values.archiDocOpt.length   ? true : false,
-      '2': values.archiCasesOpt.length ? true : false,
-      '3': values.archiRateOpt.length  ? true : false 
+      '1': values.archiDocOverOpt.length ? true : false, //1 - Documenacion overview
+      '2': values.archiDocCodeOpt.length ? true : false, //2 - Documentacion por codigo
+      '3': values.archiCasesOpt.length   ? true : false, //3 - Casos de prueba  
+      '4': values.archiRateOpt.length    ? true : false  //4 - Calificación de codigo
     }
     
     if(!this.actionOpsValues.includes(values.action)) return;
@@ -271,7 +280,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
 
     let { 
       archiCasesOpt, 
-      archiDocOpt, 
+      archiDocOverOpt, 
+      archiDocCodeOpt,
       archiRateOpt,
       ...info
     } = this.formFiles.value;
