@@ -38,7 +38,7 @@ export class TestCaseComponent implements OnInit, OnDestroy {
   }
 
   private getApps(): void {
-    this.aplicacionesService.getSomeArchitecApps(2)
+    this.aplicacionesService.getSomeArchitecApps(3)
       .pipe(takeUntil(this.destroy$))  
       .subscribe((resp) => {        
         if(resp){

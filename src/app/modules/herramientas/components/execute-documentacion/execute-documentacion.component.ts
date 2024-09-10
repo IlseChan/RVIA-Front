@@ -1,8 +1,7 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, NgIf, NgFor } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subject, takeUntil } from 'rxjs';
-
+import { Subject, takeUntil, switchMap, tap } from 'rxjs';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
@@ -12,14 +11,14 @@ import { ConfirmationService } from 'primeng/api';
 @Component({
   selector: 'execute-documentacion',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
-  providers: [ConfirmationService], 
+  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule, NgIf, NgFor],
+  providers: [ConfirmationService],
   templateUrl: './execute-documentacion.component.html',
   styleUrls: ['./execute-documentacion.component.scss']
 })
 export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  isLoadingData: boolean = true;
+  isLoadingData: boolean = false;
   isRequest: boolean = false;
   label: string = 'Iniciar';
 
@@ -29,62 +28,88 @@ export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
   constructor(
     private aplicacionesService: AplicacionesService,
     private herramientasService: HerramientasService,
-    private confirmationService: ConfirmationService 
-  ){}
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnInit(): void {
-    this.getApps();
-  }
-
-  private getApps(): void {
-    this.aplicacionesService.getSomeArchitecApps(1)
-      .pipe(takeUntil(this.destroy$))  
-      .subscribe((resp) => {        
-        if(resp){
-          this.appsOpcs = resp;
-          this.initForm();
-          this.isLoadingData = false;          
-        }
-      });
+    this.initForm();
+    this.setupFormValueChanges();
   }
 
   private initForm(): void {
     this.form = new FormGroup({
       idu_aplicacion: new FormControl(null, [Validators.required]),
+      tipo_documentacion: new FormControl(null, [Validators.required]), 
     });
   }
 
-  onSubmit(): void { 
-    if(this.form.invalid || this.isRequest){
-      this.form.markAllAsTouched();
-      return;
+  private setupFormValueChanges(): void {
+    this.form.get('tipo_documentacion')?.valueChanges
+      .pipe(
+        takeUntil(this.destroy$),
+        tap(() => this.isLoadingData = true),
+        switchMap((tipo) => {
+          return this.getApps( + tipo);
+        })
+        
+
+      )
+      .subscribe({
+        next: (apps) => {
+          if (apps && apps.length) {
+            this.appsOpcs = apps;
+          } else {
+            this.appsOpcs = [];
+          }
+          this.isLoadingData = false;
+        },
+        error: (error) => {
+          this.isLoadingData = false;
+        }
+      });
+  }
+
+  private getApps(tipo: number) {
+    const appType = tipo === 1 ? 1 : 2;
+    return this.aplicacionesService.getSomeArchitecApps(appType);
+  }
+
+  onSubmit(): void {
+    if (this.form.invalid || this.isRequest) {
+       this.form.markAllAsTouched();
+       return;
     }
-
-    const message = '¿Quieres documentar este proyecto?';
+ 
+    const tipoDocumentacion = Number(this.form.controls['tipo_documentacion'].value);
+    const tipoDoc = tipoDocumentacion === 1 ? 'overview' : 'code';
+    const message = tipoDocumentacion === 1 
+       ? '¿Quieres documentar este proyecto como Overview?' 
+       : '¿Quieres documentar el código de este proyecto?';
+ 
     this.confirmationService.confirm({
-      message,
-      header: 'Documentar Proyecto',
-      icon: 'pi pi-file',
-      acceptButtonStyleClass: 'p-button-success my-2',
-      acceptLabel: 'Sí, continuar',
-      rejectButtonStyleClass: 'p-button-outlined my-2',
-      rejectLabel: 'No, cancelar',
-      accept: () => {
-        this.executeDocumentacion(); 
-      },
-      reject: () => {
-        this.resetValues(); 
-      }
+       message,
+       header: 'Documentar Proyecto',
+       icon: 'pi pi-file',
+       acceptButtonStyleClass: 'p-button-success my-2',
+       acceptLabel: 'Sí, continuar',
+       rejectButtonStyleClass: 'p-button-outlined my-2',
+       rejectLabel: 'No, cancelar',
+       accept: () => {
+          this.executeDocumentacion(tipoDoc); 
+       },
+       reject: () => {
+          this.resetValues(); 
+       }
     });
-  }
-
-  executeDocumentacion(): void {
+ }
+  executeDocumentacion(tipoDoc: string): void {
     this.isRequest = true;
     this.label = 'Iniciando'; 
-  
+
     const idu_aplicacion = this.form.controls['idu_aplicacion'].value;
-    this.herramientasService.startProcessDocumentationRVIA(idu_aplicacion)  
-      .pipe(takeUntil(this.destroy$))  
+
+    this.herramientasService.startProcessDocumentationRVIA(idu_aplicacion, tipoDoc)
+      .pipe(takeUntil(this.destroy$))    
       .subscribe({
         next: () => {
           this.label = 'Iniciado'; 
@@ -92,16 +117,20 @@ export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
             this.reset();
           }, 1000);
         },
-        error: () => {              
-          this.resetValues();
+        error: (error) => {
+          this.isRequest = false;
+          this.label = 'Iniciar';
         }
       });
   }
 
   reset(): void {
-    this.form.reset();
-    this.resetValues();
-    this.getApps();
+    this.form.reset({
+      tipo_documentacion: this.form.get('tipo_documentacion')?.value 
+    });
+    this.isRequest = false;
+    this.label = 'Iniciar';
+    this.appsOpcs = []; 
   }
 
   resetValues(): void {

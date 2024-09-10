@@ -4,7 +4,7 @@
     </section>
     <section class="text-justify vertical-align-middle mb-4">
         <p class="m-0">
-            Para iniciar el proceso de documentar tu proyecto, <b>selecciona la aplicación con la que se quiere trabajar</b>.
+            Para iniciar el proceso de documentar tu proyecto, <b>selecciona el tipo de documentación</b> y luego <b>selecciona la aplicación</b> con la que se quiere trabajar.
             El listado de aplicaciones solo contempla aquellas aplicaciones cuyo proceso inicial <b>no</b> incluye la documentación.
         </p>
     </section>
@@ -15,25 +15,50 @@
 
     <section *ngIf="!isLoadingData"> 
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
+            <!-- Sección para seleccionar el tipo de documentación -->
             <section class="flex flex-column align-items-center mb-3">
-                <p>Selecciona el aplicativo a trabajar:</p>
-                <p-dropdown
-                id="select-apps"
-                formControlName="idu_aplicacion"
-                optionLabel="name"
-                [options]="appsOpcs"
-                optionValue="value"
-                placeholder="Selecciona una app"
-                [filter]="true"
-                filterPlaceholder="Buscar aplicación..."
-                [showClear]="true">
-                ></p-dropdown>
-                <span *ngIf="form.controls['idu_aplicacion'].errors && form.controls['idu_aplicacion'].touched"
+                <p>Selecciona el tipo de documentación:</p>
+                <div class="flex justify-content-center gap-3">
+                    <p-radioButton 
+                        name="tipo_documentacion"
+                        value="1"  
+                        label="Documentación Overview"
+                        formControlName="tipo_documentacion">
+                    </p-radioButton>
+                    <p-radioButton 
+                        name="tipo_documentacion"
+                        value="2"  
+                        label="Documentación de Código"
+                        formControlName="tipo_documentacion">
+                    </p-radioButton>
+                </div>
+                <span *ngIf="form.controls['tipo_documentacion'].errors && form.controls['tipo_documentacion'].touched"
                     class="font-italic text-red-500 mt-2">
-                        Debes seleccionar una aplicación.
+                    Debes seleccionar un tipo de documentación.
                 </span>
             </section>
 
+            <!-- Sección para seleccionar la aplicación -->
+            <section *ngIf="form.controls['tipo_documentacion'].value && appsOpcs.length > 0" class="flex flex-column align-items-center mb-3">
+                <p>Selecciona el aplicativo a trabajar:</p>
+                <p-dropdown
+                    id="select-apps"
+                    formControlName="idu_aplicacion"
+                    optionLabel="name"
+                    [options]="appsOpcs"
+                    optionValue="value"
+                    placeholder="Selecciona una app"
+                    [filter]="true"
+                    filterPlaceholder="Buscar aplicación..."
+                    [showClear]="true">
+                </p-dropdown>
+                <span *ngIf="form.controls['idu_aplicacion'].errors && form.controls['idu_aplicacion'].touched"
+                    class="font-italic text-red-500 mt-2">
+                    Debes seleccionar una aplicación.
+                </span>
+            </section>
+
+            <!-- Sección para el botón de enviar -->
             <section *ngIf="form.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">
                 <div class="flex justify-content-center mt-4">
                     <p-button 
@@ -43,11 +68,11 @@
                         severity="success" 
                         icon="pi pi-check" 
                         iconPos="right"
-                        type="submit"
-                    ></p-button>
+                        type="submit">
+                    </p-button>
                 </div>
             </section>
         </form>
     </section>    
-    <p-confirmDialog />
+    <p-confirmDialog></p-confirmDialog>
 </main>

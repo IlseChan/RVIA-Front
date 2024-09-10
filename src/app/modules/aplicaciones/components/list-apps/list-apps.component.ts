@@ -114,23 +114,29 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
 
   getArquitecturaOptions(opc_arquitectura: Opt_architec) {
     const options = [];
-
-    if (opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION]) {
-        options.push({ label: 'Documentación', value: 'Documentación', styleClass: 'tag-info', disabled: true });
+  
+    if (opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW]) {
+      options.push({ label: 'Documentación Overview', value: 'Documentación Overview', styleClass: 'tag-info', disabled: true });
     }
+  
+    if (opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]) {
+      options.push({ label: 'Documentación Código', value: 'Documentación Código', styleClass: 'tag-primary', disabled: true });
+    }
+  
     if (opc_arquitectura[ArquitecturaOpciones.TEST_CASES]) {
-        options.push({ label: 'Casos de prueba', value: 'Casos de prueba', styleClass: 'tag-warning', disabled: true });
+      options.push({ label: 'Casos de prueba', value: 'Casos de prueba', styleClass: 'tag-warning', disabled: true });
     }
+  
     if (opc_arquitectura[ArquitecturaOpciones.EVALUATION]) {
-        options.push({ label: 'Calificación', value: 'Calificación', styleClass: 'tag-success', disabled: true });
+      options.push({ label: 'Calificación', value: 'Calificación', styleClass: 'tag-success', disabled: true });
     }
-   
+  
     if (options.length === 0) {
-        options.push({ label: 'Sin arquitectura', value: 'Sin arquitectura', styleClass: 'tag-secondary', disabled: true });
+      options.push({ label: 'Sin arquitectura', value: 'Sin arquitectura', styleClass: 'tag-secondary', disabled: true });
     }
-
+  
     return options;
-}
+  }
 
 
   getDropdownPlaceholder(app: Aplication): string {
