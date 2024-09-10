@@ -61,7 +61,7 @@ export class HerramientasService {
   }
 
   startProcessRateCodeRVIA(idu_aplicacion: number): Observable<Aplication> {
-    const body = { opcArquitectura: 3 };
+    const body = { opcArquitectura: 4 };
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/rate-project/${idu_aplicacion}`, body)
       .pipe(
         tap((app) => {
@@ -75,7 +75,7 @@ export class HerramientasService {
   }
 
   startProcessTestCasesRVIA(idu_aplicacion: number): Observable<Aplication> {
-    const body = { opcArquitectura: 2 };
+    const body = { opcArquitectura: 3 };
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/test-cases/${idu_aplicacion}`, body)
       .pipe(
         tap((app) => {
