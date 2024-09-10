@@ -56,6 +56,7 @@ export class HerramientasService {
           const content = `¡El proceso para la aplicación ${app.idu_aplicacion} ha iniciado con éxito!`;
           this.notificationsService.successMessage(title, content);
         }),
+        tap((app) => this.aplicacionesService.changeStatusInProcess(app.idu_aplicacion)),
         catchError(error => this.handleError(error, OriginMethod.POSTSTARTADDON))
       );
   }
