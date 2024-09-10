@@ -4,22 +4,17 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, switchMap, takeUntil } from 'rxjs';
 
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputTextModule } from 'primeng/inputtext';
-
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { ValidationService } from '@modules/shared/services/validation.service';
 import { Idu_Rol, Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 
 @Component({
   selector: 'edit-users-page',
   standalone: true,
-  imports: [CommonModule, InputTextModule, DropdownModule, 
-    ButtonModule, DropdownModule,ReactiveFormsModule, ProgressSpinnerModule],
+  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
   templateUrl: './edit-users-page.component.html',
-  styleUrl: './edit-users-page.component.scss',
+  styleUrls: ['./edit-users-page.component.scss'],
 })
 export class EditUsersPageComponent implements OnInit, OnDestroy {
   userForm!:  FormGroup;
@@ -38,7 +33,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
 
   isUpdate: boolean = false;
   originalUser!: Usuario;
-  private destroy$ = new Subject<boolean>();
+  private destroy$ = new Subject<void>();
 
   constructor(
     private router: Router,
@@ -121,7 +116,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void{
-    this.destroy$.next(true);
+    this.destroy$.next();
     this.destroy$.complete();
   }
 }

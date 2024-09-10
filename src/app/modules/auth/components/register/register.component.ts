@@ -2,20 +2,15 @@ import { Component } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-
-import { BadgeModule } from 'primeng/badge';
-import { TooltipModule } from 'primeng/tooltip';
-import { ButtonModule } from 'primeng/button';
-import { InputTextModule } from 'primeng/inputtext';
-import { PasswordModule } from 'primeng/password';
+import { finalize } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
-import { finalize } from 'rxjs';
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [NgIf, FormsModule, BadgeModule, TooltipModule, ButtonModule, InputTextModule, PasswordModule],
+  imports: [NgIf, FormsModule, PrimeNGModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
@@ -47,11 +42,11 @@ export class RegisterComponent {
       return;
     }
 
-    if (!/^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{12,}$/.test(trimmedPassword)) {
+    if (!/^(?=.*[A-ZÑ])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-zñÑ\d@$!%*?&#]{12,}$/.test(trimmedPassword)) {
       this.errorMessage = 'La contraseña debe tener al menos 12 caracteres, una letra mayúscula, un número y un carácter especial';
       return;
     }
-
+    
     if (!/^\d+$/.test(trimmedUsernumber)) {
       this.errorMessage = 'El número de empleado debe contener solo números';
       return;
@@ -74,11 +69,10 @@ export class RegisterComponent {
     }
 
     // Validación de nombre completo (al menos un nombre y dos apellidos con mayúsculas al principio)
-    if (!/^[A-Z][a-z]+(?:\s+[A-Z][a-z]+){2,}$/.test(trimmedUsername)) {
-      this.errorMessage = 'Escribe nombre completo, con al menos un nombre y dos apellidos, todos comenzando con letra mayúscula';
+    if (!/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+){2,}$/.test(trimmedUsername)) {
+      this.errorMessage = 'Escribe nombre completo, con al menos un nombre y dos apellidos, todos comenzando con letra mayúscula, incluyendo acentos y ñ';
       return;
     }
-
     this.isRegister = true;
     this.btnLabel = 'Registrando...';
     this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)

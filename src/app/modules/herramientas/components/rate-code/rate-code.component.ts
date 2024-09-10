@@ -1,13 +1,9 @@
 import { NgFor, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
-import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { RadioButtonModule } from 'primeng/radiobutton';
-
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
@@ -15,21 +11,18 @@ import { HerramientasService } from '@modules/herramientas/services/herramientas
 @Component({
   selector: 'rate-code',
   standalone: true,
-  imports: [ProgressSpinnerModule,NgIf,ButtonModule,ReactiveFormsModule,
-    DropdownModule,RadioButtonModule,NgFor
-  ],
+  imports: [NgIf,ReactiveFormsModule,NgFor, PrimeNGModule],
   templateUrl: './rate-code.component.html',
-  styleUrl: './rate-code.component.scss'
+  styleUrls: ['./rate-code.component.scss']
 })
 export class RateCodeComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   isLoadingData: boolean = true;
   isRequest: boolean = false;
   label: string = 'Iniciar';
 
   form!: FormGroup;
-
   appsOpcs: AppsToUseSelect[] = [];
-  appsSub!: Subscription;
   
   constructor(
     private aplicacionesService: AplicacionesService,
@@ -42,14 +35,15 @@ export class RateCodeComponent implements OnInit, OnDestroy {
 
   private getApps() {
     this.isLoadingData = true;
-    this.appsSub = this.aplicacionesService.getSomeArchitecApps(3)
+    this.aplicacionesService.getSomeArchitecApps(4)
+      .pipe(takeUntil(this.destroy$))  
       .subscribe((resp) => {        
-        if(resp){
-          this.appsOpcs = resp; 
-          this.initForm();
-          this.isLoadingData = false;          
-        }
-      });
+          if(resp){
+            this.appsOpcs = resp; 
+            this.initForm();
+            this.isLoadingData = false;          
+          }
+        });
   }
 
   private initForm(): void {
@@ -68,6 +62,7 @@ export class RateCodeComponent implements OnInit, OnDestroy {
   
     const idu_aplicacion = this.form.controls['idu_aplicacion'].value;
     this.herramientasService.startProcessRateCodeRVIA(idu_aplicacion)
+      .pipe(takeUntil(this.destroy$))    
       .subscribe({
         next: () => {
           this.label = 'Iniciado'; 
@@ -90,6 +85,7 @@ export class RateCodeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.appsSub) this.appsSub.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
    }
 }

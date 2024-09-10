@@ -16,9 +16,10 @@ export enum NumberAction {
 }
 
 export enum ArquitecturaOpciones {
-    DOCUMENTATION = 1, 
-    TEST_CASES = 2,    
-    EVALUATION = 3,    
+    DOCUMENTATION_OVERVIEW = 1,  
+    DOCUMENTATION_CODE = 2,      
+    TEST_CASES = 3,              
+    EVALUATION = 4               
 }
 
 export interface OpcsStatus {
@@ -69,7 +70,8 @@ export interface Opt_architec {
     [key: number]: boolean;
     1: boolean,
     2: boolean,
-    3: boolean
+    3: boolean,
+    4: boolean
 }
 
 export interface Language {

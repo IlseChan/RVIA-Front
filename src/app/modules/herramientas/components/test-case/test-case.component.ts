@@ -1,16 +1,11 @@
-import { NgFor, NgIf, CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { Subject, takeUntil } from 'rxjs';
 
-import { ButtonModule } from 'primeng/button';
-import { DropdownModule } from 'primeng/dropdown';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { ConfirmDialogModule } from 'primeng/confirmdialog'; 
-import { ConfirmationService } from 'primeng/api'; 
+import { ConfirmationService } from 'primeng/api';
 
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
@@ -18,30 +13,19 @@ import { HerramientasService } from '@modules/herramientas/services/herramientas
 @Component({
   selector: 'test-case',  
   standalone: true,
-  imports: [
-    CommonModule,
-    ProgressSpinnerModule,
-    NgIf,
-    ButtonModule,
-    ReactiveFormsModule,
-    DropdownModule,
-    RadioButtonModule,
-    NgFor,
-    ConfirmDialogModule 
-  ],
+  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
   providers: [ConfirmationService], 
   templateUrl: './test-case.component.html', 
   styleUrls: ['./test-case.component.scss'] 
 })
 export class TestCaseComponent implements OnInit, OnDestroy { 
+  private destroy$ = new Subject<void>();
   isLoadingData: boolean = true;
   isRequest: boolean = false;
   label: string = 'Iniciar';
 
   form!: FormGroup; 
-
   appsOpcs: AppsToUseSelect[] = [];
-  appsSub!: Subscription;
 
   constructor(
     private aplicacionesService: AplicacionesService,
@@ -54,7 +38,8 @@ export class TestCaseComponent implements OnInit, OnDestroy {
   }
 
   private getApps(): void {
-    this.appsSub = this.aplicacionesService.getSomeArchitecApps(2)
+    this.aplicacionesService.getSomeArchitecApps(3)
+      .pipe(takeUntil(this.destroy$))  
       .subscribe((resp) => {        
         if(resp){
           this.appsOpcs = resp;
@@ -100,6 +85,7 @@ export class TestCaseComponent implements OnInit, OnDestroy {
 
     const idu_aplicacion = this.form.controls['idu_aplicacion'].value;
     this.herramientasService.startProcessTestCasesRVIA(idu_aplicacion)  
+      .pipe(takeUntil(this.destroy$))    
       .subscribe({
         next: () => {
           this.label = 'Iniciado'; 
@@ -125,6 +111,7 @@ export class TestCaseComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if(this.appsSub) this.appsSub.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

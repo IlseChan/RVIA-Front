@@ -1,33 +1,25 @@
 import { NgIf } from '@angular/common';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Subscription } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
-import { ButtonModule } from 'primeng/button';
-import { DividerModule } from 'primeng/divider';
-import { DropdownModule } from 'primeng/dropdown';
-import { InputGroupModule } from 'primeng/inputgroup';
-import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
-import { InputTextModule } from 'primeng/inputtext';
-
+import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { Aplication, AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { HerramientasService } from '../../services/herramientas.service';
 import { ValidationService } from '@modules/shared/services/validation.service';
+import { downloandFile } from '@modules/shared/helpers/downloadFile';
 
 @Component({
-  selector: 'app-pdf-to-csv-form',
+  selector: 'pdf-to-csv-form',
   standalone: true,
-  imports: [DividerModule, InputGroupModule,InputGroupAddonModule,
-    ButtonModule, NgIf, InputTextModule, ReactiveFormsModule,
-    DropdownModule,FormsModule,ProgressSpinnerModule
-  ],
+  imports: [NgIf, ReactiveFormsModule,FormsModule,PrimeNGModule],
   templateUrl: './pdf-to-csv-form.component.html',
-  styleUrl: './pdf-to-csv-form.component.scss'
+  styleUrls: ['./pdf-to-csv-form.component.scss']
 })
 export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   @ViewChild('file', { static: false }) pdfInput !: ElementRef;
+  private destroy$ = new Subject<void>();
 
   formFile!: FormGroup;
   isLoading: boolean = false;
@@ -38,11 +30,9 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   showDownOpc: boolean = false;
   infoDownloadFile: { name: string, id: number } = { name: '',id: -1 };
   isDownload: boolean = false;
-  downloadSub!: Subscription;
 
   apps: Aplication[] = [];
   appsOpcs: AppsToUseSelect[] = [];
-  appsSub!: Subscription;
 
   constructor(
     private aplicacionesService: AplicacionesService, 
@@ -56,7 +46,8 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
 
   getApps(){
     this.isLoadingData = true;
-    this.appsSub = this.aplicacionesService.getSanitationApps()
+    this.aplicacionesService.getSanitationApps()
+      .pipe(takeUntil(this.destroy$))  
       .subscribe((resp) => {        
         if(resp){
           this.appsOpcs = resp;
@@ -109,47 +100,42 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
     this.isUploadFile = true;
 
     this.herramientasService.makeCSVFile(this.formFile.value)
-    .subscribe({
-      next: (resp) => {
-        if(resp && resp.isValid && resp.checkmarx){
-          this.showDownOpc = true;
-          this.infoDownloadFile.id = resp.checkmarx.idu_checkmarx ;
-          this.infoDownloadFile.name = resp.checkmarx.nom_checkmarx;
-        }else if(resp && !resp.isValid){
-          this.isUploadFile = false;
-          this.showDownOpc = false;
+      .pipe(takeUntil(this.destroy$))  
+      .subscribe({
+        next: (resp) => {
+          if(resp && resp.isValid && resp.checkmarx){
+            this.showDownOpc = true;
+            this.infoDownloadFile.id = resp.checkmarx.idu_checkmarx ;
+            this.infoDownloadFile.name = resp.checkmarx.nom_checkmarx;
+          }else if(resp && !resp.isValid){
+            this.isUploadFile = false;
+            this.showDownOpc = false;
+          }
+        },
+        error: () => {
+          setTimeout(() => {
+            this.isUploadFile = false
+          },1200);
         }
-      },
-      error: () => {
-        setTimeout(() => {
-          this.isUploadFile = false
-        },1200);
-      }
-    });
+      });
   }
 
   onDownloadFile(): void {
     if(this.isDownload) return;
     this.isDownload = true;
-    this.downloadSub = this.herramientasService.downloadCSVFile(this.infoDownloadFile.id)  
+    this.herramientasService.downloadCSVFile(this.infoDownloadFile.id)  
+      .pipe(takeUntil(this.destroy$))
       .subscribe( {
-        next: (blob) => {
-          const url = window.URL.createObjectURL(blob);
-          const anchor = document.createElement('a');
-          anchor.href = url;
-          anchor.download = `${this.infoDownloadFile.name}`;
-          document.body.appendChild(anchor);
-          anchor.click();
-          document.body.removeChild(anchor);
-          window.URL.revokeObjectURL(url);
-          setTimeout(() => {
+          next: (blob) => {
+            downloandFile(blob, this.infoDownloadFile.name);
+            setTimeout(() => {
+              this.isDownload = false;
+            },2000);
+          },
+          error: () => {
             this.isDownload = false;
-          },2000);
-        },
-        error: () => {
-          this.isDownload = false;
-        }
-      });
+          }
+        });
   }
 
   reset(): void {
@@ -161,7 +147,7 @@ export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   }
 
   ngOnDestroy(): void {
-   if(this.appsSub) this.appsSub.unsubscribe();
-   if(this.downloadSub) this.downloadSub.unsubscribe();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

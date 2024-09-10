@@ -192,22 +192,6 @@
     transition: background-color 0.3s ease;
   }
   
-  .btn-grey {
-    background-color: #808080;
-  }
-  
-  .btn-blue {
-    background-color: #007bff;
-  }
-  
-  .btn-green {
-    background-color: #4CAF50;
-  }
-  
-  .btn-orange {
-    background-color: #FFA500;
-  }
-  
   .dropdown {
     position: relative;
     display: inline-block; 
@@ -254,4 +238,34 @@
   
   .dropdown-readonly .p-dropdown {
     pointer-events: none; 
+  }
+  @mixin tag-style($bg-color, $text-color: #ffffff) {
+    background-color: $bg-color;
+    color: $text-color;
+    border-radius: 4px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    display: inline-block;
+    text-align: center;
+    min-width: 80px;
+  }
+  
+  .tag-info {
+    @include tag-style(#007ad9);
+  }
+  
+  .tag-warning {
+    @include tag-style(#ff9900);
+  }
+  
+  .tag-success {
+    @include tag-style(#28a745);
+  }
+  
+  .tag-secondary {
+    @include tag-style(#e2e3e5, #383d41);
+  }
+  
+  .tag-primary {
+    @include tag-style(#0056b3); 
   }
