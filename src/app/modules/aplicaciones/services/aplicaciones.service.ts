@@ -257,6 +257,16 @@ export class AplicacionesService {
     }
   }
 
+  changeStatusInProcess(idu_aplicacion: number): void {
+    const temp = [...this.allApps.data];
+    let appIndex = temp.findIndex(app => app.idu_aplicacion === idu_aplicacion);
+    if(appIndex !== -1){
+      temp[appIndex].applicationstatus.idu_estatus_aplicacion = StatusApps.PROGRESS;
+      temp[appIndex].applicationstatus.des_estatus_aplicacion = "En proceso";
+    }
+    this.allApps.data = [...temp];
+  }
+
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
     const title = 'Error';
     
