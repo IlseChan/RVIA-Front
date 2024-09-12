@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, delay, from, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV,  
@@ -224,6 +224,12 @@ export class AplicacionesService {
           this.notificationsService.successMessage(title,content);
           this.changes = true;
         }
+        
+        if(resp && resp.isValid){
+          const title = 'Proceso iniciado';
+          const content = `${resp.messageRVIA}`
+          this.notificationsService.successMessage(title,content);
+        }
       }), 
       catchError(error => this.handleError(error, OriginMethod.POSTSAVEPDF))
     );
@@ -249,11 +255,23 @@ export class AplicacionesService {
     const title = 'Aplicativo guardado';
     const content = `¡El aplicativo ${resp.application.nom_aplicacion} se ha subido con éxito!`
     this.notificationsService.successMessage(title,content);
-
+    
     if(!resp.checkmarx){
       const title = 'Archivo .csv no generado';
       const content = `¡El aplicativo se ha guardado correctamente pero el archivo .csv no se genero.`
       this.notificationsService.warnMessage(title,content);
+    }
+
+    if(resp.rviaProcess && !resp.rviaProcess.isValidProcess){
+      const title = 'Error en el proceso';
+      const content = `Ocurrio un problema. ${resp.rviaProcess.messageRVIA} `
+      this.notificationsService.errorMessage(title,content);  
+    }
+
+    if(resp.rviaProcess && resp.rviaProcess.isValidProcess){
+      const title = 'Proceso iniciado';
+      const content = `${resp.rviaProcess.messageRVIA} `
+      this.notificationsService.successMessage(title,content);  
     }
   }
 
