@@ -35,7 +35,7 @@
                 </span>
             </section>
 
-            <section *ngIf="formIA.controls['idu_aplicacion'].value !== null" class="flex flex-column align-items-center justify-content-center mb-4" style="border:1px solid red"> 
+            <section *ngIf="formIA.controls['idu_aplicacion'].value !== null" class="flex flex-column align-items-center justify-content-center mb-4"> 
                 <p class="mt-0 text-center">Selecciona el proceso que quieres iniciar:</p>
                 <div class="flex flex-column justify-content-center gap-2">
                     <div *ngFor="let opc of processOpcs" class="field-checkbox">

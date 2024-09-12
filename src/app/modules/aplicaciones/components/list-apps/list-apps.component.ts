@@ -26,8 +26,7 @@ import { Opt_architec } from '@modules/aplicaciones/interfaces/optionsArchitecFo
 @Component({
   selector: 'list-apps',
   standalone: true,
-  imports: [CommonModule, StatusAppPipe, RouterLink,StatusAppLabelPipe,
-    ActionAppPipe, PrimeNGModule],
+  imports: [CommonModule, StatusAppPipe, RouterLink, StatusAppLabelPipe, ActionAppPipe, PrimeNGModule],
   templateUrl: './list-apps.component.html',
   styleUrls: ['./list-apps.component.scss'],
   providers: [ConfirmationService, DialogService],
@@ -38,15 +37,15 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   aplications: Aplication[] = [];
   
   Nom_Rols = Nom_Rol;
-  StatusApps  = StatusApp;
+  StatusApps = StatusApp; 
   NumberAction = NumberAction;
   ArquitecturaOpciones = ArquitecturaOpciones;
 
-  currentPage:    number = 1;
-  totalItems:     number = 0;
+  currentPage: number = 1;
+  totalItems: number = 0;
   elementPerPage: number = elementPerPage;
 
-  colums: string[] = ['#','ID proyecto','Nombre','Proceso'];
+  colums: string[] = ['#', 'ID proyecto', 'Nombre', 'Proceso'];
   isLoading: boolean = true;
 
   isDownload: boolean = false;
@@ -59,7 +58,7 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     private aplicacionService: AplicacionesService,
     private authService: AuthService,
     private dialogService: DialogService
-  ){}
+  ) {}
   
   ngOnInit(): void {
     this.user = this.authService.userLogged;
@@ -74,7 +73,6 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   ngAfterViewChecked(): void {
     this.updateDropdownMap(); 
   }
-
 
   private updateDropdownMap(): void {
     this.dropdowns.forEach((dropdown, index) => {
@@ -141,7 +139,6 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     return options;
   }
 
-
   getDropdownPlaceholder(app: Aplication): string {
     return app.num_accion === NumberAction.NONE ? 'Sin modificar el código' :
            app.num_accion === NumberAction.UPDATECODE ? 'Actualización' :
@@ -157,7 +154,7 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       .subscribe({
         next: (blob) => {
           const fileName = `${app.idu_proyecto}_${app.nom_aplicacion}.7z`;
-          downloandFile(blob,fileName);
+          downloandFile(blob, fileName);
           this.isDownload = false;
         },
         error: () => {
@@ -167,7 +164,7 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   }
 
   showFormUploadPDF(app: Aplication) {
-    if (app.applicationstatus.idu_estatus_aplicacion !== StatusApp.DONE && 
+    if (app.applicationstatus.idu_estatus_aplicacion !== this.StatusApps.DONE && 
       app.checkmarx.length === 0) {
       this.aplicacionService.appPDFSubject.next(app);
       this.ref = this.dialogService.open(FormUpPdfComponent, {
@@ -186,7 +183,7 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
           this.currentPage = 1;
           this.onGetAplicaciones();
         }
-      })
+      });
     }
   }
 
@@ -197,7 +194,6 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     this.onGetAplicaciones(); 
   }
 
- 
   onDropdownHover(sequentialId: string, index: number): void {
     const dropdown = this.dropdownMap.get(`${sequentialId}-${index}`);
     if (dropdown) {
