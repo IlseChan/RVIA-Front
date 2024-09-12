@@ -90,15 +90,14 @@ export class HerramientasService {
   }
 
   startProcessDocumentationRVIA(idu_aplicacion: number, tipoDoc: string): Observable<Aplication> {
-    // Construir el cuerpo de la solicitud en base al tipo de documentación
-    const body = { opcArquitectura: tipoDoc === 'overview' ? 1 : 2 }; // Ajusta según la lógica de tu aplicación
+    const body = { opcArquitectura: tipoDoc === 'overview' ? 1 : 2 };
     const endpoint = tipoDoc === 'overview' ? 'documentation' : 'documentation-code';
 
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/${endpoint}/${idu_aplicacion}`, body)
       .pipe(
         tap((app) => {
           const title = 'Proceso iniciado';
-          const content = `¡El proceso para documentar (${tipoDoc}) la aplicación ${app.nom_aplicacion} ha iniciado con éxito!`;
+          const content = `¡El proceso para documentar la aplicación ${app.nom_aplicacion} ha iniciado con éxito!`;
           this.notificationsService.successMessage(title, content);
         }),
         tap(() => this.aplicacionesService.changes = true),

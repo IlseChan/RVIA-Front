@@ -250,7 +250,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       archiCasesOpt,archiRateOpt } = this.formFiles.value;     
     const txtOpc = [];
 
-    if(archiDocOverOpt[0]) txtOpc.push('Documentación overview');
+    if(archiDocOverOpt[0]) txtOpc.push('Documentación completa');
     if(archiDocCodeOpt[0]) txtOpc.push('Documentación por código');
     if(archiCasesOpt[0])   txtOpc.push('Casos de pruebas');
     if(archiRateOpt[0])    txtOpc.push('Calificación de proyecto');

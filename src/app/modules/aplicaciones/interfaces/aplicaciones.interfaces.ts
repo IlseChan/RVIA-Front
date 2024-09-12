@@ -112,6 +112,12 @@ export interface ResponseAddApp {
     application:    Aplication;
     checkmarx?:     CheckmarxInfo;
     esSanitizacion: boolean;
+    rviaProcess?:    RviaProcess;
+}
+
+export interface RviaProcess {
+    isValidProcess: boolean;
+    messageRVIA:    string;
 }
 
 export interface OptStepper {
