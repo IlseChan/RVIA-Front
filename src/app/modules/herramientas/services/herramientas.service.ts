@@ -35,7 +35,6 @@ export class HerramientasService {
     return this.http.post<CheckmarxPDFCSV>(`${this.baseUrl}/checkmarx/recoverypdf`, formData)
       .pipe(
         tap(resp => {
-          console.log(resp);
           if (resp && !resp.isValid) {
             this.handleError(new Error('PDF no válido'), OriginMethod.POSTMAKECSVPY);
           }
@@ -44,11 +43,7 @@ export class HerramientasService {
             this.aplicacionesService.changes = true;
           }
 
-          if(resp && resp.isValid){
-            const title = 'Proceso iniciado';
-            const content = `${resp.messageRVIA}`
-            this.notificationsService.successMessage(title,content);
-          }
+          this.startRVIAProcess(resp.isValidProcess,resp.messageRVIA);
         }),
         catchError(error => this.handleError(error, OriginMethod.POSTMAKECSV))
       );
@@ -110,6 +105,22 @@ export class HerramientasService {
         tap(() => this.aplicacionesService.changes = true),
         catchError(error => this.handleError(error, OriginMethod.PATCHRDOCCODE))
       );
+  }
+
+  private startRVIAProcess(isStart: boolean, message: string): void {
+    if(isStart){
+      const title = 'Proceso iniciado';
+      const content = `${message}`
+      this.notificationsService.successMessage(title,content);
+      return
+    }
+
+    if(!isStart){
+      const title = 'Proceso no iniciado';
+      const content = `${message}`
+      this.notificationsService.errorMessage(title,content);
+      return
+    }
   }
 
   private handleError(error: any, origin: OriginMethod, extra?: string | number) {
