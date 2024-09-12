@@ -3,10 +3,12 @@ import { catchError, Observable, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../../environments/environment';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-import { FormAddonCall, FormPDFtoCSV, OriginMethod } from '../interfaces/herramientas.interfaces';
+import { FormPDFtoCSV, OriginMethod } from '../interfaces/herramientas.interfaces';
 import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
+import { AppAddonsCall } from '../interfaces/appAddonsCall.interface';
+import { FormAddonCall } from '../interfaces/formAddonCall.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +45,7 @@ export class HerramientasService {
             this.aplicacionesService.changes = true;
           }
 
-          this.startRVIAProcess(resp.isValidProcess,resp.messageRVIA);
+          this.messageStartRVIAProcess(resp.isValidProcess,resp.messageRVIA);
         }),
         catchError(error => this.handleError(error, OriginMethod.POSTMAKECSV))
       );
@@ -51,14 +53,12 @@ export class HerramientasService {
 
   addonsCall(form: FormAddonCall) {
     const body = { ...form };
-    return this.http.post<Aplication>(`${this.baseUrl}/rvia`, body)
+    return this.http.post<AppAddonsCall>(`${this.baseUrl}/rvia`, body)
       .pipe(
         tap((app) => {
-          const title = 'Proceso iniciado';
-          const content = `¡El proceso para la aplicación ${app.idu_aplicacion} ha iniciado con éxito!`;
-          this.notificationsService.successMessage(title, content);
+          this.messageStartRVIAProcess(app.isProccessValid,app.message);
         }),
-        tap((app) => this.aplicacionesService.changeStatusInProcess(app.idu_aplicacion)),
+        tap((app) => this.aplicacionesService.changeStatusInProcess(app.idu_aplicacion,form.opc_arquitectura)),
         catchError(error => this.handleError(error, OriginMethod.POSTSTARTADDON))
       );
   }
@@ -107,17 +107,16 @@ export class HerramientasService {
       );
   }
 
-  private startRVIAProcess(isStart: boolean, message: string): void {
+  private messageStartRVIAProcess(isStart: boolean, message: string): void {
+    const content = `${message}`
     if(isStart){
       const title = 'Proceso iniciado';
-      const content = `${message}`
       this.notificationsService.successMessage(title,content);
       return
     }
 
     if(!isStart){
       const title = 'Proceso no iniciado';
-      const content = `${message}`
       this.notificationsService.errorMessage(title,content);
       return
     }

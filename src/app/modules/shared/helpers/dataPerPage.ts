@@ -1,4 +1,4 @@
-import { Aplication } from "@modules/aplicaciones/interfaces/aplicaciones.interfaces"
+import { Aplication } from "@modules/aplicaciones/interfaces/aplicacion.interface";
 import { Usuario } from "@modules/usuarios/interfaces";
 
 export const elementPerPage = 5;
