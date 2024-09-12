@@ -153,7 +153,7 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (blob) => {
-          const fileName = `${app.nom_aplicacion}.zip`;
+          const fileName = `${app.idu_proyecto}_${app.nom_aplicacion}.7z`;
           downloandFile(blob,fileName);
           this.isDownload = false;
         },

@@ -35,15 +35,20 @@ export class ExecuteIaComponent implements OnInit, OnDestroy{
   ){}
 
   ngOnInit(): void {
+    this.getApps();
+  }
+
+  private getApps() {
+    this.isLoadingData = true;
     this.aplicacionesService.getWaitingApps()
       .pipe(takeUntil(this.destroy$))  
       .subscribe((resp) => {        
-        if(resp){
-          this.appsOpcs = resp;
-          this.initForm();
-          this.isLoadingData = false;          
-        }
-      });
+          if(resp){
+            this.appsOpcs = resp; 
+            this.initForm();
+            this.isLoadingData = false;          
+          }
+        });
   }
 
   private initForm(): void {
@@ -67,12 +72,22 @@ export class ExecuteIaComponent implements OnInit, OnDestroy{
     .subscribe({
         next: () => {
           this.label = 'Iniciado'; 
+          setTimeout(() => {
+            this.reset();
+          }, 1000);
         },
         error: () => {              
           this.isRequest = false;
           this.label = 'Iniciar'
         }
       });
+  }
+
+  reset(): void {
+    this.formIA.reset();
+    this.isRequest = false;
+    this.label = 'Iniciar'
+    this.getApps();
   }
 
   ngOnDestroy(): void {
