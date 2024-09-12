@@ -1,9 +1,12 @@
 import { Aplication } from "@modules/aplicaciones/interfaces/aplicaciones.interfaces";
 
-export interface CheckmarxInfo {
+export interface CheckmarxBaseInfo {
+    idu_checkmarx:  number;
     nom_checkmarx:  string;
     nom_directorio: string;
-    idu_checkmarx:  number;
+} 
+
+export interface CheckmarxInfo extends CheckmarxBaseInfo {
     application:    Aplication;
 }
 

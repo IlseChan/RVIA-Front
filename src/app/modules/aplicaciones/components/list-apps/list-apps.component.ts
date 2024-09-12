@@ -9,7 +9,7 @@ import { Dropdown } from 'primeng/dropdown';
 import { PaginatorState } from 'primeng/paginator';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
-import { Aplication, NumberAction, StatusApps, ArquitecturaOpciones, Opt_architec } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { NumberAction, ArquitecturaOpciones } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
@@ -19,6 +19,9 @@ import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
 import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { downloandFile } from '@modules/shared/helpers/downloadFile';
+import { Aplication } from '@modules/aplicaciones/interfaces/aplicacion.interface';
+import { StatusApp } from '@modules/aplicaciones/interfaces/statusApp.enum';
+import { Opt_architec } from '@modules/aplicaciones/interfaces/optionsArchitecForm.interface';
 
 @Component({
   selector: 'list-apps',
@@ -35,7 +38,7 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   aplications: Aplication[] = [];
   
   Nom_Rols = Nom_Rol;
-  StatusApps  = StatusApps;
+  StatusApps  = StatusApp;
   NumberAction = NumberAction;
   ArquitecturaOpciones = ArquitecturaOpciones;
 
@@ -164,7 +167,7 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   }
 
   showFormUploadPDF(app: Aplication) {
-    if (app.applicationstatus.idu_estatus_aplicacion !== StatusApps.DONE && 
+    if (app.applicationstatus.idu_estatus_aplicacion !== StatusApp.DONE && 
       app.checkmarx.length === 0) {
       this.aplicacionService.appPDFSubject.next(app);
       this.ref = this.dialogService.open(FormUpPdfComponent, {

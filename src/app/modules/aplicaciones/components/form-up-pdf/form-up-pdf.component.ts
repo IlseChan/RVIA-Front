@@ -6,7 +6,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { DynamicDialogRef } from 'primeng/dynamicdialog';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
-import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
+import { Aplication } from '@modules/aplicaciones/interfaces/aplicacion.interface';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { ValidationService } from '@modules/shared/services/validation.service';
 

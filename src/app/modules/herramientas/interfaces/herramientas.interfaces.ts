@@ -12,8 +12,3 @@ export enum OriginMethod {
     POSTMAKECSVPY  = 'POSTMAKECSVPY', 
     POSTSTARTADDON = 'POSTSTARTADDON', 
 }
- 
-export interface FormAddonCall {
-    idu_aplicacion: number;
-    conIA:    number;
-}
