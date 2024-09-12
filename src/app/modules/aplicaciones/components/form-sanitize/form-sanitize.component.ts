@@ -41,8 +41,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   actionOpsValues: number[] = this.actionsOps.map(a => a.value);
   
   actionArchitec = [
-    { txt: 'Generar documentación overview', form: 'archiDocOverOpt' },
-    { txt: 'Generar documentación de código', form: 'archiDocCodeOpt' },
+    { txt: 'Generar documentación completa', form: 'archiDocOverOpt' },
+    { txt: 'Generar documentación por código', form: 'archiDocCodeOpt' },
     { txt: 'Generar casos de pruebas', form: 'archiCasesOpt' },
     { txt: 'Generar calificación de proyecto', form: 'archiRateOpt' },
   ];

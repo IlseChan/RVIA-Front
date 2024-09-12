@@ -46,35 +46,72 @@
                         </td>
                         <td>{{ app.nom_aplicacion }}</td>
                         <td>
-                            <p-tag
-                                styleClass="text-sm"
-                                class="white-space-nowrap overflow-hidden text-overflow-ellipsis"
-                                [severity]="app.applicationstatus.idu_estatus_aplicacion | statusAppLabel"
-                                [value]="app.applicationstatus.idu_estatus_aplicacion | statusApp"
-                            />
-                        </td>
-                        <td>
-                            <div class="flex flex-col items-center" 
-                                 (mouseenter)="onDropdownHover(app.sequentialId, index)" 
-                                 (mouseleave)="onDropdownLeave(app.sequentialId, index)">
-                                <p-dropdown 
-                                    #dropdown
-                                    [options]="getArquitecturaOptions(app.opc_arquitectura)"
-                                    [placeholder]="getDropdownPlaceholder(app)"
-                                    [disabled]="getArquitecturaOptions(app.opc_arquitectura).length === 0" 
-                                    styleClass="dropdown-arrow-only w-full text-sm mt-1 dropdown-readonly"
-                                    [style]="{'width': '100px', 'padding': '0 5px'}"
-                                    [attr.data-id]="app.sequentialId + '-' + index">
-                                    <ng-template let-option pTemplate="item">
-                                        <span [ngClass]="option.styleClass" class="p-dropdown-item-custom">{{ option.label }}</span>
-                                    </ng-template>
-                                </p-dropdown>
+                            <div class="flex flex-row items-center" style="gap: 0.5rem;">
+                                <!-- Icono de Codigo -->
+                                <i class="pi pi-code" 
+                                   *ngIf="app.num_accion !== NumberAction.NONE"
+                                   [pTooltip]="'Acción: ' + getDropdownPlaceholder(app) + ', Estatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp)"
+                                   tooltipPosition="top"
+                                   [ngClass]="{
+                                       'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
+                                       'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
+                                       'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
+                                       'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                   }" 
+                                   style="font-size: 1.6rem"></i>
+                                <i class="pi pi-code text-gray-500" *ngIf="app.num_accion === NumberAction.NONE" style="font-size: 1.6rem"></i>
+                            
+                                <!-- Icono de Documentacion -->
+                                <i class="pi pi-file" 
+                                   *ngIf="app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW] || app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]"
+                                   [pTooltip]="'Acción: ' + 
+                                               (app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW] && app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE] ? 
+                                               'Documentación completa, Documentación por código' : 
+                                               (app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW] ? 'Documentación completa' : 'Documentación por código')) + 
+                                               ', Estatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp)"
+                                   tooltipPosition="top"
+                                   [ngClass]="{
+                                       'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
+                                       'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
+                                       'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
+                                       'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                   }" 
+                                   style="font-size: 1.6rem"></i>
+                                <i class="pi pi-file text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW] && !app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]" style="font-size: 1.6rem"></i>
+                            
+                                <!-- Icono de Casos de Prueba -->
+                                <i class="pi pi-clipboard" 
+                                   *ngIf="app.opc_arquitectura[ArquitecturaOpciones.TEST_CASES]"
+                                   [pTooltip]="'Acción: Casos de prueba, Estatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp)"
+                                   tooltipPosition="top"
+                                   [ngClass]="{
+                                       'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
+                                       'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
+                                       'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
+                                       'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                   }"
+                                   style="font-size: 1.6rem"></i>
+                                <i class="pi pi-clipboard text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.TEST_CASES]" style="font-size: 1.6rem"></i>
+                            
+                                <!-- Icono de Calificacion -->
+                                <i class="pi pi-check-square" 
+                                   *ngIf="app.opc_arquitectura[ArquitecturaOpciones.EVALUATION]"
+                                   [pTooltip]="'Acción: Calificación, Estatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp)"
+                                   tooltipPosition="top"
+                                   [ngClass]="{
+                                       'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
+                                       'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
+                                       'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
+                                       'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                   }"
+                                   style="font-size: 1.6rem"></i>
+                                <i class="pi pi-check-square text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.EVALUATION]" style="font-size: 1.6rem"></i>
                             </div>
                         </td>
                         
                         <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
                             <a *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
-                               pTooltip="Descargar ZIP"
+                               pTooltip="Descargar 7 ZIP"
                                tooltipPosition="top"
                                tooltipStyleClass="text-sm"
                                class="c-pointer icon-down"
@@ -115,4 +152,3 @@
         />
     </section>
 </main>
-
