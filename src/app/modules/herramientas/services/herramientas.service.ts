@@ -35,12 +35,19 @@ export class HerramientasService {
     return this.http.post<CheckmarxPDFCSV>(`${this.baseUrl}/checkmarx/recoverypdf`, formData)
       .pipe(
         tap(resp => {
+          console.log(resp);
           if (resp && !resp.isValid) {
             this.handleError(new Error('PDF no válido'), OriginMethod.POSTMAKECSVPY);
           }
 
           if (resp && resp.isValid && resp.checkmarx) {
             this.aplicacionesService.changes = true;
+          }
+
+          if(resp && resp.isValid){
+            const title = 'Proceso iniciado';
+            const content = `${resp.messageRVIA}`
+            this.notificationsService.successMessage(title,content);
           }
         }),
         catchError(error => this.handleError(error, OriginMethod.POSTMAKECSV))
