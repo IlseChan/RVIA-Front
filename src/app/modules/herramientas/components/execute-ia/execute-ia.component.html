@@ -13,7 +13,6 @@
     </div>
 
     <section *ngIf="!isLoadingData"> 
-        <p>{{ formIA.value | json}}</p>
         <form [formGroup]="formIA" (ngSubmit)="onSubmit()">
             <section class="flex flex-column align-items-center mb-3">
                 <p>Selecciona el aplicativo a trabajar:</p>
