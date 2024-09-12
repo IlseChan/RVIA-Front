@@ -224,12 +224,8 @@ export class AplicacionesService {
           this.notificationsService.successMessage(title,content);
           this.changes = true;
         }
-        
-        if(resp && resp.isValid){
-          const title = 'Proceso iniciado';
-          const content = `${resp.messageRVIA}`
-          this.notificationsService.successMessage(title,content);
-        }
+
+        this.startRVIAProcess(resp.isValidProcess,resp.messageRVIA);
       }), 
       catchError(error => this.handleError(error, OriginMethod.POSTSAVEPDF))
     );
@@ -262,16 +258,8 @@ export class AplicacionesService {
       this.notificationsService.warnMessage(title,content);
     }
 
-    if(resp.rviaProcess && !resp.rviaProcess.isValidProcess){
-      const title = 'Error en el proceso';
-      const content = `Ocurrio un problema. ${resp.rviaProcess.messageRVIA} `
-      this.notificationsService.errorMessage(title,content);  
-    }
-
-    if(resp.rviaProcess && resp.rviaProcess.isValidProcess){
-      const title = 'Proceso iniciado';
-      const content = `${resp.rviaProcess.messageRVIA} `
-      this.notificationsService.successMessage(title,content);  
+    if(resp.rviaProcess){
+      this.startRVIAProcess(resp.rviaProcess.isValidProcess,resp.rviaProcess.messageRVIA);
     }
   }
 
@@ -283,6 +271,22 @@ export class AplicacionesService {
       temp[appIndex].applicationstatus.des_estatus_aplicacion = "En proceso";
     }
     this.allApps.data = [...temp];
+  }
+
+  private startRVIAProcess(isStart: boolean, message: string): void {
+    if(isStart){
+      const title = 'Proceso iniciado';
+      const content = `${message}`
+      this.notificationsService.successMessage(title,content);
+      return
+    }
+
+    if(!isStart){
+      const title = 'Proceso no iniciado';
+      const content = `${message}`
+      this.notificationsService.errorMessage(title,content);
+      return
+    }
   }
 
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
