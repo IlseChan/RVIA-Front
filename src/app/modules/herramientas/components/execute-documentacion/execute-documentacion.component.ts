@@ -83,8 +83,8 @@ export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
     const tipoDocumentacion = Number(this.form.controls['tipo_documentacion'].value);
     const tipoDoc = tipoDocumentacion === 1 ? 'overview' : 'code';
     const message = tipoDocumentacion === 1 
-       ? '¿Quieres documentar este proyecto como Overview?' 
-       : '¿Quieres documentar el código de este proyecto?';
+       ? '¿Quieres generar documentación completa de este proyecto?' 
+       : '¿Quieres generar documentación por código de este proyecto?';
  
     this.confirmationService.confirm({
        message,

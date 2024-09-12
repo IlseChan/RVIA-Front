@@ -8,10 +8,12 @@ export interface CheckmarxInfo {
 }
 
 export interface CheckmarxPDFCSV {
-    checkmarx?: CheckmarxInfo;
-    error?:     ErrorPython;
-    isValid:    boolean;
-    message:    string;
+    checkmarx?:     CheckmarxInfo;
+    error?:         ErrorPython;
+    isValid:        boolean;
+    isValidProcess: boolean;
+    message:        string;
+    messageRVIA:    string;
 }
 
 export interface ErrorPython {

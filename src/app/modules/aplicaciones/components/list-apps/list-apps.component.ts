@@ -43,7 +43,7 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   totalItems:     number = 0;
   elementPerPage: number = elementPerPage;
 
-  colums: string[] = ['#','ID proyecto','Nombre','Estatus','Proceso'];
+  colums: string[] = ['#','ID proyecto','Nombre','Proceso'];
   isLoading: boolean = true;
 
   isDownload: boolean = false;
@@ -116,11 +116,11 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     const options = [];
   
     if (opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW]) {
-      options.push({ label: 'Documentación Overview', value: 'Documentación Overview', styleClass: 'tag-info', disabled: true });
+      options.push({ label: 'Documentación Overview', value: 'Documentación completa', styleClass: 'tag-info', disabled: true });
     }
   
     if (opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]) {
-      options.push({ label: 'Documentación Código', value: 'Documentación Código', styleClass: 'tag-primary', disabled: true });
+      options.push({ label: 'Documentación Código', value: 'Documentación por código', styleClass: 'tag-primary', disabled: true });
     }
   
     if (opc_arquitectura[ArquitecturaOpciones.TEST_CASES]) {

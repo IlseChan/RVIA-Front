@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, catchError, delay, from, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV,  
@@ -224,6 +224,8 @@ export class AplicacionesService {
           this.notificationsService.successMessage(title,content);
           this.changes = true;
         }
+
+        this.startRVIAProcess(resp.isValidProcess,resp.messageRVIA);
       }), 
       catchError(error => this.handleError(error, OriginMethod.POSTSAVEPDF))
     );
@@ -249,11 +251,15 @@ export class AplicacionesService {
     const title = 'Aplicativo guardado';
     const content = `¡El aplicativo ${resp.application.nom_aplicacion} se ha subido con éxito!`
     this.notificationsService.successMessage(title,content);
-
+    
     if(!resp.checkmarx){
       const title = 'Archivo .csv no generado';
       const content = `¡El aplicativo se ha guardado correctamente pero el archivo .csv no se genero.`
       this.notificationsService.warnMessage(title,content);
+    }
+
+    if(resp.rviaProcess){
+      this.startRVIAProcess(resp.rviaProcess.isValidProcess,resp.rviaProcess.messageRVIA);
     }
   }
 
@@ -265,6 +271,22 @@ export class AplicacionesService {
       temp[appIndex].applicationstatus.des_estatus_aplicacion = "En proceso";
     }
     this.allApps.data = [...temp];
+  }
+
+  private startRVIAProcess(isStart: boolean, message: string): void {
+    if(isStart){
+      const title = 'Proceso iniciado';
+      const content = `${message}`
+      this.notificationsService.successMessage(title,content);
+      return
+    }
+
+    if(!isStart){
+      const title = 'Proceso no iniciado';
+      const content = `${message}`
+      this.notificationsService.errorMessage(title,content);
+      return
+    }
   }
 
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
