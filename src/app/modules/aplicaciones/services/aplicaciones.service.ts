@@ -2,18 +2,14 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { AppsToUseSelect, CheckmarxCSV,  
-  FormPDF, FormProjectWithPDF, Language, NumberAction, Opt_architec, OriginMethod,
-  ResponseAddApp } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
-import { Aplication } from '../interfaces/aplicacion.interface';
-import { AplicationsData } from '../interfaces/aplicationData.interface';
-import { StatusApp } from '../interfaces/statusApp.enum';
-import { ArquitecturaOpciones } from '../interfaces/arquitecturaOpciones.interface';
+import { CheckmarxInfo, CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
 import { AppsSelectIA } from '@modules/herramientas/interfaces/appsSelectIA.interface';
+import { Aplication, AplicationsData, AppsToUseSelect, ArquitecturaOpciones, 
+  FormNewApp, Language, NumberAction, Opt_architec, OriginMethod, ResponseAddApp,
+  StatusApp } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -178,8 +174,8 @@ export class AplicacionesService {
       });
   }
   
-  getCSVAplication(id: number): Observable<CheckmarxCSV> {
-    return this.http.get<CheckmarxCSV>(`${this.baseUrl}/checkmarx/${id}`)
+  getCSVAplication(id: number): Observable<CheckmarxInfo> {
+    return this.http.get<CheckmarxInfo>(`${this.baseUrl}/checkmarx/${id}`)
     .pipe(
       catchError(error => this.handleError(error, OriginMethod.GETCSVAPP))
     );
@@ -201,7 +197,7 @@ export class AplicacionesService {
   }
 
   //POST
-  saveProjectWitPDF(form: FormProjectWithPDF): Observable<ResponseAddApp> {
+  saveProjectWitPDF(form: FormNewApp): Observable<ResponseAddApp> {
     const formData = new FormData();
 
     formData.append('num_accion',form.action.toString()); 
@@ -245,11 +241,11 @@ export class AplicacionesService {
     return this.handleError(new Error('Error load new app'), OriginMethod.POSTSAVEFILE);
   }
 
-  savePDFFile(form: FormPDF, app: Aplication): Observable<any> {
+  savePDFFile(pdfFile: File, app: Aplication): Observable<any> {
     
     const formData = new FormData();
     formData.append('idu_aplicacion',app.idu_aplicacion.toString());
-    formData.append('file',form.pdfFile);
+    formData.append('file', pdfFile);
     
     return this.http.post<CheckmarxPDFCSV>(`${this.baseUrl}/checkmarx/upload-pdf`,formData)
     .pipe(

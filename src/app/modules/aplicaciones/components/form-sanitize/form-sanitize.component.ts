@@ -8,8 +8,8 @@ import { RadioButtonClickEvent } from 'primeng/radiobutton';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { Language, OptAction, OptRadio, OptStepper } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { ValidationService } from '@modules/shared/services/validation.service';
+import { Language, NumberAction } from '@modules/aplicaciones/interfaces';
 
 @Component({
   selector: 'form-sanitize',
@@ -27,16 +27,16 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   isUploadFile: boolean = false;
   isUploadProject: boolean = false;
 
-  radioOps: OptRadio[] = [
+  radioOps = [
     { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
     { value: 'git', image: 'gitlab.webp', tooltip: 'URL de Gitlab o Github'}
   ];
 
-  actionsOps: OptAction[] = [
-    { value: 0, txt: 'No modificar código' },
-    { value: 1, txt: 'Actualizar código (Migración de versión a la más actual del mismo lenguaje)' },
-    { value: 2, txt: 'Sanitizar código (Mitigación de vulnerabilidades checkmarx)' },
-    { value: 3, txt: 'Migrar código (Migración de un lenguaje de programación a otro)' },
+  actionsOps = [
+    { value: NumberAction.NONE, txt: 'No modificar código' },
+    { value: NumberAction.UPDATECODE, txt: 'Actualizar código (Migración de versión a la más actual del mismo lenguaje)' },
+    { value: NumberAction.SANITIZECODE, txt: 'Sanitizar código (Mitigación de vulnerabilidades checkmarx)' },
+    { value: NumberAction.MIGRATION, txt: 'Migrar código (Migración de un lenguaje de programación a otro)' },
   ];
   actionOpsValues: number[] = this.actionsOps.map(a => a.value);
   
@@ -52,14 +52,14 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
 
   activeIndex: number = 0;
   selectedValue: number = 0;
-  readonly itemsBase: OptStepper[] = [
+  readonly headersBase = [
     { label: 'Acciones'},
     { label: 'Arquitectura'},
     { label: 'Tipo de proyecto'},
     { label: 'Seleccionar proyecto'},
     { label: 'Resumen'},
   ]; 
-  items: OptStepper[] = [...this.itemsBase];
+  headers = [...this.headersBase];
 
   constructor(
     private aplicacionesService: AplicacionesService, 
@@ -120,30 +120,32 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     if(this.selectedValue === value) return;
     
     this.selectedValue = value;
-    if(this.selectedValue === 2){
-      let itemsOpc = [...this.itemsBase];
-      itemsOpc.splice(this.itemsBase.length - 1,0, {label: 'Seleccionar PDF*'});
-      this.items = [...itemsOpc];       
-    }else if(this.items.length === this.itemsBase.length + 1){
-      this.items = [...this.itemsBase];
+    if(this.selectedValue === NumberAction.SANITIZECODE){
+      let itemsOpc = [...this.headersBase];
+      itemsOpc.splice(this.headersBase.length - 1,0, {label: 'Seleccionar PDF*'});
+      this.headers = [...itemsOpc];       
+    }else if(this.headers.length === this.headersBase.length + 1){
+      this.headers = [...this.headersBase];
     }
   }
 
   changeStep(value: number) {
-    if(this.activeIndex === 1 && value < 0){
-      this.cleanInput('architec');
-    }
-
-    if(this.activeIndex === 2 && value < 0){
-      this.cleanInput('type');
-    }
-
-    if(this.activeIndex === 3 && value < 0){
-      this.cleanInput('project');
-    }
-
-    if(this.activeIndex === 3 && this.selectedValue === 2 && value < 0){
-      this.cleanInput('pdf');
+    if(value < 0){
+      if(this.activeIndex === 1){
+        this.cleanInput('architec');
+      }
+  
+      if(this.activeIndex === 2){
+        this.cleanInput('type');
+      }
+  
+      if(this.activeIndex === 3){
+        this.cleanInput('project');
+      }
+  
+      if(this.activeIndex === 3 && this.selectedValue === NumberAction.SANITIZECODE){
+        this.cleanInput('pdf');
+      }
     }
 
     this.activeIndex += value;
@@ -204,7 +206,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
     }
 
-    if(this.activeIndex === 4 && this.selectedValue === 2){
+    if(this.activeIndex === 4 && this.selectedValue === NumberAction.SANITIZECODE){
       return !!this.formFiles.controls['pdfFile'].errors 
     }
 
