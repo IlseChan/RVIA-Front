@@ -63,32 +63,42 @@
                             
                                 <!-- Icono de Documentacion -->
                                 <i class="pi pi-file" 
-                                   *ngIf="app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW] || app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]"
-                                   [pTooltip]="'Acción: ' + 
-                                               (app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW] && app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE] ? 
-                                               'Documentación completa, Documentación por código' : 
-                                               (app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW] ? 'Documentación completa' : 'Documentación por código')) + 
-                                               ', Estatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp)"
+                                   *ngIf="app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW]"
+                                   [pTooltip]="'Acción: Documentación completa, Estatus: ' + (app.opc_estatus_doc | statusApp)"
                                    tooltipPosition="top"
                                    [ngClass]="{
-                                       'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
-                                       'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
-                                       'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
-                                       'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                       'text-blue-500': app.opc_estatus_doc === 1,
+                                       'text-orange-500': app.opc_estatus_doc === 2,
+                                       'text-green-500': app.opc_estatus_doc === 3,
+                                       'text-red-500': app.opc_estatus_doc === 4
                                    }" 
                                    style="font-size: 1.6rem"></i>
-                                <i class="pi pi-file text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW] && !app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]" style="font-size: 1.6rem"></i>
+                                <i class="pi pi-file text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW]" style="font-size: 1.6rem"></i>
+                            
+                                <!-- Icono de Documentacion por Código -->
+                                <i class="pi pi-file" 
+                                   *ngIf="app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]"
+                                   [pTooltip]="'Acción: Documentación por código, Estatus: ' + (app.opc_estatus_doc_code | statusApp)"
+                                   tooltipPosition="top"
+                                   [ngClass]="{
+                                       'text-blue-500': app.opc_estatus_doc_code === 1,
+                                       'text-orange-500': app.opc_estatus_doc_code === 2,
+                                       'text-green-500': app.opc_estatus_doc_code === 3,
+                                       'text-red-500': app.opc_estatus_doc_code === 4
+                                   }" 
+                                   style="font-size: 1.6rem"></i>
+                                <i class="pi pi-file text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]" style="font-size: 1.6rem"></i>
                             
                                 <!-- Icono de Casos de Prueba -->
                                 <i class="pi pi-clipboard" 
                                    *ngIf="app.opc_arquitectura[ArquitecturaOpciones.TEST_CASES]"
-                                   [pTooltip]="'Acción: Casos de prueba, Estatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp)"
+                                   [pTooltip]="'Acción: Casos de prueba, Estatus: ' + (app.opc_estatus_caso | statusApp)"
                                    tooltipPosition="top"
                                    [ngClass]="{
-                                       'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
-                                       'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
-                                       'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
-                                       'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                       'text-blue-500': app.opc_estatus_caso === 1,
+                                       'text-orange-500': app.opc_estatus_caso === 2,
+                                       'text-green-500': app.opc_estatus_caso === 3,
+                                       'text-red-500': app.opc_estatus_caso === 4
                                    }"
                                    style="font-size: 1.6rem"></i>
                                 <i class="pi pi-clipboard text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.TEST_CASES]" style="font-size: 1.6rem"></i>
@@ -96,13 +106,13 @@
                                 <!-- Icono de Calificacion -->
                                 <i class="pi pi-check-square" 
                                    *ngIf="app.opc_arquitectura[ArquitecturaOpciones.EVALUATION]"
-                                   [pTooltip]="'Acción: Calificación, Estatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp)"
+                                   [pTooltip]="'Acción: Calificación, Estatus: ' + (app.opc_estatus_calificar | statusApp)"
                                    tooltipPosition="top"
                                    [ngClass]="{
-                                       'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
-                                       'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
-                                       'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
-                                       'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                       'text-blue-500': app.opc_estatus_calificar === 1,
+                                       'text-orange-500': app.opc_estatus_calificar === 2,
+                                       'text-green-500': app.opc_estatus_calificar === 3,
+                                       'text-red-500': app.opc_estatus_calificar === 4
                                    }"
                                    style="font-size: 1.6rem"></i>
                                 <i class="pi pi-check-square text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.EVALUATION]" style="font-size: 1.6rem"></i>
@@ -110,7 +120,7 @@
                         </td>
                         
                         <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
-                            <a *ngIf="app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE; else empty"
+                            <a *ngIf="app.applicationstatus.idu_estatus_aplicacion === 3; else empty"
                                pTooltip="Descargar 7z"
                                tooltipPosition="top"
                                tooltipStyleClass="text-sm"
@@ -124,7 +134,7 @@
                                tooltipPosition="top"
                                tooltipStyleClass="text-sm"
                                class=" mx-2"
-                               [ngClass]="(app.applicationstatus.idu_estatus_aplicacion === StatusApps.DONE || app.checkmarx.length > 0) ? 'icon-disable' : 'icon-up'"
+                               [ngClass]="(app.applicationstatus.idu_estatus_aplicacion === 3 || app.checkmarx.length > 0) ? 'icon-disable' : 'icon-up'"
                                (click)="showFormUploadPDF(app)">
                                 <i class="pi pi-file-pdf" style="font-size: 1.6rem"></i>
                             </a>

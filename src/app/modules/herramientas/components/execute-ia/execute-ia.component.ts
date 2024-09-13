@@ -1,17 +1,18 @@
-import { NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
-import { AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
+import { AppsSelectIA, waitingOpc } from '@modules/herramientas/interfaces/appsSelectIA.interface';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'execute-ia',
   standalone: true,
-  imports: [NgIf, ReactiveFormsModule, NgFor, PrimeNGModule],
+  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
   templateUrl: './execute-ia.component.html',
   styleUrls: ['./execute-ia.component.scss']
 })
@@ -19,10 +20,11 @@ export class ExecuteIaComponent implements OnInit, OnDestroy{
   private destroy$ = new Subject<void>();
   isLoadingData: boolean = true;
   isRequest: boolean = false;
-  label: string = 'Iniciar';
+  label: string = 'Iniciar proceso';
 
   formIA!: FormGroup;
-  appsOpcs: AppsToUseSelect[] = [];
+  appsOpcs: AppsSelectIA[] = [];
+  processOpcs: waitingOpc[] = [];
 
   actionsOps = [
     { value: 1, txt: 'Si' },
@@ -31,7 +33,8 @@ export class ExecuteIaComponent implements OnInit, OnDestroy{
 
   constructor(
     private aplicacionesService: AplicacionesService,
-    private herramientasService: HerramientasService 
+    private herramientasService: HerramientasService,
+    private router: Router, 
   ){}
 
   ngOnInit(): void {
@@ -55,7 +58,25 @@ export class ExecuteIaComponent implements OnInit, OnDestroy{
     this.formIA = new FormGroup({
       idu_aplicacion: new FormControl(null,[Validators.required]),
       conIA: new FormControl(1,[Validators.required]),
+      opc_arquitectura: new FormControl(null,[Validators.required])
     });
+  }
+
+  appSelected(option:any){
+    this.formIA.controls['opc_arquitectura'].reset();
+    const app = this.appsOpcs.find(app => {
+      return app.app === option 
+    });
+
+    if(app) this.processOpcs = app.waiting;
+  }
+
+  resetForm():void {
+    this.formIA.patchValue({
+      idu_aplicacion: null,
+      conIA: 1,
+      opc_arquitectura: null
+    })
   }
 
   onSubmit(): void { 
@@ -63,31 +84,30 @@ export class ExecuteIaComponent implements OnInit, OnDestroy{
       this.formIA.markAllAsTouched();
       return;
     }
-
+    
     this.isRequest = true;
     this.label = 'Iniciando'; 
-
+    
     this.herramientasService.addonsCall(this.formIA.value)
     .pipe(takeUntil(this.destroy$))    
     .subscribe({
         next: () => {
           this.label = 'Iniciado'; 
           setTimeout(() => {
-            this.reset();
+            this.router.navigate(['apps/list-apps'],{ replaceUrl: true });
           }, 1000);
         },
         error: () => {              
           this.isRequest = false;
           this.label = 'Iniciar'
         }
-      });
+    });
   }
 
   reset(): void {
-    this.formIA.reset();
+    this.resetForm();
     this.isRequest = false;
     this.label = 'Iniciar'
-    this.getApps();
   }
 
   ngOnDestroy(): void {

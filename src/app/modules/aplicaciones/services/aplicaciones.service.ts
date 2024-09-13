@@ -2,13 +2,18 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
-import { Aplication, AplicationsData, AppsToUseSelect, CheckmarxCSV,  
+import { AppsToUseSelect, CheckmarxCSV,  
   FormPDF, FormProjectWithPDF, Language, NumberAction, Opt_architec, OriginMethod,
-  ResponseAddApp, StatusApps } from '../interfaces/aplicaciones.interfaces';
+  ResponseAddApp } from '../interfaces/aplicaciones.interfaces';
 import { environment } from '../../../../environments/environment';
 import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
 import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
+import { Aplication } from '../interfaces/aplicacion.interface';
+import { AplicationsData } from '../interfaces/aplicationData.interface';
+import { StatusApp } from '../interfaces/statusApp.enum';
+import { ArquitecturaOpciones } from '../interfaces/arquitecturaOpciones.interface';
+import { AppsSelectIA } from '@modules/herramientas/interfaces/appsSelectIA.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -81,7 +86,7 @@ export class AplicacionesService {
       );
   }
 
-  getWaitingApps(): Observable<AppsToUseSelect[]> {
+  getWaitingApps(): Observable<AppsSelectIA[]> {
     return of(this.allApps)
     .pipe(
       switchMap(infoApps => {
@@ -113,11 +118,46 @@ export class AplicacionesService {
     );
   }
 
-  private filterWaitingApps(data: Aplication[]): AppsToUseSelect[] {
+  private filterWaitingApps(data: Aplication[]): AppsSelectIA[] {
     return data
-      .filter(app => app.applicationstatus.idu_estatus_aplicacion === StatusApps.ONHOLD )
+      .filter(app => {
+        return app.opc_estatus_doc === StatusApp.ONHOLD || //documentacion completa
+          app.opc_estatus_doc_code === StatusApp.ONHOLD || //documentacion por codigo
+          app.opc_estatus_caso === StatusApp.ONHOLD ||     //casos de prueba
+          app.opc_estatus_calificar === StatusApp.ONHOLD   //calificacion en espera
+      })
       .map( app => {
-        return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
+        const waiting = [];
+        if(app.opc_estatus_doc === StatusApp.ONHOLD){
+          waiting.push({
+            value: ArquitecturaOpciones.DOC_CMPLT,
+            name: 'Generar documentación completa'
+          });
+        }
+        if(app.opc_estatus_doc_code === StatusApp.ONHOLD){
+          waiting.push({
+            value: ArquitecturaOpciones.DOC_CODE,
+            name: 'Generar documentación por código'
+          });
+        }
+        if(app.opc_estatus_caso === StatusApp.ONHOLD){
+          waiting.push({
+            value: ArquitecturaOpciones.TEST_CASES,
+            name: 'Generar casos de prueba'
+          });
+        }
+        if(app.opc_estatus_calificar === StatusApp.ONHOLD){
+          waiting.push({
+            value: ArquitecturaOpciones.EVALUATION,
+            name: 'Generar calificación de proyecto'
+          });
+        }
+
+        return { 
+          app: app.idu_aplicacion, 
+          value: `${app.idu_proyecto} - ${app.nom_aplicacion}`,
+          waiting
+        }
       })
   }
 
@@ -263,12 +303,18 @@ export class AplicacionesService {
     }
   }
 
-  changeStatusInProcess(idu_aplicacion: number): void {
+  changeStatusInProcess(idu_aplicacion: number, opt: number): void {
     const temp = [...this.allApps.data];
     let appIndex = temp.findIndex(app => app.idu_aplicacion === idu_aplicacion);
     if(appIndex !== -1){
-      temp[appIndex].applicationstatus.idu_estatus_aplicacion = StatusApps.PROGRESS;
-      temp[appIndex].applicationstatus.des_estatus_aplicacion = "En proceso";
+      if(opt === ArquitecturaOpciones.DOC_CMPLT) 
+        temp[appIndex].opc_estatus_doc = StatusApp.PROGRESS; 
+      if(opt === ArquitecturaOpciones.DOC_CODE) 
+        temp[appIndex].opc_estatus_doc_code = StatusApp.PROGRESS; 
+      if(opt === ArquitecturaOpciones.TEST_CASES) 
+        temp[appIndex].opc_estatus_caso = StatusApp.PROGRESS; 
+      if(opt === ArquitecturaOpciones.EVALUATION) 
+        temp[appIndex].opc_estatus_calificar = StatusApp.PROGRESS; 
     }
     this.allApps.data = [...temp];
   }
