@@ -194,9 +194,9 @@
                 [outlined]="true" (onClick)="changeStep(-1)" 
                 [disabled]="activeIndex === 0"
                 class="btn-rvia-outlined"
-                *ngIf="activeIndex !== 0 && !(activeIndex === items.length - 1 && isUploadProject)"
+                *ngIf="activeIndex !== 0 && !(activeIndex === headers.length - 1 && isUploadProject)"
             />
-            <button *ngIf="activeIndex !== items.length - 1; else lastBtn"
+            <button *ngIf="activeIndex !== headers.length - 1; else lastBtn"
               pButton label="Siguiente" icon="pi pi-arrow-right"
               iconPos="right" class="p-button ml-auto btn-rvia"
               [disabled]="checkDisabled()"
