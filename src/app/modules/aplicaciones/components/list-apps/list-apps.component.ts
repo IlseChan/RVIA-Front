@@ -9,7 +9,6 @@ import { Dropdown } from 'primeng/dropdown';
 import { PaginatorState } from 'primeng/paginator';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
-import { NumberAction, ArquitecturaOpciones } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
@@ -19,9 +18,7 @@ import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
 import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { downloandFile } from '@modules/shared/helpers/downloadFile';
-import { Aplication } from '@modules/aplicaciones/interfaces/aplicacion.interface';
-import { StatusApp } from '@modules/aplicaciones/interfaces/statusApp.enum';
-import { Opt_architec } from '@modules/aplicaciones/interfaces/optionsArchitecForm.interface';
+import { Aplication, ArquitecturaOpciones, NumberAction, Opt_architec, StatusApp } from '@modules/aplicaciones/interfaces';
 
 @Component({
   selector: 'list-apps',
@@ -116,11 +113,11 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   getArquitecturaOptions(opc_arquitectura: Opt_architec) {
     const options = [];
   
-    if (opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW]) {
+    if (opc_arquitectura[ArquitecturaOpciones.DOC_CMPLT]) {
       options.push({ label: 'Documentación Overview', value: 'Documentación completa', styleClass: 'tag-info', disabled: true });
     }
   
-    if (opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]) {
+    if (opc_arquitectura[ArquitecturaOpciones.DOC_CODE]) {
       options.push({ label: 'Documentación Código', value: 'Documentación por código', styleClass: 'tag-primary', disabled: true });
     }
   

@@ -1,4 +1,4 @@
-import { Aplication } from "@modules/aplicaciones/interfaces/aplicaciones.interfaces";
+import { Aplication } from "@modules/aplicaciones/interfaces";
 
 export interface CheckmarxBaseInfo {
     idu_checkmarx:  number;

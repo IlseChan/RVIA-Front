@@ -84,7 +84,7 @@ export class FormUpPdfComponent implements OnInit, OnDestroy{
     if(this.isUploadFile || this.isDisabled) return;
     this.isUploadFile = true;
     
-    this.aplicacionService.savePDFFile(this.formFile.value, this.app)
+    this.aplicacionService.savePDFFile(this.formFile.controls['pdfFile'].value, this.app)
     .pipe(takeUntil(this.destroy$))
     .subscribe({
       next: (resp) => {

@@ -21,7 +21,7 @@
   <ng-template #newAppForm class="mt-6">
     <section class="main-container p-1 mt-2 md:p-4">
       <form [formGroup]="formFiles">
-        <p-steps [model]="items" [(activeIndex)]="activeIndex"
+        <p-steps [model]="headers" [(activeIndex)]="activeIndex"
           [readonly]="true" class="stepper-opcs"
         />
         <section *ngIf="activeIndex === 0" class="stepper-panel h-23rem border-round surface-ground">

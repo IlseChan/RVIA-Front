@@ -63,7 +63,7 @@
                             
                                 <!-- Icono de Documentacion -->
                                 <i class="pi pi-file" 
-                                   *ngIf="app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW]"
+                                   *ngIf="app.opc_arquitectura[ArquitecturaOpciones.DOC_CMPLT]"
                                    [pTooltip]="'Acción: Documentación completa, Estatus: ' + (app.opc_estatus_doc | statusApp)"
                                    tooltipPosition="top"
                                    [ngClass]="{
@@ -73,11 +73,11 @@
                                        'text-red-500': app.opc_estatus_doc === 4
                                    }" 
                                    style="font-size: 1.6rem"></i>
-                                <i class="pi pi-file text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_OVERVIEW]" style="font-size: 1.6rem"></i>
+                                <i class="pi pi-file text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOC_CMPLT]" style="font-size: 1.6rem"></i>
                             
                                 <!-- Icono de Documentacion por Código -->
                                 <i class="pi pi-file" 
-                                   *ngIf="app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]"
+                                   *ngIf="app.opc_arquitectura[ArquitecturaOpciones.DOC_CODE]"
                                    [pTooltip]="'Acción: Documentación por código, Estatus: ' + (app.opc_estatus_doc_code | statusApp)"
                                    tooltipPosition="top"
                                    [ngClass]="{
@@ -87,7 +87,7 @@
                                        'text-red-500': app.opc_estatus_doc_code === 4
                                    }" 
                                    style="font-size: 1.6rem"></i>
-                                <i class="pi pi-file text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOCUMENTATION_CODE]" style="font-size: 1.6rem"></i>
+                                <i class="pi pi-file text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOC_CODE]" style="font-size: 1.6rem"></i>
                             
                                 <!-- Icono de Casos de Prueba -->
                                 <i class="pi pi-clipboard" 

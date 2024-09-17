@@ -4,9 +4,9 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { Subject, takeUntil } from 'rxjs';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
-import { AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
+import { AppsToUseSelect } from '@modules/aplicaciones/interfaces';
 
 @Component({
   selector: 'rate-code',

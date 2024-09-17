@@ -4,11 +4,11 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Subject, takeUntil } from 'rxjs';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
-import { Aplication, AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { HerramientasService } from '../../services/herramientas.service';
 import { ValidationService } from '@modules/shared/services/validation.service';
 import { downloandFile } from '@modules/shared/helpers/downloadFile';
+import { Aplication, AppsToUseSelect } from '@modules/aplicaciones/interfaces';
 
 @Component({
   selector: 'pdf-to-csv-form',

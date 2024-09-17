@@ -1,14 +1,15 @@
 import { Injectable } from '@angular/core';
 import { catchError, Observable, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
+
 import { environment } from '../../../../environments/environment';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
 import { FormPDFtoCSV, OriginMethod } from '../interfaces/herramientas.interfaces';
-import { Aplication } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AppAddonsCall } from '../interfaces/appAddonsCall.interface';
 import { FormAddonCall } from '../interfaces/formAddonCall.interface';
+import { Aplication, ArquitecturaOpciones } from '@modules/aplicaciones/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -64,7 +65,7 @@ export class HerramientasService {
   }
 
   startProcessRateCodeRVIA(idu_aplicacion: number): Observable<Aplication> {
-    const body = { opcArquitectura: 4 };
+    const body = { opcArquitectura: ArquitecturaOpciones.EVALUATION };
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/rate-project/${idu_aplicacion}`, body)
       .pipe(
         tap((app) => {
@@ -78,7 +79,7 @@ export class HerramientasService {
   }
 
   startProcessTestCasesRVIA(idu_aplicacion: number): Observable<Aplication> {
-    const body = { opcArquitectura: 3 };
+    const body = { opcArquitectura: ArquitecturaOpciones.TEST_CASES };
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/test-cases/${idu_aplicacion}`, body)
       .pipe(
         tap((app) => {
@@ -92,7 +93,11 @@ export class HerramientasService {
   }
 
   startProcessDocumentationRVIA(idu_aplicacion: number, tipoDoc: string): Observable<Aplication> {
-    const body = { opcArquitectura: tipoDoc === 'overview' ? 1 : 2 };
+    const body = { 
+      opcArquitectura: tipoDoc === 'overview' 
+      ? ArquitecturaOpciones.DOC_CMPLT 
+      : ArquitecturaOpciones.DOC_CODE
+    };
     const endpoint = tipoDoc === 'overview' ? 'documentation' : 'documentation-code';
 
     return this.http.patch<Aplication>(`${this.baseUrl}/applications/${endpoint}/${idu_aplicacion}`, body)
