@@ -5,11 +5,20 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-  <div class="flex align-items-center h-full justify-content-center">
-    <h1 class="text-8xl underline m-0">¡Bienvenido!</h1>
+  <div class="flex align-items-center p-5 h-full justify-content-center">
+    <img 
+        src="assets/images/logo-rvia.png" 
+        alt="rvia-logo" 
+        class="img-rvia"
+    />
   </div>`,
-  styles: [] 
+  styles: [`
+    .img-rvia {
+      max-width: 80%;
+      max-height: 80%;
+      object-fit: contain;
+    }
+    ` 
+  ] 
 })
-export class HomeComponent {
-
-}
+export class HomeComponent { }
