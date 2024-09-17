@@ -9,10 +9,10 @@
 
 .icon{
     &-edit{
-        color: #5271FF;
+        color: var(--rvia-primary-color);
 
         &:hover{
-            color: #1d45fa;
+            color: var(--hover-rvia-btn-color);
         }
     }
 

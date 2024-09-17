@@ -10,7 +10,7 @@
       />
     </div>
     <div class="flex flex-grow-1 align-items-center justify-content-center md:justify-content-start">
-      <h1 class="text-5xl my-0">Nueva aplicación</h1>
+      <h1 class="txt-title text-5xl my-0">Nueva aplicación</h1>
     </div>
   </section>
   
@@ -61,7 +61,7 @@
         <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground justify-content-evenly gap-3">
           <div class="flex flex-column justify-content-center align-items-center ">
             <div class="flex flex-grow-1 align-items-center flex-basis-0 text-bluegray-400 mb-4">
-              <p class="m-0">Acción: <b>{{ projectAction }}</b></p>
+              <p class="m-0">Acción: <b class="txt-acent">{{ projectAction }}</b></p>
             </div>
             <div class="flex flex-column flex-grow-1 align-items-center justify-content-center">
               <p>Servicios adicionales:</p>
@@ -107,7 +107,7 @@
             <div class="flex-auto flex flex-column justify-content-center align-items-center">
               <div class="w-21rem">    
                 <p-inputGroup>
-                  <button type="button" pButton label="Buscar" (click)="triggerFileInput('zip')"></button>
+                  <button type="button" pButton class="btn-rvia" label="Buscar" (click)="triggerFileInput('zip')"></button>
                   <input type="text" pInputText 
                     id="inputNameZip"
                     placeholder="Selecciona tu proyecto" 
@@ -149,7 +149,7 @@
             <p>Puedes añadir el archivo <b>.pdf</b> de las vulnerabilidades de tu proyecto.</p>
             <div class="w-21rem">
               <p-inputGroup>
-                <button type="button" pButton label="Buscar" (click)="triggerFileInput('pdf')"></button>
+                <button type="button" pButton class="btn-rvia" label="Buscar" (click)="triggerFileInput('pdf')"></button>
                 <input type="text" pInputText placeholder="Selecciona tu pdf"
                 readonly disabled="true" id="inputpdfFile"
                 [value]="formFiles.get('pdfFile')?.value?.name ?? ''"/>
@@ -193,14 +193,16 @@
             <p-button label="Regresar" icon="pi pi-arrow-left"
                 [outlined]="true" (onClick)="changeStep(-1)" 
                 [disabled]="activeIndex === 0"
-                *ngIf="activeIndex !== 0 && !(activeIndex === items.length - 1 && isUploadProject) "
+                class="btn-rvia-outlined"
+                *ngIf="activeIndex !== 0 && !(activeIndex === items.length - 1 && isUploadProject)"
             />
-            <p-button *ngIf="activeIndex !== items.length - 1; else lastBtn"
-                label="Siguiente" icon="pi pi-arrow-right"
-                iconPos="right" class="ml-auto"
-                [disabled]="checkDisabled()"
-                (onClick)="changeStep(+1)"
-            />
+            <button *ngIf="activeIndex !== items.length - 1; else lastBtn"
+              pButton label="Siguiente" icon="pi pi-arrow-right"
+              iconPos="right" class="p-button ml-auto btn-rvia"
+              [disabled]="checkDisabled()"
+              (click)="changeStep(+1)"
+            >
+            </button> 
             <ng-template #lastBtn>
                 <p-button 
                   [label]="isUploadProject ? 'Subiendo' : 'Subir proyecto'"

@@ -20,3 +20,7 @@
     }
   }
 }
+
+:host ::ng-deep .p-steps .p-steps-item.p-highlight .p-steps-number {
+  background: var(--rvia-primary-color);
+}

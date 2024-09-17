@@ -1,7 +1,9 @@
 .navbar {
-  background-color: #333;
+  background-color: var(--bg-sidebar);
+  border-bottom: 1px solid #ddd;
 
   .hamburger {
+    color: var(--rvia-primary-color) !important;
     background: none;
     border: none;
   }
@@ -14,13 +16,19 @@
     }
 
     .separator {
+      color: var(--rvia-primary-color);
       direction: ltr;
+    }
+
+    .nom_user{
+      color: #000
     }
   }
 }
 
 .sidebar {
-  background-color: #333 !important;
+  background-color: var(--bg-sidebar) !important;
+  border-right: 1px solid #ddd;
   left: -250px;
   opacity: 1;
   top: 0;
@@ -64,20 +72,26 @@
   }
 
   .menu-item {
+    color: #1c1c1c;
     overflow: hidden;
     text-overflow: ellipsis !important;
     white-space: nowrap;
     width: 100%;
   }
 
+  .icon-color{
+    color: var(--rvia-primary-color);
+  }
+
   ul li{
     margin: 4px 0;
+
     a {
       text-decoration: none;
       transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: var(--hover-rvia-primary-color);
         cursor: pointer;
       }
     }
@@ -87,28 +101,29 @@
     align-self: flex-end;
     background: none;
     border: none;
+    color: var(--rvia-primary-color) !important;
   }
 
   .logout-button {
     button {
-      background-color: rgba(0, 0, 0, 0.5);
+      background-color: var(--rvia-primary-color);
       border: none;
       transition: background-color 0.3s ease;
       
       &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: var(--hover-rvia-btn-color);
       }
     }
   }
 }
 
 .active {
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: var(--hover-rvia-primary-color);
   cursor: default !important;
 }
 
 .content {
-  background-color: #f0f0f0;
+  background-color: var(--bg-content);
   transition: margin-left 0.3s ease;
   margin-left: 0;
 
@@ -118,7 +133,11 @@
 }
 
 .text-divider {
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--rvia-primary-color);
+}
+
+.divider-rvia{
+  border: 0.5px solid var(--hover-rvia-primary-color);
 }
 
 @media (max-width: 768px) {
