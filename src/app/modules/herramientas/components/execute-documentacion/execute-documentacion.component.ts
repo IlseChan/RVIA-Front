@@ -2,11 +2,13 @@ import { CommonModule, NgIf, NgFor } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, takeUntil, switchMap, tap } from 'rxjs';
+
+import { ConfirmationService } from 'primeng/api';
+
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
-import { AppsToUseSelect } from '@modules/aplicaciones/interfaces/aplicaciones.interfaces';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
-import { ConfirmationService } from 'primeng/api';
+import { AppsToUseSelect } from '@modules/aplicaciones/interfaces';
 
 @Component({
   selector: 'execute-documentacion',

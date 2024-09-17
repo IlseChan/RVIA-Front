@@ -21,7 +21,7 @@
   <ng-template #newAppForm class="mt-6">
     <section class="main-container p-1 mt-2 md:p-4">
       <form [formGroup]="formFiles">
-        <p-steps [model]="items" [(activeIndex)]="activeIndex"
+        <p-steps [model]="headers" [(activeIndex)]="activeIndex"
           [readonly]="true" class="stepper-opcs"
         />
         <section *ngIf="activeIndex === 0" class="stepper-panel h-23rem border-round surface-ground">
@@ -193,9 +193,9 @@
             <p-button label="Regresar" icon="pi pi-arrow-left"
                 [outlined]="true" (onClick)="changeStep(-1)" 
                 [disabled]="activeIndex === 0"
-                *ngIf="activeIndex !== 0 && !(activeIndex === items.length - 1 && isUploadProject) "
+                *ngIf="activeIndex !== 0 && !(activeIndex === headers.length - 1 && isUploadProject) "
             />
-            <p-button *ngIf="activeIndex !== items.length - 1; else lastBtn"
+            <p-button *ngIf="activeIndex !== headers.length - 1; else lastBtn"
                 label="Siguiente" icon="pi pi-arrow-right"
                 iconPos="right" class="ml-auto"
                 [disabled]="checkDisabled()"
