@@ -1,6 +1,6 @@
 <main class="m-2">
     <section class="flex flex-column mt-3 md:flex-row">
-        <h1 class="inline text-4xl text-center my-0 md:text-5xl md:text-left">
+        <h1 class="txt-title inline text-4xl text-center my-0 md:text-5xl md:text-left">
             Lista de aplicaciones
         </h1>
         <a
@@ -10,7 +10,7 @@
             pTooltip="Subir una aplicación"
             tooltipPosition="left"
             tooltipStyleClass="text-sm"
-            class="p-button font-bold mx-auto mt-4 md:mt-0 md:ml-auto md:mr-0 bnt-new">
+            class="btn-new p-button font-bold mx-auto mt-4 md:mt-0 md:ml-auto md:mr-0">
             <span class="pi pi-plus-circle mr-2" style="font-size: 1.4rem"></span>
             Nueva aplicación
         </a>
@@ -30,7 +30,7 @@
         <div class="card">
             <p-table [value]="aplications" [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }" [lazy]="true">
                 <ng-template pTemplate="header">
-                    <tr>
+                    <tr class="rvia-header">
                         <th *ngFor="let col of colums">
                             {{ col }}
                         </th>

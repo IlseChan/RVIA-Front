@@ -10,7 +10,7 @@
           />
         </div>
         <div class="flex flex-grow-1 align-items-center justify-content-center md:justify-content-start">
-          <h1 class="text-5xl my-0">Modificar usuario</h1>
+          <h1 class="txt-title text-5xl my-0">Modificar usuario</h1>
         </div>
     </section>
     
@@ -73,14 +73,15 @@
                     label="Cancelar" 
                     [outlined]="true"
                     [disabled]="isUpdate"
-                    />
+                />
                 <p-button 
                     (click)="onSubmit()"
                     type='submit'
                     [loading]="isUpdate"
                     [disabled]="userForm.invalid || !hasFormChanges || isUpdate"
                     [label]="isUpdate ? 'Actualizando...' : 'Actualizar'" 
-                    />
+                    styleClass="btn-rvia"
+                />
             </div>
         </section>
     </ng-template>
