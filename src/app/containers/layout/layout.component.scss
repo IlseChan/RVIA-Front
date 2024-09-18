@@ -12,7 +12,8 @@
     direction: rtl;
 
     .userposition {
-      color: #ffc107;
+      // color: #ffc107;
+      color: var(--rvia-primary-color);
     }
 
     .separator {
