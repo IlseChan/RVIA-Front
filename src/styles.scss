@@ -1,10 +1,20 @@
 @import "primeicons/primeicons.css";
 
+:root{
+    --rvia-primary-color: #006fb9;
+    --hover-rvia-primary-color: #006eb833;
+    --hover-rvia-btn-color: #013457;
+    --acent-color:#ea5a9c;
+    --bg-sidebar: #efefef;
+    --bg-content: #f9f9f9;
+}
+
 html,
 body {
     height: 100% !important;
     padding: 0;
     margin: 0;
+    font-family: 'Roboto', sans-serif;
 }
 
 .c-pointer{
@@ -21,4 +31,37 @@ body {
 
 .border-title{
     border-bottom: 2px solid #ccc;
+}
+
+.txt-title {
+    color: var(--rvia-primary-color);
+}
+
+.btn-rvia{
+    background-color:  var(--rvia-primary-color);
+    border-color: var(--rvia-primary-color);
+    transition: left 0.3s ease, background-color 0.3s ease;
+
+    &:hover{
+        background-color: var(--hover-rvia-btn-color);
+        border-color: var(--hover-rvia-btn-color);
+    }
+}
+
+.btn-rvia-outlined{
+    border-color: var(--rvia-primary-color);
+    color: var(--rvia-primary-color);
+
+    &:hover{
+        background-color: #ffffff;
+    }
+}
+
+p > b{
+    color: var(--acent-color);
+}
+
+.rvia-header th {
+    background-color: #e6e6e6 !important;
+    color: var(--rvia-primary-color);
 }

@@ -23,21 +23,6 @@
     }
   }
   
-  .bnt-new {
-    background-color: #a6a6a6;
-    border-color: #a6a6a6;
-    text-decoration: none;
-  
-    span {
-      color: #0000ff;
-      font-weight: bold;
-    }
-  
-    &:hover {
-      background-color: #868686;
-    }
-  }
-  
   :host ::ng-deep .p-dropdown {
     position: initial !important;
   }
@@ -124,20 +109,7 @@
         }
       }
   
-      .bnt-new {
-        font-weight: bold;
-        margin-top: 1rem;
-  
-        @media (min-width: 768px) {
-          margin-top: 0;
-          margin-left: auto;
-          margin-right: 0;
-        }
-  
-        .pi {
-          font-size: 1.4rem;
-        }
-      }
+     
     }
   
     .card {
@@ -181,7 +153,29 @@
       margin-top: 1rem;
     }
   }
-  
+
+.btn-new {
+  font-weight: bold;
+  margin-top: 1rem;
+  background-color: var(--rvia-primary-color);
+  border-color: var(--rvia-primary-color);
+  text-decoration: none !important;
+  transition: left 0.3s ease, background-color 0.3s ease;
+
+  @media (min-width: 768px) {
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  &:hover{
+    background-color: var(--hover-rvia-btn-color);
+  }
+
+  .pi {
+    font-size: 1.4rem;
+  }
+}
   .dropbtn {
     color: white;
     padding: 8px 16px;
