@@ -26,9 +26,20 @@
         </h2>
     </div>
 
-    <section *ngIf="!isLoading && aplications.length > 0" class="mt-4">
+    <section *ngIf="!isLoading && aplications.length > 0" class="my-4">
         <div class="card">
-            <p-table [value]="aplications" [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }" [lazy]="true">
+            <p-table 
+                [value]="aplications"
+                [lazy]="true"
+                (onLazyLoad)="loadData($event)"
+                [paginator]="true"
+                [rows]="10"
+                [rowsPerPageOptions]="rowsPerPageOpts"
+                [totalRecords]="totalItems"
+                [loading]="loadingDataPage"
+                [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }" 
+                [lazy]="true"
+            >
                 <ng-template pTemplate="header">
                     <tr class="rvia-header">
                         <th *ngFor="let col of colums">
@@ -154,11 +165,5 @@
                 </ng-template>
             </p-table>
         </div>
-        <p-paginator
-            (onPageChange)="onPageChange($event)"
-            [first]="0"
-            [rows]="elementPerPage"
-            [totalRecords]="totalItems"
-        />
     </section>
 </main>
