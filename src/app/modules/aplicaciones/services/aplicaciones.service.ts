@@ -160,7 +160,6 @@ export class AplicacionesService {
   private filterSanitationApps(data: Aplication[]): AppsToUseSelect[]{
     return data
       .filter(app => app.num_accion === NumberAction.SANITIZECODE)
-      .filter(app => app.checkmarx.length === 0)
       .map( app => {
         return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
       })
