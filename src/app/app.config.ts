@@ -8,6 +8,7 @@ import { registerLocaleData  } from '@angular/common';
 import { routes } from './app.routes';
 import { AuthInterceptor } from './helpers/interceptors/authToken.interceptor';
 import { MessageService } from 'primeng/api';
+import { UnauthInterceptor } from './helpers/interceptors/unauth.interceptor';
 
 registerLocaleData(localeEsMX);
 
@@ -16,7 +17,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideAnimationsAsync(),
     provideRouter(routes),
-    provideHttpClient(withInterceptors([AuthInterceptor])),
+    provideHttpClient(withInterceptors([AuthInterceptor,UnauthInterceptor])),
     MessageService,
     { provide: LOCALE_ID, useValue: 'es-MX' }
   ]

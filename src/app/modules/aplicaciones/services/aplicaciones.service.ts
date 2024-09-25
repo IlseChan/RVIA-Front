@@ -149,7 +149,6 @@ export class AplicacionesService {
   private filterSanitationApps(data: Aplication[]): AppsToUseSelect[]{
     return data
       .filter(app => app.num_accion === NumberAction.SANITIZECODE)
-      .filter(app => app.checkmarx.length === 0)
       .map( app => {
         return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
       })
@@ -326,7 +325,7 @@ export class AplicacionesService {
     const errorsMessages = {
       GETAPPS: 'Error al cargar información', 
       GETCSVAPP: 'Error al cargar información del CSV',
-      GETDOWNLOAD: 'Error al descargar el zip',
+      GETDOWNLOAD: 'Error al descargar el 7z',
       GETLANGUAGES: 'Ha ocurrido un error al cargar información. Inténtalo de nuevo.',
       POSTSAVEPDF: `Ocurrió un error al guardar el archivo PDF. Inténtalo de nuevo`,
       POSTSAVEFILE: `Ocurrió un error al guardar el aplicativo. Inténtalo de nuevo`,
