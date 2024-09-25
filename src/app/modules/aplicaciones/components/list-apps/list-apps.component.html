@@ -32,7 +32,7 @@
                 <ng-template pTemplate="header">
                     <tr class="rvia-header">
                         <th *ngFor="let col of colums">
-                            {{ col }}
+                            {{ col === 'Proceso' ? 'Proceso/Acciones' : col }}
                         </th>
                     </tr>
                 </ng-template>
@@ -46,25 +46,45 @@
                         </td>
                         <td>{{ app.nom_aplicacion }}</td>
                         <td>
-                            <div class="flex flex-row items-center" style="gap: 0.5rem;">
-                                <!-- Icono de Codigo -->
-                                <i class="pi pi-code" 
-                                   *ngIf="app.num_accion !== NumberAction.NONE"
-                                   [pTooltip]="'Acción: ' + getDropdownPlaceholder(app) + ', Estatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp)"
-                                   tooltipPosition="top"
-                                   [ngClass]="{
-                                       'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
-                                       'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
-                                       'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
-                                       'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
-                                   }" 
+                            <div class="flex flex-row items-center icon-container" style="gap: 0.5rem;">
+                                <!-- Icono de Codigo descarga disponible -->
+                                <ng-container *ngIf="app.num_accion !== NumberAction.NONE">
+                                    <i class="pi pi-code icon-button"
+                                       *ngIf="app.applicationstatus.idu_estatus_aplicacion === 3"
+                                       [pTooltip]="'Acción: ' + getDropdownPlaceholder(app) + '\nEstatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp) + '\nDescarga: Disponible'"
+                                       tooltipPosition="top"
+                                       [ngClass]="{
+                                           'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
+                                           'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
+                                           'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
+                                           'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                       }" 
+                                       style="font-size: 1.6rem"
+                                       (click)="onDownloadFile(app)"></i>
+                                    
+                                    <!-- Icono de Codigo descarga no disponible -->
+                                    <i class="pi pi-code icon-button"
+                                       *ngIf="app.applicationstatus.idu_estatus_aplicacion !== 3"
+                                       [pTooltip]="'Acción: ' + getDropdownPlaceholder(app) + '\nEstatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp) + '\nDescarga: No disponible'"
+                                       tooltipPosition="top"
+                                       [ngClass]="{
+                                           'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
+                                           'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
+                                           'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
+                                           'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                       }"
+                                       style="font-size: 1.6rem"></i>
+                                </ng-container>
+
+                                <!-- Icono de Codigo deshabilitado -->
+                                <i class="pi pi-code text-gray-500 icon-button" 
+                                   *ngIf="app.num_accion === NumberAction.NONE" 
                                    style="font-size: 1.6rem"></i>
-                                <i class="pi pi-code text-gray-500" *ngIf="app.num_accion === NumberAction.NONE" style="font-size: 1.6rem"></i>
-                            
+
                                 <!-- Icono de Documentacion -->
-                                <i class="pi pi-file" 
+                                <i class="pi pi-file icon-button"
                                    *ngIf="app.opc_arquitectura[ArquitecturaOpciones.DOC_CMPLT]"
-                                   [pTooltip]="'Acción: Documentación completa, Estatus: ' + (app.opc_estatus_doc | statusApp)"
+                                   [pTooltip]="'Acción: Documentación completa\nEstatus: ' + (app.opc_estatus_doc | statusApp) + '\nDescarga: ' + (app.opc_estatus_doc === 3 ? 'Disponible' : 'No disponible')"
                                    tooltipPosition="top"
                                    [ngClass]="{
                                        'text-blue-500': app.opc_estatus_doc === 1,
@@ -73,12 +93,12 @@
                                        'text-red-500': app.opc_estatus_doc === 4
                                    }" 
                                    style="font-size: 1.6rem"></i>
-                                <i class="pi pi-file text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOC_CMPLT]" style="font-size: 1.6rem"></i>
-                            
+                                <i class="pi pi-file text-gray-500 icon-button" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOC_CMPLT]" style="font-size: 1.6rem"></i>
+
                                 <!-- Icono de Documentacion por Código -->
-                                <i class="pi pi-file" 
+                                <i class="pi pi-file icon-button"
                                    *ngIf="app.opc_arquitectura[ArquitecturaOpciones.DOC_CODE]"
-                                   [pTooltip]="'Acción: Documentación por código, Estatus: ' + (app.opc_estatus_doc_code | statusApp)"
+                                   [pTooltip]="'Acción: Documentación por código\nEstatus: ' + (app.opc_estatus_doc_code | statusApp) + '\nDescarga: ' + (app.opc_estatus_doc_code === 3 ? 'Disponible' : 'No disponible')"
                                    tooltipPosition="top"
                                    [ngClass]="{
                                        'text-blue-500': app.opc_estatus_doc_code === 1,
@@ -87,12 +107,12 @@
                                        'text-red-500': app.opc_estatus_doc_code === 4
                                    }" 
                                    style="font-size: 1.6rem"></i>
-                                <i class="pi pi-file text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOC_CODE]" style="font-size: 1.6rem"></i>
-                            
+                                <i class="pi pi-file text-gray-500 icon-button" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOC_CODE]" style="font-size: 1.6rem"></i>
+
                                 <!-- Icono de Casos de Prueba -->
-                                <i class="pi pi-clipboard" 
+                                <i class="pi pi-clipboard icon-button"
                                    *ngIf="app.opc_arquitectura[ArquitecturaOpciones.TEST_CASES]"
-                                   [pTooltip]="'Acción: Casos de prueba, Estatus: ' + (app.opc_estatus_caso | statusApp)"
+                                   [pTooltip]="'Acción: Casos de prueba\nEstatus: ' + (app.opc_estatus_caso | statusApp) + '\nDescarga: ' + (app.opc_estatus_caso === 3 ? 'Disponible' : 'No disponible')"
                                    tooltipPosition="top"
                                    [ngClass]="{
                                        'text-blue-500': app.opc_estatus_caso === 1,
@@ -101,12 +121,12 @@
                                        'text-red-500': app.opc_estatus_caso === 4
                                    }"
                                    style="font-size: 1.6rem"></i>
-                                <i class="pi pi-clipboard text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.TEST_CASES]" style="font-size: 1.6rem"></i>
-                            
+                                <i class="pi pi-clipboard text-gray-500 icon-button" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.TEST_CASES]" style="font-size: 1.6rem"></i>
+
                                 <!-- Icono de Calificacion -->
-                                <i class="pi pi-check-square" 
+                                <i class="pi pi-check-square icon-button"
                                    *ngIf="app.opc_arquitectura[ArquitecturaOpciones.EVALUATION]"
-                                   [pTooltip]="'Acción: Calificación, Estatus: ' + (app.opc_estatus_calificar | statusApp)"
+                                   [pTooltip]="'Acción: Calificación\nEstatus: ' + (app.opc_estatus_calificar | statusApp) + '\nDescarga: ' + (app.opc_estatus_calificar === 3 ? 'Disponible' : 'No disponible')"
                                    tooltipPosition="top"
                                    [ngClass]="{
                                        'text-blue-500': app.opc_estatus_calificar === 1,
@@ -115,37 +135,8 @@
                                        'text-red-500': app.opc_estatus_calificar === 4
                                    }"
                                    style="font-size: 1.6rem"></i>
-                                <i class="pi pi-check-square text-gray-500" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.EVALUATION]" style="font-size: 1.6rem"></i>
+                                <i class="pi pi-check-square text-gray-500 icon-button" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.EVALUATION]" style="font-size: 1.6rem"></i>
                             </div>
-                        </td>
-                        
-                        <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
-                            <a *ngIf="app.applicationstatus.idu_estatus_aplicacion === 3; else empty"
-                               pTooltip="Descargar 7z"
-                               tooltipPosition="top"
-                               tooltipStyleClass="text-sm"
-                               class="c-pointer icon-down"
-                               (click)="onDownloadFile(app)">
-                                <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
-                            </a>
-                            <a *ngIf="app.num_accion === NumberAction.SANITIZECODE &&
-                                    user!.position.nom_rol !== Nom_Rols.USUARIO"
-                               [pTooltip]="app.checkmarx.length > 0 ? 'Ya se registró PDF' : 'Subir PDF'" 
-                               tooltipPosition="top"
-                               tooltipStyleClass="text-sm"
-                               class=" mx-2"
-                               [ngClass]="(app.applicationstatus.idu_estatus_aplicacion === 3 || app.checkmarx.length > 0) ? 'icon-disable' : 'icon-up'"
-                               (click)="showFormUploadPDF(app)">
-                                <i class="pi pi-file-pdf" style="font-size: 1.6rem"></i>
-                            </a>
-                            <ng-template #empty>
-                                <a pTooltip="Descarga no disponible"
-                                   tooltipPosition="top"
-                                   tooltipStyleClass="text-sm"
-                                   class="icon-disable">
-                                    <i class="pi pi-arrow-circle-down" style="font-size: 1.6rem"></i>
-                                </a>
-                            </ng-template>
                         </td>
                         <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
                             {{ app.totalCost | currency:'USD':'symbol' }}

@@ -144,7 +144,7 @@
           </div>
         </section> <!-- Panel Projecto zip/7z o github/gitlab-->
 
-        <section *ngIf="activeIndex === 4 && selectedValue === 2" class="stepper-panel h-23rem border-round surface-ground">
+        <section *ngIf="activeIndex === 4 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-23rem border-round surface-ground">
           <div class="flex flex-column align-items-center justify-content-center">
             <p>Puedes añadir el archivo <b>.pdf</b> de las vulnerabilidades de tu proyecto.</p>
             <div class="w-21rem">
@@ -164,26 +164,21 @@
             <span *ngIf="formFiles.get('pdfFile')?.errors" class="mt-4 font-italic text-red-500" >
               Error al cargar el archivo, extensión valida <strong>.pdf</strong> 
             </span>
-            <div class="flex mt-5 justify-content-center">
-              <span class=" font-italic text-400" >
-                *Este paso es opcional. 
-              </span>
-            </div>
           </div>
         </section><!-- Panel PDF opcional -->
         
-        <section *ngIf="(activeIndex === 4  && selectedValue !== 2) || (activeIndex === 5  && selectedValue === 2) " 
+        <section *ngIf="(activeIndex === 4  && selectedValue !== NumberAction.SANITIZECODE) || (activeIndex === 5  && selectedValue === NumberAction.SANITIZECODE) " 
           class="stepper-panel h-23rem border-round surface-ground">
           <p>Se subirá tu proyecto con los siguientes elementos: </p>
           <div>
             <p>Acción: <b>{{ projectAction  }}</b></p>
             <p>Servicio adicional: <b>{{ servicesProject }}</b></p>
-            <p *ngIf="selectedValue === 3 && formFiles.get('language')?.value !== null">
+            <p *ngIf="selectedValue === NumberAction.MIGRATION && formFiles.get('language')?.value !== null">
               Lenguaje para migrar: <b>{{ projectLanguage }}</b>
             </p>
             <p>Tipo de proyecto: <b>{{ projectType }} </b></p>
             <p> Proyecto en: <b>{{ projectName }}</b> </p>
-            <p *ngIf="selectedValue === 2">
+            <p *ngIf="selectedValue === NumberAction.SANITIZECODE">
               PDF: <b> {{ projectPDF }} </b>
             </p>
           </div> 

@@ -60,6 +60,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     { label: 'Resumen'},
   ]; 
   headers = [...this.headersBase];
+  NumberAction = NumberAction;
 
   constructor(
     private aplicacionesService: AplicacionesService, 
@@ -122,7 +123,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     this.selectedValue = value;
     if(this.selectedValue === NumberAction.SANITIZECODE){
       let itemsOpc = [...this.headersBase];
-      itemsOpc.splice(this.headersBase.length - 1,0, {label: 'Seleccionar PDF*'});
+      itemsOpc.splice(this.headersBase.length - 1,0, {label: 'Seleccionar PDF'});
       this.headers = [...itemsOpc];       
     }else if(this.headers.length === this.headersBase.length + 1){
       this.headers = [...this.headersBase];
@@ -207,7 +208,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     }
 
     if(this.activeIndex === 4 && this.selectedValue === NumberAction.SANITIZECODE){
-      return !!this.formFiles.controls['pdfFile'].errors 
+      return !!this.formFiles.controls['pdfFile'].errors || 
+        !this.formFiles.controls['pdfFile'].value 
     }
 
     return false;
@@ -241,9 +243,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   }
 
   get projectPDF(): string {
-    return this.formFiles.controls['pdfFile'].value 
-      ? this.formFiles.controls['pdfFile'].value.name 
-      : 'No aplica'
+    return this.formFiles.controls['pdfFile'].value.name; 
   }
 
   get servicesProject(): string {
@@ -269,16 +269,17 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     const values = this.formFiles.value;
     
     const opt_archi = {
-      '1': values.archiDocOverOpt.length ? true : false, //1 - Documenacion overview
-      '2': values.archiDocCodeOpt.length ? true : false, //2 - Documentacion por codigo
-      '3': values.archiCasesOpt.length   ? true : false, //3 - Casos de prueba  
-      '4': values.archiRateOpt.length    ? true : false  //4 - Calificación de codigo
+      '1': !!values.archiDocOverOpt.length, //1 - Documenacion overview
+      '2': !!values.archiDocCodeOpt.length, //2 - Documentacion por codigo
+      '3': !!values.archiCasesOpt.length,   //3 - Casos de prueba  
+      '4': !!values.archiRateOpt.length     //4 - Calificación de codigo
     }
     
     if(!this.actionOpsValues.includes(values.action)) return;
     if(values.type === 'zip' && !values.zipFile) return;
     if(values.type === 'git' && !values.urlGit) return;
-    if(values.action === 3 && !values.language) return;
+    if(values.action === NumberAction.MIGRATION && !values.language) return;
+    if(values.action === NumberAction.SANITIZECODE && !values.pdfFile) return;
 
     let { 
       archiCasesOpt, 
