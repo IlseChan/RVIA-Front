@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
@@ -104,17 +104,18 @@ export class UsuariosService {
       );
   }
 
-  handleError(error: Error, origin: OriginMethod, extra?: string | number) {
-    const title = 'Error';
-    
-    const errorsMessages = {
-      DELETEUSERS: `Error al eliminar al usuario ${extra}.`,
-      GETUSER: `Error al cargar información. Usuario id: ${extra}.`, 
-      GETUSERS: 'Error al obtener los usuarios, inténtalo más tarde.',
-      UPDATEUSER: `Error al actualizar al usuario ${extra}`
-    };
+  handleError(error: HttpErrorResponse, origin: OriginMethod, extra?: string | number) {
+    if(error.status !== 401){
+      const title = 'Error';
+      const errorsMessages = {
+        DELETEUSERS: `Error al eliminar al usuario ${extra}.`,
+        GETUSER: `Error al cargar información. Usuario id: ${extra}.`, 
+        GETUSERS: 'Error al obtener los usuarios, inténtalo más tarde.',
+        UPDATEUSER: `Error al actualizar al usuario ${extra}`
+      };
+      this.notificationsService.errorMessage(title,errorsMessages[origin]);
+    }
 
-    this.notificationsService.errorMessage(title,errorsMessages[origin]);
     return throwError(() => 'ERROR ERROR ERROR');
   }
 }
