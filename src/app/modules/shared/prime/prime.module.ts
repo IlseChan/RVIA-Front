@@ -18,7 +18,8 @@ import { StepsModule } from 'primeng/steps';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 @NgModule({
   declarations: [],
   imports: [
@@ -40,6 +41,8 @@ import { TooltipModule } from 'primeng/tooltip';
     TableModule,
     TagModule,
     TooltipModule,
+    IconFieldModule,
+    InputIconModule
   ],
   exports:[
     BadgeModule,
@@ -60,6 +63,8 @@ import { TooltipModule } from 'primeng/tooltip';
     TableModule,
     TagModule,
     TooltipModule,
+    IconFieldModule,
+    InputIconModule
   ]
 })
 export class PrimeNGModule { }

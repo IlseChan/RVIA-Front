@@ -29,17 +29,32 @@
     <section *ngIf="!isLoading && aplications.length > 0" class="my-4">
         <div class="card">
             <p-table 
+                #dt2
+                dataKey="id"
                 [value]="aplications"
-                [lazy]="true"
-                (onLazyLoad)="loadData($event)"
                 [paginator]="true"
                 [rows]="10"
                 [rowsPerPageOptions]="rowsPerPageOpts"
                 [totalRecords]="totalItems"
                 [loading]="loadingDataPage"
-                [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }" 
-                [lazy]="true"
+                [globalFilterFields]="['idu_proyecto']"
+                [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }"
             >
+                <ng-template pTemplate="caption">
+                    <div class="flex">
+                        <p-iconField iconPosition="left" class="ml-auto">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input 
+                                pInputText 
+                                type="text" 
+                                (input)="filtercustom($event)" 
+                                placeholder="Búsqueda por ID proyecto"
+                            />
+                        </p-iconField>
+                    </div>
+                </ng-template>
                 <ng-template pTemplate="header">
                     <tr class="rvia-header">
                         <th *ngFor="let col of colums">

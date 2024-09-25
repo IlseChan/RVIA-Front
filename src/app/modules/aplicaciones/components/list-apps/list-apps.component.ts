@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChildren, QueryList } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChildren, QueryList, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
@@ -6,6 +6,7 @@ import { finalize, Subject, takeUntil } from 'rxjs';
 import { ConfirmationService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Dropdown } from 'primeng/dropdown';
+import { Table } from 'primeng/table';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
@@ -28,8 +29,8 @@ import { Aplication, ArquitecturaOpciones, NumberAction, StatusApp } from '@modu
 })
 export class ListAppsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  @ViewChild('dt2') dt2!: Table; 
   user!: Usuario | null;
-  allApps: Aplication[] = [];
   aplications: Aplication[] = [];
   
   Nom_Rols = Nom_Rol;
@@ -71,6 +72,11 @@ export class ListAppsComponent implements OnInit, OnDestroy {
     }
   }
 
+  filtercustom(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.dt2.filterGlobal(input.value, 'contains');
+  }
+
   onGetAplicaciones(): void {
     this.isLoading = true;
     this.aplicacionService.getAplicaciones()
@@ -82,9 +88,11 @@ export class ListAppsComponent implements OnInit, OnDestroy {
         next: ({ data, total }) => {
           if (!data) return;
           this.loadingDataPage = true;
-          this.allApps = [...data];
           this.totalItems = total;
-          this.loadData({ first: 0, rows: 10});
+          this.loadingDataPage = true;
+          this.aplications = [...data];
+          this.loadingDataPage = false;
+
         },
         error: () => {
           this.aplications = [];
@@ -138,14 +146,6 @@ export class ListAppsComponent implements OnInit, OnDestroy {
         }
       });
     }
-  }
-
-  loadData(event: any) {
-    this.loadingDataPage = true;
-    const start = event.first;
-    const end = event.first + event.rows;
-    this.aplications = this.allApps.slice(start,end);
-    this.loadingDataPage = false;
   }
 
   ngOnDestroy(): void {
