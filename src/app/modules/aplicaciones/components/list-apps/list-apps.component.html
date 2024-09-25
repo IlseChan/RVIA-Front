@@ -41,18 +41,37 @@
                 [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }"
             >
                 <ng-template pTemplate="caption">
-                    <div class="flex">
-                        <p-iconField iconPosition="left" class="ml-auto">
-                            <p-inputIcon>
-                                <i class="pi pi-search"></i>
-                            </p-inputIcon>
-                            <input 
-                                pInputText 
-                                type="text" 
-                                (input)="filtercustom($event)" 
-                                placeholder="Búsqueda por ID proyecto"
-                            />
-                        </p-iconField>
+                    <div class="flex align-items-center">
+                        <div class="mr-auto">
+                            <p class="m-0 text-gray-500">
+                                Última actualización: 
+                                <b>
+                                    {{ lastUpadate | date:'d \'de\' MMMM \'de\' yyyy, HH:mm:ss' }}
+                                </b>
+                                <span class="ml-1">
+                                    <i class="pi pi-refresh c-pointer" 
+                                        pTooltip="Actualizar aplicaciones"
+                                        tooltipPosition="right"
+                                        tooltipStyleClass="text-sm"
+                                        style="font-size: 1.1rem"
+                                        (click)="refreshApps()">
+                                    </i>
+                                </span>   
+                            </p>
+                        </div>
+                        <div class="flex">
+                            <p-iconField iconPosition="left" class="ml-auto">
+                                <p-inputIcon>
+                                    <i class="pi pi-search"></i>
+                                </p-inputIcon>
+                                <input 
+                                    pInputText 
+                                    type="text" 
+                                    (input)="filtercustom($event)" 
+                                    placeholder="Búsqueda por ID proyecto"
+                                />
+                            </p-iconField>
+                        </div>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">

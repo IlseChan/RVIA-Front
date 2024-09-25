@@ -47,6 +47,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
 
   isDownload: boolean = false;
   ref: DynamicDialogRef | undefined;
+  lastUpadate: string = '';
 
   @ViewChildren('dropdown') dropdowns!: QueryList<Dropdown>;
 
@@ -79,6 +80,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
 
   onGetAplicaciones(): void {
     this.isLoading = true;
+    this.lastUpadate = new Date().toString();
     this.aplicacionService.getAplicaciones()
       .pipe(
         finalize(() => this.isLoading = false),
@@ -89,7 +91,6 @@ export class ListAppsComponent implements OnInit, OnDestroy {
           if (!data) return;
           this.loadingDataPage = true;
           this.totalItems = total;
-          this.loadingDataPage = true;
           this.aplications = [...data];
           this.loadingDataPage = false;
 
@@ -101,6 +102,11 @@ export class ListAppsComponent implements OnInit, OnDestroy {
       });  
   }
 
+  refreshApps(): void {
+    this.aplicacionService.changes = true;
+    this.onGetAplicaciones();
+  }
+  
   getDropdownPlaceholder(app: Aplication): string {
     return app.num_accion === NumberAction.NONE ? 'Sin modificar el código' :
            app.num_accion === NumberAction.UPDATECODE ? 'Actualización' :
