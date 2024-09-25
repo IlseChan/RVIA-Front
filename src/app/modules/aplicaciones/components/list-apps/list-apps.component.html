@@ -184,7 +184,7 @@
                             </div>
                         </td>
                         <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
-                            {{ app.totalCost | currency:'USD':'symbol' }}
+                            {{ app.totalCost | currency:'USD':'symbol-narrow' }}
                         </td>
                     </tr>
                 </ng-template>
