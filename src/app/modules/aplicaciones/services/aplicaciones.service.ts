@@ -336,7 +336,7 @@ export class AplicacionesService {
     const errorsMessages = {
       GETAPPS: 'Error al cargar información', 
       GETCSVAPP: 'Error al cargar información del CSV',
-      GETDOWNLOAD: 'Error al descargar el zip',
+      GETDOWNLOAD: 'Error al descargar el 7z',
       GETLANGUAGES: 'Ha ocurrido un error al cargar información. Inténtalo de nuevo.',
       POSTSAVEPDF: `Ocurrió un error al guardar el archivo PDF. Inténtalo de nuevo`,
       POSTSAVEFILE: `Ocurrió un error al guardar el aplicativo. Inténtalo de nuevo`,
