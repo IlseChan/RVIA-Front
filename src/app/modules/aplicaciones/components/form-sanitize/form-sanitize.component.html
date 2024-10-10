@@ -102,10 +102,10 @@
         </section><!-- Panel Tipo de proyecto -->
 
         <section *ngIf="activeIndex === 3" class="stepper-panel h-23rem border-round surface-ground">
-          <div *ngIf="formFiles.get('type')?.value === 'zip'">
+          <div *ngIf="formFiles.get('type')?.value === 'zip'" class="w-full">
             <p class="text-center">Selecciona el archivo <b>.zip</b> o <b>.7z</b> de tu proyecto:</p>
-            <div class="flex-auto flex flex-column justify-content-center align-items-center">
-              <div class="w-21rem">    
+            <div class="flex-auto flex flex-column justify-content-center align-items-center w-full">
+              <div class="max-w-full" [style.width]="txtSizeFile + 'px'">    
                 <p-inputGroup>
                   <button type="button" pButton class="btn-rvia" label="Buscar" (click)="triggerFileInput('zip')"></button>
                   <input type="text" pInputText 
@@ -114,13 +114,14 @@
                     readonly disabled="true"
                     [value]="formFiles.get('zipFile')?.value?.name ?? ''"/>
                 </p-inputGroup>
+                <span id="input-span" #inputspan style="visibility: hidden; white-space: nowrap;"></span>
               </div>
               <span *ngIf="isUploadFile" class="mt-2 font-italic text-500" >Cargando ...</span>
               <p-button *ngIf="formFiles.get('zipFile')?.value !== null && !isUploadFile" 
                 label="Limpiar" [link]="true" (onClick)="cleanInput('project')"/>
               <input id="input-zip" type="file" #zipInput accept=".zip, .7z" (change)="onFileSelected($event, 'zipFile')" style="display: none;">
             </div>
-            <div class="flex-auto flex flex-column justify-content-center align-items-center">
+            <div class="flex-auto flex flex-column justify-content-center align-items-center w-full">
               <span *ngIf="formFiles.get('zipFile')?.errors?.['invalidType']" class="mt-1 font-italic text-red-500">
                 Error al cargar el archivo, extensiones validas <b>.zip</b> y <b>.7z</b>
               </span>
