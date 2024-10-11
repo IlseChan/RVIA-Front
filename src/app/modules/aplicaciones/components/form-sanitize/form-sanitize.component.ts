@@ -182,6 +182,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
         zipFile: null,
         urlGit: null
       })
+      this.txtSizeFile = 340;
     }
 
     if(type === 'pdf'){
