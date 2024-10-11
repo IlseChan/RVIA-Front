@@ -22,9 +22,11 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
   @ViewChild('pdfInput', { static: false }) pdfInput!: ElementRef;
   @ViewChild('inputspan', { static: false }) spanInput!: ElementRef;
+  @ViewChild('inputspanpdf', { static: false }) spanpdfInput!: ElementRef;
   private destroy$ = new Subject<void>();
   
   txtSizeFile: number = 340;
+  txtSizepdfFile: number = 340;
   formFiles!: FormGroup;
   isUploadFile: boolean = false;
   isUploadProject: boolean = false;
@@ -125,6 +127,13 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     if(type === 'zipFile'){
       this.spanInput.nativeElement.textContent = filename;
       this.txtSizeFile = this.spanInput.nativeElement.offsetWidth + 200;
+      return
+    }
+
+    if(type === 'pdfFile'){
+      this.spanpdfInput.nativeElement.textContent = filename;
+      this.txtSizepdfFile = this.spanpdfInput.nativeElement.offsetWidth + 200;
+      return
     }
   }
 
@@ -187,6 +196,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
 
     if(type === 'pdf'){
       this.formFiles.patchValue({ pdfFile: null });
+      this.txtSizepdfFile = 340;
     }
   }
 

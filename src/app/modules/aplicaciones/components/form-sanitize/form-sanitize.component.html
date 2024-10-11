@@ -146,15 +146,16 @@
         </section> <!-- Panel Projecto zip/7z o github/gitlab-->
 
         <section *ngIf="activeIndex === 4 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-23rem border-round surface-ground">
-          <div class="flex flex-column align-items-center justify-content-center">
+          <div class="flex flex-column align-items-center justify-content-center w-full">
             <p>Puedes añadir el archivo <b>.pdf</b> de las vulnerabilidades de tu proyecto.</p>
-            <div class="w-21rem">
+            <div class="max-w-full" [style.width]="txtSizepdfFile + 'px'">
               <p-inputGroup>
                 <button type="button" pButton class="btn-rvia" label="Buscar" (click)="triggerFileInput('pdf')"></button>
                 <input type="text" pInputText placeholder="Selecciona tu pdf"
                 readonly disabled="true" id="inputpdfFile"
                 [value]="formFiles.get('pdfFile')?.value?.name ?? ''"/>
               </p-inputGroup>
+              <span id="input-span-pdf" #inputspanpdf style="visibility: hidden; white-space: nowrap;"></span>
             </div>
             <span *ngIf="isUploadFile" class="mt-2 font-italic text-500" >
               Cargando ...
