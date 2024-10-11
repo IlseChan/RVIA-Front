@@ -21,8 +21,12 @@ import { Language, NumberAction } from '@modules/aplicaciones/interfaces';
 export class FormSanitizeComponent implements OnInit, OnDestroy {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
   @ViewChild('pdfInput', { static: false }) pdfInput!: ElementRef;
+  @ViewChild('inputspan', { static: false }) spanInput!: ElementRef;
+  @ViewChild('inputspanpdf', { static: false }) spanpdfInput!: ElementRef;
   private destroy$ = new Subject<void>();
   
+  txtSizeFile: number = 340;
+  txtSizepdfFile: number = 340;
   formFiles!: FormGroup;
   isUploadFile: boolean = false;
   isUploadProject: boolean = false;
@@ -110,12 +114,28 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
         this.formFiles.patchValue({
           [formOption]: file
         });
+        this.changeSizeInput(formOption,file.name);
         this.isUploadFile = false;
       }, 1500);
     }else{
       this.isUploadFile = false;
     }
   } 
+
+  changeSizeInput(type: string,filename:string): void{
+
+    if(type === 'zipFile'){
+      this.spanInput.nativeElement.textContent = filename;
+      this.txtSizeFile = this.spanInput.nativeElement.offsetWidth + 200;
+      return
+    }
+
+    if(type === 'pdfFile'){
+      this.spanpdfInput.nativeElement.textContent = filename;
+      this.txtSizepdfFile = this.spanpdfInput.nativeElement.offsetWidth + 200;
+      return
+    }
+  }
 
   changeRadioAction({ value }: RadioButtonClickEvent): void {
     if(this.selectedValue === value) return;
@@ -171,10 +191,12 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
         zipFile: null,
         urlGit: null
       })
+      this.txtSizeFile = 340;
     }
 
     if(type === 'pdf'){
       this.formFiles.patchValue({ pdfFile: null });
+      this.txtSizepdfFile = 340;
     }
   }
 
