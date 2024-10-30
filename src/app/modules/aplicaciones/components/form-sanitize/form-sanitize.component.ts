@@ -55,7 +55,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   lenguagesOps: Language[] = [];
 
   activeIndex: number = 0;
-  selectedValue: number = 0;
+  selectedValue: number = 1; //en 0 con arquitectura
   readonly headersBase = [
     { label: 'Acciones'},
     // { label: 'Arquitectura'}, 
@@ -300,7 +300,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
 
   get projectAction(): string {
     return this.actionsOps[this.selectedValue - 1].txt;
-    return this.actionsOps[this.selectedValue].txt; //con arquitectura
+    // return this.actionsOps[this.selectedValue].txt; //con arquitectura
   }
 
   get projectLanguage(): string {
