@@ -202,7 +202,7 @@ export class AplicacionesService {
     formData.append('num_accion',form.action.toString()); 
     formData.append('opc_arquitectura', JSON.stringify(form.opt_archi))
     
-    if(form.action === 3){
+    if(form.action === 3){ //TODO usar variable
       formData.append('opc_lenguaje',form.language.toString());
     }
 
