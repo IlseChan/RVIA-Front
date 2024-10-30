@@ -88,7 +88,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
 
   private initForm(): void{
     this.formFiles = new FormGroup({
-      action:  new FormControl(0,[Validators.required]),
+      action:  new FormControl(1,[Validators.required]),
       archiDocOverOpt: new FormControl([]),
       archiDocCodeOpt: new FormControl([]),
       archiCasesOpt: new FormControl([]),
