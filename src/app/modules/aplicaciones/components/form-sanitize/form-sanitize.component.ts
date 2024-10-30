@@ -37,7 +37,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   ];
 
   actionsOps = [
-    { value: NumberAction.NONE, txt: 'No modificar código' },
+    // { value: NumberAction.NONE, txt: 'No modificar código' },
     { value: NumberAction.UPDATECODE, txt: 'Actualizar código (Migración de versión a la más actual del mismo lenguaje)' },
     { value: NumberAction.SANITIZECODE, txt: 'Sanitizar código (Mitigación de vulnerabilidades checkmarx)' },
     { value: NumberAction.MIGRATION, txt: 'Migrar código (Migración de un lenguaje de programación a otro)' },
@@ -58,7 +58,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   selectedValue: number = 0;
   readonly headersBase = [
     { label: 'Acciones'},
-    { label: 'Arquitectura'},
+    // { label: 'Arquitectura'}, 
     { label: 'Tipo de proyecto'},
     { label: 'Seleccionar proyecto'},
     { label: 'Resumen'},
@@ -152,21 +152,40 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
 
   changeStep(value: number) {
     if(value < 0){
-      if(this.activeIndex === 1){
-        this.cleanInput('architec');
-      }
+      // conarquitectura
+      // <----
+      // if(this.activeIndex === 1){
+      //   this.cleanInput('architec');
+      // }
   
-      if(this.activeIndex === 2){
+      // if(this.activeIndex === 2){
+      //   this.cleanInput('type');
+      // }
+  
+      // if(this.activeIndex === 3){
+      //   this.cleanInput('project');
+      // }
+  
+      // if(this.activeIndex === 3 && this.selectedValue === NumberAction.SANITIZECODE){
+      //   this.cleanInput('pdf');
+      // }
+      // ---->
+
+      // Sin arquitectura
+      // <----
+      if(this.activeIndex === 1){
         this.cleanInput('type');
       }
   
-      if(this.activeIndex === 3){
+      if(this.activeIndex === 2){
         this.cleanInput('project');
       }
   
       if(this.activeIndex === 3 && this.selectedValue === NumberAction.SANITIZECODE){
         this.cleanInput('pdf');
       }
+      // ---->
+      
     }
 
     this.activeIndex += value;
@@ -201,38 +220,68 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   }
 
   checkDisabled(): boolean {
+    // conarquitectura
+    // <----
+    // if(this.activeIndex === 0 && this.selectedValue === 3){
+    //  return this.formFiles.controls['language'].value === null
+    // }
+
+    // if(this.activeIndex === 1 && this.selectedValue === 0){
+    //  const { 
+    //   archiDocOverOpt, archiDocCodeOpt,
+    //   archiCasesOpt,archiRateOpt } = this.formFiles.value;     
+    //  return !archiCasesOpt[0] && !archiDocOverOpt[0] && !archiDocCodeOpt[0] && !archiRateOpt[0];
+    // }
+
+
+    // if(this.activeIndex === 2){
+    //  return !(this.formFiles.controls['type'].value === 'zip' 
+    //     || this.formFiles.controls['type'].value === 'git')  
+    // }
+
+    // if(this.activeIndex === 3){
+    //   const opt = this.formFiles.controls['type'].value;
+    //   const formZip = this.formFiles.controls['zipFile'];
+    //   const zipValid = !formZip.errors && formZip.value !== null;
+    //   const formGit = this.formFiles.controls['urlGit'];
+    //   const gitValid = !formGit.errors && formGit.value !== null;
     
+    //   return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
+    // }
+
+    // if(this.activeIndex === 4 && this.selectedValue === NumberAction.SANITIZECODE){
+    //   return !!this.formFiles.controls['pdfFile'].errors || 
+    //     !this.formFiles.controls['pdfFile'].value 
+    // }
+    // ---->
+
+    // Sin arquitectura
+    // <----
     if(this.activeIndex === 0 && this.selectedValue === 3){
-     return this.formFiles.controls['language'].value === null
+      return this.formFiles.controls['language'].value === null
     }
-
-    if(this.activeIndex === 1 && this.selectedValue === 0){
-     const { 
-      archiDocOverOpt, archiDocCodeOpt,
-      archiCasesOpt,archiRateOpt } = this.formFiles.value;     
-     return !archiCasesOpt[0] && !archiDocOverOpt[0] && !archiDocCodeOpt[0] && !archiRateOpt[0];
-    }
-
-
-    if(this.activeIndex === 2){
-     return !(this.formFiles.controls['type'].value === 'zip' 
+ 
+    if(this.activeIndex === 1){
+      return !(this.formFiles.controls['type'].value === 'zip' 
         || this.formFiles.controls['type'].value === 'git')  
     }
+ 
+     if(this.activeIndex === 2){
+       const opt = this.formFiles.controls['type'].value;
+       const formZip = this.formFiles.controls['zipFile'];
+       const zipValid = !formZip.errors && formZip.value !== null;
+       const formGit = this.formFiles.controls['urlGit'];
+       const gitValid = !formGit.errors && formGit.value !== null;
+     
+       return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
+     }
+ 
+     if(this.activeIndex === 3 && this.selectedValue === NumberAction.SANITIZECODE){
+       return !!this.formFiles.controls['pdfFile'].errors || 
+         !this.formFiles.controls['pdfFile'].value 
+     }
+    // ---->
 
-    if(this.activeIndex === 3){
-      const opt = this.formFiles.controls['type'].value;
-      const formZip = this.formFiles.controls['zipFile'];
-      const zipValid = !formZip.errors && formZip.value !== null;
-      const formGit = this.formFiles.controls['urlGit'];
-      const gitValid = !formGit.errors && formGit.value !== null;
-    
-      return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
-    }
-
-    if(this.activeIndex === 4 && this.selectedValue === NumberAction.SANITIZECODE){
-      return !!this.formFiles.controls['pdfFile'].errors || 
-        !this.formFiles.controls['pdfFile'].value 
-    }
 
     return false;
   }
@@ -250,7 +299,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   }
 
   get projectAction(): string {
-    return this.actionsOps[this.selectedValue].txt
+    return this.actionsOps[this.selectedValue - 1].txt;
+    return this.actionsOps[this.selectedValue].txt; //con arquitectura
   }
 
   get projectLanguage(): string {
