@@ -12,8 +12,6 @@ import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
-import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label.pipe';
-import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
 import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { downloandFile } from '@modules/shared/helpers/downloadFile';
@@ -22,7 +20,7 @@ import { Aplication, ArquitecturaOpciones, NumberAction, StatusApp } from '@modu
 @Component({
   selector: 'list-apps',
   standalone: true,
-  imports: [CommonModule, StatusAppPipe, RouterLink, StatusAppLabelPipe, ActionAppPipe, PrimeNGModule],
+  imports: [CommonModule, StatusAppPipe, RouterLink, PrimeNGModule],
   templateUrl: './list-apps.component.html',
   styleUrls: ['./list-apps.component.scss'],
   providers: [ConfirmationService, DialogService],

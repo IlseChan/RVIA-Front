@@ -58,7 +58,8 @@
           </div>
         </section><!-- Panel Accion del proyecto -->
      
-        <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground justify-content-evenly gap-3">
+        <!-- Panel Arquitectura del proyecto -->
+        <!-- <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground justify-content-evenly gap-3">
           <div class="flex flex-column justify-content-center align-items-center ">
             <div class="flex flex-grow-1 align-items-center flex-basis-0 text-bluegray-400 mb-4">
               <p class="m-0">Acción: <b class="txt-acent">{{ projectAction }}</b></p>
@@ -79,9 +80,11 @@
               </div>
             </div>
           </div>
-        </section><!-- Panel Arquitectura del proyecto -->
+        </section> -->
+        <!-- Panel Arquitectura del proyecto -->
         
-        <section *ngIf="activeIndex === 2" class="stepper-panel h-23rem border-round surface-ground">
+        <!-- <section *ngIf="activeIndex === 2" class="stepper-panel h-23rem border-round surface-ground"> --> <!-- Con Panel Arquitectura del proyecto -->
+        <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground">
           <p>Selecciona el tipo de proyecto que se subirá:</p>
           <div class="flex gap-3">
             <div class="flex align-items-center mx-3 py-2 px-3" *ngFor="let option of radioOps">
@@ -101,11 +104,12 @@
           </div>
         </section><!-- Panel Tipo de proyecto -->
 
-        <section *ngIf="activeIndex === 3" class="stepper-panel h-23rem border-round surface-ground">
-          <div *ngIf="formFiles.get('type')?.value === 'zip'">
+        <!-- <section *ngIf="activeIndex === 3" class="stepper-panel h-23rem border-round surface-ground"> --> <!-- Con Panel Arquitectura del proyecto -->
+        <section *ngIf="activeIndex === 2" class="stepper-panel h-23rem border-round surface-ground">
+          <div *ngIf="formFiles.get('type')?.value === 'zip'" class="w-full">
             <p class="text-center">Selecciona el archivo <b>.zip</b> o <b>.7z</b> de tu proyecto:</p>
-            <div class="flex-auto flex flex-column justify-content-center align-items-center">
-              <div class="w-21rem">    
+            <div class="flex-auto flex flex-column justify-content-center align-items-center w-full">
+              <div class="max-w-full" [style.width]="txtSizeFile + 'px'">    
                 <p-inputGroup>
                   <button type="button" pButton class="btn-rvia" label="Buscar" (click)="triggerFileInput('zip')"></button>
                   <input type="text" pInputText 
@@ -114,13 +118,14 @@
                     readonly disabled="true"
                     [value]="formFiles.get('zipFile')?.value?.name ?? ''"/>
                 </p-inputGroup>
+                <span id="input-span" #inputspan style="visibility: hidden; white-space: nowrap;"></span>
               </div>
               <span *ngIf="isUploadFile" class="mt-2 font-italic text-500" >Cargando ...</span>
               <p-button *ngIf="formFiles.get('zipFile')?.value !== null && !isUploadFile" 
                 label="Limpiar" [link]="true" (onClick)="cleanInput('project')"/>
               <input id="input-zip" type="file" #zipInput accept=".zip, .7z" (change)="onFileSelected($event, 'zipFile')" style="display: none;">
             </div>
-            <div class="flex-auto flex flex-column justify-content-center align-items-center">
+            <div class="flex-auto flex flex-column justify-content-center align-items-center w-full">
               <span *ngIf="formFiles.get('zipFile')?.errors?.['invalidType']" class="mt-1 font-italic text-red-500">
                 Error al cargar el archivo, extensiones validas <b>.zip</b> y <b>.7z</b>
               </span>
@@ -144,16 +149,19 @@
           </div>
         </section> <!-- Panel Projecto zip/7z o github/gitlab-->
 
-        <section *ngIf="activeIndex === 4 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-23rem border-round surface-ground">
-          <div class="flex flex-column align-items-center justify-content-center">
+        <!-- Con Panel Arquitectura del proyecto -->
+        <!-- <section *ngIf="activeIndex === 4 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-23rem border-round surface-ground"> -->
+        <section *ngIf="activeIndex === 3 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-23rem border-round surface-ground">
+          <div class="flex flex-column align-items-center justify-content-center w-full">
             <p>Puedes añadir el archivo <b>.pdf</b> de las vulnerabilidades de tu proyecto.</p>
-            <div class="w-21rem">
+            <div class="max-w-full" [style.width]="txtSizepdfFile + 'px'">
               <p-inputGroup>
                 <button type="button" pButton class="btn-rvia" label="Buscar" (click)="triggerFileInput('pdf')"></button>
                 <input type="text" pInputText placeholder="Selecciona tu pdf"
                 readonly disabled="true" id="inputpdfFile"
                 [value]="formFiles.get('pdfFile')?.value?.name ?? ''"/>
               </p-inputGroup>
+              <span id="input-span-pdf" #inputspanpdf style="visibility: hidden; white-space: nowrap;"></span>
             </div>
             <span *ngIf="isUploadFile" class="mt-2 font-italic text-500" >
               Cargando ...
@@ -166,13 +174,15 @@
             </span>
           </div>
         </section><!-- Panel PDF opcional -->
-        
-        <section *ngIf="(activeIndex === 4  && selectedValue !== NumberAction.SANITIZECODE) || (activeIndex === 5  && selectedValue === NumberAction.SANITIZECODE) " 
+
+        <!-- Con Panel Arquitectura del proyecto -->
+        <!-- <section *ngIf="(activeIndex === 4  && selectedValue !== NumberAction.SANITIZECODE) || (activeIndex === 5  && selectedValue === NumberAction.SANITIZECODE) "  -->
+        <section *ngIf="(activeIndex === 3  && selectedValue !== NumberAction.SANITIZECODE) || (activeIndex === 4  && selectedValue === NumberAction.SANITIZECODE) " 
           class="stepper-panel h-23rem border-round surface-ground">
           <p>Se subirá tu proyecto con los siguientes elementos: </p>
           <div>
             <p>Acción: <b>{{ projectAction  }}</b></p>
-            <p>Servicio adicional: <b>{{ servicesProject }}</b></p>
+            <!-- <p>Servicio adicional: <b>{{ servicesProject }}</b></p> --> <!--con arquitectura-->
             <p *ngIf="selectedValue === NumberAction.MIGRATION && formFiles.get('language')?.value !== null">
               Lenguaje para migrar: <b>{{ projectLanguage }}</b>
             </p>
