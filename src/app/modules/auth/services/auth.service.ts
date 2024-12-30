@@ -8,6 +8,7 @@ import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
 import { Router } from '@angular/router';
 import { Idu_Rol, Usuario } from '@modules/usuarios/interfaces';
+import { RespUsuario } from '../interfaces/respAuth.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -30,7 +31,7 @@ export class AuthService {
 
   registerUser(numero_empleado: string, nom_usuario: string, nom_contrasena: string, nom_correo: string): Observable<Usuario> {
     const idu_rol = Idu_Rol.INVITADO; 
-    return this.http.post<Usuario>(`${this.baseUrl}/auth/register`, {
+    return this.http.post<Usuario>(`${this.baseUrl}/auth`, {
       numero_empleado,
       nom_usuario,
       nom_contrasena,
@@ -38,12 +39,13 @@ export class AuthService {
       nom_correo
     })
     .pipe( 
-      tap(user => { 
+      tap((user) => { 
         this.currentUser = user;
+
         if(this.currentUser.token)
           localStorage.setItem('token', this.currentUser.token)
       }),
-      tap(user => {
+      tap(( user ) => {
         const title = 'Registró exitoso';
         const content = `¡Se ha registrado exitosamente el usuario ${user.numero_empleado}!`
         this.notificationsService.successMessage(title,content);
@@ -54,18 +56,19 @@ export class AuthService {
   }
 
   loginUser(numero_empleado: string, nom_contrasena: string): Observable<Usuario> {
-    return this.http.post<Usuario>(`${this.baseUrl}/auth/login`, {
+    return this.http.post<RespUsuario>(`${this.baseUrl}/auth/login`, {
       numero_empleado,
       nom_contrasena
     })
     .pipe(
-      tap(user => {        
-        this.currentUser = user;
+      tap(user => {    
+        this.currentUser = {...user.user, token: user.token};
         if(this.currentUser.token)
           localStorage.setItem('token', this.currentUser.token)
       }),
       delay(1000),
       tap(() => this.router.navigate(['/apps/list-apps'])),
+      map(() => this.currentUser as Usuario),
       catchError(e => throwError(() => e))
     )
   }
@@ -78,11 +81,11 @@ export class AuthService {
   }
 
   tokenValidation(): Observable<boolean> {
-    return this.http.get<Usuario>(`${this.baseUrl}/auth/check-status`)
+    return this.http.get<RespUsuario>(`${this.baseUrl}/auth/verify`)
     .pipe(
       map((resp) => {
         if(resp){
-          this.currentUser = resp;
+          this.currentUser = {...resp.user, token: resp.token};
           if(this.currentUser.token)
             localStorage.setItem('token', this.currentUser.token)
           return true;

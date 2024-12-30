@@ -15,7 +15,7 @@ export const AdminGuard = (): boolean => {
         return false;
     }
    
-    if (currentUser.position.nom_rol === Nom_Rol.ADMINISTRADOR) {
+    if (currentUser.rol.nom_rol === Nom_Rol.ADMINISTRADOR) {
         return true;
     }
     

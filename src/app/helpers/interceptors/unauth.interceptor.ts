@@ -14,7 +14,7 @@ export const UnauthInterceptor = (request: HttpRequest<unknown>, next: HttpHandl
           return response;
         }),
         catchError((error: HttpErrorResponse) => {
-          if (error.status === 401 && !error.url?.includes('/check-status')) {
+          if (error.status === 401 && !error.url?.includes('/verify')) {
             authService.logoutUser();
             router.navigate(['auth/login'],{ replaceUrl: true });
           }

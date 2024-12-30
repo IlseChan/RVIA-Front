@@ -52,7 +52,7 @@ export class LayoutComponent implements OnInit {
     this.userLogged = this.authService.userLogged;
     this.getGeneratedNumber();
 
-    if (this.userLogged?.position.nom_rol !== Nom_Rol.INVITADO) {
+    if (this.userLogged?.rol.nom_rol !== Nom_Rol.INVITADO) {
       this.menuSidebar.push(
         { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
       );

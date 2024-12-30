@@ -41,7 +41,7 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
             headers: request.headers.set('Authorization',`Bearer ${token}`)
         });
 
-        if(url.includes('/auth/check-status') && method === 'GET'){
+        if(url.includes('/auth/verify') && method === 'GET'){
             return next(newReq);
         }
  

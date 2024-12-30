@@ -6,6 +6,6 @@ export interface Usuario {
     nom_correo:      string;
     nom_usuario:     string;
     numero_empleado: number;
-    position:        Position;
+    rol:             Position;
     token?:          string;
 }

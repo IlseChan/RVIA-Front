@@ -4,33 +4,28 @@ import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { MessageService } from 'primeng/api';
 
+import { environment } from '../../../../environments/environment';
+import { NotificationsService } from './notifications.service';
+
 @Injectable({
   providedIn: 'root'
 })
 export class GeneratedNumberService {
-  private readonly apiUrl = 'http://localhost:3001/rvia'; 
-
+  private readonly baseUrl = environment.baseURL;
+  
   constructor(
     private http: HttpClient,
-    private messageService: MessageService  
+    private notificationsService: NotificationsService
   ) {}
 
   getGeneratedNumber(): Observable<string> {
-    return this.http.get(this.apiUrl, { responseType: 'text' }).pipe(
+    return this.http.get(`${this.baseUrl}/rvia`, { responseType: 'text' }).pipe(
       catchError((error) => {
-        this.errorMessage('Error', 'No se pudo generar el número');
-        console.error('Error al obtener el número:', error);
-        return of('');  
+        const message = 'No se puede obtener el número de versión'; 
+        this.notificationsService.errorMessage('Error',message);
+        return of('x.x');  
       })
     );
   }
 
-  private errorMessage(summary: string, detail: string): void {
-    this.messageService.add({ 
-      severity: 'error', 
-      summary, 
-      detail,
-      life: 3000  
-    });
-  }
 }

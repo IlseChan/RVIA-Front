@@ -69,7 +69,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
         this.vldtnSrv.noBlankValidation(),
         this.vldtnSrv.completeUserName()
       ]),
-      idu_rol: new FormControl<Idu_Rol>(user.position.idu_rol,[Validators.required])
+      idu_rol: new FormControl<Idu_Rol>(user.rol.idu_rol,[Validators.required])
     });
   
     this.initalValues = this.userForm.value;

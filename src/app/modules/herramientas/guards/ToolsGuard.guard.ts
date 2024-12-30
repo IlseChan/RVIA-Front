@@ -17,7 +17,7 @@ export const ToolsGuard = (): boolean => {
         return false;
     }
 
-    if (currentUser && forbiddenRoles.includes(currentUser.position.nom_rol)){
+    if (currentUser && forbiddenRoles.includes(currentUser.rol.nom_rol)){
         router.navigate(['/apps/home']);
         return false;
     }

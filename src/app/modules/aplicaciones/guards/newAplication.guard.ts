@@ -15,7 +15,8 @@ export const NewAplicationGuard = (): boolean => {
         router.navigate(['/auth/login']);
     }
 
-    if (currentUser && !validRol.includes(currentUser!.position.nom_rol)){
+    console.log(currentUser);
+    if (currentUser && !validRol.includes(currentUser!.rol.nom_rol)){
         router.navigate(['/apps/home']);
         return false;
     }

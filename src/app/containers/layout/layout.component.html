@@ -5,7 +5,7 @@
     </button>
     <div class="user-info flex align-items-center">
       <span class="userposition white-space-nowrap font-italic ml-2">
-        {{ userLogged?.position?.nom_rol }}
+        {{ userLogged?.rol?.nom_rol }}
       </span>
       <span class="separator ml-2">|</span>
       <span class="nom_user white-space-nowrap ml-2">{{ userLogged?.nom_usuario }}</span>
@@ -30,9 +30,9 @@
           </li>
         </ul>
       </div>
-      <div class="divider-rvia" [ngClass]="userLogged?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
+      <div class="divider-rvia" [ngClass]="userLogged?.rol?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
       </div>
-      <ng-container *ngIf="userLogged?.position?.nom_rol !== Nom_rol.INVITADO">
+      <ng-container *ngIf="userLogged?.rol?.nom_rol !== Nom_rol.INVITADO">
         <ul class="p-0 my-2 list-none" >
           <li *ngFor="let option of menuRvia" >
             <a 
@@ -44,10 +44,10 @@
             </a>
           </li>
         </ul>
-        <div class="divider-rvia mb-auto" [ngClass]="userLogged?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
+        <div class="divider-rvia mb-auto" [ngClass]="userLogged?.rol?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
         </div>
       </ng-container>
-      <ng-container class="mt-auto" *ngIf="userLogged?.position?.nom_rol === Nom_rol.ADMINISTRADOR">
+      <ng-container class="mt-auto" *ngIf="userLogged?.rol?.nom_rol === Nom_rol.ADMINISTRADOR">
         <div class="mt-2">
           <small class="text-divider">Herramientas</small>
           <ul class="p-0 my-2 list-none">
@@ -62,7 +62,7 @@
               </li>
           </ul>
         </div>
-        <div class="divider-rvia my-2" [ngClass]="userLogged?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
+        <div class="divider-rvia my-2" [ngClass]="userLogged?.rol?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
         </div>
         <div>
           <small class="text-divider">Administrador</small>
@@ -81,7 +81,7 @@
       </ng-container>
     </section>
     <div class="logout-button text-center p-2 pt-0 sidebar-logout">
-      <div class="divider-rvia mb-2" [ngClass]="userLogged?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''"></div>
+      <div class="divider-rvia mb-2" [ngClass]="userLogged?.rol?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''"></div>
       <button 
         class="flex align-items-center justify-content-center text-white py-3 px-2 w-full text-base c-pointer border-round"
         (click)="logout()">

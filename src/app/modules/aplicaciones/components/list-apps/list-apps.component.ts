@@ -81,10 +81,10 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   }
 
   setColumns(): void {
-    if (this.user && this.user.position.nom_rol !== Nom_Rol.INVITADO) {
+    if (this.user && this.user.rol.nom_rol !== Nom_Rol.INVITADO) {
       this.colums.push('Costos');
 
-      if (this.user.position.nom_rol !== Nom_Rol.USUARIO) {
+      if (this.user.rol.nom_rol !== Nom_Rol.USUARIO) {
         this.colums.splice(2, 0, 'Usuario');
       }
     }

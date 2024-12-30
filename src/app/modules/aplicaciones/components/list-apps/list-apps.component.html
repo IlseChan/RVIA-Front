@@ -4,7 +4,7 @@
             Lista de aplicaciones
         </h1>
         <a
-            *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO"
+            *ngIf="user!.rol.nom_rol !== Nom_Rols.INVITADO"
             pRipple
             routerLink="/apps/new-app"
             pTooltip="Subir una aplicación"
@@ -16,11 +16,11 @@
         </a>
     </section>
 
-    <div *ngIf="isLoading && user!.position.nom_rol !== Nom_Rols.INVITADO" class="card flex justify-content-center my-6">
+    <div *ngIf="isLoading && user!.rol.nom_rol !== Nom_Rols.INVITADO" class="card flex justify-content-center my-6">
         <p-progressSpinner ariaLabel="loading" />
     </div>
 
-    <div *ngIf="!isLoading && aplications.length === 0 || user!.position.nom_rol === Nom_Rols.INVITADO" class="my-6">
+    <div *ngIf="!isLoading && aplications.length === 0 || user!.rol.nom_rol === Nom_Rols.INVITADO" class="my-6">
         <h2 class="text-center">
             ¡No hay aplicaciones para listar!
         </h2>
@@ -40,8 +40,8 @@
                     <tr>
                         <td>{{ app.sequentialId }}</td>
                         <td>{{ app.idu_proyecto }}</td>
-                        <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO && 
-                                   user!.position.nom_rol !== Nom_Rols.USUARIO">
+                        <td *ngIf="user!.rol.nom_rol !== Nom_Rols.INVITADO && 
+                                   user!.rol.nom_rol !== Nom_Rols.USUARIO">
                             {{ app.user.nom_usuario }}
                         </td>
                         <td>{{ app.nom_aplicacion }}</td>
@@ -138,7 +138,7 @@
                                 <i class="pi pi-check-square text-gray-500 icon-button" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.EVALUATION]" style="font-size: 1.6rem"></i>
                             </div>
                         </td>
-                        <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
+                        <td *ngIf="user!.rol.nom_rol !== Nom_Rols.INVITADO">
                             {{ app.totalCost | currency:'USD':'symbol' }}
                         </td>
                     </tr>
