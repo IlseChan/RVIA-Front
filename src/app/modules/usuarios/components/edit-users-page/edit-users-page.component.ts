@@ -47,7 +47,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
 
     this.activedRoute.params  
       .pipe(
-        switchMap(({id}) => this.usuariosService.getUsuarioById(+id)),
+        switchMap(({ id }) => this.usuariosService.getUsuarioById(+id)),
         takeUntil(this.destroy$)
       )
       .subscribe({

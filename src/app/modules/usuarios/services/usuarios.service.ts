@@ -33,7 +33,7 @@ export class UsuariosService {
 
   getUsuarios(page: number = 1): Observable<UsersData> {
     if(this.allUsers.data.length === 0 || this.changes){
-      return this.http.get<Usuario[]>(`${this.baseUrl}/auth`)
+      return this.http.get<Usuario[]>(`${this.baseUrl}/usuarios`)
         .pipe(
           tap(users => {
             this.allUsers.data = users;
@@ -69,7 +69,7 @@ export class UsuariosService {
         if(user && user.idu_usuario === id){
           return of(user);
         }
-        return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`)
+        return this.http.get<Usuario>(`${this.baseUrl}/usuarios/${id}`)
       }),
       catchError(error => this.handleError(error, OriginMethod.GETUSER,id))
     );

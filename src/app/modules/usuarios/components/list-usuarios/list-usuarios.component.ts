@@ -11,11 +11,12 @@ import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Usuario } from '@modules/usuarios/interfaces';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
+import { UserRolPipe } from '@modules/usuarios/pipes/user-rol.pipe';
 
 @Component({
   selector: 'list-usuarios',
   standalone: true,
-  imports: [RouterLink, CommonModule, PrimeNGModule],
+  imports: [RouterLink, CommonModule, PrimeNGModule, UserRolPipe],
   templateUrl: './list-usuarios.component.html',
   styleUrls: ['./list-usuarios.component.scss'],
   providers: [ConfirmationService],
@@ -57,7 +58,7 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
       takeUntil(this.destroy$)
     )
     .subscribe({
-      next: ({data,total}) => {
+      next: ({ data,total }) => {
         this.users = data;
         this.totalItems = total;
       },
