@@ -8,6 +8,7 @@ export * from './languaje.interface';
 export * from './numberAction.enum';
 export * from './optionsArchitecForm.interface';
 export * from './originMethod.enum';
+export * from './respGetApps.interface';
 export * from './responseAddApp.interface';
 export * from './rviaProcess.interface';
 export * from './sourceCode.interface';

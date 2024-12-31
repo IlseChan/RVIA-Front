@@ -146,7 +146,7 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   onDownloadFile(app: Aplication): void {
     if (this.isDownload) return;
     this.isDownload = true;
-    this.aplicacionService.downloadFile(app.idu_aplicacion)
+    this.aplicacionService.downloadFile(app.idu_proyecto)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (blob) => {
@@ -161,7 +161,7 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   }
 
   showFormUploadPDF(app: Aplication) {
-    if (app.applicationstatus.idu_estatus_aplicacion !== this.StatusApps.DONE && 
+    if (app.clv_estatus !== this.StatusApps.DONE && 
       app.checkmarx.length === 0) {
       this.aplicacionService.appPDFSubject.next(app);
       this.ref = this.dialogService.open(FormUpPdfComponent, {

@@ -3,7 +3,7 @@ import { Aplication } from "./aplicacion.interface";
 import { RviaProcess } from "./rviaProcess.interface";
 
 export interface ResponseAddApp {
-    application:    Aplication;
+    aplicacion:    Aplication;
     checkmarx?:     CheckmarxInfo;
     esSanitizacion: boolean;
     rviaProcess?:    RviaProcess;

@@ -8,7 +8,7 @@ import { NotificationsService } from '@modules/shared/services/notifications.ser
 import { CheckmarxInfo, CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
 import { AppsSelectIA } from '@modules/herramientas/interfaces/appsSelectIA.interface';
 import { Aplication, AplicationsData, AppsToUseSelect, ArquitecturaOpciones, 
-  FormNewApp, Language, NumberAction, Opt_architec, OriginMethod, ResponseAddApp,
+  FormNewApp, Language, NumberAction, Opt_architec, OriginMethod, RespGetApps, ResponseAddApp,
   StatusApp } from '../interfaces';
 
 @Injectable({
@@ -39,16 +39,16 @@ export class AplicacionesService {
   //GET
   getAplicaciones(page: number = 1): Observable<AplicationsData> {
     if(this.allApps.data.length === 0 || this.changes){
-      return this.http.get<Aplication[]>(`${this.baseUrl}/applications`)
+      return this.http.get<RespGetApps>(`${this.baseUrl}/aplicaciones`)
         .pipe(
           tap(apps => {
-            this.allApps.data = apps;
-            this.allApps.total = apps.length;
+            this.allApps.data = apps.aplicaciones;
+            this.allApps.total = apps.total;
             this.changes = false;
           }),
           map(apps => {
             return {
-              data: dataPerPage([...apps],page) as Aplication[],
+              data: dataPerPage([...apps.aplicaciones],page) as Aplication[],
               total: this.allApps.total
             }
           }),
@@ -173,23 +173,23 @@ export class AplicacionesService {
       });
   }
   
-  getCSVAplication(id: number): Observable<CheckmarxInfo> {
-    return this.http.get<CheckmarxInfo>(`${this.baseUrl}/checkmarx/${id}`)
-    .pipe(
-      catchError(error => this.handleError(error, OriginMethod.GETCSVAPP))
-    );
-  }
+  // getCSVAplication(id: number): Observable<CheckmarxInfo> {
+  //   return this.http.get<CheckmarxInfo>(`${this.baseUrl}/checkmarx/${id}`)
+  //   .pipe(
+  //     catchError(error => this.handleError(error, OriginMethod.GETCSVAPP))
+  //   );
+  // }
  
   getLanguages(): Observable<Language[]> {
-    return this.http.get<Language[]>(`${this.baseUrl}/languages`)
+    return this.http.get<Language[]>(`${this.baseUrl}/lenguajes`)
     .pipe(
       delay(1000),
       catchError(error => this.handleError(error, OriginMethod.GETLANGUAGES))
     );    
   }
 
-  downloadFile(id: number): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' })
+  downloadFile(idu_proyecto: string): Observable<Blob> {
+    return this.http.get(`${this.baseUrl}/aplicaciones/zip/${idu_proyecto}`,{ responseType: 'blob' })
       .pipe(
         catchError(error => this.handleError(error, OriginMethod.GETDOWNLOAD))
       );
@@ -202,7 +202,7 @@ export class AplicacionesService {
     formData.append('num_accion',form.action.toString()); 
     formData.append('opc_arquitectura', JSON.stringify(form.opt_archi))
     
-    if(form.action === 3){ //TODO usar variable
+    if(form.action === NumberAction.MIGRATION){
       formData.append('opc_lenguaje',form.language.toString());
     }
 
@@ -210,7 +210,7 @@ export class AplicacionesService {
       formData.append('files',form.zipFile!);
       if(form.pdfFile) formData.append('files',form.pdfFile!);
     
-      return this.http.post<ResponseAddApp>(`${this.baseUrl}/applications/files`,formData)
+      return this.http.post<ResponseAddApp>(`${this.baseUrl}/aplicaciones/new-app`,formData)
         .pipe(
           tap((resp) => this.savedSuccessfully(resp)),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
@@ -223,14 +223,14 @@ export class AplicacionesService {
 
       let endPoint: string;
       if(form.urlGit.includes('github.com')){
-        endPoint = 'git';
+        endPoint = 'new-app-github';
       }else if(form.urlGit.includes('gitlab.com')){
-        endPoint = 'gitlab';
+        endPoint = 'new-app-gitlab';
       }else{
         return this.handleError(new Error('Error url'), OriginMethod.POSTSAVEFILE);
       }
 
-      return this.http.post<ResponseAddApp>(`${this.baseUrl}/applications/${endPoint}`,formData)
+      return this.http.post<ResponseAddApp>(`${this.baseUrl}/aplicaciones/${endPoint}`,formData)
         .pipe(
           tap((resp) => this.savedSuccessfully(resp)),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
@@ -266,35 +266,37 @@ export class AplicacionesService {
     );
   }
   //PATCH
-  setNewStatus(app: Aplication, newStatus: number): Observable<Aplication> {
-    const body = { estatusId: newStatus };
-    return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body)
-      .pipe(
-        delay(1000),
-        tap(() => {
-          const title = 'Estatus actualizado';
-          const content = `¡El estado de la aplicación ${app.nom_aplicacion} 
-          se ha actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`
-          this.notificationsService.successMessage(title,content);
-        }),
-        catchError(error => this.handleError(error, OriginMethod.UPDATESTATUS,app.nom_aplicacion))
-      );
-  }
+  // setNewStatus(app: Aplication, newStatus: number): Observable<Aplication> {
+  //   const body = { estatusId: newStatus };
+  //   return this.http.patch<Aplication>(`${this.baseUrl}/applications/${app.idu_aplicacion}`,body)
+  //     .pipe(
+  //       delay(1000),
+  //       tap(() => {
+  //         const title = 'Estatus actualizado';
+  //         // const content = `¡El estado de la aplicación ${app.nom_aplicacion} 
+  //         // se ha actualizado a ${app.applicationstatus.des_estatus_aplicacion} con éxito!`
+  //         const content = `¡El estado de la aplicación ${app.nom_aplicacion} 
+  //         se ha actualizado a con éxito!`
+  //         this.notificationsService.successMessage(title,content);
+  //       }),
+  //       catchError(error => this.handleError(error, OriginMethod.UPDATESTATUS,app.nom_aplicacion))
+  //     );
+  // }
 
   private savedSuccessfully(resp: ResponseAddApp){
     this.changes = true
     const title = 'Aplicativo guardado';
-    const content = `¡El aplicativo ${resp.application.nom_aplicacion} se ha subido con éxito!`
+    const content = `¡El aplicativo ${resp.aplicacion.nom_aplicacion} se ha subido con éxito!`
     this.notificationsService.successMessage(title,content);
     
-    if(!resp.checkmarx){
+    if(!resp.checkmarx && resp.aplicacion.num_accion === NumberAction.SANITIZECODE){
       const title = 'Archivo .csv no generado';
       const content = `¡El aplicativo se ha guardado correctamente pero el archivo .csv no se genero.`
       this.notificationsService.warnMessage(title,content);
     }
 
     if(resp.rviaProcess){
-      this.startRVIAProcess(resp.rviaProcess.isValidProcess,resp.rviaProcess.messageRVIA);
+      this.startRVIAProcess(resp.rviaProcess.isProcessStarted,resp.rviaProcess.message);
     }
   }
 
@@ -332,6 +334,7 @@ export class AplicacionesService {
 
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
     const title = 'Error';
+    console.log(error);
     
     const errorsMessages = {
       GETAPPS: 'Error al cargar información', 
@@ -342,6 +345,7 @@ export class AplicacionesService {
       POSTSAVEFILE: `Ocurrió un error al guardar el aplicativo. Inténtalo de nuevo`,
       UPDATESTATUS: `¡El estado de la aplicación ${extra} no se pudo actualizar!`
     };
+
 
     this.notificationsService.errorMessage(title,errorsMessages[origin]);
     return throwError(() => 'ERROR ERROR ERROR');

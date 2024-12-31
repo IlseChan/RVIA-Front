@@ -2,7 +2,7 @@ import { HttpHandlerFn, HttpRequest } from "@angular/common/http";
 import { inject } from "@angular/core";
 import { AuthService } from "@modules/auth/services/auth.service";
         
-const regexApps = /\/applications|\/applications\/\d+|\/applications\/git|\/applications\/gitlab/;
+const regexApps = /\/aplicaciones|\/aplicaciones\/\d+|\/aplicaciones\/git|\/aplicaciones\/gitlab/;
 const methodsApps = ['GET','PATCH','POST'];
 const checkRegex = (url: string): boolean => {
     return regexApps.test(url);
@@ -20,7 +20,7 @@ const checkRegexUsers = (url: string): boolean => {
     return regexUsers.test(url);
 } 
 
-const regexDown = /\/applications\/zip\/\d+/;
+const regexDown = /\/aplicaciones\/zip\/\d+/;
 const checkRegexDown = (url: string): boolean => {
     return regexDown.test(url);
 }
@@ -51,7 +51,7 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
                 return next(newReq);
             }
 
-            if(url.includes('applications/files') && method === 'POST'){
+            if(url.includes('aplicaciones/files') && method === 'POST'){
                 return next(newReq);
             }
 
@@ -69,7 +69,7 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
                 return next(newReq);    
             }
 
-            if(url.includes('/languages') && method === 'GET'){
+            if(url.includes('/lenguajes') && method === 'GET'){
                 return next(newReq);    
             }
         }

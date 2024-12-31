@@ -38,11 +38,12 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-app let-index="rowIndex">
                     <tr>
-                        <td>{{ app.sequentialId }}</td>
+                        <td>{{ index + 1 }}</td>
                         <td>{{ app.idu_proyecto }}</td>
                         <td *ngIf="user!.rol.nom_rol !== Nom_Rols.INVITADO && 
                                    user!.rol.nom_rol !== Nom_Rols.USUARIO">
-                            {{ app.user.nom_usuario }}
+                            <!-- {{ app.user.nom_usuario }} -->
+                            Nombre usuario
                         </td>
                         <td>{{ app.nom_aplicacion }}</td>
                         <td>
@@ -50,28 +51,28 @@
                                 <!-- Icono de Codigo descarga disponible -->
                                 <ng-container *ngIf="app.num_accion !== NumberAction.NONE">
                                     <i class="pi pi-code icon-button"
-                                       *ngIf="app.applicationstatus.idu_estatus_aplicacion === 3"
-                                       [pTooltip]="'Acción: ' + getDropdownPlaceholder(app) + '\nEstatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp) + '\nDescarga: Disponible'"
+                                       *ngIf="app.clv_estatus === 3"
+                                       [pTooltip]="'Acción: ' + getDropdownPlaceholder(app) + '\nEstatus: ' + (app.clv_estatus | statusApp) + '\nDescarga: Disponible'"
                                        tooltipPosition="top"
                                        [ngClass]="{
-                                           'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
-                                           'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
-                                           'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
-                                           'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                           'text-blue-500': app.clv_estatus === 1,
+                                           'text-orange-500': app.clv_estatus === 2,
+                                           'text-green-500': app.clv_estatus === 3,
+                                           'text-red-500': app.clv_estatus === 4
                                        }" 
                                        style="font-size: 1.6rem"
                                        (click)="onDownloadFile(app)"></i>
                                     
                                     <!-- Icono de Codigo descarga no disponible -->
                                     <i class="pi pi-code icon-button"
-                                       *ngIf="app.applicationstatus.idu_estatus_aplicacion !== 3"
-                                       [pTooltip]="'Acción: ' + getDropdownPlaceholder(app) + '\nEstatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp) + '\nDescarga: No disponible'"
+                                       *ngIf="app.clv_estatus !== 3"
+                                       [pTooltip]="'Acción: ' + getDropdownPlaceholder(app) + '\nEstatus: ' + (app.clv_estatus | statusApp) + '\nDescarga: No disponible'"
                                        tooltipPosition="top"
                                        [ngClass]="{
-                                           'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
-                                           'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
-                                           'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
-                                           'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                           'text-blue-500': app.clv_estatus === 1,
+                                           'text-orange-500': app.clv_estatus === 2,
+                                           'text-green-500': app.clv_estatus === 3,
+                                           'text-red-500': app.clv_estatus === 4
                                        }"
                                        style="font-size: 1.6rem"></i>
                                 </ng-container>
@@ -139,7 +140,7 @@
                             </div>
                         </td>
                         <td *ngIf="user!.rol.nom_rol !== Nom_Rols.INVITADO">
-                            {{ app.totalCost | currency:'USD':'symbol' }}
+                            {{ 0 | currency:'USD':'symbol' }}
                         </td>
                     </tr>
                 </ng-template>
