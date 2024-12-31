@@ -25,6 +25,11 @@ const checkRegexDown = (url: string): boolean => {
     return regexDown.test(url);
 }
 
+const regexTestCases = /\/rviacp\/\d+/;
+const checkRegexTestCases = (url: string): boolean => {
+    return regexTestCases.test(url);
+}
+
 export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandlerFn) => {       
     const authService = inject(AuthService);
     
@@ -71,6 +76,10 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
 
             if(url.includes('/lenguajes') && method === 'GET'){
                 return next(newReq);    
+            }
+            
+            if(checkRegexTestCases(url) && method === 'PATCH'){
+                return next(newReq);
             }
         }
 

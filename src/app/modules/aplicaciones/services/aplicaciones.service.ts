@@ -150,7 +150,7 @@ export class AplicacionesService {
         }
 
         return { 
-          app: app.idu_aplicacion, 
+          app: +app.idu_proyecto, 
           value: `${app.idu_proyecto} - ${app.nom_aplicacion}`,
           waiting
         }
@@ -161,7 +161,7 @@ export class AplicacionesService {
     return data
       .filter(app => app.num_accion === NumberAction.SANITIZECODE)
       .map( app => {
-        return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
+        return { value: +app.idu_proyecto, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
       })
   }
 
@@ -169,7 +169,7 @@ export class AplicacionesService {
     return data
       .filter(app => !app.opc_arquitectura[type])
       .map( app => {
-        return { value: app.idu_aplicacion, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
+        return { value: +app.idu_proyecto, name: `${app.idu_proyecto} - ${app.nom_aplicacion}`}
       });
   }
   

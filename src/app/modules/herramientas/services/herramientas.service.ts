@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { catchError, Observable, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-import { FormPDFtoCSV, OriginMethod } from '../interfaces/herramientas.interfaces';
 import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { AppAddonsCall } from '../interfaces/appAddonsCall.interface';
-import { FormAddonCall } from '../interfaces/formAddonCall.interface';
 import { Aplication, ArquitecturaOpciones } from '@modules/aplicaciones/interfaces';
+import { AppAddonsCall, FormAddonCall, FormPDFtoCSV, OriginMethod, RespAddonsProcess } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -78,16 +76,17 @@ export class HerramientasService {
       );
   }
 
-  startProcessTestCasesRVIA(idu_aplicacion: number): Observable<Aplication> {
+  startProcessTestCasesRVIA(idu_proyecto: number): Observable<Aplication> {
     const body = { opcArquitectura: ArquitecturaOpciones.TEST_CASES };
-    return this.http.patch<Aplication>(`${this.baseUrl}/applications/test-cases/${idu_aplicacion}`, body)
+    return this.http.patch<RespAddonsProcess>(`${this.baseUrl}/rviacp/${idu_proyecto}`, body)
       .pipe(
-        tap((app) => {
+        tap((resp) => {
           const title = 'Proceso iniciado';
-          const content = `¡El proceso para generar casos de prueba de la aplicación ${app.nom_aplicacion} ha iniciado con éxito!`;
+          const content = `¡El proceso para generar casos de prueba de la aplicación ${resp.application.nom_aplicacion} ha iniciado con éxito!`;
           this.notificationsService.successMessage(title, content);
         }),
         tap(() => this.aplicacionesService.changes = true),
+        map(resp => resp.application),
         catchError(error => this.handleError(error, OriginMethod.PATCHRTESTCASE))
       );
   }
