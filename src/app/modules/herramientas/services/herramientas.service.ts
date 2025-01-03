@@ -7,7 +7,8 @@ import { NotificationsService } from '@modules/shared/services/notifications.ser
 import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { Aplication, ArquitecturaOpciones } from '@modules/aplicaciones/interfaces';
-import { AppAddonsCall, FormAddonCall, FormPDFtoCSV, OriginMethod, RespAddonsProcess } from '../interfaces';
+import { AppAddonsCall, FormAddonCall, FormPDFtoCSV, 
+  OriginMethod, RespAddonsProcess } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -62,16 +63,17 @@ export class HerramientasService {
       );
   }
 
-  startProcessRateCodeRVIA(idu_aplicacion: number): Observable<Aplication> {
+  startProcessRateCodeRVIA(idu_proyecto: number): Observable<Aplication> {
     const body = { opcArquitectura: ArquitecturaOpciones.EVALUATION };
-    return this.http.patch<Aplication>(`${this.baseUrl}/applications/rate-project/${idu_aplicacion}`, body)
+    return this.http.patch<RespAddonsProcess>(`${this.baseUrl}/rviacal/${idu_proyecto}`, body)
       .pipe(
-        tap((app) => {
+        tap((resp) => {
           const title = 'Proceso iniciado';
-          const content = `¡El proceso para calificar código de la aplicación ${app.nom_aplicacion} ha iniciado con éxito!`;
+          const content = `¡El proceso para calificar código de la aplicación ${resp.application.nom_aplicacion} ha iniciado con éxito!`;
           this.notificationsService.successMessage(title, content);
         }),
         tap(() => this.aplicacionesService.changes = true),
+        map(resp => resp.application),
         catchError(error => this.handleError(error, OriginMethod.PATCHRATECODE))
       );
   }
@@ -91,22 +93,23 @@ export class HerramientasService {
       );
   }
 
-  startProcessDocumentationRVIA(idu_aplicacion: number, tipoDoc: string): Observable<Aplication> {
+  startProcessDocumentationRVIA(idu_proyecto: number, tipoDoc: string): Observable<Aplication> {
     const body = { 
       opcArquitectura: tipoDoc === 'overview' 
       ? ArquitecturaOpciones.DOC_CMPLT 
       : ArquitecturaOpciones.DOC_CODE
     };
-    const endpoint = tipoDoc === 'overview' ? 'documentation' : 'documentation-code';
+    const endpoint = tipoDoc === 'overview' ? 'rviaprodoc' : 'rviaprodoc/codigo';
 
-    return this.http.patch<Aplication>(`${this.baseUrl}/applications/${endpoint}/${idu_aplicacion}`, body)
+    return this.http.patch<RespAddonsProcess>(`${this.baseUrl}/${endpoint}/${idu_proyecto}`, body)
       .pipe(
-        tap((app) => {
+        tap((resp) => {
           const title = 'Proceso iniciado';
-          const content = `¡El proceso para documentar la aplicación ${app.nom_aplicacion} ha iniciado con éxito!`;
+          const content = `¡El proceso para documentar la aplicación ${resp.application.nom_aplicacion} ha iniciado con éxito!`;
           this.notificationsService.successMessage(title, content);
         }),
         tap(() => this.aplicacionesService.changes = true),
+        map((resp) => resp.application),
         catchError(error => this.handleError(error, OriginMethod.PATCHRDOCCODE))
       );
   }
