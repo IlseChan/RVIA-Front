@@ -19,4 +19,5 @@ export interface   Aplication {
     opc_estatus_doc_code:  StatusApp | 0;
     opc_lenguaje:      number;
     sourcecode:        Sourcecode;
+    totalCost:         number;
 }
