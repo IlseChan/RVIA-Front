@@ -1,16 +1,17 @@
 import { Component } from '@angular/core';
-import { NgIf } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
+import { termsAndConditions } from './termsandcond';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [NgIf, FormsModule, PrimeNGModule],
+  imports: [NgIf, NgFor, FormsModule, PrimeNGModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
@@ -21,12 +22,14 @@ export class RegisterComponent {
   confirmPassword: string = '';
   email: string = '';
   errorMessage: string = '';
-
+  termAccepted: boolean = false;
   isRegister: boolean = false;
   isReady: boolean = false;
   btnLabel: string = 'Registrar';
   connectionErrorMessage: string = '';
-
+  
+  isShowTerms: boolean = false;
+  termsAndConditions = termsAndConditions;
   constructor(private router: Router, private authService: AuthService) {}
 
   onRegister(): void {
@@ -73,6 +76,12 @@ export class RegisterComponent {
       this.errorMessage = 'Escribe nombre completo, con al menos un nombre y dos apellidos, todos comenzando con letra mayúscula, incluyendo acentos y ñ';
       return;
     }
+
+    if(!this.termAccepted) {
+      this.errorMessage = 'Debes aceptar los términos y condiciones';
+      return;
+    }
+
     this.isRegister = true;
     this.btnLabel = 'Registrando...';
     this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
@@ -101,5 +110,9 @@ export class RegisterComponent {
 
   onBack(): void {
     this.router.navigate(['/auth/login']);
+  }
+
+  showTerms(): void {
+    this.isShowTerms = !this.isShowTerms;
   }
 }
