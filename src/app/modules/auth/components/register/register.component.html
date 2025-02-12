@@ -93,7 +93,11 @@
         />
       </div>
       <div class="flex align-items-center gap-2 mb-3">
-        <p-checkbox [(ngModel)]="termAccepted" [binary]="true" name="termAccepted" required (click)="showTerms()"/>
+        <p-checkbox [(ngModel)]="termAccepted" 
+          [binary]="true" name="termAccepted" 
+          required (click)="showTerms(true)"
+          (ngModelChange)="onInputChange()
+        "/>
         <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
       </div>
       <div *ngIf="errorMessage" class="mb-3 text-red text-center">

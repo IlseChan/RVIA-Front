@@ -112,7 +112,9 @@ export class RegisterComponent {
     this.router.navigate(['/auth/login']);
   }
 
-  showTerms(): void {
-    this.isShowTerms = !this.isShowTerms;
+  showTerms(fromForm: boolean = false): void {
+    if((fromForm && this.termAccepted) || !fromForm) {
+      this.isShowTerms = !this.isShowTerms
+    }
   }
 }
