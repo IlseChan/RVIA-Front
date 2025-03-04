@@ -4,6 +4,7 @@ import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmDialogModule } from 'primeng/confirmdialog'; 
+import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
@@ -27,6 +28,7 @@ import { InputIconModule } from 'primeng/inputicon';
     ButtonModule,
     CheckboxModule,
     ConfirmDialogModule,
+    DialogModule,
     DividerModule,
     DropdownModule,
     DynamicDialogModule,
@@ -49,6 +51,7 @@ import { InputIconModule } from 'primeng/inputicon';
     ButtonModule,
     CheckboxModule,
     ConfirmDialogModule,
+    DialogModule,
     DividerModule,
     DropdownModule,
     DynamicDialogModule,

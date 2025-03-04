@@ -72,7 +72,7 @@ export class UsuariosService {
         tap(() => this.changes = true),
         tap((resp) => {
           const title = 'Actualización Exitosa';
-          const content = `El usuario ${resp.numero_empleado} - ${resp.nom_usuario} con posición 
+          const content = `El usuario ${resp.num_empleado} - ${resp.nom_usuario} con posición 
             ${resp.position.nom_rol} se actualizó correctamente.`
           this.notificationsService.successMessage(title,content);
         }),

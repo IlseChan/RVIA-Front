@@ -1,6 +1,6 @@
 <main class="m-2">
     <section class="flex flex-column mt-3 md:flex-row">
-        <h1 class="txt-title inline text-4xl text-center my-0 md:text-5xl md:text-left">
+        <h1 class="txt-tiltle-color inline text-4xl text-center my-0 md:text-5xl md:text-left">
             Lista de aplicaciones
         </h1>
         <a
@@ -91,7 +91,7 @@
                         </td>
                         <td>{{ app.nom_aplicacion }}</td>
                         <td>
-                            <div class="flex flex-row items-center icon-container" style="gap: 0.5rem;">
+                            <div class="flex flex-row gap-2">
                                 <!-- Icono de Codigo descarga disponible -->
                                 <ng-container *ngIf="app.num_accion !== NumberAction.NONE">
                                     <i class="pi pi-code icon-button"
@@ -99,10 +99,10 @@
                                        [pTooltip]="'Acción: ' + getDropdownPlaceholder(app) + '\nEstatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp) + '\nDescarga: Disponible'"
                                        tooltipPosition="top"
                                        [ngClass]="{
-                                           'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
-                                           'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
-                                           'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
-                                           'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                           'icon-blue': app.applicationstatus.idu_estatus_aplicacion === 1,
+                                           'icon-orange': app.applicationstatus.idu_estatus_aplicacion === 2,
+                                           'icon-green': app.applicationstatus.idu_estatus_aplicacion === 3,
+                                           'icon-red': app.applicationstatus.idu_estatus_aplicacion === 4
                                        }" 
                                        style="font-size: 1.6rem"
                                        (click)="onDownloadFile(app)"></i>
@@ -113,10 +113,10 @@
                                        [pTooltip]="'Acción: ' + getDropdownPlaceholder(app) + '\nEstatus: ' + (app.applicationstatus.idu_estatus_aplicacion | statusApp) + '\nDescarga: No disponible'"
                                        tooltipPosition="top"
                                        [ngClass]="{
-                                           'text-blue-500': app.applicationstatus.idu_estatus_aplicacion === 1,
-                                           'text-orange-500': app.applicationstatus.idu_estatus_aplicacion === 2,
-                                           'text-green-500': app.applicationstatus.idu_estatus_aplicacion === 3,
-                                           'text-red-500': app.applicationstatus.idu_estatus_aplicacion === 4
+                                           'icon-blue': app.applicationstatus.idu_estatus_aplicacion === 1,
+                                           'icon-orange': app.applicationstatus.idu_estatus_aplicacion === 2,
+                                           'icon-green': app.applicationstatus.idu_estatus_aplicacion === 3,
+                                           'icon-red': app.applicationstatus.idu_estatus_aplicacion === 4
                                        }"
                                        style="font-size: 1.6rem"></i>
                                 </ng-container>
@@ -132,10 +132,10 @@
                                    [pTooltip]="'Acción: Documentación completa\nEstatus: ' + (app.opc_estatus_doc | statusApp) + '\nDescarga: ' + (app.opc_estatus_doc === 3 ? 'Disponible' : 'No disponible')"
                                    tooltipPosition="top"
                                    [ngClass]="{
-                                       'text-blue-500': app.opc_estatus_doc === 1,
-                                       'text-orange-500': app.opc_estatus_doc === 2,
-                                       'text-green-500': app.opc_estatus_doc === 3,
-                                       'text-red-500': app.opc_estatus_doc === 4
+                                       'icon-blue': app.opc_estatus_doc === 1,
+                                       'icon-orange': app.opc_estatus_doc === 2,
+                                       'icon-green': app.opc_estatus_doc === 3,
+                                       'icon-red': app.opc_estatus_doc === 4
                                    }" 
                                    style="font-size: 1.6rem"></i>
                                 <i class="pi pi-file text-gray-500 icon-button" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOC_CMPLT]" style="font-size: 1.6rem"></i>
@@ -146,10 +146,10 @@
                                    [pTooltip]="'Acción: Documentación por código\nEstatus: ' + (app.opc_estatus_doc_code | statusApp) + '\nDescarga: ' + (app.opc_estatus_doc_code === 3 ? 'Disponible' : 'No disponible')"
                                    tooltipPosition="top"
                                    [ngClass]="{
-                                       'text-blue-500': app.opc_estatus_doc_code === 1,
-                                       'text-orange-500': app.opc_estatus_doc_code === 2,
-                                       'text-green-500': app.opc_estatus_doc_code === 3,
-                                       'text-red-500': app.opc_estatus_doc_code === 4
+                                       'icon-blue': app.opc_estatus_doc_code === 1,
+                                       'icon-orange': app.opc_estatus_doc_code === 2,
+                                       'icon-green': app.opc_estatus_doc_code === 3,
+                                       'icon-red': app.opc_estatus_doc_code === 4
                                    }" 
                                    style="font-size: 1.6rem"></i>
                                 <i class="pi pi-file text-gray-500 icon-button" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.DOC_CODE]" style="font-size: 1.6rem"></i>
@@ -160,10 +160,10 @@
                                    [pTooltip]="'Acción: Casos de prueba\nEstatus: ' + (app.opc_estatus_caso | statusApp) + '\nDescarga: ' + (app.opc_estatus_caso === 3 ? 'Disponible' : 'No disponible')"
                                    tooltipPosition="top"
                                    [ngClass]="{
-                                       'text-blue-500': app.opc_estatus_caso === 1,
-                                       'text-orange-500': app.opc_estatus_caso === 2,
-                                       'text-green-500': app.opc_estatus_caso === 3,
-                                       'text-red-500': app.opc_estatus_caso === 4
+                                       'icon-blue': app.opc_estatus_caso === 1,
+                                       'icon-orange': app.opc_estatus_caso === 2,
+                                       'icon-green': app.opc_estatus_caso === 3,
+                                       'icon-red': app.opc_estatus_caso === 4
                                    }"
                                    style="font-size: 1.6rem"></i>
                                 <i class="pi pi-clipboard text-gray-500 icon-button" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.TEST_CASES]" style="font-size: 1.6rem"></i>
@@ -174,10 +174,10 @@
                                    [pTooltip]="'Acción: Calificación\nEstatus: ' + (app.opc_estatus_calificar | statusApp) + '\nDescarga: ' + (app.opc_estatus_calificar === 3 ? 'Disponible' : 'No disponible')"
                                    tooltipPosition="top"
                                    [ngClass]="{
-                                       'text-blue-500': app.opc_estatus_calificar === 1,
-                                       'text-orange-500': app.opc_estatus_calificar === 2,
-                                       'text-green-500': app.opc_estatus_calificar === 3,
-                                       'text-red-500': app.opc_estatus_calificar === 4
+                                       'icon-blue': app.opc_estatus_calificar === 1,
+                                       'icon-orange': app.opc_estatus_calificar === 2,
+                                       'icon-green': app.opc_estatus_calificar === 3,
+                                       'icon-red': app.opc_estatus_calificar === 4
                                    }"
                                    style="font-size: 1.6rem"></i>
                                 <i class="pi pi-check-square text-gray-500 icon-button" *ngIf="!app.opc_arquitectura[ArquitecturaOpciones.EVALUATION]" style="font-size: 1.6rem"></i>
