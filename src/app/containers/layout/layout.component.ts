@@ -8,14 +8,14 @@ import { DividerModule } from 'primeng/divider';
 
 import { AuthService } from '@modules/auth/services/auth.service';
 import { GeneratedNumberService } from '@modules/shared/services/generated-number.service'; 
-import { TitleCasePipe } from '@angular/common'; 
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
 
 @Component({
   selector: 'app-layout',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive,
-    RouterOutlet, DividerModule, TitleCasePipe 
+    RouterOutlet, DividerModule
   ],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
@@ -37,6 +37,16 @@ export class LayoutComponent implements OnInit {
     { path: '/tools/recoveryPDF', name: 'Convertir a .csv', icon: PrimeIcons.FILE_EXCEL },
     { path: '/tools/execute-ia', name: 'Ejecutar IA', icon: PrimeIcons.MICROCHIP_AI },
   ];
+  menuAppsInd = [
+    { path: '/apps/list-apps-ac', name: 'Actualización', icon: PrimeIcons.TABLE },
+    { path: '/apps/list-apps-ca', name: 'Calificación de código', icon: PrimeIcons.TABLE },
+    { path: '/apps/list-apps-cp', name: 'Casos de prueba', icon: PrimeIcons.TABLE },
+    { path: '/apps/list-apps-prodoc-com', name: 'Documentación completa', icon: PrimeIcons.TABLE },
+    { path: '/apps/list-apps-prodoc-cod', name: 'Documentación por código', icon: PrimeIcons.TABLE },
+    { path: '/apps/list-apps-mi', name: 'Migración', icon: PrimeIcons.TABLE },
+    { path: '/apps/list-apps-sa', name: 'Sanitización', icon: PrimeIcons.TABLE },
+
+  ];
 
   Nom_rol = Nom_Rol;
   sidebarActive = false;
@@ -52,11 +62,12 @@ export class LayoutComponent implements OnInit {
     this.userLogged = this.authService.userLogged;
     this.getGeneratedNumber();
 
-    if (this.userLogged?.position.nom_rol !== Nom_Rol.INVITADO) {
-      this.menuSidebar.push(
-        { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
-      );
-    }
+    // * NO se considera la autenticación
+    // if (this.userLogged?.position.nom_rol !== Nom_Rol.INVITADO) {
+    //   this.menuSidebar.push(
+    //     { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
+    //   );
+    // }
   }
 
   getGeneratedNumber(): void {

@@ -33,37 +33,24 @@
       <div class="divider-rvia" [ngClass]="userLogged?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
       </div>
       <ng-container *ngIf="userLogged?.position?.nom_rol !== Nom_rol.INVITADO">
-        <ul class="p-0 my-2 list-none" >
-          <li *ngFor="let option of menuRvia" >
-            <a 
-              routerLinkActive="active" 
-              [routerLink]="option.path"
-              class="text-base block px-3 py-2 flex align-items-center border-round">
-              <i class="mr-2 text-sm txt-tiltle-color" [ngClass]="option.icon"></i>
-              <span class="menu-item">{{ option.name }}</span> 
-            </a>
-          </li>
-        </ul>
+        <div class="mt-2">
+          <small class="text-divider">Aplicaciones</small>
+          <ul class="p-0 my-2 list-none" >
+            <li *ngFor="let option of menuAppsInd" >
+              <a 
+                routerLinkActive="active" 
+                [routerLink]="option.path"
+                class="text-base block px-3 py-2 flex align-items-center border-round">
+                <i class="mr-2 text-sm icon-color" [ngClass]="option.icon"></i>
+                <span class="menu-item">{{ option.name }}</span> 
+              </a>
+            </li>
+          </ul>
+        </div>
         <div class="divider-rvia mb-auto" [ngClass]="userLogged?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
         </div>
       </ng-container>
       <ng-container class="mt-auto" *ngIf="userLogged?.position?.nom_rol === Nom_rol.ADMINISTRADOR">
-        <div class="mt-2">
-          <small class="txt-tiltle-color">Herramientas</small>
-          <ul class="p-0 my-2 list-none">
-              <li *ngFor="let option of menuTools">
-                <a 
-                  routerLinkActive="active" 
-                  [routerLink]="option.path"
-                  class="text-base block px-3 py-2 flex align-items-center border-round">
-                  <i class="mr-2 text-sm txt-tiltle-color" [ngClass]="option.icon"></i>
-                  <span class="menu-item">{{ option.name }}</span> 
-                </a>
-              </li>
-          </ul>
-        </div>
-        <div class="divider-rvia my-2" [ngClass]="userLogged?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
-        </div>
         <div>
           <small class="txt-tiltle-color">Administrador</small>
           <ul class="p-0 my-2 list-none">

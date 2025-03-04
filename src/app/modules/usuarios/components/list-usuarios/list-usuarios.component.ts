@@ -4,10 +4,8 @@ import { Router, RouterLink } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
 
 import { ConfirmationService } from 'primeng/api';
-import { PaginatorState } from 'primeng/paginator';
 
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
-import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Usuario } from '@modules/usuarios/interfaces';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
@@ -22,6 +20,7 @@ import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 })
 export class ListUsuariosComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  allUsers: Usuario[] = [];
   users: Usuario[] = [];
   columns: string[] = [
     '# Empleado', 'Nombre', 'Rol', 'Acciones'
@@ -32,9 +31,9 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
   isDeleting: boolean = false;
   idToDelete: number = -1;
 
-  currentPage: number = 1;
   totalItems: number = 0;
-  elementPerPage:number = elementPerPage;
+  loadingDataPage: boolean = true;
+  rowsPerPageOpts: number[] = [10,15,20];
 
   userLogged!: Usuario | null;
   constructor(
@@ -51,15 +50,17 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
   
   onGetUsuarios(): void{
     this.isLoading = true;
-    this.usuariosService.getUsuarios(this.currentPage)
+    this.usuariosService.getUsuarios()
     .pipe(
       finalize(()=> this.isLoading = false),
       takeUntil(this.destroy$)
     )
     .subscribe({
       next: ({data,total}) => {
-        this.users = data;
+        if (!data) return;
+        this.allUsers = [...data];
         this.totalItems = total;
+        this.loadData({ first: 0, rows: 10});
       },
       error: () => {
         this.users = [];
@@ -95,7 +96,6 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
             takeUntil(this.destroy$)
           )
           .subscribe(() => {
-            this.currentPage = 1;
             this.onGetUsuarios();
           });
       },
@@ -110,11 +110,12 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
     this.idToDelete = -1;
   }
 
-  onPageChange({ page = 0 }: PaginatorState): void {
-    const newPage = page + 1;
-    if(newPage === this.currentPage) return;
-    this.currentPage = newPage;
-    this.onGetUsuarios();    
+  loadData(event: any) {
+    this.loadingDataPage = true;
+    const start = event.first;
+    const end = event.first + event.rows;
+    this.users = this.allUsers.slice(start,end);
+    this.loadingDataPage = false;
   }
 
   ngOnDestroy(): void {

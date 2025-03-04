@@ -1,0 +1,118 @@
+<section class="my-4">
+    <div class="card">
+        <p-table 
+            #dt2
+            dataKey="id"
+            [value]="apps"
+            [paginator]="true"
+            [rows]="10"
+            [rowsPerPageOptions]="rowsPerPageOpts"
+            [totalRecords]="totalItems"
+            [loading]="loadingDataPage"
+            [globalFilterFields]="['idu_proyecto']"
+            [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }"
+        >
+            <ng-template pTemplate="caption">
+                <div class="flex align-items-center">
+                    <div class="mr-auto">
+                        <p class="m-0 text-gray-500">
+                            Última actualización: 
+                            <b>
+                                {{ lastUpadate | date:'d \'de\' MMMM \'de\' yyyy, HH:mm:ss' }}
+                            </b>
+                            <span class="ml-1">
+                                <i class="pi pi-refresh c-pointer" 
+                                    pTooltip="Actualizar aplicaciones"
+                                    tooltipPosition="right"
+                                    tooltipStyleClass="text-sm"
+                                    style="font-size: 1.1rem"
+                                    (click)="refreshApps()">
+                                </i>
+                            </span>   
+                        </p>
+                    </div>
+                    <div class="flex">
+                        <p-iconField iconPosition="left" class="ml-auto">
+                            <p-inputIcon>
+                                <i class="pi pi-search"></i>
+                            </p-inputIcon>
+                            <input 
+                                pInputText 
+                                type="text" 
+                                (input)="filtercustom($event)" 
+                                placeholder="Búsqueda por ID proyecto"
+                            />
+                        </p-iconField>
+                    </div>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="header">
+                <tr class="rvia-header">
+                    <th *ngFor="let col of colums">
+                        {{ col }}
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-app let-index="rowIndex">
+                <tr>
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ app.idu_proyecto }}</td>
+                    <td>{{ app.nom_aplicacion }}</td>
+                    <td>
+                        <!-- Proceso principal -->
+                        @if( mainAction ){
+                            <rvia-icon
+                                [mainProcess]="true"
+                                [status]="app.clv_estatus"
+                                [numProcess]="app.num_accion"
+                                [opcArquitectura]="false">
+                            </rvia-icon>
+                        }
+                        @else{
+                            @switch ( numActionArquit ) {
+                                @case (1) {
+                                    <!-- Proceso documentacion completa -->
+                                    <rvia-icon
+                                        [status]="app.opc_estatus_doc"
+                                        [numProcess]="1"
+                                        [opcArquitectura]="app.opc_arquitectura[1]">
+                                    </rvia-icon>
+                                }
+
+                                @case (2) {
+                                    <!-- Proceso documentacion por codigo -->
+                                    <rvia-icon
+                                        [status]="app.opc_estatus_doc_code"
+                                        [numProcess]="2"
+                                        [opcArquitectura]="app.opc_arquitectura[2]">
+                                    </rvia-icon>
+                                }
+
+                                @case (3) {
+                                    <!-- Proceso casos de pruebas -->
+                                    <rvia-icon
+                                        [status]="app.opc_estatus_caso"
+                                        [numProcess]="3"
+                                        [opcArquitectura]="app.opc_arquitectura[3]">
+                                    </rvia-icon>
+                                }
+
+                                @case (4) {
+                                    <!-- Proceso calificaciones-->
+                                    <rvia-icon
+                                        [status]="app. opc_estatus_calificar"
+                                        [numProcess]="4"
+                                        [opcArquitectura]="app.opc_arquitectura[4]">
+                                    </rvia-icon>
+                                }
+                            }
+                        }
+                    </td>
+                    <td >
+                        {{ 0 | currency:'USD':'symbol-narrow' }}
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</section>

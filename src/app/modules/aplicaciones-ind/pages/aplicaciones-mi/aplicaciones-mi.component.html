@@ -1,0 +1,30 @@
+<main class="m-2">
+    <!-- Titulo y boton -->
+    <title-table />
+
+    @if( isLoading() ){
+        <!-- Loader -->
+        <div class="card flex justify-content-center my-6">
+            <p-progressSpinner ariaLabel="loading" />
+        </div>
+    } @else {
+
+        @if( aplications.length === 0 ){
+            <div class="my-6">
+                <h2 class="text-center">
+                    ¡No hay aplicaciones para listar!
+                </h2>
+            </div>
+        } @else {
+            <!-- Tabla aplicaciones-->
+            <table-apps 
+                [apps]="aplications"
+                [totalItems]="totalItems"
+                mainAction 
+                [numActionArquit]="0"
+                [loadingDataPage]="loadingDataPage"
+                (eventRefreshApps)="refreshApps()"
+            />
+        } 
+    }
+</main>

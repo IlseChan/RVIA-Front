@@ -3,7 +3,6 @@ import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap
 import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
-import { dataPerPage } from '@modules/shared/helpers/dataPerPage';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
 import { CheckmarxInfo, CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
 import { AppsSelectIA } from '@modules/herramientas/interfaces/appsSelectIA.interface';
@@ -37,7 +36,7 @@ export class AplicacionesService {
   }
 
   //GET
-  getAplicaciones(page: number = 1): Observable<AplicationsData> {
+  getAplicaciones(): Observable<AplicationsData> {
     if(this.allApps.data.length === 0 || this.changes){
       return this.http.get<Aplication[]>(`${this.baseUrl}/applications`)
         .pipe(
@@ -46,23 +45,13 @@ export class AplicacionesService {
             this.allApps.total = apps.length;
             this.changes = false;
           }),
-          map(apps => {
-            return {
-              data: dataPerPage([...apps],page) as Aplication[],
-              total: this.allApps.total
-            }
-          }),
+          map(() => ({...this.allApps })),
           delay(1000),
           catchError(error => this.handleError(error, OriginMethod.GETAPPS))
         )
       }
       else{
-        return of(
-          {
-            data: dataPerPage([...this.allApps.data],page) as Aplication[],
-            total: this.allApps.total
-          }
-        )
+        return of({...this.allApps})
       }
   }
 
@@ -202,7 +191,7 @@ export class AplicacionesService {
     formData.append('num_accion',form.action.toString()); 
     formData.append('opc_arquitectura', JSON.stringify(form.opt_archi))
     
-    if(form.action === 3){ //TODO usar variable
+    if(form.action === NumberAction.MIGRATION){
       formData.append('opc_lenguaje',form.language.toString());
     }
 
