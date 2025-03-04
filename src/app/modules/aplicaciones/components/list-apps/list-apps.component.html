@@ -26,9 +26,54 @@
         </h2>
     </div>
 
-    <section *ngIf="!isLoading && aplications.length > 0" class="mt-4">
+    <section *ngIf="!isLoading && aplications.length > 0" class="my-4">
         <div class="card">
-            <p-table [value]="aplications" [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }" [lazy]="true">
+            <p-table 
+                #dt2
+                dataKey="id"
+                [value]="aplications"
+                [paginator]="true"
+                [rows]="10"
+                [rowsPerPageOptions]="rowsPerPageOpts"
+                [totalRecords]="totalItems"
+                [loading]="loadingDataPage"
+                [globalFilterFields]="['idu_proyecto']"
+                [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }"
+            >
+                <ng-template pTemplate="caption">
+                    <div class="flex align-items-center">
+                        <div class="mr-auto">
+                            <p class="m-0 text-gray-500">
+                                Última actualización: 
+                                <b>
+                                    {{ lastUpadate | date:'d \'de\' MMMM \'de\' yyyy, HH:mm:ss' }}
+                                </b>
+                                <span class="ml-1">
+                                    <i class="pi pi-refresh c-pointer" 
+                                        pTooltip="Actualizar aplicaciones"
+                                        tooltipPosition="right"
+                                        tooltipStyleClass="text-sm"
+                                        style="font-size: 1.1rem"
+                                        (click)="refreshApps()">
+                                    </i>
+                                </span>   
+                            </p>
+                        </div>
+                        <div class="flex">
+                            <p-iconField iconPosition="left" class="ml-auto">
+                                <p-inputIcon>
+                                    <i class="pi pi-search"></i>
+                                </p-inputIcon>
+                                <input 
+                                    pInputText 
+                                    type="text" 
+                                    (input)="filtercustom($event)" 
+                                    placeholder="Búsqueda por ID proyecto"
+                                />
+                            </p-iconField>
+                        </div>
+                    </div>
+                </ng-template>
                 <ng-template pTemplate="header">
                     <tr class="rvia-header">
                         <th *ngFor="let col of colums">
@@ -139,17 +184,11 @@
                             </div>
                         </td>
                         <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
-                            {{ app.totalCost | currency:'USD':'symbol' }}
+                            {{ app.totalCost | currency:'USD':'symbol-narrow' }}
                         </td>
                     </tr>
                 </ng-template>
             </p-table>
         </div>
-        <p-paginator
-            (onPageChange)="onPageChange($event)"
-            [first]="0"
-            [rows]="elementPerPage"
-            [totalRecords]="totalItems"
-        />
     </section>
 </main>

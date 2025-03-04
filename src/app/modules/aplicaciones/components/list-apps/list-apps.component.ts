@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChildren, QueryList, AfterViewChecked, AfterViewInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChildren, QueryList, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
@@ -6,30 +6,28 @@ import { finalize, Subject, takeUntil } from 'rxjs';
 import { ConfirmationService } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Dropdown } from 'primeng/dropdown';
-import { PaginatorState } from 'primeng/paginator';
+import { Table } from 'primeng/table';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { StatusAppPipe } from "../../pipes/status-app.pipe";
-import { elementPerPage } from '@modules/shared/helpers/dataPerPage';
-import { StatusAppLabelPipe } from '@modules/aplicaciones/pipes/status-app-label.pipe';
-import { ActionAppPipe } from '@modules/aplicaciones/pipes/action-app.pipe';
 import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { downloandFile } from '@modules/shared/helpers/downloadFile';
-import { Aplication, ArquitecturaOpciones, NumberAction, Opt_architec, StatusApp } from '@modules/aplicaciones/interfaces';
+import { Aplication, ArquitecturaOpciones, NumberAction, StatusApp } from '@modules/aplicaciones/interfaces';
 
 @Component({
   selector: 'list-apps',
   standalone: true,
-  imports: [CommonModule, StatusAppPipe, RouterLink, StatusAppLabelPipe, ActionAppPipe, PrimeNGModule],
+  imports: [CommonModule, StatusAppPipe, RouterLink, PrimeNGModule],
   templateUrl: './list-apps.component.html',
   styleUrls: ['./list-apps.component.scss'],
   providers: [ConfirmationService, DialogService],
 })
-export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, AfterViewChecked {
+export class ListAppsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
+  @ViewChild('dt2') dt2!: Table; 
   user!: Usuario | null;
   aplications: Aplication[] = [];
   
@@ -38,18 +36,18 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
   NumberAction = NumberAction;
   ArquitecturaOpciones = ArquitecturaOpciones;
 
-  currentPage: number = 1;
   totalItems: number = 0;
-  elementPerPage: number = elementPerPage;
+  loadingDataPage: boolean = true;
+  rowsPerPageOpts: number[] = [10,15,20,25];
 
   colums: string[] = ['#', 'ID proyecto', 'Nombre', 'Proceso'];
   isLoading: boolean = true;
 
   isDownload: boolean = false;
   ref: DynamicDialogRef | undefined;
+  lastUpadate: string = '';
 
   @ViewChildren('dropdown') dropdowns!: QueryList<Dropdown>;
-  private dropdownMap = new Map<string, Dropdown>(); 
 
   constructor(
     private aplicacionService: AplicacionesService,
@@ -63,23 +61,6 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     this.onGetAplicaciones();
   }
 
-  ngAfterViewInit(): void {
-    this.updateDropdownMap();
-  }
-
-  ngAfterViewChecked(): void {
-    this.updateDropdownMap(); 
-  }
-
-  private updateDropdownMap(): void {
-    this.dropdowns.forEach((dropdown, index) => {
-      const id = dropdown.el.nativeElement.getAttribute('data-id'); 
-      if (id) {
-        this.dropdownMap.set(id, dropdown); 
-      }
-    });
-  }
-
   setColumns(): void {
     if (this.user && this.user.position.nom_rol !== Nom_Rol.INVITADO) {
       this.colums.push('Costos');
@@ -90,9 +71,15 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
     }
   }
 
+  filtercustom(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.dt2.filterGlobal(input.value, 'contains');
+  }
+
   onGetAplicaciones(): void {
     this.isLoading = true;
-    this.aplicacionService.getAplicaciones(this.currentPage)
+    this.lastUpadate = new Date().toString();
+    this.aplicacionService.getAplicaciones()
       .pipe(
         finalize(() => this.isLoading = false),
         takeUntil(this.destroy$)
@@ -100,8 +87,11 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       .subscribe({
         next: ({ data, total }) => {
           if (!data) return;
+          this.loadingDataPage = true;
+          this.totalItems = total;
           this.aplications = [...data];
-          this.totalItems = total;    
+          this.loadingDataPage = false;
+
         },
         error: () => {
           this.aplications = [];
@@ -110,32 +100,11 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
       });  
   }
 
-  getArquitecturaOptions(opc_arquitectura: Opt_architec) {
-    const options = [];
-  
-    if (opc_arquitectura[ArquitecturaOpciones.DOC_CMPLT]) {
-      options.push({ label: 'Documentación Overview', value: 'Documentación completa', styleClass: 'tag-info', disabled: true });
-    }
-  
-    if (opc_arquitectura[ArquitecturaOpciones.DOC_CODE]) {
-      options.push({ label: 'Documentación Código', value: 'Documentación por código', styleClass: 'tag-primary', disabled: true });
-    }
-  
-    if (opc_arquitectura[ArquitecturaOpciones.TEST_CASES]) {
-      options.push({ label: 'Casos de prueba', value: 'Casos de prueba', styleClass: 'tag-warning', disabled: true });
-    }
-  
-    if (opc_arquitectura[ArquitecturaOpciones.EVALUATION]) {
-      options.push({ label: 'Calificación', value: 'Calificación', styleClass: 'tag-success', disabled: true });
-    }
-  
-    if (options.length === 0) {
-      options.push({ label: 'Sin arquitectura', value: 'Sin arquitectura', styleClass: 'tag-secondary', disabled: true });
-    }
-  
-    return options;
+  refreshApps(): void {
+    this.aplicacionService.changes = true;
+    this.onGetAplicaciones();
   }
-
+  
   getDropdownPlaceholder(app: Aplication): string {
     return app.num_accion === NumberAction.NONE ? 'Sin modificar el código' :
            app.num_accion === NumberAction.UPDATECODE ? 'Actualización' :
@@ -177,31 +146,9 @@ export class ListAppsComponent implements OnInit, OnDestroy, AfterViewInit, Afte
 
       this.ref.onClose.subscribe((resp) => {
         if (resp) {
-          this.currentPage = 1;
           this.onGetAplicaciones();
         }
       });
-    }
-  }
-
-  onPageChange({ page = 0 }: PaginatorState): void {
-    const newPage = page + 1;
-    if (newPage === this.currentPage) return;
-    this.currentPage = newPage;
-    this.onGetAplicaciones(); 
-  }
-
-  onDropdownHover(sequentialId: string, index: number): void {
-    const dropdown = this.dropdownMap.get(`${sequentialId}-${index}`);
-    if (dropdown) {
-      dropdown.show(); 
-    }
-  }
-
-  onDropdownLeave(sequentialId: string, index: number): void {
-    const dropdown = this.dropdownMap.get(`${sequentialId}-${index}`);
-    if (dropdown) {
-      dropdown.hide(); 
     }
   }
 

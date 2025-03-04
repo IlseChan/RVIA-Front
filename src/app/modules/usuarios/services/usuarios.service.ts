@@ -31,7 +31,7 @@ export class UsuariosService {
     this.allUsers.total = -1;
   }
 
-  getUsuarios(page: number = 1): Observable<UsersData> {
+  getUsuarios(): Observable<UsersData> {
     if(this.allUsers.data.length === 0 || this.changes){
       return this.http.get<Usuario[]>(`${this.baseUrl}/auth`)
         .pipe(
@@ -40,21 +40,12 @@ export class UsuariosService {
             this.allUsers.total = users.length;
             this.changes = false;
           }),
-          map(users => {
-            return {
-              data: dataPerPage([...users],page) as Usuario[],
-              total: this.allUsers.total
-            }
-          }),
+          map(() => ({...this.allUsers})),
+          delay(1000),
           catchError(error => this.handleError(error, OriginMethod.GETUSERS))
         )
     }else{
-      return of(
-        {
-          data: dataPerPage([...this.allUsers.data],page) as Usuario[],
-          total: this.allUsers.total
-        }
-      )
+      return of({...this.allUsers})
     }
   }
 
