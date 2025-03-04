@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
 
 import { ConfirmationService } from 'primeng/api';
@@ -13,7 +13,7 @@ import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 @Component({
   selector: 'list-usuarios',
   standalone: true,
-  imports: [RouterLink, CommonModule, PrimeNGModule],
+  imports: [CommonModule, PrimeNGModule],
   templateUrl: './list-usuarios.component.html',
   styleUrls: ['./list-usuarios.component.scss'],
   providers: [ConfirmationService],
