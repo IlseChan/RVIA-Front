@@ -16,9 +16,13 @@ export const routes: Routes = [
         component: LayoutComponent,
         canActivate: [SessionGuard],
         children: [
+            // {
+            //     path: 'apps',
+            //     loadChildren: () => import('@modules/aplicaciones/apps.routes').then(m => m.appsRoutes)
+            // },
             {
                 path: 'apps',
-                loadChildren: () => import('@modules/aplicaciones/apps.routes').then(m => m.appsRoutes)
+                loadChildren: () => import('@modules/aplicaciones-ind/apps-ind.routes').then(m => m.appsIndRoutes)
             },
             {
                 path: 'users',

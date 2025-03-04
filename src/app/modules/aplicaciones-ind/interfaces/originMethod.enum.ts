@@ -1,0 +1,6 @@
+export enum OriginMethod {
+    GETAPPS      = 'GETAPPS',
+    GETDOWNLOAD  = 'GETDOWNLOAD',
+    GETLANGUAGES = 'GETLANGUAGES',
+    POSTSAVEFILE = 'POSTSAVEFILE',
+}

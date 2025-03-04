@@ -5,7 +5,7 @@ export interface Usuario {
     idu_usuario:     number;
     nom_correo:      string;
     nom_usuario:     string;
-    numero_empleado: number;
+    num_empleado: number;
     position:        Position;
     token?:          string;
 }

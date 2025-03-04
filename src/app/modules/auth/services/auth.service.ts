@@ -28,10 +28,10 @@ export class AuthService {
     return this.currentUser;
   }
 
-  registerUser(numero_empleado: string, nom_usuario: string, nom_contrasena: string, nom_correo: string): Observable<Usuario> {
+  registerUser(num_empleado: string, nom_usuario: string, nom_contrasena: string, nom_correo: string): Observable<Usuario> {
     const idu_rol = Idu_Rol.INVITADO; 
     return this.http.post<Usuario>(`${this.baseUrl}/auth/register`, {
-      numero_empleado,
+      num_empleado,
       nom_usuario,
       nom_contrasena,
       idu_rol,
@@ -45,7 +45,7 @@ export class AuthService {
       }),
       tap(user => {
         const title = 'Registró exitoso';
-        const content = `¡Se ha registrado exitosamente el usuario ${user.numero_empleado}!`
+        const content = `¡Se ha registrado exitosamente el usuario ${user.num_empleado}!`
         this.notificationsService.successMessage(title,content);
       }),
       tap(() => this.router.navigate(['/apps/list-apps'])),
@@ -53,9 +53,9 @@ export class AuthService {
     );
   }
 
-  loginUser(numero_empleado: string, nom_contrasena: string): Observable<Usuario> {
+  loginUser(num_empleado: string, nom_contrasena: string): Observable<Usuario> {
     return this.http.post<Usuario>(`${this.baseUrl}/auth/login`, {
-      numero_empleado,
+      num_empleado,
       nom_contrasena
     })
     .pipe(

@@ -78,9 +78,9 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
     if(this.isDeleting || user.idu_usuario === this.userLogged?.idu_usuario) return;
 
     this.isDeleting = true; 
-    this.idToDelete  = user.numero_empleado;
+    this.idToDelete  = user.num_empleado;
   
-    const message = `¿Deseas eliminar al usuario ${user.numero_empleado}?`;
+    const message = `¿Deseas eliminar al usuario ${user.num_empleado}?`;
     this.confirmationService.confirm({
       message,
       header: 'Eliminar usuario',
