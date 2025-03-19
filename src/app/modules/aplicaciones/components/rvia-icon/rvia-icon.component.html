@@ -1,0 +1,28 @@
+<i *ngIf="(mainProcess && numProcess === NumberAction.NONE) || 
+    (!mainProcess && !opcArquitectura); else process"
+    [class]="'icon-base pi ' + iconName" 
+    tooltipPosition="top"
+    style="font-size: 1.6rem"
+    [pTooltip]="tooltipContentMain">
+</i><!-- Icono no modificar -->
+
+<ng-template #process>
+    <i 
+        [class]="'icon-base pi ' + iconName + ' ' + infoIcon.sColor" 
+        [ngClass]="{'c-pointer': this.status === StatusApp.DONE}"
+        tooltipPosition="top"
+        style="font-size: 1.6rem"
+        [pTooltip]="tooltipContentMain"
+        >
+    </i>        
+</ng-template><!-- Icono de algun proceso -->
+
+<!-- Tooltip -->
+<ng-template #tooltipContentMain>
+    <div class="flex flex-column">
+        <p class="m-0 mb-1 p-0 pb-2" style="border-bottom: 1px solid #fff;">
+            {{ infoIcon.name }}
+        </p>
+        <span>Estatus: <b>{{ infoIcon.sName }}</b></span>
+    </div>
+</ng-template>

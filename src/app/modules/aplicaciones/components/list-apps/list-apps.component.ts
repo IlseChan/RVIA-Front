@@ -1,29 +1,24 @@
-import { Component, OnDestroy, OnInit, ViewChildren, QueryList, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
 
-import { ConfirmationService } from 'primeng/api';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { Dropdown } from 'primeng/dropdown';
 import { Table } from 'primeng/table';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { AuthService } from '@modules/auth/services/auth.service';
-import { StatusAppPipe } from "../../pipes/status-app.pipe";
-import { FormUpPdfComponent } from '../form-up-pdf/form-up-pdf.component';
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { downloandFile } from '@modules/shared/helpers/downloadFile';
 import { Aplication, ArquitecturaOpciones, NumberAction, StatusApp } from '@modules/aplicaciones/interfaces';
+import { RviaIconComponent } from '../rvia-icon/rvia-icon.component';
 
 @Component({
   selector: 'list-apps',
   standalone: true,
-  imports: [CommonModule, StatusAppPipe, RouterLink, PrimeNGModule],
+  imports: [CommonModule, RouterLink, PrimeNGModule, RviaIconComponent],
   templateUrl: './list-apps.component.html',
   styleUrls: ['./list-apps.component.scss'],
-  providers: [ConfirmationService, DialogService],
 })
 export class ListAppsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
@@ -40,19 +35,16 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   loadingDataPage: boolean = true;
   rowsPerPageOpts: number[] = [10,15,20,25];
 
-  colums: string[] = ['#', 'ID proyecto', 'Nombre', 'Proceso'];
+  // colums: string[] = ['#', 'ID proyecto', 'Nombre', 'Proceso/Acciones', 'Costos']; //Con costos
+  colums: string[] = ['#', 'ID proyecto', 'Nombre', 'Proceso/Acciones'];
   isLoading: boolean = true;
 
   isDownload: boolean = false;
-  ref: DynamicDialogRef | undefined;
   lastUpadate: string = '';
-
-  @ViewChildren('dropdown') dropdowns!: QueryList<Dropdown>;
 
   constructor(
     private aplicacionService: AplicacionesService,
     private authService: AuthService,
-    private dialogService: DialogService
   ) {}
   
   ngOnInit(): void {
@@ -62,12 +54,8 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   }
 
   setColumns(): void {
-    if (this.user && this.user.position.nom_rol !== Nom_Rol.INVITADO) {
-      this.colums.push('Costos');
-
-      if (this.user.position.nom_rol !== Nom_Rol.USUARIO) {
-        this.colums.splice(2, 0, 'Usuario');
-      }
+    if (this.user && (this.user.position.nom_rol === Nom_Rol.ADMINISTRADOR || this.user.position.nom_rol === Nom_Rol.AUTORIZADOR)) {
+      this.colums.splice(2, 0, 'Usuario');
     }
   }
 
@@ -104,16 +92,9 @@ export class ListAppsComponent implements OnInit, OnDestroy {
     this.aplicacionService.changes = true;
     this.onGetAplicaciones();
   }
-  
-  getDropdownPlaceholder(app: Aplication): string {
-    return app.num_accion === NumberAction.NONE ? 'Sin modificar el código' :
-           app.num_accion === NumberAction.UPDATECODE ? 'Actualización' :
-           app.num_accion === NumberAction.MIGRATION ? 'Migración' :
-           app.num_accion === NumberAction.SANITIZECODE ? 'Sanitización' : '';
-  }
 
   onDownloadFile(app: Aplication): void {
-    if (this.isDownload) return;
+    if (this.isDownload || app.applicationstatus.idu_estatus_aplicacion !== StatusApp.DONE) return;
     this.isDownload = true;
     this.aplicacionService.downloadFile(app.idu_aplicacion)
       .pipe(takeUntil(this.destroy$))
@@ -129,31 +110,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
       });
   }
 
-  showFormUploadPDF(app: Aplication) {
-    if (app.applicationstatus.idu_estatus_aplicacion !== this.StatusApps.DONE && 
-      app.checkmarx.length === 0) {
-      this.aplicacionService.appPDFSubject.next(app);
-      this.ref = this.dialogService.open(FormUpPdfComponent, {
-          header: 'Subir archivo .pdf',
-          width: '50vw',
-          contentStyle: { overflow: 'auto' },
-          breakpoints: {
-              '960px': '75vw',
-              '640px': '90vw'
-          },
-          maximizable: false,
-      });
-
-      this.ref.onClose.subscribe((resp) => {
-        if (resp) {
-          this.onGetAplicaciones();
-        }
-      });
-    }
-  }
-
   ngOnDestroy(): void {
-    if (this.ref) this.ref.close();
     this.destroy$.next();
     this.destroy$.complete();
   }
