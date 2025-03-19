@@ -1,6 +1,6 @@
 <main class="m-2">
     <section class="flex justify-content-center md:justify-content-start  mt-3">
-        <h1 class="txt-title inline text-5xl my-0">Lista de usuarios</h1>
+        <h1 class="txt-tiltle-color inline text-5xl my-0">Lista de usuarios</h1>
     </section>
     
     <div *ngIf="isLoading" class="card flex justify-content-center my-6">
@@ -13,7 +13,18 @@
     
     <section *ngIf="!isLoading && users.length > 0" class="mt-4">
         <div class="card">
-            <p-table [value]="users" [tableStyle]="{'min-width': '40rem'}" [lazy]="true" >
+            <p-table 
+                [value]="users"
+                [lazy]="true"
+                (onLazyLoad)="loadData($event)"
+                [paginator]="true"
+                [rows]="10"
+                [rowsPerPageOptions]="rowsPerPageOpts"
+                [totalRecords]="totalItems"
+                [loading]="loadingDataPage"
+                [tableStyle]="{'min-width': '40rem'}"
+                [lazy]="true"
+            >
                 <ng-template pTemplate="header">
                     <tr class="rvia-header">
                         <th *ngFor="let col of columns">
@@ -22,8 +33,8 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-user let-index="rowIndex">
-                    <tr [ngClass]="{'deleting': isDeleting && user.numero_empleado === idToDelete}">
-                        <td>{{ user.numero_empleado }}</td>
+                    <tr [ngClass]="{'deleting': isDeleting && user.num_empleado === idToDelete}">
+                        <td>{{ user.num_empleado }}</td>
                         <td>{{ user.nom_usuario }}</td>
                         <td>{{ user.position.nom_rol }}</td>
                         <td>
@@ -50,12 +61,6 @@
                 </ng-template>
             </p-table>
         </div>
-        <p-paginator 
-            (onPageChange)="onPageChange($event)" 
-            [first]="0"
-            [rows]="elementPerPage" 
-            [totalRecords]="totalItems" 
-        />
     </section>
     <p-confirmDialog/>
 </main>

@@ -1,4 +1,4 @@
-import { CommonModule, NgIf, NgFor } from '@angular/common';
+import { CommonModule, NgIf } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, takeUntil, switchMap, tap } from 'rxjs';
@@ -13,7 +13,7 @@ import { AppsToUseSelect } from '@modules/aplicaciones/interfaces';
 @Component({
   selector: 'execute-documentacion',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule, NgIf, NgFor],
+  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule, NgIf],
   providers: [ConfirmationService],
   templateUrl: './execute-documentacion.component.html',
   styleUrls: ['./execute-documentacion.component.scss']

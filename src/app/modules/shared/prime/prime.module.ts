@@ -4,6 +4,7 @@ import { BadgeModule } from 'primeng/badge';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ConfirmDialogModule } from 'primeng/confirmdialog'; 
+import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
@@ -18,7 +19,8 @@ import { StepsModule } from 'primeng/steps';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-
+import { IconFieldModule } from 'primeng/iconfield';
+import { InputIconModule } from 'primeng/inputicon';
 @NgModule({
   declarations: [],
   imports: [
@@ -26,6 +28,7 @@ import { TooltipModule } from 'primeng/tooltip';
     ButtonModule,
     CheckboxModule,
     ConfirmDialogModule,
+    DialogModule,
     DividerModule,
     DropdownModule,
     DynamicDialogModule,
@@ -40,12 +43,15 @@ import { TooltipModule } from 'primeng/tooltip';
     TableModule,
     TagModule,
     TooltipModule,
+    IconFieldModule,
+    InputIconModule
   ],
   exports:[
     BadgeModule,
     ButtonModule,
     CheckboxModule,
     ConfirmDialogModule,
+    DialogModule,
     DividerModule,
     DropdownModule,
     DynamicDialogModule,
@@ -60,6 +66,8 @@ import { TooltipModule } from 'primeng/tooltip';
     TableModule,
     TagModule,
     TooltipModule,
+    IconFieldModule,
+    InputIconModule
   ]
 })
 export class PrimeNGModule { }

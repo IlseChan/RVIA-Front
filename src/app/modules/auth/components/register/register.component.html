@@ -13,6 +13,7 @@
           required
           placeholder="Ej. 90000000"
           autocomplete="off"
+          (ngModelChange)="onInputChange()"
         />
       </div>
       <div class="flex flex-column gap-2 mb-3">
@@ -26,6 +27,7 @@
           required
           placeholder="Nombre completo"
           autocomplete="off"
+          (ngModelChange)="onInputChange()"
         />
       </div>
       <div class="flex flex-column gap-2 mb-3">
@@ -40,6 +42,7 @@
           required
           placeholder="ejemplo@coppel.com"
           autocomplete="off"
+          (ngModelChange)="onInputChange()"
         />
       </div>
       <div class=" flex flex-column gap-2 mb-3">
@@ -69,6 +72,7 @@
           required
           placeholder="Contraseña"
           autocomplete="off"
+          (ngModelChange)="onInputChange()"
         />
       </div>
       <div class=" flex flex-column gap-2 mb-3">
@@ -85,7 +89,16 @@
           required
           placeholder="Confirma tu contraseña"
           autocomplete="off"
+          (ngModelChange)="onInputChange()"
         />
+      </div>
+      <div class="flex align-items-center gap-2 mb-3">
+        <p-checkbox [(ngModel)]="termAccepted" 
+          [binary]="true" name="termAccepted" 
+          required (click)="showTerms(true)"
+          (ngModelChange)="onInputChange()
+        "/>
+        <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
       </div>
       <div *ngIf="errorMessage" class="mb-3 text-red text-center">
         {{ errorMessage }}
@@ -96,7 +109,7 @@
           [label]="btnLabel" 
           styleClass="w-full"
           iconPos="right"
-          [disabled]="registerForm.form.invalid || isRegister || isReady" 
+          [disabled]="registerForm.form.invalid || isRegister || isReady || !termAccepted" 
         />
         <p-button 
           class="text-center" 
@@ -106,4 +119,17 @@
       </div>
     </form>
   </section>
+  <p-dialog 
+    header="Términos y Condiciones Generales de Servicio RVIA" 
+    [modal]="true" 
+    [(visible)]="isShowTerms" 
+    [style]="{ width: '50rem' }" 
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+      <div class="mb-2" *ngFor="let term of termsAndConditions">
+        <h3 class="mb-2">
+          {{ term.title }}
+        </h3>
+        <p [innerHTML]="term.content"></p>
+      </div>
+  </p-dialog>
 </main>

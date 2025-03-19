@@ -3,7 +3,6 @@
   border-bottom: 1px solid #ddd;
 
   .hamburger {
-    color: var(--rvia-primary-color) !important;
     background: none;
     border: none;
   }
@@ -11,18 +10,8 @@
   .user-info {
     direction: rtl;
 
-    .userposition {
-      // color: #ffc107;
-      color: var(--rvia-primary-color);
-    }
-
     .separator {
-      color: var(--rvia-primary-color);
       direction: ltr;
-    }
-
-    .nom_user{
-      color: #000
     }
   }
 }
@@ -80,10 +69,6 @@
     width: 100%;
   }
 
-  .icon-color{
-    color: var(--rvia-primary-color);
-  }
-
   ul li{
     margin: 4px 0;
 
@@ -102,7 +87,6 @@
     align-self: flex-end;
     background: none;
     border: none;
-    color: var(--rvia-primary-color) !important;
   }
 
   .logout-button {
@@ -133,10 +117,6 @@
   }
 }
 
-.text-divider {
-  color: var(--rvia-primary-color);
-}
-
 .divider-rvia{
   border: 0.5px solid var(--hover-rvia-primary-color);
 }
@@ -164,11 +144,8 @@
     margin-left: 0;
   }
 }
+
 .generated-number {
   font-size: 8px;
   color: rgb(180, 174, 174);
-  display: block;
-  text-align: right;
-  margin-top: 4px; 
-  margin-left: 10px;
 }
