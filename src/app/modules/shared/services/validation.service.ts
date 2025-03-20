@@ -12,7 +12,7 @@ export class ValidationService {
   private csvTypes = ['text/csv','application/csv','application/vnd.ms-excel'];
   
   private rgxUrlGit = /^(https?:\/\/)?(www\.)?(github|gitlab)\.com\/[\w.-]+\/[\w.-]+(-[\w.-]*)?\.git$/;
-  private rgxNameUser = /^[A-Z][a-z]+(?:\s+[A-Z][a-z]+){2,}$/;       
+  private rgxNameUser = /^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ]{2,}(?: [A-Za-zÁÉÍÓÚáéíóúÜüÑñ]+){2,}$/;       
 
   constructor() { }
 
