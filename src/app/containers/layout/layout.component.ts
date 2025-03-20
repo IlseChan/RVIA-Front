@@ -1,26 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
 
 import { PrimeIcons } from 'primeng/api';
 import { DividerModule } from 'primeng/divider';
 
 import { AuthService } from '@modules/auth/services/auth.service';
-import { GeneratedNumberService } from '@modules/shared/services/generated-number.service'; 
-import { TitleCasePipe } from '@angular/common'; 
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
+import { CoreService } from '@modules/shared/services/core.service';
 
 @Component({
-  selector: 'app-layout',
+  selector: 'layout',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive,
-    RouterOutlet, DividerModule, TitleCasePipe 
+    RouterOutlet, DividerModule 
   ],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
 })
-export class LayoutComponent implements OnInit {
+export class LayoutComponent implements OnInit, OnDestroy {
   userLogged!: Usuario | null;
   menuSidebar = [
     { path: '/apps/home', name: 'Inicio', icon: PrimeIcons.HOME },
@@ -40,17 +40,18 @@ export class LayoutComponent implements OnInit {
 
   Nom_rol = Nom_Rol;
   sidebarActive = false;
-  generatedNumber: string | null = null;
-
+  coreVersion: string = '';
+  private destroy$ = new Subject<void>();
+  
   constructor(
     private router: Router,
     private authService: AuthService,
-    private generatedNumberService: GeneratedNumberService 
+    private coreService: CoreService 
   ) {}
 
   ngOnInit(): void {
     this.userLogged = this.authService.userLogged;
-    this.getGeneratedNumber();
+    this.getCoreVersion();
 
     if (this.userLogged?.position.nom_rol !== Nom_Rol.INVITADO) {
       this.menuSidebar.push(
@@ -59,15 +60,15 @@ export class LayoutComponent implements OnInit {
     }
   }
 
-  getGeneratedNumber(): void {
-    this.generatedNumberService.getGeneratedNumber()
+  getCoreVersion(): void {
+    this.coreService.getCoreVersion()
+      .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (response: string) => {
-          this.generatedNumber = response;
+        next: (version: string) => {
+          this.coreVersion = version;
         },
-        error: (error: unknown) => {
-          console.error('Error al obtener el número:', error);
-          this.generatedNumber = null;
+        error: (e) => {
+          this.coreVersion = '';
         }
       });
   }
@@ -83,5 +84,10 @@ export class LayoutComponent implements OnInit {
   logout(): void {
     this.authService.logoutUser();
     this.router.navigate(['/auth/login']);
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
