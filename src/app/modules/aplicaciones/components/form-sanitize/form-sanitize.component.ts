@@ -2,7 +2,7 @@ import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, map } from 'rxjs';
 
 import { RadioButtonClickEvent } from 'primeng/radiobutton';
 
@@ -37,10 +37,10 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   ];
 
   actionsOps = [
-    { value: NumberAction.NONE, txt: 'No modificar código' }, //con arquitectura
     { value: NumberAction.UPDATECODE, txt: 'Actualizar código (Migración de versión a la más actual del mismo lenguaje)' },
-    { value: NumberAction.SANITIZECODE, txt: 'Sanitizar código (Mitigación de vulnerabilidades checkmarx)' },
     { value: NumberAction.MIGRATION, txt: 'Migrar código (Migración de un lenguaje de programación a otro)' },
+    { value: NumberAction.SANITIZECODE, txt: 'Sanitizar código (Mitigación de vulnerabilidades checkmarx)' },
+    { value: NumberAction.NONE, txt: 'No modificar código' },
   ];
   actionOpsValues: number[] = this.actionsOps.map(a => a.value);
   
@@ -55,10 +55,9 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   lenguagesOps: Language[] = [];
 
   activeIndex: number = 0;
-  selectedValue: number = 0; //en 1 sin arquitectura
+  selectedValue: number = 1;
   readonly headersBase = [
     { label: 'Acciones'},
-    { label: 'Arquitectura'}, 
     { label: 'Tipo de proyecto'},
     { label: 'Seleccionar proyecto'},
     { label: 'Resumen'},
@@ -88,8 +87,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
 
   private initForm(): void{
     this.formFiles = new FormGroup({
-      // action:  new FormControl(1,[Validators.required]), //sin arquitectura
-      action:  new FormControl(0,[Validators.required]), //con arquitectura
+      action:  new FormControl(1,[Validators.required]), 
       archiDocOverOpt: new FormControl([]),
       archiDocCodeOpt: new FormControl([]),
       archiCasesOpt: new FormControl([]),
@@ -144,49 +142,34 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     this.selectedValue = value;
     if(this.selectedValue === NumberAction.SANITIZECODE){
       let itemsOpc = [...this.headersBase];
-      itemsOpc.splice(this.headersBase.length - 1,0, {label: 'Seleccionar PDF'});
+      itemsOpc.splice(this.headersBase.length - 1,0, { label: 'Seleccionar PDF' });
       this.headers = [...itemsOpc];       
-    }else if(this.headers.length === this.headersBase.length + 1){
+    }else if(this.selectedValue === NumberAction.NONE){
+      let itemsOpc = [...this.headersBase];
+      itemsOpc.splice(this.headersBase.length - 1,0, { label: 'Arquitectura' });
+      this.headers = [...itemsOpc];
+    }else {
       this.headers = [...this.headersBase];
     }
   }
 
   changeStep(value: number) {
     if(value < 0){
-      // conarquitectura
-      // <----
       if(this.activeIndex === 1){
-        this.cleanInput('architec');
-      }
-  
-      if(this.activeIndex === 2){
         this.cleanInput('type');
       }
-  
-      if(this.activeIndex === 3){
+      
+      if(this.activeIndex === 2){
         this.cleanInput('project');
       }
-  
+      
+      if(this.activeIndex === 3 && this.selectedValue === NumberAction.NONE){
+        this.cleanInput('architec');
+      }
+
       if(this.activeIndex === 3 && this.selectedValue === NumberAction.SANITIZECODE){
         this.cleanInput('pdf');
       }
-      // ---->
-
-      // Sin arquitectura
-      // <----
-      // if(this.activeIndex === 1){
-      //   this.cleanInput('type');
-      // }
-  
-      // if(this.activeIndex === 2){
-      //   this.cleanInput('project');
-      // }
-  
-      // if(this.activeIndex === 3 && this.selectedValue === NumberAction.SANITIZECODE){
-      //   this.cleanInput('pdf');
-      // }
-      // ---->
-      
     }
 
     this.activeIndex += value;
@@ -221,25 +204,17 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   }
 
   checkDisabled(): boolean {
-    // conarquitectura
-    // <----
-    if(this.activeIndex === 0 && this.selectedValue === 3){
-     return this.formFiles.controls['language'].value === null
-    }
 
-    if(this.activeIndex === 1 && this.selectedValue === 0){
-     const { 
-      archiDocOverOpt, archiDocCodeOpt,
-      archiCasesOpt,archiRateOpt } = this.formFiles.value;     
-     return !archiCasesOpt[0] && !archiDocOverOpt[0] && !archiDocCodeOpt[0] && !archiRateOpt[0];
+    if(this.activeIndex === 0 && this.selectedValue === NumberAction.MIGRATION){
+      return this.formFiles.controls['language'].value === null
     }
-
-    if(this.activeIndex === 2){
-     return !(this.formFiles.controls['type'].value === 'zip' 
+ 
+    if(this.activeIndex === 1){
+      return !(this.formFiles.controls['type'].value === 'zip' 
         || this.formFiles.controls['type'].value === 'git')  
     }
-
-    if(this.activeIndex === 3){
+ 
+    if(this.activeIndex === 2){
       const opt = this.formFiles.controls['type'].value;
       const formZip = this.formFiles.controls['zipFile'];
       const zipValid = !formZip.errors && formZip.value !== null;
@@ -249,38 +224,17 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
     }
 
-    if(this.activeIndex === 4 && this.selectedValue === NumberAction.SANITIZECODE){
+    if(this.activeIndex === 3 && this.selectedValue === NumberAction.SANITIZECODE){
       return !!this.formFiles.controls['pdfFile'].errors || 
         !this.formFiles.controls['pdfFile'].value 
     }
-    // ---->
 
-    // Sin arquitectura
-    // <----
-    // if(this.activeIndex === 0 && this.selectedValue === 3){
-    //   return this.formFiles.controls['language'].value === null
-    // }
- 
-    // if(this.activeIndex === 1){
-    //   return !(this.formFiles.controls['type'].value === 'zip' 
-    //     || this.formFiles.controls['type'].value === 'git')  
-    // }
- 
-    //  if(this.activeIndex === 2){
-    //    const opt = this.formFiles.controls['type'].value;
-    //    const formZip = this.formFiles.controls['zipFile'];
-    //    const zipValid = !formZip.errors && formZip.value !== null;
-    //    const formGit = this.formFiles.controls['urlGit'];
-    //    const gitValid = !formGit.errors && formGit.value !== null;
-     
-    //    return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
-    //  }
- 
-    //  if(this.activeIndex === 3 && this.selectedValue === NumberAction.SANITIZECODE){
-    //    return !!this.formFiles.controls['pdfFile'].errors || 
-    //      !this.formFiles.controls['pdfFile'].value 
-    //  }
-    // ---->
+    if(this.activeIndex === 3 && this.selectedValue === NumberAction.NONE){
+      const { 
+       archiDocOverOpt, archiDocCodeOpt,
+       archiCasesOpt,archiRateOpt } = this.formFiles.value;     
+      return !archiCasesOpt[0] && !archiDocOverOpt[0] && !archiDocCodeOpt[0] && !archiRateOpt[0];
+    }
 
     return false;
   }
@@ -298,8 +252,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   }
 
   get projectAction(): string {
-    // return this.actionsOps[this.selectedValue - 1].txt; //sin arquitectura
-    return this.actionsOps[this.selectedValue].txt; //con arquitectura
+    const currentAction = this.actionsOps.find(opt => opt.value === this.selectedValue);
+    return currentAction ? currentAction.txt : 'Error en nombre de la acción';
   }
 
   get projectLanguage(): string {
@@ -317,7 +271,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     return this.formFiles.controls['pdfFile'].value.name; 
   }
 
-  get servicesProject(): string {
+  get servicesProject(): string | null{
     const { 
       archiDocOverOpt, archiDocCodeOpt,
       archiCasesOpt,archiRateOpt } = this.formFiles.value;     
@@ -328,7 +282,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     if(archiCasesOpt[0])   txtOpc.push('Casos de pruebas');
     if(archiRateOpt[0])    txtOpc.push('Calificación de proyecto');
 
-    if(txtOpc.length === 0) return 'No aplica';
+    if(txtOpc.length === 0) return null;
 
     return txtOpc.join(' - ');
   }
@@ -351,6 +305,11 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     if(values.type === 'git' && !values.urlGit) return;
     if(values.action === NumberAction.MIGRATION && !values.language) return;
     if(values.action === NumberAction.SANITIZECODE && !values.pdfFile) return;
+  
+    if(values.action === NumberAction.NONE){
+      const v = Object.values(opt_archi).some(opt => opt === true);
+      if(!v) return 
+    }
 
     let { 
       archiCasesOpt, 
