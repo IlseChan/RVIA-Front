@@ -24,6 +24,7 @@
         <p-steps [model]="headers" [(activeIndex)]="activeIndex"
           [readonly]="true" class="stepper-opcs"
         />
+        <!-- Panel Accion del proyecto -->
         <section *ngIf="activeIndex === 0" class="stepper-panel h-23rem border-round surface-ground">
           <p>Selecciona la acción a realizar:</p>
           <div class="flex flex-column gap-3">
@@ -56,35 +57,11 @@
                 Debes seleccionar un lenguaje.
             </span>
           </div>
-        </section><!-- Panel Accion del proyecto -->
-     
-        <!-- Panel Arquitectura del proyecto -->
-        <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground justify-content-evenly gap-3">
-          <div class="flex flex-column justify-content-center align-items-center ">
-            <div class="flex flex-grow-1 align-items-center flex-basis-0 text-bluegray-400 mb-4">
-              <p class="m-0">Acción: <b class="txt-acent">{{ projectAction }}</b></p>
-            </div>
-            <div class="flex flex-column flex-grow-1 align-items-center justify-content-center">
-              <p>Servicios adicionales:</p>
-              <div class="card flex justify-content-center">
-                <div class="flex flex-column gap-2">
-                    <div *ngFor="let option of actionArchitec" class="field-checkbox">
-                        <p-checkbox 
-                            [formControlName]="option.form"
-                            [label]="option.txt"
-                            [name]="option.form"
-                            value="true"
-                          />
-                    </div>
-                </div>
-              </div>
-            </div>
-          </div>
         </section>
-        <!-- Panel Arquitectura del proyecto -->
+        <!-- Panel Accion del proyecto -->
         
-        <!-- <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground"> --> <!-- Sin Panel Arquitectura del proyecto -->
-        <section *ngIf="activeIndex === 2" class="stepper-panel h-23rem border-round surface-ground"> <!-- Con Panel Arquitectura del proyecto -->
+        <!-- Panel Tipo de proyecto -->
+        <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground">
           <p>Selecciona el tipo de proyecto que se subirá:</p>
           <div class="flex gap-3">
             <div class="flex align-items-center mx-3 py-2 px-3" *ngFor="let option of radioOps">
@@ -102,10 +79,11 @@
               </label>
             </div>
           </div>
-        </section><!-- Panel Tipo de proyecto -->
+        </section>
+        <!-- Panel Tipo de proyecto -->
 
-        <!-- <section *ngIf="activeIndex === 2" class="stepper-panel h-23rem border-round surface-ground"> --> <!-- Sin Panel Arquitectura del proyecto -->
-          <section *ngIf="activeIndex === 3" class="stepper-panel h-23rem border-round surface-ground"> <!-- Con Panel Arquitectura del proyecto -->
+        <!-- Panel Projecto zip/7z o github/gitlab-->
+        <section *ngIf="activeIndex === 2" class="stepper-panel h-23rem border-round surface-ground"> <!-- Sin Panel Arquitectura del proyecto -->
           <div *ngIf="formFiles.get('type')?.value === 'zip'" class="w-full">
             <p class="text-center">Selecciona el archivo <b>.zip</b> o <b>.7z</b> de tu proyecto:</p>
             <div class="flex-auto flex flex-column justify-content-center align-items-center w-full">
@@ -147,12 +125,11 @@
               </span>
             </div>
           </div>
-        </section> <!-- Panel Projecto zip/7z o github/gitlab-->
+        </section> 
+        <!-- Panel Projecto zip/7z o github/gitlab-->
 
-        <!-- Sin Panel Arquitectura del proyecto -->
-        <!-- <section *ngIf="activeIndex === 3 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-23rem border-round surface-ground"> -->
-        <!-- Con Panel Arquitectura del proyecto -->
-        <section *ngIf="activeIndex === 4 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-23rem border-round surface-ground">
+        <!-- Panel PDF -->
+        <section *ngIf="activeIndex === 3 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-23rem border-round surface-ground">
           <div class="flex flex-column align-items-center justify-content-center w-full">
             <p>Puedes añadir el archivo <b>.pdf</b> de las vulnerabilidades de tu proyecto.</p>
             <div class="max-w-full" [style.width]="txtSizepdfFile + 'px'">
@@ -174,25 +151,50 @@
               Error al cargar el archivo, extensión valida <strong>.pdf</strong> 
             </span>
           </div>
-        </section><!-- Panel PDF opcional -->
+        </section>
+        <!-- Panel PDF -->
 
-        <!-- Sin Panel Arquitectura del proyecto -->
-        <!-- <section *ngIf="(activeIndex === 3  && selectedValue !== NumberAction.SANITIZECODE) || (activeIndex === 4  && selectedValue === NumberAction.SANITIZECODE) "  -->
-        <!-- Con Panel Arquitectura del proyecto -->
-        <section *ngIf="(activeIndex === 4  && selectedValue !== NumberAction.SANITIZECODE) || (activeIndex === 5  && selectedValue === NumberAction.SANITIZECODE) " 
+        <!-- Panel Arquitectura -->
+        <section  *ngIf="activeIndex === 3 && selectedValue === NumberAction.NONE" class="stepper-panel h-23rem border-round surface-ground justify-content-evenly gap-3">
+          <div class="flex flex-column justify-content-center align-items-center ">
+            <div class="flex flex-column flex-grow-1 align-items-center justify-content-center">
+              <p>Selecciona los servicios que deseas generar:</p>
+              <div class="card flex justify-content-center">
+                <div class="flex flex-column gap-2">
+                    <div *ngFor="let option of actionArchitec" class="field-checkbox">
+                        <p-checkbox 
+                            [formControlName]="option.form"
+                            [label]="option.txt"
+                            [name]="option.form"
+                            value="true"
+                          />
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Panel Arquitectura -->
+
+        <section *ngIf="(activeIndex === 4  && (selectedValue === NumberAction.NONE || selectedValue === NumberAction.SANITIZECODE)) ||
+            (activeIndex === 3  && (selectedValue === NumberAction.UPDATECODE || selectedValue === NumberAction.MIGRATION) )" 
           class="stepper-panel h-23rem border-round surface-ground">
           <p>Se subirá tu proyecto con los siguientes elementos: </p>
           <div>
             <p>Acción: <b>{{ projectAction  }}</b></p>
-            <p>Servicio adicional: <b>{{ servicesProject }}</b></p> <!--con arquitectura-->
-            <p *ngIf="selectedValue === NumberAction.MIGRATION && formFiles.get('language')?.value !== null">
-              Lenguaje para migrar: <b>{{ projectLanguage }}</b>
-            </p>
+            @if (selectedValue === NumberAction.NONE && servicesProject !== null) {
+              <p>Servicios de arquitectura: <b>{{ servicesProject }}</b></p>
+            }
+            @if(selectedValue === NumberAction.MIGRATION && formFiles.get('language')?.value !== null){
+              <p>
+                Lenguaje para migrar: <b>{{ projectLanguage }}</b>
+              </p>
+            }
             <p>Tipo de proyecto: <b>{{ projectType }} </b></p>
-            <p> Proyecto en: <b>{{ projectName }}</b> </p>
-            <p *ngIf="selectedValue === NumberAction.SANITIZECODE">
-              PDF: <b> {{ projectPDF }} </b>
-            </p>
+            <p>Proyecto en: <b>{{ projectName }}</b> </p>
+            @if(selectedValue === NumberAction.SANITIZECODE){
+              <p>PDF: <b> {{ projectPDF }} </b></p>
+            }
           </div> 
         </section><!-- Panel Resumen--> 
 
