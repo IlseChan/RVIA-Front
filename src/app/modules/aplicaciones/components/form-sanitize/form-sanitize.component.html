@@ -161,14 +161,16 @@
               <p>Selecciona los servicios que deseas generar:</p>
               <div class="card flex justify-content-center">
                 <div class="flex flex-column gap-2">
-                    <div *ngFor="let option of actionArchitec" class="field-checkbox">
-                        <p-checkbox 
-                            [formControlName]="option.form"
-                            [label]="option.txt"
-                            [name]="option.form"
-                            value="true"
-                          />
-                    </div>
+                  <div *ngFor="let option of actionArchitec" class="field-radiobutton">
+                    <p-radioButton 
+                      [inputId]="option.form" 
+                      [value]="option.form"
+                      name="architecSelected"
+                      formControlName="architecSelected"
+                      (onClick)="onRadioClick(option.form)"
+                    />              
+                    <label [for]="option.form" class="ml-2">{{ option.txt }}</label>
+                  </div>                  
                 </div>
               </div>
             </div>

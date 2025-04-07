@@ -92,6 +92,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       archiDocCodeOpt: new FormControl([]),
       archiCasesOpt: new FormControl([]),
       archiRateOpt: new FormControl([]),
+      architecSelected: new FormControl(null, Validators.required),
       language: new FormControl(null),
       pdfFile: new FormControl(null,[this.vldtnSrv.fileValidation('pdf')]),
       type:    new FormControl('zip',[Validators.required]),
@@ -152,6 +153,17 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       this.headers = [...this.headersBase];
     }
   }
+
+  onRadioClick(selectedForm: string): void {
+    this.formFiles.patchValue({
+      archiDocOverOpt: [],
+      archiDocCodeOpt: [],
+      archiCasesOpt: [],
+      archiRateOpt: [],
+      [selectedForm]: [true]
+    });
+  }
+
 
   changeStep(value: number) {
     if(value < 0){
