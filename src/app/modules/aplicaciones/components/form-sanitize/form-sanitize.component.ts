@@ -30,6 +30,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   formFiles!: FormGroup;
   isUploadFile: boolean = false;
   isUploadProject: boolean = false;
+  isMigrationEnabled = false;
 
   radioOps = [
     { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
@@ -69,25 +70,31 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     private aplicacionesService: AplicacionesService, 
     private vldtnSrv: ValidationService,
     private router: Router,
-  ){}
+  )
+  
+  {}
   
   ngOnInit(): void {
+    this.isMigrationEnabled = false; // desactiva migración
     this.aplicacionesService.getLanguages()
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: (resp) => {
-        if(resp){
-          this.initForm();
-          this.lenguagesOps = resp;
-          this.isLoading = false;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (resp) => {
+          if(resp){
+            this.initForm();
+            this.lenguagesOps = resp;
+            this.isLoading = false;
+          }
         }
-      }
-    });
+      });
   }
-
+  
   private initForm(): void{
     this.formFiles = new FormGroup({
-      action:  new FormControl(1,[Validators.required]), 
+      action: new FormControl(
+        NumberAction.UPDATECODE, // ← CAMBIA `NumberAction.UPDATECODE` por `NumberAction.MIGRATION` si quieres que "Migrar código" sea la opción inicial seleccionada
+        [Validators.required]
+      ),
       archiDocOverOpt: new FormControl([]),
       archiDocCodeOpt: new FormControl([]),
       archiCasesOpt: new FormControl([]),
@@ -100,6 +107,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       zipFile: new FormControl(null,[this.vldtnSrv.fileValidation('zip'),this.vldtnSrv.noWhitespaceValidation()]),
     });
   }
+
 
   triggerFileInput(type: string): void {
     if(type === 'zip') this.zipInput.nativeElement.click();
@@ -153,7 +161,12 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       this.headers = [...this.headersBase];
     }
   }
-
+  setAction(value: number): void {
+    if (value === NumberAction.MIGRATION && !this.isMigrationEnabled) return; // ← ELIMINA esta línea para permitir seleccionar la opción "Migrar código" desde la interfaz
+    
+    this.formFiles.get('action')?.setValue(value);
+    this.changeRadioAction({ value } as RadioButtonClickEvent);
+  }
   onRadioClick(selectedForm: string): void {
     this.formFiles.patchValue({
       archiDocOverOpt: [],
@@ -185,6 +198,10 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     }
 
     this.activeIndex += value;
+    if (!this.isMigrationEnabled && this.formFiles.get('action')?.value === NumberAction.MIGRATION) {
+      this.formFiles.get('action')?.setValue(NumberAction.UPDATECODE); // ← ELIMINA todo este bloque si no quieres forzar el valor "Actualizar código" al volver atrás
+      this.selectedValue = NumberAction.UPDATECODE;
+    }
   }
 
   cleanInput(type: string): void {    
