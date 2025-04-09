@@ -351,7 +351,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   }
 
   uploadFiles(): void {
-    console.log('Ejecutando uploadFiles...'); // 👈 Prueba básica
     if(this.isUploadProject) return;
 
     this.isUploadProject = true;
