@@ -84,8 +84,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
         next: (resp) => {
           if(resp){
             this.initForm();
-            this.formFiles.patchValue({ architecSelected: 'archiDocOverOpt' });
-            this.onRadioClick('archiDocOverOpt'); // ← esto activa visualmente
             this.lenguagesOps = resp;
             this.isLoading = false;
           }
@@ -95,10 +93,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   
   private initForm(): void{
     this.formFiles = new FormGroup({
-      action: new FormControl(
-        NumberAction.UPDATECODE, 
-      ),
-      archiDocOverOpt: new FormControl([true]),
+      action: new FormControl(NumberAction.UPDATECODE),
+      archiDocOverOpt: new FormControl([]),
       archiDocCodeOpt: new FormControl({ value: [], disabled: true }),
       archiCasesOpt: new FormControl({ value: [], disabled: true }),
       archiRateOpt: new FormControl({ value: [], disabled: true }),
@@ -203,6 +199,12 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     }
 
     this.activeIndex += value;
+    if (this.selectedValue === NumberAction.NONE && this.activeIndex === 3) {
+      this.formFiles.patchValue({
+        architecSelected: 'archiDocOverOpt' // <-- solo efecto visual
+      });
+    }
+    
     if (!this.isMigrationEnabled && this.formFiles.get('action')?.value === NumberAction.MIGRATION) {
       this.formFiles.get('action')?.setValue(NumberAction.UPDATECODE); // ← ELIMINA todo este bloque si no quieres forzar el valor "Actualizar código" al volver atrás
       this.selectedValue = NumberAction.UPDATECODE;
