@@ -84,6 +84,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
         next: (resp) => {
           if(resp){
             this.initForm();
+            this.formFiles.patchValue({ architecSelected: 'archiDocOverOpt' });
+            this.onRadioClick('archiDocOverOpt'); // ← esto activa visualmente
             this.lenguagesOps = resp;
             this.isLoading = false;
           }
@@ -96,7 +98,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       action: new FormControl(
         NumberAction.UPDATECODE, 
       ),
-      archiDocOverOpt: new FormControl([]),
+      archiDocOverOpt: new FormControl([true]),
       archiDocCodeOpt: new FormControl({ value: [], disabled: true }),
       archiCasesOpt: new FormControl({ value: [], disabled: true }),
       archiRateOpt: new FormControl({ value: [], disabled: true }),
@@ -342,17 +344,21 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   }
 
   uploadFiles(): void {
+    console.log('Ejecutando uploadFiles...'); // 👈 Prueba básica
     if(this.isUploadProject) return;
 
     this.isUploadProject = true;
     const values = this.formFiles.value;
-    
+
+
     const opt_archi = {
-      '1': !!values.archiDocOverOpt.length, //1 - Documenacion overview
-      '2': !!values.archiDocCodeOpt.length, //2 - Documentacion por codigo
-      '3': !!values.archiCasesOpt.length,   //3 - Casos de prueba  
-      '4': !!values.archiRateOpt.length     //4 - Calificación de codigo
-    }
+      '1': Array.isArray(values.archiDocOverOpt) && values.archiDocOverOpt.length > 0,
+      '2': Array.isArray(values.archiDocCodeOpt) && values.archiDocCodeOpt.length > 0,
+      '3': Array.isArray(values.archiCasesOpt) && values.archiCasesOpt.length > 0,
+      '4': Array.isArray(values.archiRateOpt) && values.archiRateOpt.length > 0,
+    };
+
+
     
     if(!this.actionOpsValues.includes(values.action)) return;
     if(values.type === 'zip' && !values.zipFile) return;
