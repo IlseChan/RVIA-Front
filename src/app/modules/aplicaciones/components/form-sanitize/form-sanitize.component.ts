@@ -30,6 +30,9 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   formFiles!: FormGroup;
   isUploadFile: boolean = false;
   isUploadProject: boolean = false;
+  isMigrationEnabled = false; // ← Aquí controlas si esta activo o no
+  isArchiOptionEnabled = false; // ← Aquí controlas si esas opciones están activas o no
+
 
   radioOps = [
     { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
@@ -69,29 +72,37 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     private aplicacionesService: AplicacionesService, 
     private vldtnSrv: ValidationService,
     private router: Router,
-  ){}
+  )
+  
+  {}
   
   ngOnInit(): void {
+    this.isMigrationEnabled = false; // desactiva migración
     this.aplicacionesService.getLanguages()
-    .pipe(takeUntil(this.destroy$))
-    .subscribe({
-      next: (resp) => {
-        if(resp){
-          this.initForm();
-          this.lenguagesOps = resp;
-          this.isLoading = false;
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (resp) => {
+          if(resp){
+            this.initForm();
+            this.lenguagesOps = resp;
+            this.isLoading = false;
+          }
         }
-      }
-    });
+      });
   }
-
+  
   private initForm(): void{
     this.formFiles = new FormGroup({
-      action:  new FormControl(1,[Validators.required]), 
+      action: new FormControl(
+        NumberAction.UPDATECODE, 
+      ),
       archiDocOverOpt: new FormControl([]),
-      archiDocCodeOpt: new FormControl([]),
-      archiCasesOpt: new FormControl([]),
-      archiRateOpt: new FormControl([]),
+      archiDocCodeOpt: new FormControl({ value: [], disabled: true }),
+      archiCasesOpt: new FormControl({ value: [], disabled: true }),
+      archiRateOpt: new FormControl({ value: [], disabled: true }),
+
+
+      architecSelected: new FormControl(null, Validators.required),
       language: new FormControl(null),
       pdfFile: new FormControl(null,[this.vldtnSrv.fileValidation('pdf')]),
       type:    new FormControl('zip',[Validators.required]),
@@ -99,6 +110,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       zipFile: new FormControl(null,[this.vldtnSrv.fileValidation('zip'),this.vldtnSrv.noWhitespaceValidation()]),
     });
   }
+
 
   triggerFileInput(type: string): void {
     if(type === 'zip') this.zipInput.nativeElement.click();
@@ -152,6 +164,22 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       this.headers = [...this.headersBase];
     }
   }
+  setAction(value: number): void {
+    if (value === NumberAction.MIGRATION && !this.isMigrationEnabled) return; // ← ELIMINA esta línea para permitir seleccionar la opción "Migrar código" desde la interfaz
+    
+    this.formFiles.get('action')?.setValue(value);
+    this.changeRadioAction({ value } as RadioButtonClickEvent);
+  }
+  onRadioClick(selectedForm: string): void {
+    this.formFiles.patchValue({
+      archiDocOverOpt: [],
+      archiDocCodeOpt: [],
+      archiCasesOpt: [],
+      archiRateOpt: [],
+      [selectedForm]: [true]
+    });
+  }
+
 
   changeStep(value: number) {
     if(value < 0){
@@ -173,7 +201,22 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     }
 
     this.activeIndex += value;
+    if (!this.isMigrationEnabled && this.formFiles.get('action')?.value === NumberAction.MIGRATION) {
+      this.formFiles.get('action')?.setValue(NumberAction.UPDATECODE); // ← ELIMINA todo este bloque si no quieres forzar el valor "Actualizar código" al volver atrás
+      this.selectedValue = NumberAction.UPDATECODE;
+    }
+    if (
+      this.selectedValue === NumberAction.NONE &&
+      this.activeIndex === 4
+    ) {
+      // Agrega el paso "Resumen" si aún no está
+      const hasResumen = this.headers.some(h => h.label === 'Resumen');
+      if (!hasResumen) {
+        this.headers.push({ label: 'Resumen' });
+      }
+    }
   }
+  
 
   cleanInput(type: string): void {    
     if(type === 'architec'){
@@ -232,9 +275,18 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     if(this.activeIndex === 3 && this.selectedValue === NumberAction.NONE){
       const { 
        archiDocOverOpt, archiDocCodeOpt,
-       archiCasesOpt,archiRateOpt } = this.formFiles.value;     
-      return !archiCasesOpt[0] && !archiDocOverOpt[0] && !archiDocCodeOpt[0] && !archiRateOpt[0];
-    }
+       archiCasesOpt,archiRateOpt } = this.formFiles.getRawValue();
+       //= this.formFiles.value;     
+       const allDisabled = 
+          this.formFiles.get('archiDocCodeOpt')?.disabled &&
+          this.formFiles.get('archiCasesOpt')?.disabled &&
+          this.formFiles.get('archiRateOpt')?.disabled;
+
+        if (allDisabled) return false;
+
+        return !archiCasesOpt?.[0] && !archiDocOverOpt?.[0] &&
+              !archiDocCodeOpt?.[0] && !archiRateOpt?.[0];
+      }
 
     return false;
   }
@@ -271,20 +323,22 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     return this.formFiles.controls['pdfFile'].value.name; 
   }
 
-  get servicesProject(): string | null{
-    const { 
-      archiDocOverOpt, archiDocCodeOpt,
-      archiCasesOpt,archiRateOpt } = this.formFiles.value;     
-    const txtOpc = [];
-
-    if(archiDocOverOpt[0]) txtOpc.push('Documentación completa');
-    if(archiDocCodeOpt[0]) txtOpc.push('Documentación por código');
-    if(archiCasesOpt[0])   txtOpc.push('Casos de pruebas');
-    if(archiRateOpt[0])    txtOpc.push('Calificación de proyecto');
-
-    if(txtOpc.length === 0) return null;
-
-    return txtOpc.join(' - ');
+  get servicesProject(): string | null {
+    const {
+      archiDocOverOpt = [],
+      archiDocCodeOpt = [],
+      archiCasesOpt = [],
+      archiRateOpt = []
+    } = this.formFiles.value;
+  
+    const txtOpc: string[] = [];
+  
+    if (Array.isArray(archiDocOverOpt) && archiDocOverOpt[0]) txtOpc.push('Documentación completa');
+    if (Array.isArray(archiDocCodeOpt) && archiDocCodeOpt[0]) txtOpc.push('Documentación por código');
+    if (Array.isArray(archiCasesOpt) && archiCasesOpt[0]) txtOpc.push('Casos de pruebas');
+    if (Array.isArray(archiRateOpt) && archiRateOpt[0]) txtOpc.push('Calificación de proyecto');
+  
+    return txtOpc.length > 0 ? txtOpc.join(' - ') : null;
   }
 
   uploadFiles(): void {
