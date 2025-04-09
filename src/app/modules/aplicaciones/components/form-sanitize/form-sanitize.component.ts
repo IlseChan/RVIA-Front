@@ -201,9 +201,14 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     this.activeIndex += value;
     if (this.selectedValue === NumberAction.NONE && this.activeIndex === 3) {
       this.formFiles.patchValue({
-        architecSelected: 'archiDocOverOpt' // <-- solo efecto visual
+        architecSelected: 'archiDocOverOpt',
+        archiDocOverOpt: [true],
+        archiDocCodeOpt: [],
+        archiCasesOpt: [],
+        archiRateOpt: []
       });
     }
+    
     
     if (!this.isMigrationEnabled && this.formFiles.get('action')?.value === NumberAction.MIGRATION) {
       this.formFiles.get('action')?.setValue(NumberAction.UPDATECODE); // ← ELIMINA todo este bloque si no quieres forzar el valor "Actualizar código" al volver atrás
