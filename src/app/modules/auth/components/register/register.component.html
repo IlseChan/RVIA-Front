@@ -1,124 +1,225 @@
 <main class="main-container min-h-full px-4 py-5">
-  <section class="register-container w-auto md:w-27rem p-4 my-3 mx-auto border-round-lg">
-    <h2 class="text-center mt-0 mb-4">Registro</h2>
-    <form (ngSubmit)="onRegister()" #registerForm="ngForm">
-      <div class="flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Número de empleado</p>
-        <input 
-          pInputText
-          id="usernumber-reg"
-          name="usernumber-reg"
-          aria-describedby="usernumber-reg-input"
-          [(ngModel)]="usernumber" 
-          required
-          placeholder="Ej. 90000000"
-          autocomplete="off"
-          (ngModelChange)="onInputChange()"
-        />
-      </div>
-      <div class="flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Nombre de usuario</p>
-        <input 
-          pInputText
-          id="username-reg"
-          name="username-reg"
-          aria-describedby="username-reg-input"
-          [(ngModel)]="username" 
-          required
-          placeholder="Nombre completo"
-          autocomplete="off"
-          (ngModelChange)="onInputChange()"
-        />
-      </div>
-      <div class="flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Correo electrónico</p>
-        <input 
-          pInputText
-          type="email"
-          id="email-reg"
-          name="email-reg"
-          aria-describedby="email-reg-input"
-          [(ngModel)]="email" 
-          required
-          placeholder="ejemplo@coppel.com"
-          autocomplete="off"
-          (ngModelChange)="onInputChange()"
-        />
-      </div>
-      <div class=" flex flex-column gap-2 mb-3">
-        <div class="flex mb-2" >
-          <p class=" m-0 font-bold mt-auto">Contraseña</p>
-          <p-badge
-            class="ml-2"
-            [pTooltip]="tooltipContent"  
-            value="i" severity="contrast"
-            tooltipPosition="right" 
-            [style]="{'min-width': '20px', 'height': '22px', 'vertical-align': 'middle'}" />
+  <section class="register-container newsize p-4 my-3 mx-auto border-round-lg relative">
+    <div class="flex flex-grow-1 align-items-center justify-content-center">
+      <h1 class="txt-tiltle-color text-5xl my-0">Nueva cuenta</h1>
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
+      <div class="grid m-0 p-2">
+        <div class="field col-12 md:col-6 p-2 mb-0">
+          <p class="my-2 font-bold">
+            Número de empleado <span class="text-red">*</span>
+          </p>
+          <div class="flex flex-column">
+            <p-inputNumber 
+              formControlName="num_empleado" 
+              id="num_empleado"
+              [useGrouping]="false"
+              class="w-full"
+              placeholder="Ej. 90000000"
+              min="0"
+              max="99999999"
+            />
+            <small class="mt-2 pl-2 text-red" *ngIf="isValidField('num_empleado')">
+              Número de empleado inválido.
+            </small>
+          </div>
+        </div> <!-- Num empleado -->
+        
+        <div class="field col-12 md:col-6 p-2 mb-0">
+          <p class="my-2 font-bold">
+            Correo electrónico <span class="text-red">*</span>
+          </p>
+          <div class="flex flex-column">
+            <input
+              formControlName="nom_correo"
+              id="email-reg"
+              placeholder="ejemplo@coppel.com"
+              autocomplete="off"
+              class="w-full"
+              pInputText
+              type="text"
+            />
+            <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_correo')">
+              El correo electrónico inválido.
+            </small>
+          </div>
+        </div> <!-- Correo electronico -->
+
+        <div class="field col-12 p-2 mb-0" style="border: 1px solid blue;">
+          <p class="my-2 font-bold">
+              Nombre de usuario <span class="text-red">*</span>
+          </p>
+          <input
+            autocomplete="off"
+            placeholder="Nombre completo"
+            class="w-full"
+            pInputText id="username-reg"
+            type="text"
+            [value]=""
+          />
+        </div>
+        <div class="field col-12 md:col-6 p-2 mb-0" style="border: 1px solid blue;">
+          <div class="flex align-items-center">
+            <p class="my-2 font-bold">
+              Contraseña <span class="text-red">*</span>
+            </p>
+            <p-badge
+              class="ml-1"
+              [pTooltip]="tooltipContent"  
+              value="i" severity="contrast"
+              tooltipPosition="right" 
+              [style]="{'min-width': '20px', 'height': '22px', 'vertical-align': 'middle'}" />
             <ng-template #tooltipContent>
                 <div class="flex align-items-center text-sm">
                   <p>Crea una contraseña segura con almenos <b>12 caracteres, letras, números y símbolos combinados.</b></p>
                 </div>
             </ng-template>
+          </div>
+          <p-password 
+            inputId="passworduser-reg"
+            name="passworduser-reg"
+            aria-describedby="passworduser-reg-input"
+            [style]="{ width : '100%' }"
+            [inputStyle]="{ width : '100%' }"
+            [feedback]="false" 
+            [toggleMask]="true"
+            placeholder="Contraseña"
+            autocomplete="off"
+          />
         </div>
-        <p-password 
-          inputId="passworduser-reg"
-          name="passworduser-reg"
-          aria-describedby="passworduser-reg-input"
-          [style]="{width : '100%'}"
-          [inputStyle]="{width : '100%'}"
-          [(ngModel)]="password" 
-          [feedback]="false" 
-          [toggleMask]="true"
-          required
-          placeholder="Contraseña"
-          autocomplete="off"
-          (ngModelChange)="onInputChange()"
-        />
-      </div>
-      <div class=" flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Confirmar contraseña</p>
-        <p-password 
-          inputId="passworduserconf-reg"
-          name="passworduserconf-reg"
-          aria-describedby="passworduserconf-reg-input"
-          [style]="{width : '100%'}"
-          [inputStyle]="{width : '100%'}"
-          [(ngModel)]="confirmPassword" 
-          [feedback]="false" 
-          [toggleMask]="true"
-          required
-          placeholder="Confirma tu contraseña"
-          autocomplete="off"
-          (ngModelChange)="onInputChange()"
-        />
-      </div>
-      <div class="flex align-items-center gap-2 mb-3">
-        <p-checkbox [(ngModel)]="termAccepted" 
-          [binary]="true" name="termAccepted" 
-          required (click)="showTerms(true)"
-          (ngModelChange)="onInputChange()
-        "/>
-        <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
-      </div>
-      <div *ngIf="errorMessage" class="mb-3 text-red text-center">
-        {{ errorMessage }}
-      </div>
-      <div class="flex flex-column gap-3 mt-4">
-        <p-button 
-          type="submit"  
-          [label]="btnLabel" 
-          styleClass="w-full"
-          iconPos="right"
-          [disabled]="registerForm.form.invalid || isRegister || isReady || !termAccepted" 
-        />
-        <p-button 
-          class="text-center" 
-          label="Iniciar sesión" 
-          [link]="true" 
-          (onClick)="onBack()"/>
-      </div>
+        <div class="field col-12 md:col-6 p-2 mb-0" style="border: 1px solid blue;">
+          <p class="my-2 font-bold">
+            Confirmar contraseña <span class="text-red">*</span>
+          </p>
+          <p-password 
+            inputId="passworduserconf-reg"
+            name="passworduserconf-reg"
+            aria-describedby="passworduserconf-reg-input"
+            [style]="{ width : '100% '}"
+            [inputStyle]="{ width : '100%' }"
+            [feedback]="false" 
+            [toggleMask]="true"
+            placeholder="Confirma tu contraseña"
+            autocomplete="off"
+          />
+        </div>
+
+        <div class="field col-12 p-2 mb-0" style="border: 1px solid blue;">
+          <p class="my-2 font-bold">
+              Aplicación <span class="text-red">*</span>
+          </p>
+          <p-dropdown
+              id="position-edit"
+              [options]="['a','b']"  
+              optionLabel="nom_rol" 
+              optionValue="idu_usuario"
+              placeholder="Seleccionar rol"
+              [style]="{width : '100%'}" 
+          />
+        </div>
+        <div class="field col-12 md:col-6 p-2 mb-0" style="border: 1px solid blue;">
+          <p class="my-2 font-bold">
+            Número de centro <span class="text-red">*</span>
+          </p>
+          <input
+              placeholder="Ej. 300000"
+              class="w-full"
+              pInputText id="num_centro-reg"
+              type="text"
+            />
+        </div>
+        <div class="field col-12 md:col-6 mb-0" style="border: 1px solid blue;">
+          <p class="my-2 font-bold">
+            Nombre del centro <span class="text-red">*</span>
+          </p>
+          <input
+              placeholder="Nombre del centro"
+              class="w-full"
+              pInputText id="nom_centro-reg"
+              type="text"
+            />
+        </div>
+  
+        <div class="field col-12 md:col-6 p-2 mb-0" style="border: 1px solid blue;">
+          <p class="my-2 font-bold">
+            Nombre de tu gerente <span class="text-red">*</span>
+          </p>
+          <input
+              placeholder="Nombre de tu gerente"
+              class="w-full"
+              pInputText id="nom_gerente-reg"
+              type="text"
+            />
+        </div>
+        <div class="field col-12 md:col-6 mb-0" style="border: 1px solid blue;">
+          <p class="my-2 font-bold">
+            Nombre del lider del proyecto <span class="text-red">*</span>
+          </p>
+          <input
+              placeholder="Nombre del lider del proyecto"
+              class="w-full"
+              pInputText id="nom_lider-reg"
+              type="text"
+            />
+        </div>
+
+        <div class="field col-12 md:col-6 p-2 mb-0" style="border: 1px solid blue;">
+          <p class="my-2 font-bold">
+            Nombre de tu divisional <span class="text-red">*</span>
+          </p>
+          <input
+              placeholder="Nombre de tu divisional"
+              class="w-full"
+              pInputText id="nom_divisional-reg"
+              type="text"
+            />
+        </div>
+        <div class="field col-12 md:col-6 mb-0" style="border: 1px solid blue;">
+          <p class="my-2 font-bold">
+            Nombre de tu nacional <span class="text-red">*</span>
+          </p>
+          <input
+              placeholder="Nombre de tu nacional"
+              class="w-full"
+              pInputText id="nom_nacional-reg"
+              type="text"
+            />
+        </div>
+
+        <div class="field col-12 md:col-8 mb-0" style="border: 1px solid blue;">
+          <div class="flex align-items-center gap-2 mb-0">
+            <p-checkbox 
+              [binary]="true" name="termAccepted" 
+              (click)="showTerms(true)"
+            />
+            <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
+          </div>
+        </div>
+        <div class="field col-12 md:col-4 md:py-3 mb-0" style="border: 1px solid blue;">
+          <p-button 
+            type="submit"  
+            [label]="'Registrar'" 
+            [outlined]="true"
+            styleClass="w-full h-full"
+            [disabled]="true" 
+          />
+        </div>
+
+        <div class="col-12 mb-0 p-0 pl-2">
+          <p class="text-sm">¿Ya tienes una cuenta? <b class="c-pointer" (click)="goToLogin()">Inicia sesión</b>.</p>
+        </div>
+      </div>  
+      
+      <img 
+        src="assets/images/logo-rvia.png"
+        alt="Logo decorativo"
+        class="absolute bottom-0 right-0 opacity-20"
+        style="aspect-ratio: 2 / 1; width: 30%; object-fit: contain; pointer-events: none;"
+      />
     </form>
   </section>
+  
   <p-dialog 
     header="Términos y Condiciones Generales de Servicio RVIA" 
     [modal]="true" 

@@ -13,8 +13,7 @@ export class ValidationService {
   
   private rgxUrlGit = /^(https?:\/\/)?(www\.)?(github|gitlab)\.com\/[\w.-]+\/[\w.-]+(-[\w.-]*)?\.git$/;
   private rgxNameUser = /^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ]{2,}(?: [A-Za-zÁÉÍÓÚáéíóúÜüÑñ]+){2,}$/;       
-
-  constructor() { }
+  private rgxEmail = /^[A-Za-z0-9._%+-]+@coppel\.com$/;
 
   fileValidation(type:string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -96,6 +95,34 @@ export class ValidationService {
 
       return null
     }
+  }
+
+  employeeNumber(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if(value){
+        const usernumberInt = parseInt(value, 10);
+        return (usernumberInt > 90000000 && usernumberInt <= 99999999) 
+          ? null 
+          : { invalidNumber: true }
+      }
+
+      return null
+    }
+  }
+
+  emailCoppel(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if(value){
+        
+        return this.rgxEmail.test(value) 
+          ? null 
+          : { invalidEmail: true }
+      }
+
+      return null
+    } 
   }
  
 }

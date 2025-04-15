@@ -21,6 +21,7 @@ import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
+import { InputNumberModule } from 'primeng/inputnumber';
 @NgModule({
   declarations: [],
   imports: [
@@ -44,7 +45,8 @@ import { InputIconModule } from 'primeng/inputicon';
     TagModule,
     TooltipModule,
     IconFieldModule,
-    InputIconModule
+    InputIconModule,
+    InputNumberModule,
   ],
   exports:[
     BadgeModule,
@@ -67,7 +69,8 @@ import { InputIconModule } from 'primeng/inputicon';
     TagModule,
     TooltipModule,
     IconFieldModule,
-    InputIconModule
+    InputIconModule,
+    InputNumberModule
   ]
 })
 export class PrimeNGModule { }

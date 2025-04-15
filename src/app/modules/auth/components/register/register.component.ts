@@ -1,120 +1,130 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize, Subject } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { termsAndConditions } from './termsandcond';
+import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
-  selector: 'app-register',
+  selector: 'rvia-register',
   standalone: true,
-  imports: [NgIf, NgFor, FormsModule, PrimeNGModule],
+  imports: [ReactiveFormsModule, PrimeNGModule, NgFor, NgIf],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent {
-  usernumber: string = '';
-  username: string = '';
-  password: string = '';
-  confirmPassword: string = '';
-  email: string = '';
-  errorMessage: string = '';
-  termAccepted: boolean = false;
+export class RegisterComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   isRegister: boolean = false;
-  isReady: boolean = false;
-  btnLabel: string = 'Registrar';
-  connectionErrorMessage: string = '';
-  
+  registerForm!: FormGroup;
+
+  termAccepted: boolean = false;
   isShowTerms: boolean = false;
   termsAndConditions = termsAndConditions;
-  constructor(private router: Router, private authService: AuthService) {}
+
+  private router = inject(Router);
+  private authSr = inject(AuthService);
+  private vldtnSrv = inject(ValidationService);
+
+  ngOnInit(): void {
+    //TODO Traer las app para el select
+    this.initForm(); 
+  }
+
+  private initForm(): void {
+    this.registerForm = new FormGroup({
+      num_empleado: new FormControl(null,[Validators.required,this.vldtnSrv.employeeNumber()]),
+      nom_correo: new FormControl('',[Validators.required,this.vldtnSrv.emailCoppel()]),
+
+      nom_usuario: new FormControl('',[Validators.required,]),
+      nom_contrasena: new FormControl('',[Validators.required,]),
+      confirmPassword: new FormControl('', Validators.required),
+      termAccepted: new FormControl(false,[Validators.requiredTrue]),
+      num_centro: new FormControl('',[Validators.required,]),
+      nom_centro: new FormControl('',[Validators.required,]),
+      nom_lider: new FormControl('',[Validators.required,]),
+      nom_gerente: new FormControl('',[Validators.required,]),
+      nom_gerentena: new FormControl('',[Validators.required,]),
+      nom_gerentedi: new FormControl('',[Validators.required,]),
+      idu_aplicacion: new FormControl('',[Validators.required,]),
+    });
+  }
+
+  isValidField(field: string): boolean | null {
+    return this.registerForm.controls[field].errors && this.registerForm.controls[field].touched;
+  }
 
   onRegister(): void {
-    const trimmedUsernumber = this.usernumber.trim();
-    const trimmedUsername = this.username.trim();
-    const trimmedPassword = this.password.trim();
-    const trimmedConfirmPassword = this.confirmPassword.trim();
-    const trimmedEmail = this.email.trim();
 
-    const usernumberInt = parseInt(trimmedUsernumber, 10);
-    if (!((usernumberInt > 90000000 && usernumberInt <= 99999999) || usernumberInt < 100000000)) {
-      this.errorMessage = 'El número de empleado debe ser mayor a 90000000 y menor a 100000000';
-      return;
-    }
+  }
 
-    if (!/^(?=.*[A-ZÑ])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-zñÑ\d@$!%*?&#]{12,}$/.test(trimmedPassword)) {
-      this.errorMessage = 'La contraseña debe tener al menos 12 caracteres, una letra mayúscula, un número y un carácter especial';
-      return;
-    }
+  // onRegister(): void {
+  //   const trimmedUsername = this.username.trim();
+  //   const trimmedPassword = this.password.trim();
+  //   const trimmedConfirmPassword = this.confirmPassword.trim();
+
+  //   if (!/^(?=.*[A-ZÑ])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-zñÑ\d@$!%*?&#]{12,}$/.test(trimmedPassword)) {
+  //     this.errorMessage = 'La contraseña debe tener al menos 12 caracteres, una letra mayúscula, un número y un carácter especial';
+  //     return;
+  //   }
     
-    if (!/^\d+$/.test(trimmedUsernumber)) {
-      this.errorMessage = 'El número de empleado debe contener solo números';
-      return;
-    }
+  //   if (trimmedPassword !== trimmedConfirmPassword) {
+  //     this.errorMessage = 'Las contraseñas no coinciden';
+  //     return;
+  //   }
 
-    if (trimmedPassword !== trimmedConfirmPassword) {
-      this.errorMessage = 'Las contraseñas no coinciden';
-      return;
-    }
+  //   // Validación de nombre completo (al menos un nombre y dos apellidos con mayúsculas al principio)
+  //   if (!/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+){2,}$/.test(trimmedUsername)) {
+  //     this.errorMessage = 'Escribe nombre completo, con al menos un nombre y dos apellidos, todos comenzando con letra mayúscula, incluyendo acentos y ñ';
+  //     return;
+  //   }
 
-    if (!/\S+@\S+\.\S+/.test(trimmedEmail)) {
-      this.errorMessage = 'El correo electrónico no es válido';
-      return;
-    }
+  //   if(!this.termAccepted) {
+  //     this.errorMessage = 'Debes aceptar los términos y condiciones';
+  //     return;
+  //   }
 
-    // Validación del dominio @coppel
-    if (!/^[a-zA-Z0-9._%+-]+@coppel\.com$/.test(trimmedEmail)) {
-      this.errorMessage = 'El correo electrónico debe ser de la forma nombre@coppel.com';
-      return;
-    }
+  //   this.isRegister = true;
+  //   this.btnLabel = 'Registrando...';
+  //   this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
+  //     .pipe(
+  //       finalize(() => this.btnLabel = 'Registrar')
+  //     )
+  //     .subscribe({
+  //       next: () => {
+  //         this.errorMessage = '';
+  //         this.isReady = true;
+  //       },
+  //       error: (err) => {
+  //         if (err.status === 0) {
+  //           this.connectionErrorMessage = 'No se pudo conectar con el servidor.'; 
+  //         } else {
+  //           this.errorMessage = err.message || 'No se pudo conectar con el servidor. Favor de verificar.'; 
+  //         }
+  //         this.isRegister = false;
+  //       }
+  //     });
+  // }
 
-    // Validación de nombre completo (al menos un nombre y dos apellidos con mayúsculas al principio)
-    if (!/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+){2,}$/.test(trimmedUsername)) {
-      this.errorMessage = 'Escribe nombre completo, con al menos un nombre y dos apellidos, todos comenzando con letra mayúscula, incluyendo acentos y ñ';
-      return;
-    }
-
-    if(!this.termAccepted) {
-      this.errorMessage = 'Debes aceptar los términos y condiciones';
-      return;
-    }
-
-    this.isRegister = true;
-    this.btnLabel = 'Registrando...';
-    this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
-      .pipe(
-        finalize(() => this.btnLabel = 'Registrar')
-      )
-      .subscribe({
-        next: () => {
-          this.errorMessage = '';
-          this.isReady = true;
-        },
-        error: (err) => {
-          if (err.status === 0) {
-            this.connectionErrorMessage = 'No se pudo conectar con el servidor.'; 
-          } else {
-            this.errorMessage = err.message || 'No se pudo conectar con el servidor. Favor de verificar.'; 
-          }
-          this.isRegister = false;
-        }
-      });
-  }
-
-  onInputChange(): void {
-    this.errorMessage = '';
-  }
-
-  onBack(): void {
-    this.router.navigate(['/auth/login']);
-  }
+  // onInputChange(): void {
+  //   this.errorMessage = '';
+  // }
 
   showTerms(fromForm: boolean = false): void {
     if((fromForm && this.termAccepted) || !fromForm) {
       this.isShowTerms = !this.isShowTerms
     }
+  }
+
+  goToLogin(): void {
+    this.router.navigate(['/auth/login']);
+  }
+
+  ngOnDestroy(): void{
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,9 +1,17 @@
 .main-container{
-  background-color: #f8f9fa; 
+  background-color: #f5fbff; 
 }
-  
+
 .register-container {
   background-color: #f9f9f9;
-  border: 1px solid #ccc;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5) ;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) ;
+}
+
+.newsize{
+  width: 100%;
+  max-width: 100%;
+
+  @media (min-width: 768px) {
+    max-width: 600px;
+  }
 }

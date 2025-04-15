@@ -6,8 +6,8 @@ export const authRoutes: Routes = [
     {
         path: '',
         children: [
-            { path: 'login', component: LoginComponent },
-            { path: 'register', component: RegisterComponent },
+            { path: 'login', component: LoginComponent, title: 'RVIA - Iniciar sesión' },
+            { path: 'register', component: RegisterComponent, title: 'RVIA - Nueva cuenta' },
             { path: '**', redirectTo: 'register' }
         ]
     }
