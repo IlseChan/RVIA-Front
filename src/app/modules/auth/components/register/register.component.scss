@@ -2,6 +2,10 @@
   background-color: #f5fbff; 
 }
 
+:host ::ng-deep .p-steps .p-steps-item .p-menuitem-link {
+  background-color: #f9f9f9 !important;
+}
+
 .register-container {
   background-color: #f9f9f9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) ;
@@ -14,4 +18,16 @@
   @media (min-width: 768px) {
     max-width: 600px;
   }
+}
+
+::ng-deep .apps-panel {
+  max-width: 20vw !important;
+  overflow-x: auto !important;
+  width: auto !important;
+}
+
+::ng-deep .apps-panel .p-dropdown-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

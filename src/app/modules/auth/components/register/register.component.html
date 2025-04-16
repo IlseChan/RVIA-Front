@@ -74,7 +74,7 @@
 </main> -->
 
 <main class="main-container min-h-full px-4 py-5">
-  <section class="register-container newsize p-4 my-3 mx-auto border-round-lg relative">
+  <section class="register-container newsize p-4 my-3 mx-auto border-round-lg">
     <div class="flex flex-grow-1 align-items-center justify-content-center">
       <h1 class="txt-tiltle-color text-5xl my-0">Nueva cuenta</h1>
     </div>
@@ -97,7 +97,7 @@
                   formControlName="num_empleado" 
                   inputId="num_empleado-reg"
                   [useGrouping]="false"
-                  class="w-full"
+                  [style]="{ width : '100%' }"
                   placeholder="Ej. 90000000"
                   min="0"
                   max="99999999"
@@ -209,7 +209,7 @@
               </p>
               <div class="flex flex-column">
                 <p-dropdown
-                  formControlName="idu_puesto"
+                  formControlName="num_puesto"
                   id="position-reg"
                   [options]="positionsOpcs"  
                   optionLabel="nom_puesto" 
@@ -218,7 +218,7 @@
                   [showClear]="true"
                   [style]="{ width : '100%' }" 
                 />
-                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('idu_puesto')"> 
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('num_puesto')"> 
                   Debes seleccionar un puesto.
                 </small>
               </div>
@@ -245,6 +245,7 @@
                     optionLabel="nom_app"
                     placeholder="Selecciona una aplicación"
                     [style]="{ width : '100%' }"
+                    panelStyleClass="apps-panel"
                     [showClear]="true"
                     [filter]="true"
                     filterPlaceholder="Buscar aplicación..."
@@ -364,7 +365,7 @@
                 [disabled]="isRegister || checkDisabled()"
               />
           </ng-template>
-      </section>
+      </section><!--Botones-->
     </div>
   </section>
   
@@ -380,5 +381,5 @@
         </h3>
         <p [innerHTML]="term.content"></p>
       </div>
-  </p-dialog>
+  </p-dialog> <!--termimos-->
 </main>

@@ -33,38 +33,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ];
   activeIndex: number = 0;
   positionsOpcs: Position[] = [];
-  appsOpc: AppOrg[] = [
-    {
-      "idu_aplicacion": 65,
-      "nom_app": "Sistema Legado Tiendas Clientes Nuevos"
-  },
-  {
-      "idu_aplicacion": 66,
-      "nom_app": "Sistema Legado Tiendas Atención y Servicios"
-  },
-  ];
-  centrosOpc: Centro[] = [
-    {
-      "num_centro": 232390,
-      "nom_centro": "CLCN REMED DE VUL OMNIC Y SF"
-    },
-    {
-        "num_centro": 232490,
-        "nom_centro": "CLCN ANALISIS DE REQ AFORE"
-    }
-  ];
-  encargados: Encargado[] =  [
-    {
-        "idu_encargado": 1,
-        "num_empleado": 90000011,
-        "nom_empleado": "Arturo Solis R"
-    },
-    {
-        "idu_encargado": 2,
-        "num_empleado": 90000031,
-        "nom_empleado": "Luis del Rosario Bayliss"
-    }
-  ];
+  appsOpc: AppOrg[] = [];
+  centrosOpc: Centro[] = [];
+  encargados: Encargado[] =  [];
+
   isNotDivisional: boolean = false;
   txtPosition: string = '';
 
@@ -73,7 +45,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   private vldtnSrv = inject(ValidationService);
 
   ngOnInit(): void {
-    //TODO Traer las app para el select
     this.initFormUser();
     this.initFormOrg();
     this.authSrv.getPositions()
@@ -81,8 +52,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
       .subscribe(resp => {
         if(resp){
           this.positionsOpcs = [...resp];
-  
-          this.registerFormUser.get('idu_puesto')?.enable();
         }
       });
   }
@@ -94,27 +63,26 @@ export class RegisterComponent implements OnInit, OnDestroy {
     //   nom_usuario: new FormControl('',[Validators.required,this.vldtnSrv.noBlankValidation(),this.vldtnSrv.completeUserName()]),
     //   nom_contrasena: new FormControl('',[Validators.required,this.vldtnSrv.passwordValidation()]),
     //   confirmPassword: new FormControl('', Validators.required),
-    //   idu_puesto: new FormControl({ value: null, disabled: true},[Validators.required,]),
+    //   num_puesto: new FormControl({ value: null, disabled: true},[Validators.required,]),
     // },{
     //   validators: this.vldtnSrv.passwordMatch('nom_contrasena', 'confirmPassword')
     // });
     this.registerFormUser = new FormGroup({
-      num_empleado: new FormControl(90000001,[Validators.required,this.vldtnSrv.employeeNumber()]),
-      nom_correo: new FormControl('luis.bayliss@coppel.com',[Validators.required,this.vldtnSrv.emailCoppel()]),
-      nom_usuario: new FormControl('Luis del Rosario Ayala',[Validators.required,this.vldtnSrv.noBlankValidation(),this.vldtnSrv.completeUserName()]),
+      num_empleado: new FormControl(9000001,[Validators.required,this.vldtnSrv.employeeNumber()]),
+      nom_correo: new FormControl('@coppel.com',[Validators.required,this.vldtnSrv.emailCoppel()]),
+      nom_usuario: new FormControl('Luis Del Rosario Ayala',[Validators.required,this.vldtnSrv.noBlankValidation(),this.vldtnSrv.completeUserName()]),
       nom_contrasena: new FormControl('Carino@123456',[Validators.required,this.vldtnSrv.passwordValidation()]),
       confirmPassword: new FormControl('Carino@123456', Validators.required),
-      idu_puesto: new FormControl({ value: null, disabled: true},[Validators.required,]),
+      num_puesto: new FormControl(null,[Validators.required,]),
     },{
       validators: this.vldtnSrv.passwordMatch('nom_contrasena', 'confirmPassword')
     });
   }
 
   private initFormOrg(): void {
-    // TODO Revisar el disable mientras se carga la info
     this.registerFormOrg = new FormGroup({
-      idu_aplicacion: new FormControl(null , [Validators.required]),
-      num_centro: new FormControl(null , [Validators.required]),
+      idu_aplicacion: new FormControl(null, [Validators.required]),
+      num_centro: new FormControl(null, [Validators.required,]),
       num_encargado: new FormControl(null),
       termAccepted: new FormControl(false, [Validators.requiredTrue])
     });
@@ -122,12 +90,22 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   private getInfoOrg(){
 
-    const { idu_puesto } = this.registerFormUser.value;
-    if(!idu_puesto) {
+    const { num_puesto } = this.registerFormUser.value;
+    if(!num_puesto) {
       this.activeIndex = 0
       return;
     }
-    console.log(idu_puesto);
+
+    this.authSrv.getInfoOrg(num_puesto)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(resp => {
+        if(resp){
+          this.appsOpc = [...resp.aplicaciones];
+          this.centrosOpc = [...resp.centros];
+          this.encargados = [...resp.superiores]; 
+        }
+      });
+
   }
 
   private isValidFieldBase(form: FormGroup, field: string): boolean {
@@ -151,16 +129,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
   changeStep(value: number): void {
 
     this.activeIndex += value;
+    this.isNotDivisional = false;
 
     if(this.activeIndex === 1){
       this.initFormOrg();
-      const { idu_puesto } = this.registerFormUser.value;
-      if(idu_puesto !== PositionValues.DIVISIONAL){
+      const { num_puesto } = this.registerFormUser.value;
+      if(num_puesto !== PositionValues.DIVISIONAL){
         this.isNotDivisional = true;
-        const position = this.positionsOpcs.find((pos) => pos.idu_puesto === idu_puesto - 1);
+        const position = this.positionsOpcs.find((pos) => pos.idu_puesto === num_puesto - 1);
         this.txtPosition = position ? position.nom_puesto : 'ERRORR';  
       }
-      this.updateGerenteValidator(idu_puesto);
+      this.updateGerenteValidator(num_puesto);
       
       // TODO llamar a endpont
       this.getInfoOrg();
@@ -197,12 +176,16 @@ export class RegisterComponent implements OnInit, OnDestroy {
       return;
     }
 
-    console.log('¡VAMOS A REGISTRAR!');
     this.isRegister = true;
     
     const { confirmPassword, ...dataUser} = this.registerFormUser.value;
     const { termAccepted, ...dataOrg } = this.registerFormOrg.value;
     const dataRegister = { ...dataUser, ...dataOrg };
+    
+    if(dataRegister.num_puesto === PositionValues.DIVISIONAL){
+      dataRegister.num_encargado = dataRegister.num_empleado
+    }
+
     console.log(dataRegister);
 
     this.authSrv.registerUser(dataRegister)
@@ -213,45 +196,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           console.log(err);
-          // if (err.status === 0) {
-          //   this.connectionErrorMessage = 'No se pudo conectar con el servidor.'; 
-          // } else {
-          //   this.errorMessage = err.message || 'No se pudo conectar con el servidor. Favor de verificar.'; 
-          // }
-          // this.isRegister = false;
+          this.isRegister = false;
       }})
   }
-
-
-
-  // onRegister(): void {
-  //   const trimmedUsername = this.username.trim();
-  //   const trimmedPassword = this.password.trim();
-  //   const trimmedConfirmPassword = this.confirmPassword.trim();
-
-
-
-  //   this.isRegister = true;
-  //   this.btnLabel = 'Registrando...';
-  //   this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
-  //     .pipe(
-  //       finalize(() => this.btnLabel = 'Registrar')
-  //     )
-  //     .subscribe({
-  //       next: () => {
-  //         this.errorMessage = '';
-  //         this.isReady = true;
-  //       },
-  //       error: (err) => {
-  //         if (err.status === 0) {
-  //           this.connectionErrorMessage = 'No se pudo conectar con el servidor.'; 
-  //         } else {
-  //           this.errorMessage = err.message || 'No se pudo conectar con el servidor. Favor de verificar.'; 
-  //         }
-  //         this.isRegister = false;
-  //       }
-  //     });
-  // }
 
   showTerms(fromForm: boolean = false): void {
     const { termAccepted } =this.registerFormOrg.value;
