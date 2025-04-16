@@ -1,109 +1,10 @@
-<main class="main-container min-h-full px-4 py-5">
+<!-- <main class="main-container min-h-full px-4 py-5">
   <section class="register-container newsize p-4 my-3 mx-auto border-round-lg relative">
     <div class="flex flex-grow-1 align-items-center justify-content-center">
       <h1 class="txt-tiltle-color text-5xl my-0">Nueva cuenta</h1>
     </div>
 
-    <form [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
-      <div class="grid m-0 p-2">
-        <div class="field col-12 md:col-6 p-2 mb-0">
-          <p class="my-2 font-bold">
-            Número de empleado <span class="text-red">*</span>
-          </p>
-          <div class="flex flex-column">
-            <p-inputNumber 
-              formControlName="num_empleado" 
-              id="num_empleado"
-              [useGrouping]="false"
-              class="w-full"
-              placeholder="Ej. 90000000"
-              min="0"
-              max="99999999"
-            />
-            <small class="mt-2 pl-2 text-red" *ngIf="isValidField('num_empleado')">
-              Número de empleado inválido.
-            </small>
-          </div>
-        </div> <!-- Num empleado -->
-        
-        <div class="field col-12 md:col-6 p-2 mb-0">
-          <p class="my-2 font-bold">
-            Correo electrónico <span class="text-red">*</span>
-          </p>
-          <div class="flex flex-column">
-            <input
-              formControlName="nom_correo"
-              id="email-reg"
-              placeholder="ejemplo@coppel.com"
-              autocomplete="off"
-              class="w-full"
-              pInputText
-              type="text"
-            />
-            <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_correo')">
-              El correo electrónico inválido.
-            </small>
-          </div>
-        </div> <!-- Correo electronico -->
-
-        <div class="field col-12 p-2 mb-0" style="border: 1px solid blue;">
-          <p class="my-2 font-bold">
-              Nombre de usuario <span class="text-red">*</span>
-          </p>
-          <input
-            autocomplete="off"
-            placeholder="Nombre completo"
-            class="w-full"
-            pInputText id="username-reg"
-            type="text"
-            [value]=""
-          />
-        </div>
-        <div class="field col-12 md:col-6 p-2 mb-0" style="border: 1px solid blue;">
-          <div class="flex align-items-center">
-            <p class="my-2 font-bold">
-              Contraseña <span class="text-red">*</span>
-            </p>
-            <p-badge
-              class="ml-1"
-              [pTooltip]="tooltipContent"  
-              value="i" severity="contrast"
-              tooltipPosition="right" 
-              [style]="{'min-width': '20px', 'height': '22px', 'vertical-align': 'middle'}" />
-            <ng-template #tooltipContent>
-                <div class="flex align-items-center text-sm">
-                  <p>Crea una contraseña segura con almenos <b>12 caracteres, letras, números y símbolos combinados.</b></p>
-                </div>
-            </ng-template>
-          </div>
-          <p-password 
-            inputId="passworduser-reg"
-            name="passworduser-reg"
-            aria-describedby="passworduser-reg-input"
-            [style]="{ width : '100%' }"
-            [inputStyle]="{ width : '100%' }"
-            [feedback]="false" 
-            [toggleMask]="true"
-            placeholder="Contraseña"
-            autocomplete="off"
-          />
-        </div>
-        <div class="field col-12 md:col-6 p-2 mb-0" style="border: 1px solid blue;">
-          <p class="my-2 font-bold">
-            Confirmar contraseña <span class="text-red">*</span>
-          </p>
-          <p-password 
-            inputId="passworduserconf-reg"
-            name="passworduserconf-reg"
-            aria-describedby="passworduserconf-reg-input"
-            [style]="{ width : '100% '}"
-            [inputStyle]="{ width : '100%' }"
-            [feedback]="false" 
-            [toggleMask]="true"
-            placeholder="Confirma tu contraseña"
-            autocomplete="off"
-          />
-        </div>
+   
 
         <div class="field col-12 p-2 mb-0" style="border: 1px solid blue;">
           <p class="my-2 font-bold">
@@ -129,63 +30,8 @@
               type="text"
             />
         </div>
-        <div class="field col-12 md:col-6 mb-0" style="border: 1px solid blue;">
-          <p class="my-2 font-bold">
-            Nombre del centro <span class="text-red">*</span>
-          </p>
-          <input
-              placeholder="Nombre del centro"
-              class="w-full"
-              pInputText id="nom_centro-reg"
-              type="text"
-            />
-        </div>
   
-        <div class="field col-12 md:col-6 p-2 mb-0" style="border: 1px solid blue;">
-          <p class="my-2 font-bold">
-            Nombre de tu gerente <span class="text-red">*</span>
-          </p>
-          <input
-              placeholder="Nombre de tu gerente"
-              class="w-full"
-              pInputText id="nom_gerente-reg"
-              type="text"
-            />
-        </div>
-        <div class="field col-12 md:col-6 mb-0" style="border: 1px solid blue;">
-          <p class="my-2 font-bold">
-            Nombre del lider del proyecto <span class="text-red">*</span>
-          </p>
-          <input
-              placeholder="Nombre del lider del proyecto"
-              class="w-full"
-              pInputText id="nom_lider-reg"
-              type="text"
-            />
-        </div>
-
-        <div class="field col-12 md:col-6 p-2 mb-0" style="border: 1px solid blue;">
-          <p class="my-2 font-bold">
-            Nombre de tu divisional <span class="text-red">*</span>
-          </p>
-          <input
-              placeholder="Nombre de tu divisional"
-              class="w-full"
-              pInputText id="nom_divisional-reg"
-              type="text"
-            />
-        </div>
-        <div class="field col-12 md:col-6 mb-0" style="border: 1px solid blue;">
-          <p class="my-2 font-bold">
-            Nombre de tu nacional <span class="text-red">*</span>
-          </p>
-          <input
-              placeholder="Nombre de tu nacional"
-              class="w-full"
-              pInputText id="nom_nacional-reg"
-              type="text"
-            />
-        </div>
+  
 
         <div class="field col-12 md:col-8 mb-0" style="border: 1px solid blue;">
           <div class="flex align-items-center gap-2 mb-0">
@@ -196,15 +42,7 @@
             <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
           </div>
         </div>
-        <div class="field col-12 md:col-4 md:py-3 mb-0" style="border: 1px solid blue;">
-          <p-button 
-            type="submit"  
-            [label]="'Registrar'" 
-            [outlined]="true"
-            styleClass="w-full h-full"
-            [disabled]="true" 
-          />
-        </div>
+    
 
         <div class="col-12 mb-0 p-0 pl-2">
           <p class="text-sm">¿Ya tienes una cuenta? <b class="c-pointer" (click)="goToLogin()">Inicia sesión</b>.</p>
@@ -218,6 +56,316 @@
         style="aspect-ratio: 2 / 1; width: 30%; object-fit: contain; pointer-events: none;"
       />
     </form>
+  </section>
+  
+  <p-dialog 
+    header="Términos y Condiciones Generales de Servicio RVIA" 
+    [modal]="true" 
+    [(visible)]="isShowTerms" 
+    [style]="{ width: '50rem' }" 
+    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
+      <div class="mb-2" *ngFor="let term of termsAndConditions">
+        <h3 class="mb-2">
+          {{ term.title }}
+        </h3>
+        <p [innerHTML]="term.content"></p>
+      </div>
+  </p-dialog>
+</main> -->
+
+<main class="main-container min-h-full px-4 py-5">
+  <section class="register-container newsize p-4 my-3 mx-auto border-round-lg relative">
+    <div class="flex flex-grow-1 align-items-center justify-content-center">
+      <h1 class="txt-tiltle-color text-5xl my-0">Nueva cuenta</h1>
+    </div>
+
+    <div class="mt-6"> 
+      <p-steps [model]="headers" [(activeIndex)]="activeIndex"
+      [readonly]="true" class="stepper-opcs"
+      />
+      
+      <!-- Panel Usuario -->
+       @if (activeIndex === 0) {
+        <form [formGroup]="registerFormUser" novalidate>
+          <section class="grid m-0 p-2">
+            <div class="field col-12 md:col-6 p-2 mb-0">
+              <p class="my-2 font-bold">
+                Número de empleado <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <p-inputNumber 
+                  formControlName="num_empleado" 
+                  inputId="num_empleado-reg"
+                  [useGrouping]="false"
+                  class="w-full"
+                  placeholder="Ej. 90000000"
+                  min="0"
+                  max="99999999"
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('num_empleado')">
+                  Número de empleado inválido.
+                </small>
+              </div>
+            </div><!--Num empleado-->
+            
+            <div class="field col-12 md:col-6 p-2 mb-0">
+              <p class="my-2 font-bold">
+                Correo electrónico <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <input
+                  formControlName="nom_correo"
+                  autocomplete="off"
+                  placeholder="ejemplo@coppel.com"
+                  class="w-full"
+                  pInputText id="email-reg"
+                  type="text"
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_correo')">
+                  El correo electrónico inválido.
+                </small>
+              </div>
+            </div><!--Correo electronico-->
+            
+            <div class="field col-12 p-2 mb-0">
+              <p class="my-2 font-bold">
+                  Nombre de usuario <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <input
+                  formControlName="nom_usuario"
+                  autocomplete="off"
+                  placeholder="Nombre completo"
+                  class="w-full"
+                  pInputText id="username-reg"
+                  type="text"
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_usuario')">
+                  Nombre de usuario inválido.
+                </small>
+              </div>
+            </div><!--Nombre usuario-->
+  
+            <div class="field col-12 md:col-6 p-2 mb-0">
+              <div class="flex align-items-center">
+                <p class="my-2 font-bold">
+                  Contraseña <span class="text-red">*</span>
+                </p>
+                <p-badge
+                  class="ml-1"
+                  [pTooltip]="tooltipContent"  
+                  value="i" severity="contrast"
+                  tooltipPosition="right" 
+                  [style]="{'min-width': '20px', 'height': '22px', 'vertical-align': 'middle'}" />
+                <ng-template #tooltipContent>
+                    <div class="flex align-items-center text-sm">
+                      <p>Crea una contraseña segura con almenos <b>12 caracteres, letras, números y símbolos combinados.</b></p>
+                    </div>
+                </ng-template>
+              </div>
+              <div class="flex flex-column">
+                <p-password 
+                  formControlName="nom_contrasena"
+                  inputId="passworduser-reg"
+                  name="passworduser-reg"
+                  [style]="{ width : '100%' }"
+                  [inputStyle]="{ width : '100%' }"
+                  [feedback]="false" 
+                  [toggleMask]="true"
+                  placeholder="Contraseña"
+                  autocomplete="off"
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_contrasena')">
+                  Contraseña inválida.
+                </small>
+              </div>
+            </div><!--Contraseña-->
+            
+            <div class="field col-12 md:col-6 p-2 mb-0">
+              <p class="my-2 font-bold">
+                Confirmar contraseña <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <p-password 
+                  formControlName="confirmPassword"
+                  inputId="passworduserconf-reg"
+                  name="passworduserconf-reg"
+                  [style]="{ width : '100% '}"
+                  [inputStyle]="{ width : '100%' }"
+                  [feedback]="false" 
+                  [toggleMask]="true"
+                  placeholder="Confirma tu contraseña"
+                  autocomplete="off"
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('confirmPassword')">
+                  Las contraseñas no coinciden.
+                </small>
+              </div>
+            </div><!--Confirmacion-->
+            
+            <div class="field col-12 md:col-6 p-2 mb-0" >
+              <p class="my-2 font-bold">
+                  Puesto <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <p-dropdown
+                  formControlName="idu_puesto"
+                  id="position-reg"
+                  [options]="positionsOpcs"  
+                  optionLabel="nom_puesto" 
+                  optionValue="idu_puesto"
+                  placeholder="Selecciona tu puesto"
+                  [showClear]="true"
+                  [style]="{ width : '100%' }" 
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('idu_puesto')"> 
+                  Debes seleccionar un puesto.
+                </small>
+              </div>
+            </div><!--Puesto-->
+          </section>
+        </form>
+       }
+      <!-- Panel Usuario --> 
+
+      <!-- Panel Organizacion -->
+       @if (activeIndex === 1) {
+         <form [formGroup]="registerFormOrg" novalidate>
+          <section class="grid m-0 p-2">
+            <div class="field col-12 p-2 mb-0">
+              <p class="my-2 font-bold">
+                  Aplicación <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <p-dropdown
+                    formControlName="idu_aplicacion"
+                    id="aplicacion-reg"
+                    [options]="appsOpc" 
+                    optionValue="idu_aplicacion"
+                    optionLabel="nom_app"
+                    placeholder="Selecciona una aplicación"
+                    [style]="{ width : '100%' }"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterPlaceholder="Buscar aplicación..."
+                    [filterBy]="'nom_app'" 
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('idu_aplicacion')">
+                  Debes seleccionar una aplicación.
+                </small>
+              </div>
+            </div><!--Aplicacion-->
+            <div class="field col-12 p-2 mb-0">
+              <p class="my-2 font-bold">
+                  Número de centro <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <p-dropdown
+                  formControlName="num_centro"
+                  id="num_centro-reg"
+                  [options]="centrosOpc"
+                  optionValue="num_centro"
+                  placeholder="Selecciona una aplicación"
+                  [style]="{ width : '100%' }"
+                  [showClear]="true"
+                  [filter]="true"
+                  filterPlaceholder="Buscar aplicación..." 
+                  [filterBy]="'num_centro,nom_centro'"
+                >
+                  <ng-template pTemplate="selectedItem" let-centro>
+                    <div>{{ centro?.num_centro }} - {{ centro?.nom_centro }}</div>
+                  </ng-template>
+                  <ng-template let-centro pTemplate="item">
+                    <div *ngIf="centro">{{ centro.num_centro }} - {{ centro.nom_centro }}</div>
+                    <div *ngIf="!centro" class="text-color-secondary">Selecciona una aplicación</div>
+                  </ng-template>
+                </p-dropdown>
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('num_centro')">
+                  Debes seleccionar un centro.
+                </small>
+              </div>
+            </div><!--Centro-->
+            @if(isNotDivisional){
+              <div class="field col-12 p-2 mb-0">
+                <p class="my-2 font-bold">
+                  Selecciona a tu {{ txtPosition }} <span class="text-red">*</span>
+                </p>
+                <div class="flex flex-column">
+                  <p-dropdown
+                    formControlName="num_encargado"
+                    id="num_encargado-reg"
+                    [options]="encargados"
+                    optionValue="num_empleado"
+                    [placeholder]="'Selecciona a tu ' + txtPosition"
+                    [style]="{ width : '100%' }"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterPlaceholder="Buscar encargado..." 
+                    [filterBy]="'num_empleado,nom_empleado'"
+                  >
+                    <ng-template pTemplate="selectedItem" let-encargado>
+                      <div>{{ encargado?.num_empleado }} - {{ encargado?.nom_empleado }}</div>
+                    </ng-template>
+                    <ng-template let-encargado pTemplate="item">
+                      <div *ngIf="encargado">{{ encargado.num_empleado }} - {{ encargado.nom_empleado }}</div>
+                      <div *ngIf="!encargado" class="text-color-secondary">Selecciona a tu {{ txtPosition }}</div>
+                    </ng-template>
+                  </p-dropdown>
+                  <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('num_encargado')">
+                    Debes seleccionar un encargado.
+                  </small>
+                </div>
+              </div><!--Encargado-->
+            }
+            <div class="field col-12 mt-4 mb-0">
+              <div class="flex flex-column">
+                <div class="flex align-items-center gap-2 mb-0">
+                  <p-checkbox
+                    formControlName="termAccepted" 
+                    [binary]="true"
+                    inputId="termAccepted"  name="termAccepted" 
+                    (click)="showTerms(true)"
+                  />
+                  <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
+                </div>
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('termAccepted')">
+                  Debes aceptar los términos y condiciones.
+                </small>
+              </div>
+            </div><!--T&C-->
+        
+          </section>
+        </form>
+       }
+      <!-- Panel Organizacion -->
+
+      <section class="flex pt-2">
+        <p-button label="Regresar" icon="pi pi-arrow-left"
+              [outlined]="true" (onClick)="changeStep(-1)" 
+              [disabled]="activeIndex === 0"
+              class="btn-rvia-outlined"
+              *ngIf="activeIndex !== 0 && !(activeIndex === headers.length - 1 && isRegister)"
+          />
+          <button *ngIf="activeIndex !== headers.length - 1; else lastBtn"
+            pButton label="Siguiente" icon="pi pi-arrow-right"
+            iconPos="right" class="p-button ml-auto btn-rvia"
+            [disabled]="checkDisabled()"
+            (click)="changeStep(+1)"
+          >
+          </button> 
+          <ng-template #lastBtn>
+              <p-button 
+                [label]="isRegister ? 'Registrando...' : 'Crear cuenta'"
+                severity="success" icon="pi pi-arrow-right"
+                iconPos="right" class="ml-auto"
+                type="button"
+                (click)="onRegister()"
+                [loading]="isRegister"
+                [disabled]="isRegister || checkDisabled()"
+              />
+          </ng-template>
+      </section>
+    </div>
   </section>
   
   <p-dialog 

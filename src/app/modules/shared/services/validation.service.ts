@@ -14,6 +14,7 @@ export class ValidationService {
   private rgxUrlGit = /^(https?:\/\/)?(www\.)?(github|gitlab)\.com\/[\w.-]+\/[\w.-]+(-[\w.-]*)?\.git$/;
   private rgxNameUser = /^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ]{2,}(?: [A-Za-zÁÉÍÓÚáéíóúÜüÑñ]+){2,}$/;       
   private rgxEmail = /^[A-Za-z0-9._%+-]+@coppel\.com$/;
+  private rgxPass = /^(?=.*[A-ZÑ])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-zñÑ\d@$!%*?&#]{12,}$/;
 
   fileValidation(type:string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -124,5 +125,39 @@ export class ValidationService {
       return null
     } 
   }
- 
+
+  passwordValidation(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const value = control.value;
+      if(value){
+        return this.rgxPass.test(value) 
+          ? null 
+          : { invalidPassword: true }
+      }
+
+      return null
+    }
+  }
+  
+  passwordMatch(passField: string, confPassField: string): ValidatorFn {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const password = formGroup.get(passField)?.value;
+      const confirmPassword = formGroup.get(confPassField)?.value;
+      if (password !== confirmPassword) {
+        formGroup.get(confPassField)?.setErrors({ passwordMismatch: true });
+        return { passwordMismatch: true };
+      } else {
+        const errors = formGroup.get(confPassField)?.errors;
+        if (errors) {
+          delete errors['passwordsMismatch'];
+          if (Object.keys(errors).length === 0) {
+            formGroup.get(confPassField)?.setErrors(null);
+          } else {
+            formGroup.get(confPassField)?.setErrors(errors);
+          }
+        }
+        return null;
+      }
+    }
+  }
 }
