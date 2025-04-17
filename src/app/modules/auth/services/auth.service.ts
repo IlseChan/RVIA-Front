@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-import { Router } from '@angular/router';
 import { Idu_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { DataToRegister, InfoOrg, OriginMethod, Position } from '../interfaces';
 
@@ -31,7 +31,6 @@ export class AuthService {
 
   registerUser(data: DataToRegister): Observable<Usuario> {
     const idu_rol = Idu_Rol.INVITADO; 
-    console.log(data)
     return this.http.post<Usuario>(`${this.baseUrl}/auth/register`, {
       ...data,
       idu_rol,
@@ -68,7 +67,6 @@ export class AuthService {
       catchError(e => throwError(() => e))
     )
   }
-  // Luis del Rosario Ayala
 
   logoutUser(): void {
     this.currentUser = null;
@@ -108,7 +106,7 @@ export class AuthService {
   }
 
   private handleErrorMess(error: HttpErrorResponse, origin: OriginMethod, extra?: string | number) {
-    console.log(error);
+    // console.log(error);
     const title = 'Error';
     if(error.status === 0){
       const errorMessage = 'No es posible conectar con el servidor, intentelo más tarde o contacte con el administrador.'

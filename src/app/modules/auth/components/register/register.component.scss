@@ -6,6 +6,10 @@
   background-color: #f9f9f9 !important;
 }
 
+:host ::ng-deep .p-steps .p-steps-item.p-highlight .p-steps-number {
+  background: var(--rvia-primary-color);
+}
+
 .register-container {
   background-color: #f9f9f9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3) ;

@@ -65,7 +65,3 @@ p > b{
     background-color: #e6e6e6 !important;
     color: var(--rvia-primary-color);
 }
-
-:host ::ng-deep .p-steps .p-steps-item.p-highlight .p-steps-number {
-    background: var(--rvia-primary-color);
-}

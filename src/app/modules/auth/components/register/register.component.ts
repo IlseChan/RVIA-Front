@@ -1,14 +1,14 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule, NgFor, NgIf } from '@angular/common';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { finalize, Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { termsAndConditions } from './termsandcond';
 import { ValidationService } from '@modules/shared/services/validation.service';
-import { AppOrg, Centro, Encargado, Position, PositionNames, PositionValues } from '@modules/auth/interfaces';
+import { AppOrg, Centro, Encargado, Position, PositionValues } from '@modules/auth/interfaces';
 
 @Component({
   selector: 'rvia-register',
@@ -57,22 +57,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   private initFormUser(): void {
-    // this.registerFormUser = new FormGroup({
-    //   num_empleado: new FormControl(null,[Validators.required,this.vldtnSrv.employeeNumber()]),
-    //   nom_correo: new FormControl('',[Validators.required,this.vldtnSrv.emailCoppel()]),
-    //   nom_usuario: new FormControl('',[Validators.required,this.vldtnSrv.noBlankValidation(),this.vldtnSrv.completeUserName()]),
-    //   nom_contrasena: new FormControl('',[Validators.required,this.vldtnSrv.passwordValidation()]),
-    //   confirmPassword: new FormControl('', Validators.required),
-    //   num_puesto: new FormControl({ value: null, disabled: true},[Validators.required,]),
-    // },{
-    //   validators: this.vldtnSrv.passwordMatch('nom_contrasena', 'confirmPassword')
-    // });
     this.registerFormUser = new FormGroup({
-      num_empleado: new FormControl(9000001,[Validators.required,this.vldtnSrv.employeeNumber()]),
-      nom_correo: new FormControl('@coppel.com',[Validators.required,this.vldtnSrv.emailCoppel()]),
-      nom_usuario: new FormControl('Luis Del Rosario Ayala',[Validators.required,this.vldtnSrv.noBlankValidation(),this.vldtnSrv.completeUserName()]),
-      nom_contrasena: new FormControl('Carino@123456',[Validators.required,this.vldtnSrv.passwordValidation()]),
-      confirmPassword: new FormControl('Carino@123456', Validators.required),
+      num_empleado: new FormControl(null,[Validators.required,this.vldtnSrv.employeeNumber()]),
+      nom_correo: new FormControl('',[Validators.required,this.vldtnSrv.emailCoppel()]),
+      nom_usuario: new FormControl('',[Validators.required,this.vldtnSrv.noBlankValidation(),this.vldtnSrv.completeUserName()]),
+      nom_contrasena: new FormControl('',[Validators.required,this.vldtnSrv.passwordValidation()]),
+      confirmPassword: new FormControl('', Validators.required),
       num_puesto: new FormControl(null,[Validators.required,]),
     },{
       validators: this.vldtnSrv.passwordMatch('nom_contrasena', 'confirmPassword')
@@ -139,9 +129,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
         const position = this.positionsOpcs.find((pos) => pos.idu_puesto === num_puesto - 1);
         this.txtPosition = position ? position.nom_puesto : 'ERRORR';  
       }
-      this.updateGerenteValidator(num_puesto);
-      
-      // TODO llamar a endpont
+
+      this.updateGerenteValidator(num_puesto);      
       this.getInfoOrg();
     }
   }
@@ -179,23 +168,21 @@ export class RegisterComponent implements OnInit, OnDestroy {
     this.isRegister = true;
     
     const { confirmPassword, ...dataUser} = this.registerFormUser.value;
-    const { termAccepted, ...dataOrg } = this.registerFormOrg.value;
-    const dataRegister = { ...dataUser, ...dataOrg };
+    let { termAccepted, ...dataOrg } = this.registerFormOrg.value;
     
-    if(dataRegister.num_puesto === PositionValues.DIVISIONAL){
-      dataRegister.num_encargado = dataRegister.num_empleado
+    if(dataUser.num_puesto === PositionValues.DIVISIONAL){
+      const { num_encargado, ...rest } = dataOrg;
+      dataOrg = {... rest}
     }
-
-    console.log(dataRegister);
-
+    
+    const dataRegister = { ...dataUser, ...dataOrg };
+       
     this.authSrv.registerUser(dataRegister)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (resp) => {
-          console.log(resp);   
+        next: () => {
         },
-        error: (err) => {
-          console.log(err);
+        error: () => {
           this.isRegister = false;
       }})
   }

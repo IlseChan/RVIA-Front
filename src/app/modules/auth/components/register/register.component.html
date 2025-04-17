@@ -1,78 +1,3 @@
-<!-- <main class="main-container min-h-full px-4 py-5">
-  <section class="register-container newsize p-4 my-3 mx-auto border-round-lg relative">
-    <div class="flex flex-grow-1 align-items-center justify-content-center">
-      <h1 class="txt-tiltle-color text-5xl my-0">Nueva cuenta</h1>
-    </div>
-
-   
-
-        <div class="field col-12 p-2 mb-0" style="border: 1px solid blue;">
-          <p class="my-2 font-bold">
-              Aplicación <span class="text-red">*</span>
-          </p>
-          <p-dropdown
-              id="position-edit"
-              [options]="['a','b']"  
-              optionLabel="nom_rol" 
-              optionValue="idu_usuario"
-              placeholder="Seleccionar rol"
-              [style]="{width : '100%'}" 
-          />
-        </div>
-        <div class="field col-12 md:col-6 p-2 mb-0" style="border: 1px solid blue;">
-          <p class="my-2 font-bold">
-            Número de centro <span class="text-red">*</span>
-          </p>
-          <input
-              placeholder="Ej. 300000"
-              class="w-full"
-              pInputText id="num_centro-reg"
-              type="text"
-            />
-        </div>
-  
-  
-
-        <div class="field col-12 md:col-8 mb-0" style="border: 1px solid blue;">
-          <div class="flex align-items-center gap-2 mb-0">
-            <p-checkbox 
-              [binary]="true" name="termAccepted" 
-              (click)="showTerms(true)"
-            />
-            <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
-          </div>
-        </div>
-    
-
-        <div class="col-12 mb-0 p-0 pl-2">
-          <p class="text-sm">¿Ya tienes una cuenta? <b class="c-pointer" (click)="goToLogin()">Inicia sesión</b>.</p>
-        </div>
-      </div>  
-      
-      <img 
-        src="assets/images/logo-rvia.png"
-        alt="Logo decorativo"
-        class="absolute bottom-0 right-0 opacity-20"
-        style="aspect-ratio: 2 / 1; width: 30%; object-fit: contain; pointer-events: none;"
-      />
-    </form>
-  </section>
-  
-  <p-dialog 
-    header="Términos y Condiciones Generales de Servicio RVIA" 
-    [modal]="true" 
-    [(visible)]="isShowTerms" 
-    [style]="{ width: '50rem' }" 
-    [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
-      <div class="mb-2" *ngFor="let term of termsAndConditions">
-        <h3 class="mb-2">
-          {{ term.title }}
-        </h3>
-        <p [innerHTML]="term.content"></p>
-      </div>
-  </p-dialog>
-</main> -->
-
 <main class="main-container min-h-full px-4 py-5">
   <section class="register-container newsize p-4 my-3 mx-auto border-round-lg">
     <div class="flex flex-grow-1 align-items-center justify-content-center">
@@ -334,7 +259,6 @@
                 </small>
               </div>
             </div><!--T&C-->
-        
           </section>
         </form>
        }
@@ -366,6 +290,11 @@
               />
           </ng-template>
       </section><!--Botones-->
+    </div>
+
+    <p-divider />
+    <div class="text-center mt-4 mb-0 p-0">
+      <p class="text-sm m-0">¿Ya tienes una cuenta? <b class="c-pointer" (click)="goToLogin()">Inicia sesión</b>.</p>
     </div>
   </section>
   
