@@ -14,24 +14,29 @@ export const herramientasRoutes: Routes = [
             { 
                 path: 'recoveryPDF', 
                 canActivate: [AdminGuard], 
-                component: PdfToCsvFormComponent 
+                component: PdfToCsvFormComponent,
+                title: 'RVIA - RecoveryPDF' 
             },
             { 
                 path: 'execute-ia',
                 canActivate: [AdminGuard], 
-                component: ExecuteIaComponent 
+                component: ExecuteIaComponent,
+                title: 'RVIA - Ejecutar IA' 
             },
             { 
                 path: 'execute-documentacion', 
-                component: ExecuteDocumentacionComponent 
+                component: ExecuteDocumentacionComponent,
+                title: 'RVIA - Documentación' 
             },
             { 
                 path: 'test-case',
-                component: TestCaseComponent 
+                component: TestCaseComponent,
+                title: 'RVIA - Casos de pruebas' 
             }, 
             { 
                 path: 'rate-code',
-                component: RateCodeComponent 
+                component: RateCodeComponent,
+                title: 'RVIA - Califcar código' 
             }, 
             { 
                 path: '**', 

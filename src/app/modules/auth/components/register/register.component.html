@@ -13,7 +13,7 @@
        @if (activeIndex === 0) {
         <form [formGroup]="registerFormUser" novalidate>
           <section class="grid m-0 p-2">
-            <div class="field col-12 md:col-6 p-2 mb-0">
+            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                 Número de empleado <span class="text-red">*</span>
               </p>
@@ -33,7 +33,7 @@
               </div>
             </div><!--Num empleado-->
             
-            <div class="field col-12 md:col-6 p-2 mb-0">
+            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                 Correo electrónico <span class="text-red">*</span>
               </p>
@@ -52,7 +52,7 @@
               </div>
             </div><!--Correo electronico-->
             
-            <div class="field col-12 p-2 mb-0">
+            <div class="field col-12 p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                   Nombre de usuario <span class="text-red">*</span>
               </p>
@@ -71,7 +71,7 @@
               </div>
             </div><!--Nombre usuario-->
   
-            <div class="field col-12 md:col-6 p-2 mb-0">
+            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
               <div class="flex align-items-center">
                 <p class="my-2 font-bold">
                   Contraseña <span class="text-red">*</span>
@@ -106,7 +106,7 @@
               </div>
             </div><!--Contraseña-->
             
-            <div class="field col-12 md:col-6 p-2 mb-0">
+            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                 Confirmar contraseña <span class="text-red">*</span>
               </p>
@@ -128,7 +128,7 @@
               </div>
             </div><!--Confirmacion-->
             
-            <div class="field col-12 md:col-6 p-2 mb-0" >
+            <div class="field col-12 md:col-6 p-2 mb-0 input-size" >
               <p class="my-2 font-bold">
                   Puesto <span class="text-red">*</span>
               </p>
@@ -157,7 +157,7 @@
        @if (activeIndex === 1) {
          <form [formGroup]="registerFormOrg" novalidate>
           <section class="grid m-0 p-2">
-            <div class="field col-12 p-2 mb-0">
+            <div class="field col-12 p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                   Aplicación <span class="text-red">*</span>
               </p>
@@ -181,7 +181,7 @@
                 </small>
               </div>
             </div><!--Aplicacion-->
-            <div class="field col-12 p-2 mb-0">
+            <div class="field col-12 p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                   Número de centro <span class="text-red">*</span>
               </p>
@@ -212,7 +212,7 @@
               </div>
             </div><!--Centro-->
             @if(isNotDivisional){
-              <div class="field col-12 p-2 mb-0">
+              <div class="field col-12 p-2 mb-0 input-size">
                 <p class="my-2 font-bold">
                   Selecciona a tu {{ txtPosition }} <span class="text-red">*</span>
                 </p>
@@ -265,11 +265,12 @@
       <!-- Panel Organizacion -->
 
       <section class="flex pt-2">
-        <p-button label="Regresar" icon="pi pi-arrow-left"
-              [outlined]="true" (onClick)="changeStep(-1)" 
-              [disabled]="activeIndex === 0"
-              class="btn-rvia-outlined"
-              *ngIf="activeIndex !== 0 && !(activeIndex === headers.length - 1 && isRegister)"
+        <p-button label="Regresar" [text]="true"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            (onClick)="changeStep(-1)" 
+            [disabled]="activeIndex === 0"
+            *ngIf="activeIndex !== 0 && !(activeIndex === headers.length - 1 && isRegister)"
           />
           <button *ngIf="activeIndex !== headers.length - 1; else lastBtn"
             pButton label="Siguiente" icon="pi pi-arrow-right"
@@ -286,6 +287,7 @@
                 type="button"
                 (click)="onRegister()"
                 [loading]="isRegister"
+                [outlined]="registerFormOrg.invalid"
                 [disabled]="isRegister || checkDisabled()"
               />
           </ng-template>
