@@ -1,0 +1,5 @@
+export enum OriginMethod {
+    GETINFOORG   = 'GETINFOORG',
+    GETPOSITIONS = 'GETPOSITIONS',
+    POSTREGISTER = 'POSTREGISTER',
+}

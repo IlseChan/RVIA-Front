@@ -8,16 +8,22 @@ export const appsRoutes: Routes = [
     {
         path: '',
         children: [
-            { path: 'home', component: HomeComponent },
+            { 
+                path: 'home', 
+                component: HomeComponent,
+                title: 'RVIA - Inicio'
+            },
             { 
                 path: 'list-apps', 
                 component: ListAppsComponent,
-                canActivate: [NewAplicationGuard] 
+                canActivate: [NewAplicationGuard],
+                title: 'RVIA - Aplicaciones' 
             },
             { 
                 path: 'new-app', 
                 component: FormSanitizeComponent,
-                canActivate: [NewAplicationGuard] 
+                canActivate: [NewAplicationGuard],
+                title: 'RVIA - Nueva aplicación' 
             },
             { path: '**', redirectTo: 'list-apps' },
         ]

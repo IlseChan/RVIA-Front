@@ -201,6 +201,7 @@ export class AplicacionesService {
     
       return this.http.post<ResponseAddApp>(`${this.baseUrl}/applications/files`,formData)
         .pipe(
+          delay(1500),
           tap((resp) => this.savedSuccessfully(resp)),
           catchError(error => this.handleError(error, OriginMethod.POSTSAVEFILE))
         );
