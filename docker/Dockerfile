@@ -1,20 +1,22 @@
-FROM node:18 AS build
+FROM node:23.6.0-alpine AS build
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY RVIA-Front/package.json RVIA-Front/package-lock.json ./
 
-RUN npm install
+RUN npm ci
+
+COPY RVIA-Front ./
 
 COPY . .
 
-RUN npm run build -- --configuration production
+RUN npm run build
 
-FROM nginx:stable
+FROM nginx:alpine
 
 COPY --from=build /app/dist/rvia-front/browser /usr/share/nginx/html/rvia-front
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY RVIA-Front/docker/nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
