@@ -1,5 +1,19 @@
 @import "primeicons/primeicons.css";
 
+@font-face {
+    font-family: 'Roboto';
+    src: url('public/assets/fonts/roboto/Roboto-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+@font-face {
+    font-family: 'Roboto';
+    src: url('public/assets/fonts/roboto/Roboto-Bold.woff2') fformat('woff2');
+    font-weight: 700;
+    font-style: normal;
+}
+
 :root{
     --rvia-primary-color: #006fb9;
     --hover-rvia-primary-color: #006eb833;
