@@ -1,120 +1,206 @@
-import { Component } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { AuthService } from '../../services/auth.service';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { termsAndConditions } from './termsandcond';
+import { ValidationService } from '@modules/shared/services/validation.service';
+import { AppOrg, Centro, Encargado, Position, PositionValues } from '@modules/auth/interfaces';
 
 @Component({
-  selector: 'app-register',
+  selector: 'rvia-register',
   standalone: true,
-  imports: [NgIf, NgFor, FormsModule, PrimeNGModule],
+  imports: [ReactiveFormsModule, PrimeNGModule, NgFor, NgIf, CommonModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
-export class RegisterComponent {
-  usernumber: string = '';
-  username: string = '';
-  password: string = '';
-  confirmPassword: string = '';
-  email: string = '';
-  errorMessage: string = '';
-  termAccepted: boolean = false;
+export class RegisterComponent implements OnInit, OnDestroy {
+  private destroy$ = new Subject<void>();
   isRegister: boolean = false;
-  isReady: boolean = false;
-  btnLabel: string = 'Registrar';
-  connectionErrorMessage: string = '';
-  
+  registerFormUser!: FormGroup;
+  registerFormOrg!: FormGroup;
+
+  termAccepted: boolean = false;
   isShowTerms: boolean = false;
   termsAndConditions = termsAndConditions;
-  constructor(private router: Router, private authService: AuthService) {}
 
-  onRegister(): void {
-    const trimmedUsernumber = this.usernumber.trim();
-    const trimmedUsername = this.username.trim();
-    const trimmedPassword = this.password.trim();
-    const trimmedConfirmPassword = this.confirmPassword.trim();
-    const trimmedEmail = this.email.trim();
+  readonly headers = [
+    { label: 'Usuario'},
+    { label: 'Organización'},
+  ];
+  activeIndex: number = 0;
+  positionsOpcs: Position[] = [];
+  appsOpc: AppOrg[] = [];
+  centrosOpc: Centro[] = [];
+  encargados: Encargado[] =  [];
 
-    const usernumberInt = parseInt(trimmedUsernumber, 10);
-    if (!((usernumberInt > 90000000 && usernumberInt <= 99999999) || usernumberInt < 100000000)) {
-      this.errorMessage = 'El número de empleado debe ser mayor a 90000000 y menor a 100000000';
-      return;
-    }
+  isNotDivisional: boolean = false;
+  txtPosition: string = '';
 
-    if (!/^(?=.*[A-ZÑ])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-zñÑ\d@$!%*?&#]{12,}$/.test(trimmedPassword)) {
-      this.errorMessage = 'La contraseña debe tener al menos 12 caracteres, una letra mayúscula, un número y un carácter especial';
-      return;
-    }
-    
-    if (!/^\d+$/.test(trimmedUsernumber)) {
-      this.errorMessage = 'El número de empleado debe contener solo números';
-      return;
-    }
+  private router = inject(Router);
+  private authSrv = inject(AuthService);
+  private vldtnSrv = inject(ValidationService);
 
-    if (trimmedPassword !== trimmedConfirmPassword) {
-      this.errorMessage = 'Las contraseñas no coinciden';
-      return;
-    }
-
-    if (!/\S+@\S+\.\S+/.test(trimmedEmail)) {
-      this.errorMessage = 'El correo electrónico no es válido';
-      return;
-    }
-
-    // Validación del dominio @coppel
-    if (!/^[a-zA-Z0-9._%+-]+@coppel\.com$/.test(trimmedEmail)) {
-      this.errorMessage = 'El correo electrónico debe ser de la forma nombre@coppel.com';
-      return;
-    }
-
-    // Validación de nombre completo (al menos un nombre y dos apellidos con mayúsculas al principio)
-    if (!/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:\s+[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+){2,}$/.test(trimmedUsername)) {
-      this.errorMessage = 'Escribe nombre completo, con al menos un nombre y dos apellidos, todos comenzando con letra mayúscula, incluyendo acentos y ñ';
-      return;
-    }
-
-    if(!this.termAccepted) {
-      this.errorMessage = 'Debes aceptar los términos y condiciones';
-      return;
-    }
-
-    this.isRegister = true;
-    this.btnLabel = 'Registrando...';
-    this.authService.registerUser(trimmedUsernumber, trimmedUsername, trimmedPassword, trimmedEmail)
-      .pipe(
-        finalize(() => this.btnLabel = 'Registrar')
-      )
-      .subscribe({
-        next: () => {
-          this.errorMessage = '';
-          this.isReady = true;
-        },
-        error: (err) => {
-          if (err.status === 0) {
-            this.connectionErrorMessage = 'No se pudo conectar con el servidor.'; 
-          } else {
-            this.errorMessage = err.message || 'No se pudo conectar con el servidor. Favor de verificar.'; 
-          }
-          this.isRegister = false;
+  ngOnInit(): void {
+    this.initFormUser();
+    this.initFormOrg();
+    this.authSrv.getPositions()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(resp => {
+        if(resp){
+          this.positionsOpcs = [...resp];
         }
       });
   }
 
-  onInputChange(): void {
-    this.errorMessage = '';
+  private initFormUser(): void {
+    this.registerFormUser = new FormGroup({
+      num_empleado: new FormControl(null,[Validators.required,this.vldtnSrv.employeeNumber()]),
+      nom_correo: new FormControl('',[Validators.required,this.vldtnSrv.emailCoppel()]),
+      nom_usuario: new FormControl('',[Validators.required,this.vldtnSrv.noBlankValidation(),this.vldtnSrv.completeUserName()]),
+      nom_contrasena: new FormControl('',[Validators.required,this.vldtnSrv.passwordValidation()]),
+      confirmPassword: new FormControl('', Validators.required),
+      num_puesto: new FormControl(null,[Validators.required,]),
+    },{
+      validators: this.vldtnSrv.passwordMatch('nom_contrasena', 'confirmPassword')
+    });
   }
 
-  onBack(): void {
-    this.router.navigate(['/auth/login']);
+  private initFormOrg(): void {
+    this.registerFormOrg = new FormGroup({
+      idu_aplicacion: new FormControl(null, [Validators.required]),
+      num_centro: new FormControl(null, [Validators.required,]),
+      num_encargado: new FormControl(null),
+      termAccepted: new FormControl(false, [Validators.requiredTrue])
+    });
+  }
+
+  private getInfoOrg(){
+
+    const { num_puesto } = this.registerFormUser.value;
+    if(!num_puesto) {
+      this.activeIndex = 0
+      return;
+    }
+
+    this.authSrv.getInfoOrg(num_puesto)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(resp => {
+        if(resp){
+          this.appsOpc = [...resp.aplicaciones];
+          this.centrosOpc = [...resp.centros];
+          this.encargados = [...resp.superiores]; 
+        }
+      });
+
+  }
+
+  private isValidFieldBase(form: FormGroup, field: string): boolean {
+    const control = form.controls[field];
+    return !!(
+      control?.enabled &&
+      control?.invalid &&
+      control?.touched &&
+      control?.dirty
+    );
+  }
+  
+  isValidField(field: string): boolean {
+    return this.isValidFieldBase(this.registerFormUser, field);
+  }
+  
+  isValidFieldOrg(field: string): boolean {
+    return this.isValidFieldBase(this.registerFormOrg, field);
+  }
+
+  changeStep(value: number): void {
+
+    this.activeIndex += value;
+    this.isNotDivisional = false;
+
+    if(this.activeIndex === 1){
+      this.initFormOrg();
+      const { num_puesto } = this.registerFormUser.value;
+      if(num_puesto !== PositionValues.DIVISIONAL){
+        this.isNotDivisional = true;
+        const position = this.positionsOpcs.find((pos) => pos.idu_puesto === num_puesto - 1);
+        this.txtPosition = position ? position.nom_puesto : 'ERRORR';  
+      }
+
+      this.updateGerenteValidator(num_puesto);      
+      this.getInfoOrg();
+    }
+  }
+
+  checkDisabled(): boolean {
+    if(this.activeIndex === 0){
+      return this.registerFormUser.invalid 
+    }
+
+    if(this.activeIndex === 1){
+      return this.registerFormOrg.invalid 
+    }
+
+    return true;
+  }
+
+  updateGerenteValidator(positionValue: number): void {
+    const control = this.registerFormOrg.get('num_encargado');
+    if (!control) return;
+  
+    if (positionValue !== PositionValues.DIVISIONAL) {
+      control.setValidators([Validators.required]);
+    } else {
+      control.clearValidators();
+    }
+  
+    control.updateValueAndValidity();
+  }
+
+  onRegister(): void {
+    if(this.registerFormUser.invalid || this.registerFormOrg.invalid){
+      return;
+    }
+
+    this.isRegister = true;
+    
+    const { confirmPassword, ...dataUser} = this.registerFormUser.value;
+    let { termAccepted, ...dataOrg } = this.registerFormOrg.value;
+    
+    if(dataUser.num_puesto === PositionValues.DIVISIONAL){
+      const { num_encargado, ...rest } = dataOrg;
+      dataOrg = {... rest}
+    }
+    
+    const dataRegister = { ...dataUser, ...dataOrg };
+       
+    this.authSrv.registerUser(dataRegister)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+        },
+        error: () => {
+          this.isRegister = false;
+      }})
   }
 
   showTerms(fromForm: boolean = false): void {
-    if((fromForm && this.termAccepted) || !fromForm) {
+    const { termAccepted } =this.registerFormOrg.value;
+
+    if((fromForm && termAccepted) || !fromForm) {
       this.isShowTerms = !this.isShowTerms
     }
+  }
+
+  goToLogin(): void {
+    this.router.navigate(['/auth/login']);
+  }
+
+  ngOnDestroy(): void{
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 import { environment } from '../../../../environments/environment';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-import { Router } from '@angular/router';
 import { Idu_Rol, Usuario } from '@modules/usuarios/interfaces';
+import { DataToRegister, InfoOrg, OriginMethod, Position } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -28,17 +29,14 @@ export class AuthService {
     return this.currentUser;
   }
 
-  registerUser(num_empleado: string, nom_usuario: string, nom_contrasena: string, nom_correo: string): Observable<Usuario> {
+  registerUser(data: DataToRegister): Observable<Usuario> {
     const idu_rol = Idu_Rol.INVITADO; 
     return this.http.post<Usuario>(`${this.baseUrl}/auth/register`, {
-      num_empleado,
-      nom_usuario,
-      nom_contrasena,
+      ...data,
       idu_rol,
-      nom_correo
     })
     .pipe( 
-      tap(user => { 
+      tap(user => {
         this.currentUser = user;
         if(this.currentUser.token)
           localStorage.setItem('token', this.currentUser.token)
@@ -49,7 +47,7 @@ export class AuthService {
         this.notificationsService.successMessage(title,content);
       }),
       tap(() => this.router.navigate(['/apps/list-apps'])),
-      catchError(this.handleError)
+      catchError((error) => this.handleErrorMess(error, OriginMethod.POSTREGISTER))
     );
   }
 
@@ -93,7 +91,37 @@ export class AuthService {
     )
   }
 
-  private handleError(error: any): Observable<never> {
-    return throwError(error.error || 'Server error');
+  getPositions(): Observable<Position[]>{    
+    return this.http.get<Position[]>(`${this.baseUrl}/positions`)
+    .pipe(
+      catchError(error => this.handleErrorMess(error, OriginMethod.GETPOSITIONS))
+    )
+  }
+
+  getInfoOrg(idu_puesto: number): Observable<InfoOrg> {
+    return this.http.get<InfoOrg>(`${this.baseUrl}/leader/${idu_puesto}`)
+    .pipe(
+      catchError(error => this.handleErrorMess(error, OriginMethod.GETINFOORG))
+    )
+  }
+
+  private handleErrorMess(error: HttpErrorResponse, origin: OriginMethod, extra?: string | number) {
+    // console.log(error);
+    const title = 'Error';
+    if(error.status === 0){
+      const errorMessage = 'No es posible conectar con el servidor, intentelo más tarde o contacte con el administrador.'
+      this.notificationsService.errorMessage(title,errorMessage);
+
+    }else if(error.status !== 401){
+      const errorsMessages = {
+        GETINFOORG: `Error al obtener información de aplicaciones, centros y encargados. Intentar más tarde.`,
+        GETPOSITIONS: `Error al obtener los puestos. Intentar más tarde.`,
+        POSTREGISTER: `Error al registrar nuevo cuenta. Intentar más tarde.`,
+      };
+
+      this.notificationsService.errorMessage(title,errorsMessages[origin]);
+    }
+  
+    return throwError(() => 'ERROR ERROR ERROR');
   }
 }

@@ -93,9 +93,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   
   private initForm(): void{
     this.formFiles = new FormGroup({
-      action: new FormControl(
-        NumberAction.UPDATECODE, 
-      ),
+      action: new FormControl(NumberAction.UPDATECODE),
       archiDocOverOpt: new FormControl([]),
       archiDocCodeOpt: new FormControl({ value: [], disabled: true }),
       archiCasesOpt: new FormControl({ value: [], disabled: true }),
@@ -201,6 +199,17 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     }
 
     this.activeIndex += value;
+    if (this.selectedValue === NumberAction.NONE && this.activeIndex === 3) {
+      this.formFiles.patchValue({
+        architecSelected: 'archiDocOverOpt',
+        archiDocOverOpt: [true],
+        archiDocCodeOpt: [],
+        archiCasesOpt: [],
+        archiRateOpt: []
+      });
+    }
+    
+    
     if (!this.isMigrationEnabled && this.formFiles.get('action')?.value === NumberAction.MIGRATION) {
       this.formFiles.get('action')?.setValue(NumberAction.UPDATECODE); // ← ELIMINA todo este bloque si no quieres forzar el valor "Actualizar código" al volver atrás
       this.selectedValue = NumberAction.UPDATECODE;
@@ -346,13 +355,16 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
 
     this.isUploadProject = true;
     const values = this.formFiles.value;
-    
+
+
     const opt_archi = {
-      '1': !!values.archiDocOverOpt.length, //1 - Documenacion overview
-      '2': !!values.archiDocCodeOpt.length, //2 - Documentacion por codigo
-      '3': !!values.archiCasesOpt.length,   //3 - Casos de prueba  
-      '4': !!values.archiRateOpt.length     //4 - Calificación de codigo
-    }
+      '1': Array.isArray(values.archiDocOverOpt) && values.archiDocOverOpt.length > 0,
+      '2': Array.isArray(values.archiDocCodeOpt) && values.archiDocCodeOpt.length > 0,
+      '3': Array.isArray(values.archiCasesOpt) && values.archiCasesOpt.length > 0,
+      '4': Array.isArray(values.archiRateOpt) && values.archiRateOpt.length > 0,
+    };
+
+
     
     if(!this.actionOpsValues.includes(values.action)) return;
     if(values.type === 'zip' && !values.zipFile) return;

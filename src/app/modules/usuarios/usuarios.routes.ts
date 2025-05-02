@@ -6,9 +6,20 @@ export const usuariosRoutes: Routes = [
     {
         path: '',
         children: [
-            { path: 'list-users', component: ListUsuariosComponent },
-            { path: 'edit/:id', component: EditUsersPageComponent },
-            { path: '**', redirectTo: 'list-users' },
+            { 
+                path: 'list-users', 
+                component: ListUsuariosComponent,
+                title: 'RVIA - Usuarios' 
+            },
+            { 
+                path: 'edit/:id', 
+                component: EditUsersPageComponent,
+                title: 'RVIA - Editar usuario'
+            },
+            { 
+                path: '**', 
+                redirectTo: 'list-users' 
+            },
         ]
     }
 ];

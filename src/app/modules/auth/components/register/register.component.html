@@ -1,124 +1,305 @@
 <main class="main-container min-h-full px-4 py-5">
-  <section class="register-container w-auto md:w-27rem p-4 my-3 mx-auto border-round-lg">
-    <h2 class="text-center mt-0 mb-4">Registro</h2>
-    <form (ngSubmit)="onRegister()" #registerForm="ngForm">
-      <div class="flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Número de empleado</p>
-        <input 
-          pInputText
-          id="usernumber-reg"
-          name="usernumber-reg"
-          aria-describedby="usernumber-reg-input"
-          [(ngModel)]="usernumber" 
-          required
-          placeholder="Ej. 90000000"
-          autocomplete="off"
-          (ngModelChange)="onInputChange()"
-        />
-      </div>
-      <div class="flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Nombre de usuario</p>
-        <input 
-          pInputText
-          id="username-reg"
-          name="username-reg"
-          aria-describedby="username-reg-input"
-          [(ngModel)]="username" 
-          required
-          placeholder="Nombre completo"
-          autocomplete="off"
-          (ngModelChange)="onInputChange()"
-        />
-      </div>
-      <div class="flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Correo electrónico</p>
-        <input 
-          pInputText
-          type="email"
-          id="email-reg"
-          name="email-reg"
-          aria-describedby="email-reg-input"
-          [(ngModel)]="email" 
-          required
-          placeholder="ejemplo@coppel.com"
-          autocomplete="off"
-          (ngModelChange)="onInputChange()"
-        />
-      </div>
-      <div class=" flex flex-column gap-2 mb-3">
-        <div class="flex mb-2" >
-          <p class=" m-0 font-bold mt-auto">Contraseña</p>
-          <p-badge
-            class="ml-2"
-            [pTooltip]="tooltipContent"  
-            value="i" severity="contrast"
-            tooltipPosition="right" 
-            [style]="{'min-width': '20px', 'height': '22px', 'vertical-align': 'middle'}" />
-            <ng-template #tooltipContent>
-                <div class="flex align-items-center text-sm">
-                  <p>Crea una contraseña segura con almenos <b>12 caracteres, letras, números y símbolos combinados.</b></p>
+  <section class="register-container newsize p-4 my-3 mx-auto border-round-lg">
+    <div class="flex flex-grow-1 align-items-center justify-content-center">
+      <h1 class="txt-tiltle-color text-5xl my-0">Nueva cuenta</h1>
+    </div>
+
+    <div class="mt-6"> 
+      <p-steps [model]="headers" [(activeIndex)]="activeIndex"
+      [readonly]="true" class="stepper-opcs"
+      />
+      
+      <!-- Panel Usuario -->
+       @if (activeIndex === 0) {
+        <form [formGroup]="registerFormUser" novalidate>
+          <section class="grid m-0 p-2">
+            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
+              <p class="my-2 font-bold">
+                Número de empleado <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <p-inputNumber 
+                  formControlName="num_empleado" 
+                  inputId="num_empleado-reg"
+                  [useGrouping]="false"
+                  [style]="{ width : '100%' }"
+                  placeholder="Ej. 90000000"
+                  min="0"
+                  max="99999999"
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('num_empleado')">
+                  Número de empleado inválido.
+                </small>
+              </div>
+            </div><!--Num empleado-->
+            
+            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
+              <p class="my-2 font-bold">
+                Correo electrónico <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <input
+                  formControlName="nom_correo"
+                  autocomplete="off"
+                  placeholder="ejemplo@coppel.com"
+                  class="w-full"
+                  pInputText id="email-reg"
+                  type="text"
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_correo')">
+                  El correo electrónico inválido.
+                </small>
+              </div>
+            </div><!--Correo electronico-->
+            
+            <div class="field col-12 p-2 mb-0 input-size">
+              <p class="my-2 font-bold">
+                  Nombre de usuario <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <input
+                  formControlName="nom_usuario"
+                  autocomplete="off"
+                  placeholder="Nombre completo"
+                  class="w-full"
+                  pInputText id="username-reg"
+                  type="text"
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_usuario')">
+                  Nombre de usuario inválido.
+                </small>
+              </div>
+            </div><!--Nombre usuario-->
+  
+            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
+              <div class="flex align-items-center">
+                <p class="my-2 font-bold">
+                  Contraseña <span class="text-red">*</span>
+                </p>
+                <p-badge
+                  class="ml-1"
+                  [pTooltip]="tooltipContent"  
+                  value="i" severity="contrast"
+                  tooltipPosition="right" 
+                  [style]="{'min-width': '20px', 'height': '22px', 'vertical-align': 'middle'}" />
+                <ng-template #tooltipContent>
+                    <div class="flex align-items-center text-sm">
+                      <p>Crea una contraseña segura con almenos <b>12 caracteres, letras, números y símbolos combinados.</b></p>
+                    </div>
+                </ng-template>
+              </div>
+              <div class="flex flex-column">
+                <p-password 
+                  formControlName="nom_contrasena"
+                  inputId="passworduser-reg"
+                  name="passworduser-reg"
+                  [style]="{ width : '100%' }"
+                  [inputStyle]="{ width : '100%' }"
+                  [feedback]="false" 
+                  [toggleMask]="true"
+                  placeholder="Contraseña"
+                  autocomplete="off"
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_contrasena')">
+                  Contraseña inválida.
+                </small>
+              </div>
+            </div><!--Contraseña-->
+            
+            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
+              <p class="my-2 font-bold">
+                Confirmar contraseña <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <p-password 
+                  formControlName="confirmPassword"
+                  inputId="passworduserconf-reg"
+                  name="passworduserconf-reg"
+                  [style]="{ width : '100% '}"
+                  [inputStyle]="{ width : '100%' }"
+                  [feedback]="false" 
+                  [toggleMask]="true"
+                  placeholder="Confirma tu contraseña"
+                  autocomplete="off"
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('confirmPassword')">
+                  Las contraseñas no coinciden.
+                </small>
+              </div>
+            </div><!--Confirmacion-->
+            
+            <div class="field col-12 md:col-6 p-2 mb-0 input-size" >
+              <p class="my-2 font-bold">
+                  Puesto <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <p-dropdown
+                  formControlName="num_puesto"
+                  id="position-reg"
+                  [options]="positionsOpcs"  
+                  optionLabel="nom_puesto" 
+                  optionValue="idu_puesto"
+                  placeholder="Selecciona tu puesto"
+                  [showClear]="true"
+                  [style]="{ width : '100%' }" 
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('num_puesto')"> 
+                  Debes seleccionar un puesto.
+                </small>
+              </div>
+            </div><!--Puesto-->
+          </section>
+        </form>
+       }
+      <!-- Panel Usuario --> 
+
+      <!-- Panel Organizacion -->
+       @if (activeIndex === 1) {
+         <form [formGroup]="registerFormOrg" novalidate>
+          <section class="grid m-0 p-2">
+            <div class="field col-12 p-2 mb-0 input-size">
+              <p class="my-2 font-bold">
+                  Aplicación <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <p-dropdown
+                    formControlName="idu_aplicacion"
+                    id="aplicacion-reg"
+                    [options]="appsOpc" 
+                    optionValue="idu_aplicacion"
+                    optionLabel="nom_app"
+                    placeholder="Selecciona una aplicación"
+                    [style]="{ width : '100%' }"
+                    panelStyleClass="apps-panel"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterPlaceholder="Buscar aplicación..."
+                    [filterBy]="'nom_app'" 
+                />
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('idu_aplicacion')">
+                  Debes seleccionar una aplicación.
+                </small>
+              </div>
+            </div><!--Aplicacion-->
+            <div class="field col-12 p-2 mb-0 input-size">
+              <p class="my-2 font-bold">
+                  Número de centro <span class="text-red">*</span>
+              </p>
+              <div class="flex flex-column">
+                <p-dropdown
+                  formControlName="num_centro"
+                  id="num_centro-reg"
+                  [options]="centrosOpc"
+                  optionValue="num_centro"
+                  placeholder="Selecciona una aplicación"
+                  [style]="{ width : '100%' }"
+                  [showClear]="true"
+                  [filter]="true"
+                  filterPlaceholder="Buscar aplicación..." 
+                  [filterBy]="'num_centro,nom_centro'"
+                >
+                  <ng-template pTemplate="selectedItem" let-centro>
+                    <div>{{ centro?.num_centro }} - {{ centro?.nom_centro }}</div>
+                  </ng-template>
+                  <ng-template let-centro pTemplate="item">
+                    <div *ngIf="centro">{{ centro.num_centro }} - {{ centro.nom_centro }}</div>
+                    <div *ngIf="!centro" class="text-color-secondary">Selecciona una aplicación</div>
+                  </ng-template>
+                </p-dropdown>
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('num_centro')">
+                  Debes seleccionar un centro.
+                </small>
+              </div>
+            </div><!--Centro-->
+            @if(isNotDivisional){
+              <div class="field col-12 p-2 mb-0 input-size">
+                <p class="my-2 font-bold">
+                  Selecciona a tu {{ txtPosition }} <span class="text-red">*</span>
+                </p>
+                <div class="flex flex-column">
+                  <p-dropdown
+                    formControlName="num_encargado"
+                    id="num_encargado-reg"
+                    [options]="encargados"
+                    optionValue="num_empleado"
+                    [placeholder]="'Selecciona a tu ' + txtPosition"
+                    [style]="{ width : '100%' }"
+                    [showClear]="true"
+                    [filter]="true"
+                    filterPlaceholder="Buscar encargado..." 
+                    [filterBy]="'num_empleado,nom_empleado'"
+                  >
+                    <ng-template pTemplate="selectedItem" let-encargado>
+                      <div>{{ encargado?.num_empleado }} - {{ encargado?.nom_empleado }}</div>
+                    </ng-template>
+                    <ng-template let-encargado pTemplate="item">
+                      <div *ngIf="encargado">{{ encargado.num_empleado }} - {{ encargado.nom_empleado }}</div>
+                      <div *ngIf="!encargado" class="text-color-secondary">Selecciona a tu {{ txtPosition }}</div>
+                    </ng-template>
+                  </p-dropdown>
+                  <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('num_encargado')">
+                    Debes seleccionar un encargado.
+                  </small>
                 </div>
-            </ng-template>
-        </div>
-        <p-password 
-          inputId="passworduser-reg"
-          name="passworduser-reg"
-          aria-describedby="passworduser-reg-input"
-          [style]="{width : '100%'}"
-          [inputStyle]="{width : '100%'}"
-          [(ngModel)]="password" 
-          [feedback]="false" 
-          [toggleMask]="true"
-          required
-          placeholder="Contraseña"
-          autocomplete="off"
-          (ngModelChange)="onInputChange()"
-        />
-      </div>
-      <div class=" flex flex-column gap-2 mb-3">
-        <p class="m-0 font-bold">Confirmar contraseña</p>
-        <p-password 
-          inputId="passworduserconf-reg"
-          name="passworduserconf-reg"
-          aria-describedby="passworduserconf-reg-input"
-          [style]="{width : '100%'}"
-          [inputStyle]="{width : '100%'}"
-          [(ngModel)]="confirmPassword" 
-          [feedback]="false" 
-          [toggleMask]="true"
-          required
-          placeholder="Confirma tu contraseña"
-          autocomplete="off"
-          (ngModelChange)="onInputChange()"
-        />
-      </div>
-      <div class="flex align-items-center gap-2 mb-3">
-        <p-checkbox [(ngModel)]="termAccepted" 
-          [binary]="true" name="termAccepted" 
-          required (click)="showTerms(true)"
-          (ngModelChange)="onInputChange()
-        "/>
-        <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
-      </div>
-      <div *ngIf="errorMessage" class="mb-3 text-red text-center">
-        {{ errorMessage }}
-      </div>
-      <div class="flex flex-column gap-3 mt-4">
-        <p-button 
-          type="submit"  
-          [label]="btnLabel" 
-          styleClass="w-full"
-          iconPos="right"
-          [disabled]="registerForm.form.invalid || isRegister || isReady || !termAccepted" 
-        />
-        <p-button 
-          class="text-center" 
-          label="Iniciar sesión" 
-          [link]="true" 
-          (onClick)="onBack()"/>
-      </div>
-    </form>
+              </div><!--Encargado-->
+            }
+            <div class="field col-12 mt-4 mb-0">
+              <div class="flex flex-column">
+                <div class="flex align-items-center gap-2 mb-0">
+                  <p-checkbox
+                    formControlName="termAccepted" 
+                    [binary]="true"
+                    inputId="termAccepted"  name="termAccepted" 
+                    (click)="showTerms(true)"
+                  />
+                  <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
+                </div>
+                <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('termAccepted')">
+                  Debes aceptar los términos y condiciones.
+                </small>
+              </div>
+            </div><!--T&C-->
+          </section>
+        </form>
+       }
+      <!-- Panel Organizacion -->
+
+      <section class="flex pt-2">
+        <p-button label="Regresar" [text]="true"
+            icon="pi pi-arrow-left"
+            severity="secondary"
+            (onClick)="changeStep(-1)" 
+            [disabled]="activeIndex === 0"
+            *ngIf="activeIndex !== 0 && !(activeIndex === headers.length - 1 && isRegister)"
+          />
+          <button *ngIf="activeIndex !== headers.length - 1; else lastBtn"
+            pButton label="Siguiente" icon="pi pi-arrow-right"
+            iconPos="right" class="p-button ml-auto btn-rvia"
+            [disabled]="checkDisabled()"
+            (click)="changeStep(+1)"
+          >
+          </button> 
+          <ng-template #lastBtn>
+              <p-button 
+                [label]="isRegister ? 'Registrando...' : 'Crear cuenta'"
+                severity="success" icon="pi pi-arrow-right"
+                iconPos="right" class="ml-auto"
+                type="button"
+                (click)="onRegister()"
+                [loading]="isRegister"
+                [outlined]="registerFormOrg.invalid"
+                [disabled]="isRegister || checkDisabled()"
+              />
+          </ng-template>
+      </section><!--Botones-->
+    </div>
+
+    <p-divider />
+    <div class="text-center mt-4 mb-0 p-0">
+      <p class="text-sm m-0">¿Ya tienes una cuenta? <b class="c-pointer" (click)="goToLogin()">Inicia sesión</b>.</p>
+    </div>
   </section>
+  
   <p-dialog 
     header="Términos y Condiciones Generales de Servicio RVIA" 
     [modal]="true" 
@@ -131,5 +312,5 @@
         </h3>
         <p [innerHTML]="term.content"></p>
       </div>
-  </p-dialog>
+  </p-dialog> <!--termimos-->
 </main>

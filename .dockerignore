@@ -1,11 +1,7 @@
-# Ignorar node_modules para no copiar dependencias innecesarias
-node_modules
-npm-debug.log
+.angular
 .git
 .gitignore
-Dockerfile
-docker-compose.yml
-.dockerignore
+dist
+docker
+node_modules
 README.md
-coverage
-.env
