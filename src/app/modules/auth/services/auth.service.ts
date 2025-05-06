@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -16,6 +16,18 @@ import { DataToRegister, InfoOrg, OriginMethod, Position } from '../interfaces';
 export class AuthService {
   private readonly baseUrl = environment.baseURL;
   private currentUser: Usuario | null = null;
+
+  private _user = signal<Usuario | null>(null);  
+  user =  computed(() => this._user());
+
+  fullName = computed(() => {
+    if(!this._user()) return 'Error'
+    
+    const { nom_usuario } = this._user()!;
+    const name = nom_usuario.split(' '); 
+    
+    return `${name[0]} ${name.at(-2)}`;
+  });
 
   constructor(
     private http: HttpClient, 
@@ -46,6 +58,7 @@ export class AuthService {
         const content = `¡Se ha registrado exitosamente el usuario ${user.num_empleado}!`
         this.notificationsService.successMessage(title,content);
       }),
+      tap((user) => this._user.set(user)),
       tap(() => this.router.navigate(['/apps/list-apps'])),
       catchError((error) => this.handleErrorMess(error, OriginMethod.POSTREGISTER))
     );
@@ -62,6 +75,7 @@ export class AuthService {
         if(this.currentUser.token)
           localStorage.setItem('token', this.currentUser.token)
       }),
+      tap((user) => this._user.set(user)),
       delay(1000),
       tap(() => this.router.navigate(['/apps/list-apps'])),
       catchError(e => throwError(() => e))
@@ -70,6 +84,7 @@ export class AuthService {
 
   logoutUser(): void {
     this.currentUser = null;
+    this._user.set(null);
     localStorage.removeItem('token');
     this.aplicacionesServices.clearDataApps();
     this.usuariosService.clearDataUsers();
@@ -81,6 +96,7 @@ export class AuthService {
       map((resp) => {
         if(resp){
           this.currentUser = resp;
+          this._user.set(resp);
           if(this.currentUser.token)
             localStorage.setItem('token', this.currentUser.token)
           return true;

@@ -3,13 +3,7 @@
     <button class="hamburger txt-tiltle-color c-pointer text-2xl" (click)="toggleSidebar()">
       ☰
     </button>
-    <div class="user-info flex align-items-center">
-      <span class="txt-tiltle-color white-space-nowrap font-italic ml-2">
-        {{ userLogged?.position?.nom_rol }}
-      </span>
-      <span class="separator txt-tiltle-color ml-2">|</span>
-      <span class="text-color white-space-nowrap ml-2">{{ userLogged?.nom_usuario }}</span>
-    </div>
+    <user-badge />
   </nav>
   <nav class="sidebar fixed flex flex-column h-full text-white justify-content-between" [ngClass]="{'active': sidebarActive}">
     <button class="close-sidebar txt-tiltle-color text-2xl c-pointer py-3 px-2" (click)="closeSidebar()">

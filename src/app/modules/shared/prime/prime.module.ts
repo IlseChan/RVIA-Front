@@ -22,6 +22,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { MenuModule } from 'primeng/menu';
 
 @NgModule({
   declarations: [],
@@ -34,9 +35,13 @@ import { InputNumberModule } from 'primeng/inputnumber';
     DividerModule,
     DropdownModule,
     DynamicDialogModule,
+    IconFieldModule,
     InputGroupAddonModule,
     InputGroupModule,
+    InputIconModule,
+    InputNumberModule,
     InputTextModule,
+    MenuModule,
     PaginatorModule,
     PasswordModule,
     ProgressSpinnerModule,
@@ -45,9 +50,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
     TableModule,
     TagModule,
     TooltipModule,
-    IconFieldModule,
-    InputIconModule,
-    InputNumberModule,
   ],
   exports:[
     BadgeModule,
@@ -58,9 +60,13 @@ import { InputNumberModule } from 'primeng/inputnumber';
     DividerModule,
     DropdownModule,
     DynamicDialogModule,
+    IconFieldModule,
     InputGroupAddonModule,
     InputGroupModule,
+    InputIconModule,
+    InputNumberModule,
     InputTextModule,
+    MenuModule,
     PaginatorModule,
     PasswordModule,
     ProgressSpinnerModule,
@@ -69,9 +75,6 @@ import { InputNumberModule } from 'primeng/inputnumber';
     TableModule,
     TagModule,
     TooltipModule,
-    IconFieldModule,
-    InputIconModule,
-    InputNumberModule
   ]
 })
 export class PrimeNGModule { }

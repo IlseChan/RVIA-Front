@@ -25,6 +25,7 @@
     --acent-color:#ea5a9c;
     --bg-sidebar: #efefef;
     --bg-content: #f9f9f9;
+    --txt-color: #4b5563;
 }
 
 html,
@@ -33,6 +34,7 @@ body {
     padding: 0;
     margin: 0;
     font-family: 'Roboto', sans-serif;
+    color: var(--txt-color);
 }
 
 .c-pointer{

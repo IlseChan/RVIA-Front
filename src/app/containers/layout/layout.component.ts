@@ -10,13 +10,13 @@ import { DividerModule } from 'primeng/divider';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { CoreService } from '@modules/shared/services/core.service';
+import { UserBadgeComponent } from "./components/user-badge/user-badge.component";
 
 @Component({
   selector: 'layout',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive,
-    RouterOutlet, DividerModule 
-  ],
+    RouterOutlet, DividerModule, UserBadgeComponent],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
 })
