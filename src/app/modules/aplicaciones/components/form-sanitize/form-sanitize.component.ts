@@ -41,7 +41,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
 
   actionsOps = [
     { value: NumberAction.UPDATECODE, txt: 'Actualizar código (Migración de versión a la más actual del mismo lenguaje)' },
-    { value: NumberAction.MIGRATION, txt: 'Migrar código (Migración de un lenguaje de programación a otro)' },
+    // { value: NumberAction.MIGRATION, txt: 'Migrar código (Migración de un lenguaje de programación a otro)' },
     { value: NumberAction.SANITIZECODE, txt: 'Sanitizar código (Mitigación de vulnerabilidades checkmarx)' },
     { value: NumberAction.NONE, txt: 'No modificar código' },
   ];
