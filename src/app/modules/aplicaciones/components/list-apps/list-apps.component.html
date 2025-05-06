@@ -1,23 +1,23 @@
 <main class="m-2">
-    <section class="flex flex-column mt-3 md:flex-row">
-        <h1 class="txt-tiltle-color inline text-4xl text-center my-0 md:text-5xl md:text-left">
+    <section class="flex flex-col mt-3 md:flex-row">
+        <h1 class="txt-tiltle-color inline font-bold text-4xl text-center my-0 md:text-5xl md:text-left">
             Lista de aplicaciones
         </h1>
-        <a
-            *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO"
-            pRipple
-            routerLink="/apps/new-app"
-            pTooltip="Subir una aplicación"
-            tooltipPosition="left"
-            tooltipStyleClass="text-sm"
-            class="btn-new p-button font-bold mx-auto mt-4 md:mt-0 md:ml-auto md:mr-0">
-            <span class="pi pi-plus-circle mr-2" style="font-size: 1.4rem"></span>
-            Nueva aplicación
-        </a>
+        @if (user!.position.nom_rol !== Nom_Rols.INVITADO) {
+            <a
+                routerLink="/apps/new-app"
+                pTooltip="Subir una aplicación"
+                tooltipPosition="left"
+                tooltipStyleClass="text-sm"
+                class="rounded-lg btn-new text-white flex items-center font-bold p-2 mx-auto mt-4 md:mt-0 md:ml-auto md:mr-0">
+                <span class="pi pi-plus-circle mr-2 text-center" style="font-size: 1.4rem"></span>
+                Nueva aplicación
+            </a>
+        }
     </section>
-
-    <div *ngIf="isLoading && user!.position.nom_rol !== Nom_Rols.INVITADO" class="card flex justify-content-center my-6">
-        <p-progressSpinner ariaLabel="loading" />
+    
+    <div *ngIf="isLoading && user!.position.nom_rol !== Nom_Rols.INVITADO" class="card flex justify-center mt-12">
+        <span class=" loader"></span>
     </div>
 
     <div *ngIf="!isLoading && aplications.length === 0 || user!.position.nom_rol === Nom_Rols.INVITADO" class="my-6">
@@ -41,7 +41,7 @@
                 [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }"
             >
                 <ng-template pTemplate="caption">
-                    <div class="flex align-items-center">
+                    <div class="flex items-center">
                         <div class="mr-auto">
                             <p class="m-0 text-gray-500">
                                 Última actualización: 
@@ -75,7 +75,7 @@
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header">
-                    <tr class="rvia-header">
+                    <tr class="rvia-table-header">
                         <th *ngFor="let col of colums">
                             {{ col }}
                         </th>

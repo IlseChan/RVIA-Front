@@ -1,8 +1,8 @@
-<main class="w-full h-full flex justify-content-center main-container">
+<main class="w-full h-full flex justify-center main-container">
   <div class="login-container w-25rem mx-auto mt-7 p-4">
-    <div class="login-box p-4 border-round-lg text-white">
+    <div class="login-box p-4 rounded-lg text-white">
       <h2 class="text-center mb-4">Acceso</h2>
-      <div class="flex flex-column gap-2 mb-4">
+      <div class="flex flex-col gap-2 mb-4">
         <p class="m-0">Número de empleado:</p>
         <input 
           pInputText
@@ -15,7 +15,7 @@
           placeholder="Ej. 90000000"
         />
       </div>
-      <div class="flex flex-column gap-2 mb-4">
+      <div class="flex flex-col gap-2 mb-4">
         <p class="m-0">Contraseña:</p>
         <p-password 
           inputId="passworduser"
@@ -32,7 +32,7 @@
         />
       </div>
       <div *ngIf="errorMessage" class="mb-2 text-red">{{ errorMessage }}</div>
-      <div class="flex flex-column gap-3 mt-6">
+      <div class="flex flex-col gap-3 mt-6">
         <p-button 
           [label]="isLogging ? 'Ingresando...' : 'Ingresar'" 
           styleClass="w-full"

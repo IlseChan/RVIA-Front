@@ -1,27 +1,30 @@
 <main class="m-2">
-    <section class="flex flex-column md:flex-row md:align-items-center justify-content-between">
-        <div class="flex flex-grow-1 align-items-center flex-basis-0">
-          <p-button 
-            label="Volver" 
+    <section class="flex flex-col md:flex-row md:items-center">
+        <div class="flex items-center mr-4">
+          <p-button
             icon="pi pi-arrow-left" 
             severity="secondary"
             [text]="true"
             (onClick)="back()" 
           />
         </div>
-        <div class="flex flex-grow-1 align-items-center justify-content-center md:justify-content-start">
+        <div class="flex items-center justify-center">
           <h1 class="txt-tiltle-color text-5xl my-0">Modificar usuario</h1>
         </div>
     </section>
-    
-    <div *ngIf="isLoading; else form" class="card flex justify-content-center my-6">
+
+    <!-- <div *ngIf="isLoading; else form" class="card flex justify-center my-6">
         <p-progressSpinner ariaLabel="loading" />
-    </div>
+    </div> -->
 
     <ng-template #form>
-        <section class="flex flex-column p-1 mt-2 md:p-4">
+        <section class="mt-2 ml-6 text-gray-400">
+            <p>Administra la información del usuario: <b>{{ originalUser()?.num_empleado }}</b></p>  
+        </section>
+        <div class="mt-2 border-1 border-gray-300"></div>
+        <section class="flex flex-col p-1 mt-2 md:p-4">
             <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
-                <div class="field grid justify-content-center m-0 py-2">
+                <div class="field grid justify-center m-0 py-2">
                     <p class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
                        Número de empleado
                     </p>
@@ -31,15 +34,15 @@
                             class="w-full"
                             pInputText id="num_empleado-edit"
                             type="text" [disabled]="true" readonly
-                            [value]="originalUser.num_empleado"/>
+                            [value]="originalUser()?.num_empleado"/>
                     </div>
                 </div>
-                <div class="field grid justify-content-center m-0 py-2">
+                <div class="field grid justify-center m-0 py-2">
                     <p class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
                        Nombre completo
                     </p>
                     <div class="col-12 md:col-3">
-                        <div class="flex flex-column">
+                        <div class="flex flex-col">
                             <input
                                 class="w-full" placeholder="Nombre completo"
                                 [ngClass]="{'ng-invalid ng-dirty': isValidField('nom_usuario')}"
@@ -49,7 +52,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="field grid justify-content-center m-0 py-2">
+                <div class="field grid justify-center m-0 py-2">
                     <p class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
                         Tipo de usuario
                     </p>

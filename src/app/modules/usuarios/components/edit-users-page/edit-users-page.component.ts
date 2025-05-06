@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subject, switchMap, takeUntil } from 'rxjs';
@@ -32,7 +32,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   ];
 
   isUpdate: boolean = false;
-  originalUser!: Usuario;
+  originalUser =  signal<Usuario|null>(null) ;
   private destroy$ = new Subject<void>();
 
   constructor(
@@ -53,7 +53,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (user) => {
           this.initForm(user); 
-          this.originalUser = user;
+          this.originalUser.set(user);
           this.isLoading = false; 
         },
         error: () => {
@@ -95,7 +95,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
     this.isUpdate = true;
     const user = this.userForm.value;
         
-    this.usuariosService.updateUsuario(this.originalUser,user)
+    this.usuariosService.updateUsuario(this.originalUser()!,user)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: () => {

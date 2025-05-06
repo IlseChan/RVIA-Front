@@ -7,22 +7,22 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
-import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { DynamicDialog } from 'primeng/dynamicdialog';
+import { IconFieldModule } from 'primeng/iconfield';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup';
+import { InputIconModule } from 'primeng/inputicon';
+import { InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
+import { MenuModule } from 'primeng/menu';
 import { PaginatorModule } from 'primeng/paginator';
 import { PasswordModule } from 'primeng/password';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { StepsModule } from 'primeng/steps';
 import { TableModule } from 'primeng/table';
+import { TabsModule } from 'primeng/tabs';
 import { TagModule } from 'primeng/tag';
 import { TooltipModule } from 'primeng/tooltip';
-import { IconFieldModule } from 'primeng/iconfield';
-import { InputIconModule } from 'primeng/inputicon';
-import { InputNumberModule } from 'primeng/inputnumber';
-import { MenuModule } from 'primeng/menu';
 
 @NgModule({
   declarations: [],
@@ -34,7 +34,7 @@ import { MenuModule } from 'primeng/menu';
     DialogModule,
     DividerModule,
     DropdownModule,
-    DynamicDialogModule,
+    DynamicDialog,
     IconFieldModule,
     InputGroupAddonModule,
     InputGroupModule,
@@ -44,11 +44,11 @@ import { MenuModule } from 'primeng/menu';
     MenuModule,
     PaginatorModule,
     PasswordModule,
-    ProgressSpinnerModule,
     RadioButtonModule,
     StepsModule,
     TableModule,
     TagModule,
+    TabsModule, 
     TooltipModule,
   ],
   exports:[
@@ -59,7 +59,7 @@ import { MenuModule } from 'primeng/menu';
     DialogModule,
     DividerModule,
     DropdownModule,
-    DynamicDialogModule,
+    DynamicDialog,
     IconFieldModule,
     InputGroupAddonModule,
     InputGroupModule,
@@ -69,11 +69,11 @@ import { MenuModule } from 'primeng/menu';
     MenuModule,
     PaginatorModule,
     PasswordModule,
-    ProgressSpinnerModule,
     RadioButtonModule,
     StepsModule,
     TableModule,
     TagModule,
+    TabsModule, 
     TooltipModule,
   ]
 })

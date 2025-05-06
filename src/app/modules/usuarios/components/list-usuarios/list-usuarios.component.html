@@ -1,11 +1,13 @@
 <main class="m-2">
-    <section class="flex justify-content-center md:justify-content-start  mt-3">
+    <section class="flex justify-center md:justify-start mt-3">
         <h1 class="txt-tiltle-color inline text-5xl my-0">Lista de usuarios</h1>
     </section>
     
-    <div *ngIf="isLoading" class="card flex justify-content-center my-6">
-        <p-progressSpinner ariaLabel="loading" />
-    </div>
+    @if (isLoading) {
+        <div class="card flex justify-center mt-12">
+            <span class=" loader"></span>
+        </div>
+    }
     
     <div *ngIf="!isLoading && totalItems === 0" class="my-6">
         <h2 class="text-center">¡No hay usuarios para listar!</h2>
@@ -26,7 +28,7 @@
                 [lazy]="true"
             >
                 <ng-template pTemplate="header">
-                    <tr class="rvia-header">
+                    <tr class="rvia-table-header">
                         <th *ngFor="let col of columns">
                             {{ col }}
                         </th>

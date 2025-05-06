@@ -1,5 +1,5 @@
 import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil, map } from 'rxjs';
@@ -16,7 +16,7 @@ import { Language, NumberAction } from '@modules/aplicaciones/interfaces';
   standalone: true,
   templateUrl: './form-sanitize.component.html',
   styleUrls: ['./form-sanitize.component.scss'],
-  imports: [CommonModule,ReactiveFormsModule, PrimeNGModule]
+  imports: [CommonModule,ReactiveFormsModule, PrimeNGModule, JsonPipe]
 })
 export class FormSanitizeComponent implements OnInit, OnDestroy {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;
@@ -30,9 +30,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   formFiles!: FormGroup;
   isUploadFile: boolean = false;
   isUploadProject: boolean = false;
-  isMigrationEnabled = false; // ← Aquí controlas si esta activo o no
   isArchiOptionEnabled = false; // ← Aquí controlas si esas opciones están activas o no
-
 
   radioOps = [
     { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
@@ -49,9 +47,9 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   
   actionArchitec = [
     { txt: 'Generar documentación completa', form: 'archiDocOverOpt' },
-    { txt: 'Generar documentación por código', form: 'archiDocCodeOpt' },
-    { txt: 'Generar casos de pruebas', form: 'archiCasesOpt' },
-    { txt: 'Generar calificación de proyecto', form: 'archiRateOpt' },
+    // { txt: 'Generar documentación por código', form: 'archiDocCodeOpt' },
+    // { txt: 'Generar casos de pruebas', form: 'archiCasesOpt' },
+    // { txt: 'Generar calificación de proyecto', form: 'archiRateOpt' },
   ];
   
   isLoading: boolean = true;
@@ -77,7 +75,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   {}
   
   ngOnInit(): void {
-    this.isMigrationEnabled = false; // desactiva migración
     this.aplicacionesService.getLanguages()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -162,12 +159,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       this.headers = [...this.headersBase];
     }
   }
-  setAction(value: number): void {
-    if (value === NumberAction.MIGRATION && !this.isMigrationEnabled) return; // ← ELIMINA esta línea para permitir seleccionar la opción "Migrar código" desde la interfaz
-    
-    this.formFiles.get('action')?.setValue(value);
-    this.changeRadioAction({ value } as RadioButtonClickEvent);
-  }
+
   onRadioClick(selectedForm: string): void {
     this.formFiles.patchValue({
       archiDocOverOpt: [],
@@ -177,7 +169,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       [selectedForm]: [true]
     });
   }
-
 
   changeStep(value: number) {
     if(value < 0){
@@ -199,42 +190,43 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     }
 
     this.activeIndex += value;
-    if (this.selectedValue === NumberAction.NONE && this.activeIndex === 3) {
-      this.formFiles.patchValue({
-        architecSelected: 'archiDocOverOpt',
-        archiDocOverOpt: [true],
-        archiDocCodeOpt: [],
-        archiCasesOpt: [],
-        archiRateOpt: []
-      });
-    }
+    // if (this.selectedValue === NumberAction.NONE && this.activeIndex === 3) {
+    //   this.formFiles.patchValue({
+    //     architecSelected: 'archiDocOverOpt',
+    //     archiDocOverOpt: [true],
+    //     archiDocCodeOpt: [],
+    //     archiCasesOpt: [],
+    //     archiRateOpt: []
+    //   });
+    // }
     
     
-    if (!this.isMigrationEnabled && this.formFiles.get('action')?.value === NumberAction.MIGRATION) {
-      this.formFiles.get('action')?.setValue(NumberAction.UPDATECODE); // ← ELIMINA todo este bloque si no quieres forzar el valor "Actualizar código" al volver atrás
-      this.selectedValue = NumberAction.UPDATECODE;
-    }
-    if (
-      this.selectedValue === NumberAction.NONE &&
-      this.activeIndex === 4
-    ) {
-      // Agrega el paso "Resumen" si aún no está
-      const hasResumen = this.headers.some(h => h.label === 'Resumen');
-      if (!hasResumen) {
-        this.headers.push({ label: 'Resumen' });
-      }
-    }
+    // if (!this.isMigrationEnabled && this.formFiles.get('action')?.value === NumberAction.MIGRATION) {
+    //   this.formFiles.get('action')?.setValue(NumberAction.UPDATECODE); // ← ELIMINA todo este bloque si no quieres forzar el valor "Actualizar código" al volver atrás
+    //   this.selectedValue = NumberAction.UPDATECODE;
+    // }
+    // if (
+    //   this.selectedValue === NumberAction.NONE &&
+    //   this.activeIndex === 4
+    // ) {
+    //   // Agrega el paso "Resumen" si aún no está
+    //   const hasResumen = this.headers.some(h => h.label === 'Resumen');
+    //   if (!hasResumen) {
+    //     this.headers.push({ label: 'Resumen' });
+    //   }
+    // }
   }
   
 
   cleanInput(type: string): void {    
     if(type === 'architec'){
       this.formFiles.patchValue({
-        archiDocOverOpt: false,
-        archiDocCodeOpt: false,
-        archiCasesOpt:   false,
-        archiRateOpt:    false
+        archiDocOverOpt: null,
+        archiDocCodeOpt: null,
+        archiCasesOpt:   null,
+        archiRateOpt:    null
       });
+      this.formFiles.patchValue({ architecSelected: null });
     }
     
     if(type === 'type'){
@@ -285,13 +277,12 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       const { 
        archiDocOverOpt, archiDocCodeOpt,
        archiCasesOpt,archiRateOpt } = this.formFiles.getRawValue();
-       //= this.formFiles.value;     
        const allDisabled = 
           this.formFiles.get('archiDocCodeOpt')?.disabled &&
           this.formFiles.get('archiCasesOpt')?.disabled &&
           this.formFiles.get('archiRateOpt')?.disabled;
 
-        if (allDisabled) return false;
+        // if (allDisabled) return false;
 
         return !archiCasesOpt?.[0] && !archiDocOverOpt?.[0] &&
               !archiDocCodeOpt?.[0] && !archiRateOpt?.[0];
@@ -356,7 +347,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     this.isUploadProject = true;
     const values = this.formFiles.value;
 
-
     const opt_archi = {
       '1': Array.isArray(values.archiDocOverOpt) && values.archiDocOverOpt.length > 0,
       '2': Array.isArray(values.archiDocCodeOpt) && values.archiDocCodeOpt.length > 0,
@@ -364,8 +354,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       '4': Array.isArray(values.archiRateOpt) && values.archiRateOpt.length > 0,
     };
 
-
-    
     if(!this.actionOpsValues.includes(values.action)) return;
     if(values.type === 'zip' && !values.zipFile) return;
     if(values.type === 'git' && !values.urlGit) return;

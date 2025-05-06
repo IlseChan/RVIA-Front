@@ -1,49 +1,47 @@
 <main class="m-2">
-  <section class="flex flex-column md:flex-row  md:align-items-center justify-content-between mb-5">
-    <div class="flex flex-grow-1 align-items-center flex-basis-0">
+  <section ion class="flex flex-col md:flex-row md:items-center justify-between mb-5">
+    <div class="flex flex-grow-1 items-center flex-basis-0">
       <p-button 
         label="Volver" 
         icon="pi pi-arrow-left" 
-        severity="secondary"
-        [text]="true"
+        variant="text" 
+        severity="secondary"  
         (onClick)="back()" 
       />
     </div>
-    <div class="flex flex-grow-1 align-items-center justify-content-center md:justify-content-start">
+    <div class="flex flex-grow-1 items-center justify-center md:justify-start">
       <h1 class="txt-tiltle-color text-5xl my-0">Nueva aplicación</h1>
     </div>
   </section>
   
-  <div *ngIf="isLoading; else newAppForm" class="card flex justify-content-center my-6">
-    <p-progressSpinner ariaLabel="loading" />
+  <div *ngIf="isLoading; else newAppForm" class="card flex justify-center mt-12">
+    <span class=" loader"></span>
   </div>
 
-  <ng-template #newAppForm class="mt-6">
+  <ng-template #newAppForm class="mt-8">
     <section class="main-container p-1 mt-2 md:p-4">
       <form [formGroup]="formFiles">
         <p-steps [model]="headers" [(activeIndex)]="activeIndex"
           [readonly]="true" class="stepper-opcs"
         />
         <!-- Panel Accion del proyecto -->
-        <section *ngIf="activeIndex === 0" class="stepper-panel h-23rem border-round surface-ground">
-          <p>Selecciona la acción a realizar:</p>
-          <div class="flex flex-column gap-3">
+        <section *ngIf="activeIndex === 0" class="stepper-panel h-[23rem] rounded surface-ground">
+          <p class="mb-3">Selecciona la acción a realizar:</p>
+          <div class="flex flex-col gap-6">
             <div *ngFor="let opc of actionsOps" class="field-checkbox">
               <p-radioButton 
                   [value]="opc.value"
-                  name="actionGroup"
+                  name="action"
                   [inputId]="opc.txt"
-                  [disabled]="opc.value === NumberAction.MIGRATION && !isMigrationEnabled"
-                  [ngModel]="formFiles.get('action')?.value"
-                  [ngModelOptions]="{standalone: true}"
-                  (onClick)="setAction(opc.value)"
+                  (onClick)="changeRadioAction($event)"
+                  formControlName="action"
+                  size="large"
                 />
-                        <!-- eliminar disabled para activar opcion de migrar -->
 
               <label [for]="opc.txt" class="ml-2">{{ opc.txt }}</label>
             </div>            
           </div>
-          <div *ngIf="formFiles.get('action')?.value === 3" class="flex flex-column justify-content-center align-items-center mb-3">
+          <div *ngIf="formFiles.get('action')?.value === 3" class="flex flex-col justify-center items-center mb-3">
             <p>Selecciona el lenguaje al que se quiere migrar:</p>
             <div class="w-16rem"> 
               <p-dropdown 
@@ -52,7 +50,7 @@
                 optionLabel="nom_lenguaje"
                 optionValue="idu_lenguaje"
                 placeholder="Selecciona un lenguaje"
-                [style]="{width : '100%'}"
+                [style]="{ width : '100%' }"
               />
             </div>
             <span class="font-italic text-red-500 mt-2"
@@ -64,10 +62,10 @@
         <!-- Panel Accion del proyecto -->
         
         <!-- Panel Tipo de proyecto -->
-        <section *ngIf="activeIndex === 1" class="stepper-panel h-23rem border-round surface-ground">
-          <p>Selecciona el tipo de proyecto que se subirá:</p>
-          <div class="flex gap-3">
-            <div class="flex align-items-center mx-3 py-2 px-3" *ngFor="let option of radioOps">
+        <section *ngIf="activeIndex === 1" class="stepper-panel h-[23rem] rounded surface-ground">
+          <p class="mb-4">Selecciona el tipo de proyecto que se subirá:</p>
+          <div class="flex gap-6">
+            <div class="flex items-center mx-3 py-2 px-3" *ngFor="let option of radioOps">
               <p-radioButton 
                 [inputId]="option.value" [value]="option.value" 
                 formControlName="type"
@@ -86,10 +84,10 @@
         <!-- Panel Tipo de proyecto -->
 
         <!-- Panel Projecto zip/7z o github/gitlab-->
-        <section *ngIf="activeIndex === 2" class="stepper-panel h-23rem border-round surface-ground"> <!-- Sin Panel Arquitectura del proyecto -->
+        <section *ngIf="activeIndex === 2" class="stepper-panel h-[23rem] rounded surface-ground"> <!-- Sin Panel Arquitectura del proyecto -->
           <div *ngIf="formFiles.get('type')?.value === 'zip'" class="w-full">
-            <p class="text-center">Selecciona el archivo <b>.zip</b> o <b>.7z</b> de tu proyecto:</p>
-            <div class="flex-auto flex flex-column justify-content-center align-items-center w-full">
+            <p class="text-center mb-4">Selecciona el archivo <b>.zip</b> o <b>.7z</b> de tu proyecto:</p>
+            <div class="flex-auto flex flex-col justify-center items-center w-full">
               <div class="max-w-full" [style.width]="txtSizeFile + 'px'">    
                 <p-inputGroup>
                   <button type="button" pButton class="btn-rvia" label="Buscar" (click)="triggerFileInput('zip')"></button>
@@ -106,7 +104,7 @@
                 label="Limpiar" [link]="true" (onClick)="cleanInput('project')"/>
               <input id="input-zip" type="file" #zipInput accept=".zip, .7z" (change)="onFileSelected($event, 'zipFile')" style="display: none;">
             </div>
-            <div class="flex-auto flex flex-column justify-content-center align-items-center w-full">
+            <div class="flex-auto flex flex-col justify-center items-center w-full">
               <span *ngIf="formFiles.get('zipFile')?.errors?.['invalidType']" class="mt-1 font-italic text-red-500">
                 Error al cargar el archivo, extensiones validas <b>.zip</b> y <b>.7z</b>
               </span>
@@ -116,13 +114,13 @@
             </div>
           </div>
           <div *ngIf="formFiles.get('type')?.value === 'git'">
-            <p class="text-center">Ingresa la <b>URL</b> del repositorio de tu proyecto en Gitlab o Github:</p>
-            <div class="flex-auto flex flex-column justify-content-center align-items-center">
+            <p class="text-center mb-4">Ingresa la <b>URL</b> del repositorio de tu proyecto en Gitlab o Github:</p>
+            <div class="flex-auto flex flex-col justify-center items-center">
               <input type="text" pInputText formControlName="urlGit" placeholder="URl de tu proyecto" id="inputUrlGit"/>
               <p-button *ngIf="formFiles.get('urlGit')?.value !== null" 
                 label="Limpiar" [link]="true" (onClick)="cleanInput('project')"/>
             </div>
-            <div class="flex-auto flex flex-column justify-content-center align-items-center">
+            <div class="flex-auto flex flex-col justify-center items-center">
               <span *ngIf="formFiles.get('urlGit')?.errors" class="mt-3 font-italic text-red-500">
                 URL inválida.
               </span>
@@ -132,9 +130,9 @@
         <!-- Panel Projecto zip/7z o github/gitlab-->
 
         <!-- Panel PDF -->
-        <section *ngIf="activeIndex === 3 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-23rem border-round surface-ground">
-          <div class="flex flex-column align-items-center justify-content-center w-full">
-            <p>Puedes añadir el archivo <b>.pdf</b> de las vulnerabilidades de tu proyecto.</p>
+        <section *ngIf="activeIndex === 3 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-[23rem] rounded surface-ground">
+          <div class="flex flex-col items-center justify-center w-full">
+            <p class="mb-4">Puedes añadir el archivo <b>.pdf</b> de las vulnerabilidades de tu proyecto.</p>
             <div class="max-w-full" [style.width]="txtSizepdfFile + 'px'">
               <p-inputGroup>
                 <button type="button" pButton class="btn-rvia" label="Buscar" (click)="triggerFileInput('pdf')"></button>
@@ -158,13 +156,13 @@
         <!-- Panel PDF -->
 
         <!-- Panel Arquitectura -->
-        <section  *ngIf="activeIndex === 3 && selectedValue === NumberAction.NONE" class="stepper-panel h-23rem border-round surface-ground justify-content-evenly gap-3">
-          <div class="flex flex-column justify-content-center align-items-center ">
-            <div class="flex flex-column flex-grow-1 align-items-center justify-content-center">
-              <p>Selecciona los servicios que deseas generar:</p>
-              <div class="card flex justify-content-center">
-                <div class="flex flex-column gap-2">
-                  <div *ngFor="let option of actionArchitec" class="field-radiobutton"
+        <section  *ngIf="activeIndex === 3 && selectedValue === NumberAction.NONE" class="stepper-panel h-[23rem] rounded surface-ground justify-content-evenly gap-3">
+          <div class="flex flex-col justify-center items-center ">
+            <div class="flex flex-col flex-grow-1 items-center justify-center">
+              <p class="mb-6">Selecciona los servicios que deseas generar:</p>
+              <div class="card flex justify-center">
+                <div class="flex flex-col gap-4">
+                  <div *ngFor="let option of actionArchitec" class="field-checkbox"
                         [ngClass]="{
                           'p-disabled': 
                             option.form === 'archiDocCodeOpt' && formFiles.get('archiDocCodeOpt')?.disabled ||
@@ -178,8 +176,8 @@
                         name="architecSelected"
                         formControlName="architecSelected"
                         (onClick)="onRadioClick(option.form)"
+                        size="large"
                       />
-
                       <label [for]="option.form" class="ml-2">{{ option.txt }}</label>
                     </div>
 
@@ -192,9 +190,9 @@
 
         <section *ngIf="(activeIndex === 4  && (selectedValue === NumberAction.NONE || selectedValue === NumberAction.SANITIZECODE)) ||
             (activeIndex === 3  && (selectedValue === NumberAction.UPDATECODE || selectedValue === NumberAction.MIGRATION) )" 
-          class="stepper-panel h-23rem border-round surface-ground">
-          <p>Se subirá tu proyecto con los siguientes elementos: </p>
-          <div>
+          class="stepper-panel h-[23rem] rounded surface-ground">
+          <p class="mb-6">Se subirá tu proyecto con los siguientes elementos: </p>
+          <div class="flex flex-col gap-4">
             <p>Acción: <b>{{ projectAction  }}</b></p>
             @if (selectedValue === NumberAction.NONE && servicesProject !== null) {
               <p>Servicios de arquitectura: <b>{{ servicesProject }}</b></p>
