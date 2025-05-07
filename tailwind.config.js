@@ -1,15 +1,24 @@
+import colors from 'tailwindcss/colors'
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
     "./src/**/*.{html,ts,scss}"
   ],
-  safelist: [
-    {
-      pattern: /(bg|text|border|hover:bg|hover:text|hover:border)-(red|blue|green|yellow|orange|sky|indigo|purple|pink|lime|teal|cyan)-(100|200|300|400|500|600|700|800|900)/,
-    },
-  ],
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    function ({ addBase }) {
+      addBase({
+        ':root': {
+          '--color-blue-500': colors.blue[500],
+          '--color-orange-500': colors.orange[500],
+          '--color-green-500': colors.green[500],
+          '--color-red-500': colors.red[500],
+          '--color-gray-100': colors.gray[100],
+        }
+      })
+    }
+  ]
 }
+
