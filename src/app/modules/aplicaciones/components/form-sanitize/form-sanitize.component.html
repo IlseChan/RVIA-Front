@@ -90,7 +90,7 @@
             <div class="flex-auto flex flex-col justify-center items-center w-full">
               <div class="max-w-full" [style.width]="txtSizeFile + 'px'">    
                 <p-inputGroup>
-                  <button type="button" pButton class="btn-rvia" label="Buscar" (click)="triggerFileInput('zip')"></button>
+                  <button type="button" pButton class="btn-rvia" label="Buscar" size="large" (click)="triggerFileInput('zip')"></button>
                   <input type="text" pInputText 
                     id="inputNameZip"
                     placeholder="Selecciona tu proyecto" 
@@ -135,7 +135,7 @@
             <p class="mb-4">Puedes añadir el archivo <b>.pdf</b> de las vulnerabilidades de tu proyecto.</p>
             <div class="max-w-full" [style.width]="txtSizepdfFile + 'px'">
               <p-inputGroup>
-                <button type="button" pButton class="btn-rvia" label="Buscar" (click)="triggerFileInput('pdf')"></button>
+                <button type="button" pButton class="btn-rvia" label="Buscar"  size="large" (click)="triggerFileInput('pdf')"></button>
                 <input type="text" pInputText placeholder="Selecciona tu pdf"
                 readonly disabled="true" id="inputpdfFile"
                 [value]="formFiles.get('pdfFile')?.value?.name ?? ''"/>
@@ -215,11 +215,13 @@
                 [outlined]="true" (onClick)="changeStep(-1)" 
                 [disabled]="activeIndex === 0"
                 class="btn-rvia-outlined"
+                size="large"
                 *ngIf="activeIndex !== 0 && !(activeIndex === headers.length - 1 && isUploadProject)"
             />
             <button *ngIf="activeIndex !== headers.length - 1; else lastBtn"
               pButton label="Siguiente" icon="pi pi-arrow-right"
               iconPos="right" class="p-button ml-auto btn-rvia"
+              size="large"
               [disabled]="checkDisabled()"
               (click)="changeStep(+1)"
             >
@@ -230,6 +232,7 @@
                   severity="success" icon="pi pi-arrow-right"
                   iconPos="right" class="ml-auto"
                   (onClick)="uploadFiles()"
+                  size="large"
                   [loading]="isUploadProject"
                   [disabled]="isUploadProject"
                 />

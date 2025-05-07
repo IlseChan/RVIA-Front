@@ -1,8 +1,8 @@
 import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
-import { CommonModule, JsonPipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Subject, takeUntil, map } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 
 import { RadioButtonClickEvent } from 'primeng/radiobutton';
 
@@ -16,7 +16,7 @@ import { Language, NumberAction } from '@modules/aplicaciones/interfaces';
   standalone: true,
   templateUrl: './form-sanitize.component.html',
   styleUrls: ['./form-sanitize.component.scss'],
-  imports: [CommonModule,ReactiveFormsModule, PrimeNGModule, JsonPipe]
+  imports: [CommonModule,ReactiveFormsModule, PrimeNGModule]
 })
 export class FormSanitizeComponent implements OnInit, OnDestroy {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;

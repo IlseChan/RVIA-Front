@@ -13,11 +13,11 @@
         </div>
     </section>
 
-    <!-- <div *ngIf="isLoading; else form" class="card flex justify-center my-6">
-        <p-progressSpinner ariaLabel="loading" />
-    </div> -->
-
-    <ng-template #form>
+    @if ( isLoading ) {
+        <div class="card flex justify-center mt-12">
+            <span class=" loader"></span>
+        </div>
+    } @else{
         <section class="mt-2 ml-6 text-gray-400">
             <p>Administra la información del usuario: <b>{{ originalUser()?.num_empleado }}</b></p>  
         </section>
@@ -87,5 +87,5 @@
                 />
             </div>
         </section>
-    </ng-template>
+    }
 </main>

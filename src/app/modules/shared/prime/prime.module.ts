@@ -18,6 +18,7 @@ import { MenuModule } from 'primeng/menu';
 import { PaginatorModule } from 'primeng/paginator';
 import { PasswordModule } from 'primeng/password';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { SelectModule } from 'primeng/select';
 import { StepsModule } from 'primeng/steps';
 import { TableModule } from 'primeng/table';
 import { TabsModule } from 'primeng/tabs';
@@ -45,6 +46,7 @@ import { TooltipModule } from 'primeng/tooltip';
     PaginatorModule,
     PasswordModule,
     RadioButtonModule,
+    SelectModule,
     StepsModule,
     TableModule,
     TagModule,
@@ -70,6 +72,7 @@ import { TooltipModule } from 'primeng/tooltip';
     PaginatorModule,
     PasswordModule,
     RadioButtonModule,
+    SelectModule,
     StepsModule,
     TableModule,
     TagModule,

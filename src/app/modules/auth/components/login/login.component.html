@@ -1,8 +1,8 @@
 <main class="w-full h-full flex justify-center main-container">
-  <div class="login-container w-25rem mx-auto mt-7 p-4">
-    <div class="login-box p-4 rounded-lg text-white">
-      <h2 class="text-center mb-4">Acceso</h2>
-      <div class="flex flex-col gap-2 mb-4">
+  <div class="login-container w-[25rem] mx-auto my-auto p-4">
+    <div class="login-box p-6 rounded-lg text-white">
+      <h2 class="text-2xl text-center mb-6">Acceso</h2>
+      <div class="flex flex-col gap-3 mb-6">
         <p class="m-0">Número de empleado:</p>
         <input 
           pInputText
@@ -13,9 +13,10 @@
           (input)="onInputChange()"
           required
           placeholder="Ej. 90000000"
+          pSize="large"
         />
       </div>
-      <div class="flex flex-col gap-2 mb-4">
+      <div class="flex flex-col gap-3 mb-6">
         <p class="m-0">Contraseña:</p>
         <p-password 
           inputId="passworduser"
@@ -29,22 +30,24 @@
           (input)="onInputChange()"
           required
           placeholder="Contraseña"
+          size="large"
         />
       </div>
       <div *ngIf="errorMessage" class="mb-2 text-red">{{ errorMessage }}</div>
-      <div class="flex flex-col gap-3 mt-6">
+      <div class="flex flex-col gap-6 mt-12">
         <p-button 
           [label]="isLogging ? 'Ingresando...' : 'Ingresar'" 
           styleClass="w-full"
           iconPos="right"
           [disabled]="isLoginDisabled || isLogging" 
           (onClick)="onLogin()"
+          size="large"
         />
         <p-button 
           [link]="true" 
           class="text-center" 
           label="Crear cuenta"
-          styleClass="text-white" 
+          styleClass="!text-white font-bold" 
           (onClick)="onRegister()"/>
       </div>
     </div>
