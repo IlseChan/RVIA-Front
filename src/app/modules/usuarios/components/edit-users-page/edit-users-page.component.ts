@@ -2,13 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { pipe, Subject, switchMap, takeUntil } from 'rxjs';
+import { Subject, switchMap, takeUntil } from 'rxjs';
 
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { Idu_Rol, Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
-import { AuthService } from '@modules/auth/services/auth.service';
-import { AppOrg, InfoOrg, Position, PositionValues } from '@modules/auth/interfaces';
+import { PositionValues } from '@modules/auth/interfaces';
 
 @Component({
   selector: 'edit-users-page',
@@ -61,7 +60,6 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
     }
 
     this.originalUser.set(this.usuariosSrvc.userToEdit());
-    console.log(this.originalUser());  
 
     this.usuariosSrvc.getInfoOrg(this.originalUser()?.num_puesto!)
     .pipe(
@@ -72,13 +70,10 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
       next: (_) => {
 
         this.initForms(this.originalUser()!);
-
         this.isDivisional.set(this.originalUser()?.num_puesto === PositionValues.DIVISIONAL);
         this.isLoading.set(false);
         this.updateTextManager(this.originalUser()?.num_puesto!);
         this.getManagers(this.originalUser()?.num_puesto!);
-
-
       },
       error: () => {
         this.back();
@@ -176,12 +171,11 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
 
       if(changes.num_puesto === PositionValues.DIVISIONAL) {
         let { num_encargado, ...rest } = changes;
-        changes = {...rest}
+        changes = {...rest};
       }
 
     }
         
-    console.log(changes);
     this.usuariosSrvc.updateUsuario(this.originalUser()!,changes)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -189,14 +183,12 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
           this.back();
         },
         error: (e) => {
-          console.log(e);
           this.isUpdate.set(false);
         }
       });
   }
 
   getManagers(value: PositionValues){
-    console.log(value);
     this.usuariosSrvc.getManagers(value)
     .pipe(takeUntil(this.destroy$))
     .subscribe(() => {});

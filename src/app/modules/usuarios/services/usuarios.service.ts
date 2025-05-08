@@ -1,6 +1,6 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
@@ -45,7 +45,6 @@ export class UsuariosService {
             this.allUsers.data = users;
             this.allUsers.total = users.length;
             this.changes = false;
-            console.log(this.allUsers);
           }),
           map(() => ({...this.allUsers})),
           delay(1000),
@@ -73,7 +72,6 @@ export class UsuariosService {
       .pipe(
         tap(() => this.changes = true),
         tap((resp) => {
-          console.log(resp);
           const title = 'Actualización Exitosa';
           const content = `El usuario ${resp.num_empleado} - ${resp.nom_usuario} con posición ${resp.position.nom_rol} se actualizó correctamente.`
           this.notificationsService.successMessage(title,content);
@@ -150,7 +148,6 @@ export class UsuariosService {
 
 
   handleError(error: HttpErrorResponse, origin: OriginMethod, extra?: string | number) {
-    console.log(error);
     if(error.status !== 401){
       const title = 'Error';
       const errorsMessages = {

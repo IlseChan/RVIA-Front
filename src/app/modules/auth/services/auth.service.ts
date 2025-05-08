@@ -72,7 +72,6 @@ export class AuthService {
           localStorage.setItem('token', this.currentUser.token)
       }),
       tap((user) => this._user.set(user)),
-      tap((user) => console.log(user)),
       delay(1000),
       tap(() => this.router.navigate(['/apps/list-apps'])),
       catchError(e => throwError(() => e))
@@ -94,7 +93,6 @@ export class AuthService {
         if(resp){
           this.currentUser = resp;
           this._user.set(resp);
-          console.log(resp);
           if(this.currentUser.token)
             localStorage.setItem('token', this.currentUser.token)
           return true;
@@ -120,7 +118,6 @@ export class AuthService {
   }
 
   private handleErrorMess(error: HttpErrorResponse, origin: OriginMethod, extra?: string | number) {
-    // console.log(error);
     const title = 'Error';
     if(error.status === 0){
       const errorMessage = 'No es posible conectar con el servidor, intentelo más tarde o contacte con el administrador.'
