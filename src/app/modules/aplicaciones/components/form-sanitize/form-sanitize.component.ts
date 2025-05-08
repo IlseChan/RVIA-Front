@@ -47,8 +47,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   
   actionArchitec = [
     { txt: 'Generar documentación completa', form: 'archiDocOverOpt' },
-    // { txt: 'Generar documentación por código', form: 'archiDocCodeOpt' },
-    // { txt: 'Generar casos de pruebas', form: 'archiCasesOpt' },
+    { txt: 'Generar documentación por código', form: 'archiDocCodeOpt' },
+    { txt: 'Generar casos de pruebas', form: 'archiCasesOpt' },
     // { txt: 'Generar calificación de proyecto', form: 'archiRateOpt' },
   ];
   
@@ -92,8 +92,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     this.formFiles = new FormGroup({
       action: new FormControl(NumberAction.UPDATECODE),
       archiDocOverOpt: new FormControl([]),
-      archiDocCodeOpt: new FormControl({ value: [], disabled: true }),
-      archiCasesOpt: new FormControl({ value: [], disabled: true }),
+      archiDocCodeOpt: new FormControl([]),
+      archiCasesOpt: new FormControl([]),
       archiRateOpt: new FormControl({ value: [], disabled: true }),
 
 
@@ -190,31 +190,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     }
 
     this.activeIndex += value;
-    // if (this.selectedValue === NumberAction.NONE && this.activeIndex === 3) {
-    //   this.formFiles.patchValue({
-    //     architecSelected: 'archiDocOverOpt',
-    //     archiDocOverOpt: [true],
-    //     archiDocCodeOpt: [],
-    //     archiCasesOpt: [],
-    //     archiRateOpt: []
-    //   });
-    // }
-    
-    
-    // if (!this.isMigrationEnabled && this.formFiles.get('action')?.value === NumberAction.MIGRATION) {
-    //   this.formFiles.get('action')?.setValue(NumberAction.UPDATECODE); // ← ELIMINA todo este bloque si no quieres forzar el valor "Actualizar código" al volver atrás
-    //   this.selectedValue = NumberAction.UPDATECODE;
-    // }
-    // if (
-    //   this.selectedValue === NumberAction.NONE &&
-    //   this.activeIndex === 4
-    // ) {
-    //   // Agrega el paso "Resumen" si aún no está
-    //   const hasResumen = this.headers.some(h => h.label === 'Resumen');
-    //   if (!hasResumen) {
-    //     this.headers.push({ label: 'Resumen' });
-    //   }
-    // }
   }
   
 
@@ -277,12 +252,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       const { 
        archiDocOverOpt, archiDocCodeOpt,
        archiCasesOpt,archiRateOpt } = this.formFiles.getRawValue();
-       const allDisabled = 
-          this.formFiles.get('archiDocCodeOpt')?.disabled &&
-          this.formFiles.get('archiCasesOpt')?.disabled &&
-          this.formFiles.get('archiRateOpt')?.disabled;
-
-        // if (allDisabled) return false;
 
         return !archiCasesOpt?.[0] && !archiDocOverOpt?.[0] &&
               !archiDocCodeOpt?.[0] && !archiRateOpt?.[0];
@@ -353,6 +322,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       '3': Array.isArray(values.archiCasesOpt) && values.archiCasesOpt.length > 0,
       '4': Array.isArray(values.archiRateOpt) && values.archiRateOpt.length > 0,
     };
+
+    console.log(opt_archi);
 
     if(!this.actionOpsValues.includes(values.action)) return;
     if(values.type === 'zip' && !values.zipFile) return;
