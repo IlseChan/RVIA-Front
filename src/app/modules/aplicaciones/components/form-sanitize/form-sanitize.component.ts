@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, ElementRef, OnInit, OnDestroy, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -24,13 +24,15 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   @ViewChild('inputspan', { static: false }) spanInput!: ElementRef;
   @ViewChild('inputspanpdf', { static: false }) spanpdfInput!: ElementRef;
   private destroy$ = new Subject<void>();
+  private aplicacionesService = inject(AplicacionesService);
+  private vldtnSrv = inject(ValidationService);
+  private router = inject(Router);
   
   txtSizeFile: number = 340;
   txtSizepdfFile: number = 340;
   formFiles!: FormGroup;
   isUploadFile: boolean = false;
   isUploadProject: boolean = false;
-  isArchiOptionEnabled = false; // ← Aquí controlas si esas opciones están activas o no
 
   radioOps = [
     { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
@@ -66,14 +68,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   headers = [...this.headersBase];
   NumberAction = NumberAction;
 
-  constructor(
-    private aplicacionesService: AplicacionesService, 
-    private vldtnSrv: ValidationService,
-    private router: Router,
-  )
-  
-  {}
-  
   ngOnInit(): void {
     this.aplicacionesService.getLanguages()
       .pipe(takeUntil(this.destroy$))
@@ -95,8 +89,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       archiDocCodeOpt: new FormControl([]),
       archiCasesOpt: new FormControl([]),
       archiRateOpt: new FormControl({ value: [], disabled: true }),
-
-
+      
       architecSelected: new FormControl(null, Validators.required),
       language: new FormControl(null),
       pdfFile: new FormControl(null,[this.vldtnSrv.fileValidation('pdf')]),
@@ -323,8 +316,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       '4': Array.isArray(values.archiRateOpt) && values.archiRateOpt.length > 0,
     };
 
-    console.log(opt_archi);
-
     if(!this.actionOpsValues.includes(values.action)) return;
     if(values.type === 'zip' && !values.zipFile) return;
     if(values.type === 'git' && !values.urlGit) return;
@@ -341,6 +332,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       archiDocOverOpt, 
       archiDocCodeOpt,
       archiRateOpt,
+      architecSelected,
       ...info
     } = this.formFiles.value;
     

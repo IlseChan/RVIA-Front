@@ -162,14 +162,7 @@
               <p class="mb-6">Selecciona los servicios que deseas generar:</p>
               <div class="card flex justify-center">
                 <div class="flex flex-col gap-4">
-                  <div *ngFor="let option of actionArchitec" class="field-checkbox"
-                        [ngClass]="{
-                          'p-disabled': 
-                            option.form === 'archiDocCodeOpt' && formFiles.get('archiDocCodeOpt')?.disabled ||
-                            option.form === 'archiCasesOpt' && formFiles.get('archiCasesOpt')?.disabled ||
-                            option.form === 'archiRateOpt' && formFiles.get('archiRateOpt')?.disabled
-                        }">
-                      
+                  <div *ngFor="let option of actionArchitec" class="field-checkbox">
                       <p-radioButton 
                         [inputId]="option.form" 
                         [value]="option.form"
