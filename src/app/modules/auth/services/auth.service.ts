@@ -124,13 +124,18 @@ export class AuthService {
       this.notificationsService.errorMessage(title,errorMessage);
 
     }else if(error.status !== 401){
+
+      if(error.error?.message){
+        extra = error.error.message;
+      }
+
       const errorsMessages = {
         GETINFOORG: `Error al obtener información de aplicaciones, centros y encargados. Intentar más tarde.`,
         GETPOSITIONS: `Error al obtener los puestos. Intentar más tarde.`,
-        POSTREGISTER: `Error al registrar nuevo cuenta. Intentar más tarde.`,
+        POSTREGISTER: `Error al registrar nuevo cuenta. ${extra}. Intentar más tarde`,
       };
 
-      this.notificationsService.errorMessage(title,errorsMessages[origin]);
+      this.notificationsService.errorMessage(title,errorsMessages[origin],5000);
     }
   
     return throwError(() => 'ERROR ERROR ERROR');
