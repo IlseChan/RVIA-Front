@@ -5,7 +5,7 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-  <div class="flex flex-column align-items-center p-5 h-full justify-content-center">
+  <div class="flex flex-col items-center p-5 h-full justify-center">
     <img 
         src="assets/images/logo-rvia.png" 
         alt="rvia-logo" 

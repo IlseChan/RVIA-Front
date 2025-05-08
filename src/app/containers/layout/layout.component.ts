@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -10,18 +10,18 @@ import { DividerModule } from 'primeng/divider';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { CoreService } from '@modules/shared/services/core.service';
+import { UserBadgeComponent } from "./components/user-badge/user-badge.component";
 
 @Component({
   selector: 'layout',
   standalone: true,
   imports: [CommonModule, RouterLink, RouterLinkActive,
-    RouterOutlet, DividerModule 
-  ],
+    RouterOutlet, DividerModule, UserBadgeComponent],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit, OnDestroy {
-  userLogged!: Usuario | null;
+  userLogged = signal<Usuario | null>(null);
   menuSidebar = [
     { path: '/apps/home', name: 'Inicio', icon: PrimeIcons.HOME },
   ];
@@ -31,7 +31,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   menuRvia = [
     { path: '/tools/execute-documentacion', name: 'Documentar proyecto', icon: PrimeIcons.FILE },
     { path: '/tools/test-case', name: 'Casos de prueba', icon: PrimeIcons.CLIPBOARD },
-    { path: '/tools/rate-code', name: 'Calificar código', icon: PrimeIcons.CHECK_SQUARE },
+    // { path: '/tools/rate-code', name: 'Calificar código', icon: PrimeIcons.CHECK_SQUARE },
   ];
   menuTools = [
     { path: '/tools/recoveryPDF', name: 'Convertir a .csv', icon: PrimeIcons.FILE_EXCEL },
@@ -50,10 +50,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.userLogged = this.authService.userLogged;
+    this.userLogged.set(this.authService.user());
     this.getCoreVersion();
 
-    if (this.userLogged?.position.nom_rol !== Nom_Rol.INVITADO) {
+    if (this.userLogged()?.position.nom_rol !== Nom_Rol.INVITADO) {
       this.menuSidebar.push(
         { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
       );

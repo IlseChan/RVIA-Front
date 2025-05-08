@@ -7,21 +7,23 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
-import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { DynamicDialog } from 'primeng/dynamicdialog';
+import { IconFieldModule } from 'primeng/iconfield';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup';
-import { InputTextModule } from 'primeng/inputtext';
-import { PaginatorModule } from 'primeng/paginator';
-import { PasswordModule } from 'primeng/password';
-import { ProgressSpinnerModule } from 'primeng/progressspinner';
-import { RadioButtonModule } from 'primeng/radiobutton';
-import { StepsModule } from 'primeng/steps';
-import { TableModule } from 'primeng/table';
-import { TagModule } from 'primeng/tag';
-import { TooltipModule } from 'primeng/tooltip';
-import { IconFieldModule } from 'primeng/iconfield';
 import { InputIconModule } from 'primeng/inputicon';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { InputTextModule } from 'primeng/inputtext';
+import { MenuModule } from 'primeng/menu';
+import { PaginatorModule } from 'primeng/paginator';
+import { PasswordModule } from 'primeng/password';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { SelectModule } from 'primeng/select';
+import { StepsModule } from 'primeng/steps';
+import { TableModule } from 'primeng/table';
+import { TabsModule } from 'primeng/tabs';
+import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 
 @NgModule({
   declarations: [],
@@ -33,21 +35,23 @@ import { InputNumberModule } from 'primeng/inputnumber';
     DialogModule,
     DividerModule,
     DropdownModule,
-    DynamicDialogModule,
+    DynamicDialog,
+    IconFieldModule,
     InputGroupAddonModule,
     InputGroupModule,
+    InputIconModule,
+    InputNumberModule,
     InputTextModule,
+    MenuModule,
     PaginatorModule,
     PasswordModule,
-    ProgressSpinnerModule,
     RadioButtonModule,
+    SelectModule,
     StepsModule,
     TableModule,
     TagModule,
+    TabsModule, 
     TooltipModule,
-    IconFieldModule,
-    InputIconModule,
-    InputNumberModule,
   ],
   exports:[
     BadgeModule,
@@ -57,21 +61,23 @@ import { InputNumberModule } from 'primeng/inputnumber';
     DialogModule,
     DividerModule,
     DropdownModule,
-    DynamicDialogModule,
+    DynamicDialog,
+    IconFieldModule,
     InputGroupAddonModule,
     InputGroupModule,
+    InputIconModule,
+    InputNumberModule,
     InputTextModule,
+    MenuModule,
     PaginatorModule,
     PasswordModule,
-    ProgressSpinnerModule,
     RadioButtonModule,
+    SelectModule,
     StepsModule,
     TableModule,
     TagModule,
+    TabsModule, 
     TooltipModule,
-    IconFieldModule,
-    InputIconModule,
-    InputNumberModule
   ]
 })
 export class PrimeNGModule { }

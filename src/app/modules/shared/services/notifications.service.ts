@@ -9,30 +9,30 @@ export class NotificationsService {
   lifeNotification: number = 3000; 
   constructor(private messageService: MessageService) { }
 
-  successMessage(summary: string, detail: string): void {
+  successMessage(summary: string, detail: string, time:number | null = null): void {
     this.messageService.add({ 
       severity: 'success', 
       summary, 
       detail,
-      life: this.lifeNotification 
+      life: time ? time : this.lifeNotification 
     });
   }
 
-  errorMessage(summary: string, detail: string): void {
+  errorMessage(summary: string, detail: string, time:number | null = null): void {
     this.messageService.add({ 
       severity: 'error', 
       summary, 
       detail,
-      life: this.lifeNotification 
+      life: time ? time : this.lifeNotification 
     });
   }
 
-  warnMessage(summary: string, detail: string): void {
+  warnMessage(summary: string, detail: string, time:number | null = null): void {
     this.messageService.add({ 
       severity: 'warn', 
       summary, 
       detail,
-      life: this.lifeNotification
+      life: time ? time : this.lifeNotification 
     });
   }
 }

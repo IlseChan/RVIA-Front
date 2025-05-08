@@ -1,0 +1,9 @@
+::ng-deep .p-tablist-tab-list, .p-tabpanels{
+    background-color: var(--bg-content) !important;
+}
+
+::ng-deep .apps-panel {
+    max-width: 20vw !important;
+    overflow-x: auto !important;
+    width: auto !important;
+}

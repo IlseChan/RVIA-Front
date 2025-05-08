@@ -176,7 +176,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
     
     const dataRegister = { ...dataUser, ...dataOrg };
-       
     this.authSrv.registerUser(dataRegister)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -188,9 +187,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   showTerms(fromForm: boolean = false): void {
-    const { termAccepted } =this.registerFormOrg.value;
-
-    if((fromForm && termAccepted) || !fromForm) {
+    const { termAccepted } = this.registerFormOrg.value;
+    if((fromForm && !this.isShowTerms && !termAccepted) || !fromForm) {
       this.isShowTerms = !this.isShowTerms
     }
   }

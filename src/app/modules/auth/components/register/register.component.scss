@@ -15,7 +15,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
   .input-size {
-    min-height: 122px;
+    min-height: 128px;
   }
 }
 
@@ -34,8 +34,16 @@
   width: auto !important;
 }
 
-::ng-deep .apps-panel .p-dropdown-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+:host ::ng-deep .p-steps-item-active .p-steps-item-label{
+  color: var(--rvia-primary-color);
+}
+
+:host ::ng-deep .p-steps-item-active .p-steps-item-number{
+  border-color: var(--rvia-primary-color);
+  background-color: var(--rvia-primary-color);
+  color: white;
+} 
+
+:host ::ng-deep .p-steps-item.p-disabled {
+  opacity: 0.2;
 }

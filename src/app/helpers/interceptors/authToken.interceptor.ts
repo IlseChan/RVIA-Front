@@ -45,7 +45,7 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
             return next(newReq);
         }
  
-        if(token && authService.userLogged){
+        if(token && authService.user()){
 
             if(checkRegexDown(url) && method === 'GET'){
                 return next(newReq);

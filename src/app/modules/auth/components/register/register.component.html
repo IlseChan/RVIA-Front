@@ -1,6 +1,6 @@
 <main class="main-container min-h-full px-4 py-5">
-  <section class="register-container newsize p-4 my-3 mx-auto border-round-lg">
-    <div class="flex flex-grow-1 align-items-center justify-content-center">
+  <section class="register-container newsize p-4 my-3 mx-auto rounded-lg">
+    <div class="flex flex-grow-1 items-center justify-center mt-4">
       <h1 class="txt-tiltle-color text-5xl my-0">Nueva cuenta</h1>
     </div>
 
@@ -12,12 +12,12 @@
       <!-- Panel Usuario -->
        @if (activeIndex === 0) {
         <form [formGroup]="registerFormUser" novalidate>
-          <section class="grid m-0 p-2">
-            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
+          <section class="grid grid-cols-1 md:grid-cols-2 p-2">
+            <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                 Número de empleado <span class="text-red">*</span>
               </p>
-              <div class="flex flex-column">
+              <div class="flex flex-col">
                 <p-inputNumber 
                   formControlName="num_empleado" 
                   inputId="num_empleado-reg"
@@ -26,6 +26,7 @@
                   placeholder="Ej. 90000000"
                   min="0"
                   max="99999999"
+                  size="large"
                 />
                 <small class="mt-2 pl-2 text-red" *ngIf="isValidField('num_empleado')">
                   Número de empleado inválido.
@@ -33,11 +34,11 @@
               </div>
             </div><!--Num empleado-->
             
-            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
+            <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                 Correo electrónico <span class="text-red">*</span>
               </p>
-              <div class="flex flex-column">
+              <div class="flex flex-col">
                 <input
                   formControlName="nom_correo"
                   autocomplete="off"
@@ -45,6 +46,7 @@
                   class="w-full"
                   pInputText id="email-reg"
                   type="text"
+                  pSize="large"
                 />
                 <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_correo')">
                   El correo electrónico inválido.
@@ -52,11 +54,11 @@
               </div>
             </div><!--Correo electronico-->
             
-            <div class="field col-12 p-2 mb-0 input-size">
+            <div class="field md:col-span-2 p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                   Nombre de usuario <span class="text-red">*</span>
               </p>
-              <div class="flex flex-column">
+              <div class="flex flex-col">
                 <input
                   formControlName="nom_usuario"
                   autocomplete="off"
@@ -64,15 +66,16 @@
                   class="w-full"
                   pInputText id="username-reg"
                   type="text"
+                  pSize="large"
                 />
                 <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_usuario')">
                   Nombre de usuario inválido.
                 </small>
               </div>
-            </div><!--Nombre usuario-->
+            </div><!-- Nombre usuario -->
   
-            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
-              <div class="flex align-items-center">
+            <div class="field p-2 mb-0 input-size">
+              <div class="flex items-center">
                 <p class="my-2 font-bold">
                   Contraseña <span class="text-red">*</span>
                 </p>
@@ -83,12 +86,12 @@
                   tooltipPosition="right" 
                   [style]="{'min-width': '20px', 'height': '22px', 'vertical-align': 'middle'}" />
                 <ng-template #tooltipContent>
-                    <div class="flex align-items-center text-sm">
+                    <div class="flex items-center text-sm">
                       <p>Crea una contraseña segura con almenos <b>12 caracteres, letras, números y símbolos combinados.</b></p>
                     </div>
                 </ng-template>
               </div>
-              <div class="flex flex-column">
+              <div class="flex flex-col">
                 <p-password 
                   formControlName="nom_contrasena"
                   inputId="passworduser-reg"
@@ -99,18 +102,19 @@
                   [toggleMask]="true"
                   placeholder="Contraseña"
                   autocomplete="off"
+                  size="large"
                 />
                 <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_contrasena')">
                   Contraseña inválida.
                 </small>
               </div>
-            </div><!--Contraseña-->
+            </div><!-- Contraseña -->
             
-            <div class="field col-12 md:col-6 p-2 mb-0 input-size">
+            <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                 Confirmar contraseña <span class="text-red">*</span>
               </p>
-              <div class="flex flex-column">
+              <div class="flex flex-col">
                 <p-password 
                   formControlName="confirmPassword"
                   inputId="passworduserconf-reg"
@@ -121,19 +125,20 @@
                   [toggleMask]="true"
                   placeholder="Confirma tu contraseña"
                   autocomplete="off"
+                  size="large"
                 />
                 <small class="mt-2 pl-2 text-red" *ngIf="isValidField('confirmPassword')">
                   Las contraseñas no coinciden.
                 </small>
               </div>
-            </div><!--Confirmacion-->
+            </div><!--Confirmacion -->
             
-            <div class="field col-12 md:col-6 p-2 mb-0 input-size" >
+            <div class="field p-2 mb-0 input-size" >
               <p class="my-2 font-bold">
                   Puesto <span class="text-red">*</span>
               </p>
-              <div class="flex flex-column">
-                <p-dropdown
+              <div class="flex flex-col">
+                <p-select
                   formControlName="num_puesto"
                   id="position-reg"
                   [options]="positionsOpcs"  
@@ -142,12 +147,13 @@
                   placeholder="Selecciona tu puesto"
                   [showClear]="true"
                   [style]="{ width : '100%' }" 
+                  size="large"
                 />
                 <small class="mt-2 pl-2 text-red" *ngIf="isValidField('num_puesto')"> 
                   Debes seleccionar un puesto.
                 </small>
               </div>
-            </div><!--Puesto-->
+            </div><!--Puesto -->
           </section>
         </form>
        }
@@ -157,12 +163,12 @@
        @if (activeIndex === 1) {
          <form [formGroup]="registerFormOrg" novalidate>
           <section class="grid m-0 p-2">
-            <div class="field col-12 p-2 mb-0 input-size">
+            <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                   Aplicación <span class="text-red">*</span>
               </p>
-              <div class="flex flex-column">
-                <p-dropdown
+              <div class="flex flex-col">
+                <p-select
                     formControlName="idu_aplicacion"
                     id="aplicacion-reg"
                     [options]="appsOpc" 
@@ -175,59 +181,74 @@
                     [filter]="true"
                     filterPlaceholder="Buscar aplicación..."
                     [filterBy]="'nom_app'" 
-                />
+                    size="large"
+                >
+                  <ng-template pTemplate="selectedItem" let-app>
+                    <div class="whitespace-normal break-words">
+                      {{ app?.nom_app}}
+                    </div>
+                  </ng-template>
+                  <ng-template let-app pTemplate="item">
+                    <div *ngIf="app">{{ app.nom_app }}</div>
+                    <div *ngIf="!app" class="text-color-secondary">Selecciona una aplicación</div>
+                  </ng-template>
+                </p-select>
                 <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('idu_aplicacion')">
                   Debes seleccionar una aplicación.
                 </small>
               </div>
             </div><!--Aplicacion-->
-            <div class="field col-12 p-2 mb-0 input-size">
+            <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                   Número de centro <span class="text-red">*</span>
               </p>
-              <div class="flex flex-column">
-                <p-dropdown
+              <div class="flex flex-col">
+                <p-select
                   formControlName="num_centro"
                   id="num_centro-reg"
                   [options]="centrosOpc"
                   optionValue="num_centro"
-                  placeholder="Selecciona una aplicación"
+                  placeholder="Selecciona un centro"
                   [style]="{ width : '100%' }"
                   [showClear]="true"
+                  panelStyleClass="apps-panel"
                   [filter]="true"
-                  filterPlaceholder="Buscar aplicación..." 
+                  filterPlaceholder="Buscar centro..." 
                   [filterBy]="'num_centro,nom_centro'"
+                  size="large"
                 >
                   <ng-template pTemplate="selectedItem" let-centro>
                     <div>{{ centro?.num_centro }} - {{ centro?.nom_centro }}</div>
                   </ng-template>
                   <ng-template let-centro pTemplate="item">
                     <div *ngIf="centro">{{ centro.num_centro }} - {{ centro.nom_centro }}</div>
-                    <div *ngIf="!centro" class="text-color-secondary">Selecciona una aplicación</div>
+                    <div *ngIf="!centro" class="text-color-secondary">Selecciona una centro</div>
                   </ng-template>
-                </p-dropdown>
+                </p-select>
                 <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('num_centro')">
                   Debes seleccionar un centro.
                 </small>
               </div>
             </div><!--Centro-->
             @if(isNotDivisional){
-              <div class="field col-12 p-2 mb-0 input-size">
+              <div class="field p-2 mb-0 input-size">
                 <p class="my-2 font-bold">
                   Selecciona a tu {{ txtPosition }} <span class="text-red">*</span>
                 </p>
-                <div class="flex flex-column">
-                  <p-dropdown
+                <div class="flex flex-col">
+                  <p-select
                     formControlName="num_encargado"
                     id="num_encargado-reg"
                     [options]="encargados"
                     optionValue="num_empleado"
                     [placeholder]="'Selecciona a tu ' + txtPosition"
                     [style]="{ width : '100%' }"
+                    panelStyleClass="apps-panel"
                     [showClear]="true"
                     [filter]="true"
                     filterPlaceholder="Buscar encargado..." 
                     [filterBy]="'num_empleado,nom_empleado'"
+                    size="large"
                   >
                     <ng-template pTemplate="selectedItem" let-encargado>
                       <div>{{ encargado?.num_empleado }} - {{ encargado?.nom_empleado }}</div>
@@ -236,20 +257,21 @@
                       <div *ngIf="encargado">{{ encargado.num_empleado }} - {{ encargado.nom_empleado }}</div>
                       <div *ngIf="!encargado" class="text-color-secondary">Selecciona a tu {{ txtPosition }}</div>
                     </ng-template>
-                  </p-dropdown>
+                  </p-select>
                   <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('num_encargado')">
                     Debes seleccionar un encargado.
                   </small>
                 </div>
               </div><!--Encargado-->
             }
-            <div class="field col-12 mt-4 mb-0">
-              <div class="flex flex-column">
-                <div class="flex align-items-center gap-2 mb-0">
+            <div class="field mt-4 mb-0">
+              <div class="flex flex-col">
+                <div class="flex items-center gap-2 mb-0">
                   <p-checkbox
                     formControlName="termAccepted" 
                     [binary]="true"
-                    inputId="termAccepted"  name="termAccepted" 
+                    inputId="termAccepted" 
+                    name="termAccepted" 
                     (click)="showTerms(true)"
                   />
                   <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
@@ -264,12 +286,13 @@
        }
       <!-- Panel Organizacion -->
 
-      <section class="flex pt-2">
+      <section class="flex pt-2 mt-10">
         <p-button label="Regresar" [text]="true"
             icon="pi pi-arrow-left"
             severity="secondary"
             (onClick)="changeStep(-1)" 
             [disabled]="activeIndex === 0"
+            size="large"
             *ngIf="activeIndex !== 0 && !(activeIndex === headers.length - 1 && isRegister)"
           />
           <button *ngIf="activeIndex !== headers.length - 1; else lastBtn"
@@ -277,6 +300,7 @@
             iconPos="right" class="p-button ml-auto btn-rvia"
             [disabled]="checkDisabled()"
             (click)="changeStep(+1)"
+            size="large"
           >
           </button> 
           <ng-template #lastBtn>
@@ -289,6 +313,7 @@
                 [loading]="isRegister"
                 [outlined]="registerFormOrg.invalid"
                 [disabled]="isRegister || checkDisabled()"
+                size="large"
               />
           </ng-template>
       </section><!--Botones-->
@@ -307,10 +332,10 @@
     [style]="{ width: '50rem' }" 
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
       <div class="mb-2" *ngFor="let term of termsAndConditions">
-        <h3 class="mb-2">
+        <h3 class="text-lg font-bold mb-2">
           {{ term.title }}
         </h3>
-        <p [innerHTML]="term.content"></p>
+        <p [innerHTML]="term.content" class="leading-relaxed"></p>
       </div>
   </p-dialog> <!--termimos-->
 </main>
