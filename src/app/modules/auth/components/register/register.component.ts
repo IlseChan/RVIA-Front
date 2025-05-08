@@ -58,12 +58,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   private initFormUser(): void {
     this.registerFormUser = new FormGroup({
-      num_empleado: new FormControl(90000001,[Validators.required,this.vldtnSrv.employeeNumber()]),
-      nom_correo: new FormControl('correo@coppel.com',[Validators.required,this.vldtnSrv.emailCoppel()]),
-      nom_usuario: new FormControl('Nombre Nombre Nombre',[Validators.required,this.vldtnSrv.noBlankValidation(),this.vldtnSrv.completeUserName()]),
-      nom_contrasena: new FormControl('carino@1234567T',[Validators.required,this.vldtnSrv.passwordValidation()]),
-      confirmPassword: new FormControl('carino@1234567T', Validators.required),
-      num_puesto: new FormControl(2,[Validators.required,]),
+      num_empleado: new FormControl(null,[Validators.required,this.vldtnSrv.employeeNumber()]),
+      nom_correo: new FormControl('',[Validators.required,this.vldtnSrv.emailCoppel()]),
+      nom_usuario: new FormControl('',[Validators.required,this.vldtnSrv.noBlankValidation(),this.vldtnSrv.completeUserName()]),
+      nom_contrasena: new FormControl('',[Validators.required,this.vldtnSrv.passwordValidation()]),
+      confirmPassword: new FormControl('', Validators.required),
+      num_puesto: new FormControl(null,[Validators.required,]),
     },{
       validators: this.vldtnSrv.passwordMatch('nom_contrasena', 'confirmPassword')
     });
@@ -176,7 +176,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
     }
     
     const dataRegister = { ...dataUser, ...dataOrg };
-       
     this.authSrv.registerUser(dataRegister)
       .pipe(takeUntil(this.destroy$))
       .subscribe({

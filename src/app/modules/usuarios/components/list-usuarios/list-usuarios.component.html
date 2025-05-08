@@ -9,60 +9,65 @@
         </div>
     }
     
-    <div *ngIf="!isLoading && totalItems === 0" class="my-6">
-        <h2 class="text-center">¡No hay usuarios para listar!</h2>
-    </div>
-    
-    <section *ngIf="!isLoading && users.length > 0" class="mt-4">
-        <div class="card">
-            <p-table 
-                [value]="users"
-                [lazy]="true"
-                (onLazyLoad)="loadData($event)"
-                [paginator]="true"
-                [rows]="10"
-                [rowsPerPageOptions]="rowsPerPageOpts"
-                [totalRecords]="totalItems"
-                [loading]="loadingDataPage"
-                [tableStyle]="{'min-width': '40rem'}"
-                [lazy]="true"
-            >
-                <ng-template pTemplate="header">
-                    <tr class="rvia-table-header">
-                        <th *ngFor="let col of columns">
-                            {{ col }}
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-user let-index="rowIndex">
-                    <tr [ngClass]="{'deleting': isDeleting && user.num_empleado === idToDelete}">
-                        <td>{{ user.num_empleado }}</td>
-                        <td>{{ user.nom_usuario }}</td>
-                        <td>{{ user.position.nom_rol }}</td>
-                        <td>
-                            <a  pTooltip="Editar usuario" 
-                                tooltipPosition="left"  
-                                (click)="onEdit(user.idu_usuario)"
-                                class="c-pointer icon-edit mr-3">
-                                    <i class="pi pi-user-edit" style="font-size: 1.6rem"></i>
-                            </a>
-                            <a  *ngIf="userLogged?.idu_usuario !== user.idu_usuario else delete"
-                                pTooltip="Eliminar usuario" 
-                                (click)="onDeleteUsuario(user)"
-                                class="c-pointer icon-del">
-                                    <i class="pi pi-trash" style="font-size: 1.6rem"></i>
-                            </a>
-                            <ng-template #delete>
-                               <a pTooltip="No disponible"
-                                  class="icon-del-disabled">
-                                    <i class="pi pi-trash" style="font-size: 1.6rem"></i>
-                                </a>
-                            </ng-template>
-                        </td>
-                    </tr>
-                </ng-template>
-            </p-table>
+    @if (!isLoading && totalItems === 0) {
+        <div *ngIf="" class="my-6">
+            <h2 class="text-center">¡No hay usuarios para listar!</h2>
         </div>
-    </section>
+    }
+    
+    @if(!isLoading && users.length > 0) {
+        <section class="mt-4">
+            <div class="card">
+                <p-table 
+                    [value]="users"
+                    [lazy]="true"
+                    (onLazyLoad)="loadData($event)"
+                    [paginator]="true"
+                    [rows]="10"
+                    [rowsPerPageOptions]="rowsPerPageOpts"
+                    [totalRecords]="totalItems"
+                    [loading]="loadingDataPage"
+                    [tableStyle]="{'min-width': '40rem'}"
+                    [lazy]="true"
+                >
+                    <ng-template pTemplate="header">
+                        <tr class="rvia-table-header">
+                            <th *ngFor="let col of columns">
+                                {{ col }}
+                            </th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-user let-index="rowIndex">
+                        <tr [ngClass]="{'deleting': isDeleting && user.num_empleado === idToDelete}">
+                            <td>{{ user.num_empleado }}</td>
+                            <td>{{ user.nom_usuario }}</td>
+                            <td>{{ user.position.nom_rol }}</td>
+                            <td>
+                                <a  pTooltip="Editar usuario" 
+                                    tooltipPosition="left"  
+                                    (click)="onEdit(user.idu_usuario)"
+                                    class="c-pointer icon-edit mr-3">
+                                        <i class="pi pi-user-edit" style="font-size: 1.6rem"></i>
+                                </a>
+                                @if (userLogged()?.idu_usuario !== user.idu_usuario) {
+                                    <a  pTooltip="Eliminar usuario" 
+                                        (click)="onDeleteUsuario(user)"
+                                        class="c-pointer icon-del">
+                                            <i class="pi pi-trash" style="font-size: 1.6rem"></i>
+                                    </a>
+                                } @else {
+                                    <a pTooltip="No disponible"
+                                        class="icon-del-disabled">
+                                            <i class="pi pi-trash" style="font-size: 1.6rem"></i>
+                                    </a>
+                                }
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </section>
+    }
+
     <p-confirmDialog/>
 </main>

@@ -3,7 +3,7 @@
         <h1 class="txt-tiltle-color inline font-bold text-4xl text-center my-0 md:text-5xl md:text-left">
             Lista de aplicaciones
         </h1>
-        @if (user!.position.nom_rol !== Nom_Rols.INVITADO) {
+        @if (user()!.position.nom_rol !== Nom_Rols.INVITADO) {
             <a
                 routerLink="/apps/new-app"
                 pTooltip="Subir una aplicación"
@@ -16,11 +16,11 @@
         }
     </section>
     
-    <div *ngIf="isLoading && user!.position.nom_rol !== Nom_Rols.INVITADO" class="card flex justify-center mt-12">
+    <div *ngIf="isLoading && user()!.position.nom_rol !== Nom_Rols.INVITADO" class="card flex justify-center mt-12">
         <span class=" loader"></span>
     </div>
 
-    <div *ngIf="!isLoading && aplications.length === 0 || user!.position.nom_rol === Nom_Rols.INVITADO" class="my-6">
+    <div *ngIf="!isLoading && aplications.length === 0 || user()!.position.nom_rol === Nom_Rols.INVITADO" class="my-6">
         <h2 class="text-center">
             ¡No hay aplicaciones para listar!
         </h2>
@@ -85,8 +85,8 @@
                     <tr>
                         <td>{{ index + 1 }}</td>
                         <td>{{ app.idu_proyecto }}</td>
-                        <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO && 
-                                   user!.position.nom_rol !== Nom_Rols.USUARIO">
+                        <td *ngIf="user()!.position.nom_rol !== Nom_Rols.INVITADO && 
+                                   user()!.position.nom_rol !== Nom_Rols.USUARIO">
                             {{ app.user.nom_usuario }}
                         </td>
                         <td>{{ app.nom_aplicacion }}</td>

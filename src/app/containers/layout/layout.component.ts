@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -21,7 +21,7 @@ import { UserBadgeComponent } from "./components/user-badge/user-badge.component
   styleUrls: ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit, OnDestroy {
-  userLogged!: Usuario | null;
+  userLogged = signal<Usuario | null>(null);
   menuSidebar = [
     { path: '/apps/home', name: 'Inicio', icon: PrimeIcons.HOME },
   ];
@@ -50,10 +50,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.userLogged = this.authService.userLogged;
+    this.userLogged.set(this.authService.user());
     this.getCoreVersion();
 
-    if (this.userLogged?.position.nom_rol !== Nom_Rol.INVITADO) {
+    if (this.userLogged()?.position.nom_rol !== Nom_Rol.INVITADO) {
       this.menuSidebar.push(
         { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
       );

@@ -37,10 +37,6 @@ export class AuthService {
     private router: Router
   ) {}
 
-  get userLogged(): Usuario | null {
-    return this.currentUser;
-  }
-
   registerUser(data: DataToRegister): Observable<Usuario> {
     const idu_rol = Idu_Rol.INVITADO; 
     return this.http.post<Usuario>(`${this.baseUrl}/auth/register`, {
@@ -76,6 +72,7 @@ export class AuthService {
           localStorage.setItem('token', this.currentUser.token)
       }),
       tap((user) => this._user.set(user)),
+      tap((user) => console.log(user)),
       delay(1000),
       tap(() => this.router.navigate(['/apps/list-apps'])),
       catchError(e => throwError(() => e))
@@ -97,6 +94,7 @@ export class AuthService {
         if(resp){
           this.currentUser = resp;
           this._user.set(resp);
+          console.log(resp);
           if(this.currentUser.token)
             localStorage.setItem('token', this.currentUser.token)
           return true;

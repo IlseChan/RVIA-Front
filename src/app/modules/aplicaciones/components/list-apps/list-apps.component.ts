@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
@@ -23,7 +23,7 @@ import { RviaIconComponent } from '../rvia-icon/rvia-icon.component';
 export class ListAppsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
   @ViewChild('dt2') dt2!: Table; 
-  user!: Usuario | null;
+  user = signal<Usuario | null>(null);
   aplications: Aplication[] = [];
   
   Nom_Rols = Nom_Rol;
@@ -48,13 +48,13 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   ) {}
   
   ngOnInit(): void {
-    this.user = this.authService.userLogged;
+    this.user.set(this.authService.user());
     this.setColumns();
     this.onGetAplicaciones();
   }
 
   setColumns(): void {
-    if (this.user && (this.user.position.nom_rol === Nom_Rol.ADMINISTRADOR || this.user.position.nom_rol === Nom_Rol.AUTORIZADOR)) {
+    if (this.user && (this.user()?.position.nom_rol === Nom_Rol.ADMINISTRADOR || this.user()?.position.nom_rol === Nom_Rol.AUTORIZADOR)) {
       this.colums.splice(2, 0, 'Usuario');
     }
   }
