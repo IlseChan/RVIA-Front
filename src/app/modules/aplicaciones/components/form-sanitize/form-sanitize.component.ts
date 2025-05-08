@@ -35,7 +35,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   isUploadProject: boolean = false;
 
   radioOps = [
-    { value: 'zip', image: 'Cargar.png', tooltip: '.zip o .7z'},
+    { value: 'zip', image: 'Cargar.webp', tooltip: '.zip o .7z'},
     { value: 'git', image: 'gitlab.webp', tooltip: 'URL de Gitlab o Github'}
   ];
 
