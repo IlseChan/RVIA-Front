@@ -172,9 +172,13 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
       }
   
       this.isUpdate.set(true);
-      const temp = this.organizationForm.value;
-      let { num_encargado, ...rest } = temp;
-      changes = {...rest}
+      changes = this.organizationForm.value;
+
+      if(changes.num_puesto === PositionValues.DIVISIONAL) {
+        let { num_encargado, ...rest } = changes;
+        changes = {...rest}
+      }
+
     }
         
     console.log(changes);
