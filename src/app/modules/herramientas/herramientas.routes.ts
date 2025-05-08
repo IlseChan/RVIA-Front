@@ -33,11 +33,11 @@ export const herramientasRoutes: Routes = [
                 component: TestCaseComponent,
                 title: 'RVIA - Casos de pruebas' 
             }, 
-            { 
-                path: 'rate-code',
-                component: RateCodeComponent,
-                title: 'RVIA - Califcar código' 
-            }, 
+            // { 
+            //     path: 'rate-code',
+            //     component: RateCodeComponent,
+            //     title: 'RVIA - Califcar código' 
+            // }, 
             { 
                 path: '**', 
                 redirectTo: 'execute-documentacion' 

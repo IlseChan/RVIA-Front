@@ -31,7 +31,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
   menuRvia = [
     { path: '/tools/execute-documentacion', name: 'Documentar proyecto', icon: PrimeIcons.FILE },
     { path: '/tools/test-case', name: 'Casos de prueba', icon: PrimeIcons.CLIPBOARD },
-    { path: '/tools/rate-code', name: 'Calificar código', icon: PrimeIcons.CHECK_SQUARE },
+    // { path: '/tools/rate-code', name: 'Calificar código', icon: PrimeIcons.CHECK_SQUARE },
   ];
   menuTools = [
     { path: '/tools/recoveryPDF', name: 'Convertir a .csv', icon: PrimeIcons.FILE_EXCEL },
