@@ -10,69 +10,32 @@
       <i class="pi pi-arrow-left" style="font-size: 1.2rem;"></i>
     </button>
     <section class="flex flex-col p-2 sidebar-content mb-auto">
-      <div>
-        <small class="txt-tiltle-color">Menú</small>
-        <ul class="p-0 my-2 list-none">
-          <li *ngFor="let option of menuSidebar">
-            <a 
-              routerLinkActive="active" 
-              [routerLink]="option.path"
-              class="text-base block px-3 py-2 flex items-center rounded">
-              <i class="mr-2 text-sm txt-tiltle-color" [ngClass]="option.icon"></i>
-              <span class="menu-item">{{ option.name }}</span> 
-            </a>
-          </li>
-        </ul>
+      <menu-list menuName="Menú" [menuItems]="menuSidebar" />
+      <div 
+        class="divider-rvia" 
+        [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
       </div>
-      <div class="divider-rvia" [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
-      </div>
-      <ng-container *ngIf="userLogged()?.position?.nom_rol !== Nom_rol.INVITADO">
-        <ul class="p-0 my-2 list-none" >
-          <li *ngFor="let option of menuRvia" >
-            <a 
-              routerLinkActive="active" 
-              [routerLink]="option.path"
-              class="text-base block px-3 py-2 flex items-center rounded">
-              <i class="mr-2 text-sm txt-tiltle-color" [ngClass]="option.icon"></i>
-              <span class="menu-item">{{ option.name }}</span> 
-            </a>
-          </li>
-        </ul>
-        <div class="divider-rvia mb-auto" [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
+      @if (userLogged()?.position?.nom_rol !== Nom_rol.INVITADO) {
+        <menu-list [menuItems]="menuRvia"/>
+        <div 
+          class="divider-rvia mb-auto" 
+          [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
         </div>
-      </ng-container>
-      <ng-container class="mt-auto" *ngIf="userLogged()?.position?.nom_rol === Nom_rol.ADMINISTRADOR">
-        <div class="mt-2">
-          <small class="txt-tiltle-color">Herramientas</small>
-          <ul class="p-0 my-2 list-none">
-              <li *ngFor="let option of menuTools">
-                <a 
-                  routerLinkActive="active" 
-                  [routerLink]="option.path"
-                  class="text-base block px-3 py-2 flex items-center rounded">
-                  <i class="mr-2 text-sm txt-tiltle-color" [ngClass]="option.icon"></i>
-                  <span class="menu-item">{{ option.name }}</span> 
-                </a>
-              </li>
-          </ul>
+      }
+      @if(userLogged()?.position?.nom_rol === Nom_rol.ADMINISTRADOR){
+        <div class="mt-auto">
+          <menu-list class="mt-2" menuName="Herramientas" [menuItems]="menuTools" />
+          <div 
+            class="divider-rvia my-2" 
+            [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
+          </div>
+          <menu-list menuName="Administrador" [menuItems]="menuAdmin" />
+          <div 
+            class="divider-rvia mb-2">
+          </div>
         </div>
-        <div class="divider-rvia my-2" [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
-        </div>
-        <div>
-          <small class="txt-tiltle-color">Administrador</small>
-          <ul class="p-0 my-2 list-none">
-            <li *ngFor="let option of menuAdmin">
-              <a 
-                routerLinkActive="active" 
-                [routerLink]="option.path"
-                class="text-base block px-3 py-2 flex items-center rounded">
-                  <i class="mr-2 text-sm txt-tiltle-color" [ngClass]="option.icon"></i>
-                  <span class="menu-item">{{ option.name }}</span> 
-              </a>
-            </li>
-          </ul>
-        </div> 
-      </ng-container>
+      }
+      <menu-list menuName="Mi cuenta" [menuItems]="menuSettings" />
     </section>
     <div class="logout-button text-center p-2 pt-0 sidebar-logout">
       <div class="divider-rvia mb-2" [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''"></div>

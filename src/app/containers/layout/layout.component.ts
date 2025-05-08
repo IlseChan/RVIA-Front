@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 
 import { PrimeIcons } from 'primeng/api';
@@ -11,12 +11,12 @@ import { AuthService } from '@modules/auth/services/auth.service';
 import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { CoreService } from '@modules/shared/services/core.service';
 import { UserBadgeComponent } from "./components/user-badge/user-badge.component";
+import { MenuListComponent } from "./components/menu-list/menu-list.component";
 
 @Component({
   selector: 'layout',
   standalone: true,
-  imports: [CommonModule, RouterLink, RouterLinkActive,
-    RouterOutlet, DividerModule, UserBadgeComponent],
+  imports: [CommonModule, RouterOutlet, DividerModule, UserBadgeComponent, MenuListComponent],
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss']
 })
@@ -36,6 +36,9 @@ export class LayoutComponent implements OnInit, OnDestroy {
   menuTools = [
     { path: '/tools/recoveryPDF', name: 'Convertir a .csv', icon: PrimeIcons.FILE_EXCEL },
     { path: '/tools/execute-ia', name: 'Ejecutar IA', icon: PrimeIcons.MICROCHIP_AI },
+  ];
+  menuSettings = [
+    { path: '/settings/my-account', name: 'Ajustes', icon: PrimeIcons.COG },
   ];
 
   Nom_rol = Nom_Rol;
