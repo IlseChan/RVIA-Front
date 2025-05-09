@@ -74,7 +74,7 @@
         </div> 
       </ng-container>
     </section>
-    <div class="logout-button text-center p-2 pt-0 sidebar-logout">
+    <div class="logout-button p-2 pt-0 sidebar-logout">
       <div class="divider-rvia mb-2" [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''"></div>
       <button 
         class="flex items-center justify-center text-white py-3 px-2 w-full text-base c-pointer rounded"
@@ -82,9 +82,13 @@
           <i class="pi pi-power-off mr-2"></i>
           <span class="ml-2">Cerrar sesión</span>
       </button>
-      <small *ngIf="coreVersion" class="mt-1 ml-2 text-right block generated-number">
-        V. {{ coreVersion }}
-      </small> 
+      <div class="mt-1 text-pretty">
+        @for (groupVersions of coreService.versions(); track $index) {
+          <p class="core-version text-center opacity-50">
+           {{ groupVersions }} 
+          </p>
+        }
+      </div>
     </div>
   </nav>
   <section class="content flex-grow-1 h-full overflow-y-auto md:px-4 md:py-5" [ngClass]="{'shifted': sidebarActive}">

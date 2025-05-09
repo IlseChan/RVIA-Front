@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
@@ -40,37 +40,20 @@ export class LayoutComponent implements OnInit, OnDestroy {
 
   Nom_rol = Nom_Rol;
   sidebarActive = false;
-  coreVersion: string = '';
+  coreVersion = signal<string[]>([]);
   private destroy$ = new Subject<void>();
+  private router = inject(Router);
+  private authService = inject(AuthService);
+  coreService = inject(CoreService); 
   
-  constructor(
-    private router: Router,
-    private authService: AuthService,
-    private coreService: CoreService 
-  ) {}
-
   ngOnInit(): void {
     this.userLogged.set(this.authService.user());
-    this.getCoreVersion();
-
+    this.coreService.getCoreVersion();
     if (this.userLogged()?.position.nom_rol !== Nom_Rol.INVITADO) {
       this.menuSidebar.push(
         { path: '/apps/list-apps', name: 'Aplicaciones', icon: PrimeIcons.TABLE },
       );
     }
-  }
-
-  getCoreVersion(): void {
-    this.coreService.getCoreVersion()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (version: string) => {
-          this.coreVersion = version;
-        },
-        error: (e) => {
-          this.coreVersion = '';
-        }
-      });
   }
 
   toggleSidebar(): void {
