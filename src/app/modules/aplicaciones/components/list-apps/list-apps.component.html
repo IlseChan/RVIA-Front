@@ -103,6 +103,7 @@
                                     [status]="app.opc_estatus_doc"
                                     [numProcess]="1"
                                     [opcArquitectura]="app.opc_arquitectura[1]"
+                                    (click)="onDownloadFile(app,false,ArquitecturaOpciones.DOC_CMPLT)"
                                 /> <!-- Acción documentación completa -->
                                 <rvia-icon
                                     [status]="app.opc_estatus_doc_code"

@@ -93,14 +93,19 @@ export class ListAppsComponent implements OnInit, OnDestroy {
     this.onGetAplicaciones();
   }
 
-  onDownloadFile(app: Aplication): void {
-    if (this.isDownload || app.applicationstatus.idu_estatus_aplicacion !== StatusApp.DONE) return;
+  onDownloadFile(app: Aplication, main: boolean = true, archi: ArquitecturaOpciones | 0 = 0 ): void {    
     this.isDownload = true;
-    this.aplicacionService.downloadFile(app.idu_aplicacion)
+
+    this.aplicacionService.downloadFile(app.idu_aplicacion,main,archi)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (blob) => {
-          const fileName = `${app.idu_proyecto}_${app.nom_aplicacion}.7z`;
+          let fileName = `${app.idu_proyecto}_${app.nom_aplicacion}.7z`;
+          
+          if(archi === ArquitecturaOpciones.DOC_CMPLT){
+            fileName = `doc_${fileName}`;
+          }
+
           downloandFile(blob, fileName);
           this.isDownload = false;
         },

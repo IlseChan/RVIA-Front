@@ -177,8 +177,18 @@ export class AplicacionesService {
     );    
   }
 
-  downloadFile(id: number): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' })
+  downloadFile(id: number, main: boolean, archi?: ArquitecturaOpciones | 0): Observable<Blob> {
+    let url: string = '';
+
+    if(main){
+      url = `${this.baseUrl}/applications/zip/${id}`;
+    }else {
+      if(archi === ArquitecturaOpciones.DOC_CMPLT){
+        url = `${this.baseUrl}/applications/download-doc/${id}`;
+      }
+    }
+  
+    return this.http.get(url,{ responseType: 'blob' })
       .pipe(
         catchError(error => this.handleError(error, OriginMethod.GETDOWNLOAD))
       );
@@ -322,7 +332,7 @@ export class AplicacionesService {
 
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
     const title = 'Error';
-    
+    console.error(error);
     const errorsMessages = {
       GETAPPS: 'Error al cargar información', 
       GETCSVAPP: 'Error al cargar información del CSV',
