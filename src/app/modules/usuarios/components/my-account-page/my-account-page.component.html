@@ -1,0 +1,260 @@
+<main class="m-2">
+    @if ( isLoading() ) {
+        <div class="card flex justify-center mt-12">
+            <span class=" loader"></span>
+        </div>
+    } 
+
+    @if ( !isLoading() && originalUser() ) {
+        <section class="flex flex-col md:flex-row md:items-center">
+            <div class="flex items-center mr-4">
+            <p-button
+                icon="pi pi-arrow-left" 
+                severity="secondary"
+                [text]="true"
+                (onClick)="back()" 
+            />
+            </div>
+            <div class="flex items-center justify-center">
+            <h1 class="txt-tiltle-color text-5xl my-0">{{ originalUser()?.nom_usuario}}</h1>
+            </div>
+        </section>  
+    
+        <section class="mt-4 ml-6 text-gray-400 text-lg">
+            <p>Administra la información de tu cuenta aquí.</p>  
+        </section>
+        <div class="mt-2 border border-gray-300"></div>
+        
+        <section class="px-10 ">
+            <p-tabs [value]="1">
+                <p-tablist class="text-xl">
+                    @for (tab of tabs; track $index; let idx = $index) {
+                        <p-tab [value]="idx">{{ tab }}</p-tab>
+                    }
+                </p-tablist>
+                <p-tabpanels>
+
+                    <p-tabpanel [value]="0">
+                        <section class="my-10">
+                            <form [formGroup]="personalForm" novalidate>
+                                <info-display 
+                                    key="Número de empleado"
+                                    [value]="originalUser()?.num_empleado!"
+                                    [wDivider]="true"
+                                /><!--num empleado-->
+                                <div class="grid grid-cols-6 my-4 py-2">
+                                    <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                        Nombre completo
+                                    </p>
+                                    <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                         <input
+                                            class="w-full" placeholder="Nombre completo"
+                                            [ngClass]="{'ng-invalid ng-dirty': isValidField('nom_usuario')}"
+                                            pInputText id="nom_usuario-edit"  pSize="large"
+                                            formControlName="nom_usuario" type="text"
+                                        />
+                                        @if (isValidField('nom_usuario')) {
+                                            <small class="mt-2 pl-2 text-red-500 text-left" > 
+                                                Nombre inválido.
+                                            </small>
+                                        }
+                                    </div>
+                                </div><!--nombre usuario-->
+                                <div class="mt-2 border border-gray-300"></div>
+                                <info-display 
+                                    key="Tipo de usuario"
+                                    [value]="originalUser()?.position?.nom_rol!"
+                                /><!--tipo usuario-->
+                            </form>
+                        </section><!--info panel personal-->
+                        <section class="flex gap-6 py-2">         
+                            <p-button 
+                                (click)="onSubmit()"
+                                type='submit'
+                                [loading]="isUpdate()"
+                                [disabled]="personalForm.invalid || !hasFormChanges || isUpdate()"
+                                [label]="isUpdate() ? 'Actualizando...' : 'Actualizar'" 
+                                [outlined]="personalForm.invalid || !hasFormChanges || isUpdate()"
+                                [styleClass]="!personalForm.invalid && hasFormChanges && !isUpdate() ? 'btn-rvia' : ''"
+                                size="large"
+                            />
+                            <p-button 
+                                type="button"
+                                (click)="onCancel('P')"
+                                label="Cancelar" 
+                                [disabled]="isUpdate()"
+                                size="large"
+                                text="true"
+                            />
+                        </section><!--btns panel personal-->
+                    </p-tabpanel><!--panel personal-->
+
+                    <p-tabpanel [value]="1">
+                        <section class="my-10">
+                            <form [formGroup]="codeForm" novalidate class="flex"> 
+                                <div class="flex-1 mr-6">
+                                    <div class="grid grid-cols-6 my-4 py-2">
+                                        <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                            Contraseña actual
+                                        </p>
+                                        <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                            <div class="flex flex-col">
+                                                <p-password 
+                                                    formControlName="prevCode"
+                                                    inputId="prevCode-edit-user"
+                                                    name="prevCode"
+                                                    [style]="{ width : '100%' }"
+                                                    [inputStyle]="{ width : '100%' }"
+                                                    [feedback]="false" 
+                                                    [toggleMask]="true"
+                                                    placeholder="Contraseña actual"
+                                                    autocomplete="off"
+                                                    size="large"
+                                                />
+                                                @if (isValidFieldCode('prevCode')) {
+                                                    <small class="mt-2 pl-2 text-red">
+                                                        Contraseña inválida.
+                                                    </small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div><!--code actual-->
+                                    <div class="mt-2 border border-gray-300"></div>
+                                    <div class="grid grid-cols-6 my-4 py-2">
+                                        <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                            Nueva contraseña
+                                        </p>
+                                        <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                            <div class="flex flex-col">
+                                                <p-password 
+                                                    formControlName="newCode"
+                                                    inputId="newCode-edit-user"
+                                                    name="newCode"
+                                                    [style]="{ width : '100%' }"
+                                                    [inputStyle]="{ width : '100%' }"
+                                                    [feedback]="false" 
+                                                    [toggleMask]="true"
+                                                    placeholder="Nueva contraseña"
+                                                    autocomplete="off"
+                                                    size="large"
+                                                />
+                                                @if (isValidFieldCode('newCode')) {
+                                                    <small class="mt-2 pl-2 text-red">
+                                                        Contraseña inválida.
+                                                    </small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div><!--nuevo code-->
+                                    <div class="mt-2 border border-gray-300"></div>
+                                    <div class="grid grid-cols-6 my-4 py-2">
+                                        <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                            Confirma nueva contraseña
+                                        </p>
+                                        <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                            <div class="flex flex-col">
+                                                <p-password 
+                                                    formControlName="newCodeConf"
+                                                    inputId="newCodeConf-edit-user"
+                                                    name="newCodeConf"
+                                                    [style]="{ width : '100%' }"
+                                                    [inputStyle]="{ width : '100%' }"
+                                                    [feedback]="false" 
+                                                    [toggleMask]="true"
+                                                    placeholder="Confirmar contraseña"
+                                                    autocomplete="off"
+                                                    size="large"
+                                                />
+                                                @if (isValidFieldCode('newCodeConf')) {
+                                                    <small class="mt-2 pl-2 text-red">
+                                                        Las contraseñas no coinciden.
+                                                    </small>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div><!--conf nuevo code-->
+                                </div><!--campos contraseña-->
+                                <div class="p-4 my-auto border-2 rounded-lg border-gray-400 border-dashed">
+                                    <div class="flex items-center gap-2 txt-tiltle-color">
+                                        <i class="pi pi-info-circle !text-2xl"></i>
+                                        <p class="text-3xl mt-auto font-bold">
+                                            Recordatorio
+                                        </p>
+                                    </div>
+                                    <p class="text-lg mt-4">Crea una contraseña segura que incluya:</p>
+                                    <ul class=" mt-2 font-bold">
+                                        <li> - al menos 12 caracteres</li>
+                                        <li> - una letra mayúscula</li>
+                                        <li> - una letra minúscula</li> 
+                                        <li> - un número</li>
+                                        <li> - un símbolo especial</li> 
+                                    </ul>
+                                </div><!--recordatorio contraseña-->
+                            </form>
+                         </section><!--contraseña info-->
+                         @if (codeForm.errors && codeForm.errors['sameCode']) {
+                            <div class="text-lg my-4 pl-2 text-red-600 ">
+                                <p>La nueva contraseña debe ser diferente a la anterior.</p>
+                            </div>
+                         }
+                         <section class="flex gap-6 py-2">         
+                            <p-button 
+                                (click)="onSubmitCode()"
+                                type='submit'
+                                [loading]="isUpdate()"
+                                [disabled]="codeForm.invalid || isUpdate()"
+                                [label]="isUpdate() ? 'Actualizando...' : 'Actualizar'" 
+                                [outlined]="codeForm.invalid || isUpdate()"
+                                [styleClass]="!codeForm.invalid && !isUpdate() ? 'btn-rvia' : ''"
+                                size="large"
+                            />
+                            <p-button 
+                                type="button"
+                                (click)="onCancel('C')"
+                                label="Limpiar" 
+                                [disabled]="isUpdate()"
+                                size="large"
+                                text="true"
+                            />
+                        </section><!--btns contraseña-->    
+                    </p-tabpanel><!--panel contraseña-->
+                    
+                    <p-tabpanel [value]="2">
+                        <section  class="my-10">
+                            <info-display 
+                                key="Puesto"
+                                [value]="fullUser()?.puesto?.nom_puesto!"
+                                [wDivider]="true"
+                            /><!--puesto-->
+                            <info-display 
+                                key="Aplicación"
+                                [value]="fullUser()?.aplicacion?.nom_app!"
+                                [wDivider]="true"
+                            /><!--aplicacion-->
+                            <info-display 
+                                key="Centro"
+                                [value]="centerName"
+                                [wDivider]="true"
+                            /><!--centro-->
+
+                            @if(fullUser()?.puesto?.num_puesto !== positionValues.DIVISIONAL){
+                                <info-display 
+                                    key="Encargado"
+                                    [value]="fullUser()?.encargado?.nom_empleado!"
+                                /><!--encargado-->
+                            }
+                            <div class="mt-20 text-center">
+                                <div class="p-4 inline-flex items-center gap-4 border-2 border-gray-300  border-dashed rounded-lg">
+                                    <i class="pi pi-info-circle !text-4xl txt-tiltle-color"></i>
+                                    <p class="text-lg text-gray-400">
+                                        Esta información es de solo lectura. Si necesitas realizar algún cambio, por favor contacta al administrador.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+                    </p-tabpanel><!--panel organización-->
+                </p-tabpanels>
+            </p-tabs>
+        </section>
+    }
+</main>

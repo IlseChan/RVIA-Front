@@ -4,7 +4,7 @@ import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-import { OriginMethod, UsersData, Usuario } from '../interfaces';
+import { OriginMethod, UsersData, Usuario, UsuarioCmplt } from '../interfaces';
 import { InfoOrg, Position } from '@modules/auth/interfaces';
 import { Manager, RespManagers } from '../interfaces/respManagers.interface';
 
@@ -60,8 +60,8 @@ export class UsuariosService {
     this.userToEdit.set(user ? user : null);
   }
 
-  getUsuarioById(id: number): Observable<Usuario> {
-      return this.http.get<Usuario>(`${this.baseUrl}/auth/${id}`).pipe(
+  getUsuarioById(id: number): Observable<UsuarioCmplt> {
+      return this.http.get<UsuarioCmplt>(`${this.baseUrl}/auth/${id}`).pipe(
         tap(user => this.userToEdit.set(user)),
         catchError(error => this.handleError(error, OriginMethod.GETUSER,id))
       )
@@ -76,6 +76,7 @@ export class UsuariosService {
           const content = `El usuario ${resp.num_empleado} - ${resp.nom_usuario} con posición ${resp.position.nom_rol} se actualizó correctamente.`
           this.notificationsService.successMessage(title,content);
         }),
+        delay(1200),
         tap(() =>  this.userToEdit.set(null)),
         catchError(error => this.handleError(error, OriginMethod.UPDATEUSER,originalUser.nom_usuario))
       );

@@ -38,7 +38,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
     { path: '/tools/execute-ia', name: 'Ejecutar IA', icon: PrimeIcons.MICROCHIP_AI },
   ];
   menuSettings = [
-    { path: '/settings/my-account', name: 'Ajustes', icon: PrimeIcons.COG },
+    { path: '/users/settings/my-account', name: 'Ajustes', icon: PrimeIcons.COG },
   ];
 
   Nom_rol = Nom_Rol;

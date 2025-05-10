@@ -160,4 +160,17 @@ export class ValidationService {
       }
     }
   }
+
+  sameCode(field1: string, field2: string): ValidatorFn {
+    return (formGroup: AbstractControl): ValidationErrors | null => {
+      const v1 = formGroup.get(field1)?.value;
+      const v2 = formGroup.get(field2)?.value;
+
+      if (v1 && v2 && v1 === v2) {
+        return { sameCode: true };
+      }
+
+      return null;
+    };
+  }
 }
