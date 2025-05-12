@@ -37,6 +37,10 @@ export class AuthService {
     private router: Router
   ) {}
 
+  setUser(user: Usuario) {
+    this._user.set(user);
+  } 
+
   registerUser(data: DataToRegister): Observable<Usuario> {
     const idu_rol = Idu_Rol.INVITADO; 
     return this.http.post<Usuario>(`${this.baseUrl}/auth/register`, {

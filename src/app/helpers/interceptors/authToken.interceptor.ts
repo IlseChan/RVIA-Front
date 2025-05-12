@@ -44,6 +44,10 @@ export const AuthInterceptor = (request: HttpRequest<unknown>, next: HttpHandler
         if(url.includes('/auth/check-status') && method === 'GET'){
             return next(newReq);
         }
+
+        if(url.includes('/auth/change-password') && method === 'POST'){
+            return next(newReq);
+        }
  
         if(token && authService.user()){
 

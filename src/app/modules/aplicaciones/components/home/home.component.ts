@@ -7,7 +7,7 @@ import { Component } from '@angular/core';
   template: `
   <div class="flex flex-col items-center p-5 h-full justify-center">
     <img 
-        src="assets/images/logo-rvia.png" 
+        src="assets/images/logo-rvia.webp" 
         alt="rvia-logo" 
         class="img-rvia"
     />

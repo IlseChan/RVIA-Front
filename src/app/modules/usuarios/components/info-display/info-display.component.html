@@ -1,0 +1,11 @@
+<div class="grid grid-cols-6 my-4 py-2">
+    <p class="text-lg col-start-1 col-end-3">
+        {{ key() }}
+    </p>
+    <p class="text-lg col-start-3 col-end-5 txt-title-color font-bold">
+        {{ value() }}
+    </p>
+</div>
+@if ( wDivider() ) {
+    <div class="mt-2 border border-gray-300"></div>
+}

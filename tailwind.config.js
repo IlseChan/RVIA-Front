@@ -1,4 +1,5 @@
 import colors from 'tailwindcss/colors'
+import PrimeUI from 'tailwindcss-primeui';
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -18,7 +19,8 @@ module.exports = {
           '--color-gray-100': colors.gray[100],
         }
       })
-    }
+    },
+    PrimeUI
   ]
 }
 

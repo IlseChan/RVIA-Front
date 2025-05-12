@@ -9,7 +9,7 @@
           />
         </div>
         <div class="flex items-center justify-center">
-          <h1 class="txt-tiltle-color text-5xl my-0">Modificar usuario</h1>
+          <h1 class="txt-title-color text-5xl my-0">Modificar usuario</h1>
         </div>
     </section>
     @if ( isLoading() ) {
@@ -22,7 +22,7 @@
         </section>
         <div class="mt-2 border border-gray-300"></div>
         <section class="px-10 ">
-            <p-tabs value="1">
+            <p-tabs value="0">
                 <p-tablist class="text-xl">
                     <p-tab value="0">Personal</p-tab>
                     <p-tab value="1">Organización</p-tab>
@@ -35,7 +35,7 @@
                                     <p class="text-lg col-start-1 col-end-3">
                                     Número de empleado
                                     </p>
-                                    <p class="text-lg col-start-3 col-end-5 txt-tiltle-color font-bold">
+                                    <p class="text-lg col-start-3 col-end-5 txt-title-color font-bold">
                                         {{ originalUser()?.num_empleado }}
                                     </p>
                                 </div><!--num empleado-->
@@ -44,7 +44,7 @@
                                     <p class="text-lg col-start-1 col-end-3">
                                     Nombre usuario
                                     </p>
-                                    <p class="text-lg col-start-3 col-end-5 txt-tiltle-color font-bold">
+                                    <p class="text-lg col-start-3 col-end-5 txt-title-color font-bold">
                                         {{ originalUser()?.nom_usuario }}
                                     </p>
                                 </div><!--nombre usuario-->

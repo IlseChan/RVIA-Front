@@ -18,21 +18,21 @@ export class UserBadgeComponent {
 
   items: MenuItem[] = [
       { separator: true },
-      // {
-      //   label: 'Settings',
-      //   icon: 'pi pi-cog',
-      //   command: this.goSettings.bind(this),
-      // },
-      // { separator: true },
+      {
+        label: 'Ajustes',
+        icon: 'pi pi-cog',
+        command: this.goSettings.bind(this),
+      },
+      { separator: true },
       {  
-        label: 'Logout',
+        label: 'Cerrar sesión',
         icon: 'pi pi-sign-out',
         command: this.logout.bind(this),
       }
   ];
 
   goSettings() {
-    this.router.navigate(['/apps/home']);
+    this.router.navigate(['/users/settings/my-account']);
   }
 
   logout() {

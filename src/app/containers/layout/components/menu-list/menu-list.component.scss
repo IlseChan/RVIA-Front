@@ -1,0 +1,13 @@
+ ul li{
+    margin: 4px 0;
+
+    a {
+      text-decoration: none;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: var(--hover-rvia-primary-color);
+        cursor: pointer;
+      }
+    }
+  }
