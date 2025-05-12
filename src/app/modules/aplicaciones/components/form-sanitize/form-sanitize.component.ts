@@ -342,8 +342,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       opt_archi
     }
 
-    console.log(info);
-    
     this.aplicacionesService.saveProjectWitPDF(info)
       .pipe(takeUntil(this.destroy$))  
       .subscribe({

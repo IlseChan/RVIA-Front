@@ -208,7 +208,8 @@ export class AplicacionesService {
     const formData = new FormData();
 
     formData.append('num_accion',form.action.toString()); 
-    formData.append('opc_arquitectura', JSON.stringify(form.opt_archi))
+    formData.append('opc_arquitectura', JSON.stringify(form.opt_archi));
+    formData.append('idu_aplicacion_de_negocio',form.idu_aplicacion_de_negocio.toString());
     
     if(form.action === NumberAction.MIGRATION){
       formData.append('opc_lenguaje',form.language.toString());
@@ -341,7 +342,7 @@ export class AplicacionesService {
 
   handleError(error: Error, origin: OriginMethod, extra?: string | number) {
     const title = 'Error';
-    console.error(error);
+    
     const errorsMessages = {
       GETAPPS: 'Error al cargar información', 
       GETBUSINESSAPPS: 'Error al cargar información de aplicaciones de negocio.',
