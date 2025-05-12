@@ -4,7 +4,7 @@ import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-import { OriginMethod, UsersData, Usuario, UsuarioCmplt } from '../interfaces';
+import { FormNewPassword, OriginMethod, UsersData, Usuario, UsuarioCmplt } from '../interfaces';
 import { InfoOrg, Position } from '@modules/auth/interfaces';
 import { Manager, RespManagers } from '../interfaces/respManagers.interface';
 
@@ -61,10 +61,10 @@ export class UsuariosService {
   }
 
   getUsuarioById(id: number): Observable<UsuarioCmplt> {
-      return this.http.get<UsuarioCmplt>(`${this.baseUrl}/auth/${id}`).pipe(
-        tap(user => this.userToEdit.set(user)),
-        catchError(error => this.handleError(error, OriginMethod.GETUSER,id))
-      )
+    return this.http.get<UsuarioCmplt>(`${this.baseUrl}/auth/${id}`).pipe(
+      tap(user => this.userToEdit.set(user)),
+      catchError(error => this.handleError(error, OriginMethod.GETUSER,id))
+    )
   }
 
   updateUsuario(originalUser: Usuario,changes: Usuario): Observable<Usuario> {
@@ -147,6 +147,18 @@ export class UsuariosService {
     )
   }
 
+  changePassword(changes: FormNewPassword): Observable<Usuario> {
+    return this.http.post<Usuario>(`${this.baseUrl}/auth/change-password`,changes)
+      .pipe(
+        tap(() => {
+          const title = 'Actualización Exitosa';
+          const content = `¡Contraseña actualizada! Úsala la próxima vez que inicies sesión.`
+          this.notificationsService.successMessage(title,content,5000);
+        }),
+        delay(1000),
+        catchError(error => this.handleError(error, OriginMethod.POSTPASSWORD))
+      );
+  }
 
   handleError(error: HttpErrorResponse, origin: OriginMethod, extra?: string | number) {
     if(error.status !== 401){
@@ -158,9 +170,10 @@ export class UsuariosService {
         UPDATEUSER: `Error al actualizar al usuario ${extra}`,
         GETPOSITIONS: 'Error al obtener las posiciones, inténtalo más tarde.',
         GETINFOORG: 'Error al obtener información de aplicaciones, centros y encargados. Intentar más tarde.',
-        GETMANAGER: 'Error al obtener los encargados, inténtalo más tarde.'
+        GETMANAGER: 'Error al obtener los encargados, inténtalo más tarde.',
+        POSTPASSWORD: `Error al cambiar la contraseña, inténtalo más tarde. ${error?.error?.message}`,
       };
-      this.notificationsService.errorMessage(title,errorsMessages[origin]);
+      this.notificationsService.errorMessage(title,errorsMessages[origin],5000);
     }
 
     return throwError(() => 'ERROR ERROR ERROR');

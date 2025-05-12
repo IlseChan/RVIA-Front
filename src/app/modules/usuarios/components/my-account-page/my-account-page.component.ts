@@ -42,18 +42,15 @@ export class MyAccountPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if(!this.originalUser) this.authSrvc.logoutUser();
-    console.log(this.originalUser());
     this.usuariosSrvc.getUsuarioById(this.originalUser()!.idu_usuario)
     .pipe(takeUntil(this.destroy$))
     .subscribe({
       next: (user) => {
         this.fullUser.set(user);
         this.initForms(user);
-        console.log(user);
         this.isLoading.set(false);
       },
       error: (err) => {
-        console.log(err);
         this.back();
       }
     });
@@ -70,7 +67,7 @@ export class MyAccountPageComponent implements OnInit, OnDestroy {
     
     this.codeForm = this.fb.group({
       prevCode: [null,[Validators.required, this.vldtnSrv.passwordValidation()]],
-      newCode: [null,[Validators.required]],
+      newCode: [null,[Validators.required, this.vldtnSrv.passwordValidation()]],
       newCodeConf: [null,[Validators.required]],
     },{
       validators: [
@@ -121,7 +118,22 @@ export class MyAccountPageComponent implements OnInit, OnDestroy {
 
     this.isUpdate.set(true);
     changes = this.codeForm.value;
-    console.log(changes);
+
+    const infoToSend = {
+      nom_contrasena: changes.newCode,
+    }
+
+    this.usuariosSrvc.changePassword(infoToSend)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.isUpdate.set(false);
+          this.onCancel('C');
+        },
+        error: (e) => {
+          this.isUpdate.set(false);
+        }
+      });
   }
 
   isValidField(field: string): boolean | null {

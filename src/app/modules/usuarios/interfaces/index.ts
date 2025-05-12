@@ -1,3 +1,4 @@
+export * from './formNewPassword.interface';
 export * from './iduRol.enum';
 export * from './nomRol.enum';
 export * from './originMethod.interface';
