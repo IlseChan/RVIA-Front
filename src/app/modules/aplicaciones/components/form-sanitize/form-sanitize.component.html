@@ -85,7 +85,7 @@
 
         <!-- Panel Projecto zip/7z o github/gitlab-->
         <section *ngIf="activeIndex === 2" class="stepper-panel h-[23rem] rounded surface-ground"> <!-- Sin Panel Arquitectura del proyecto -->
-          <div *ngIf="formFiles.get('type')?.value === 'zip'" class="w-full">
+          <div *ngIf="formFiles.get('type')?.value === 'zip'" class="w-full border border-blue-500">
             <p class="text-center mb-4">Selecciona el archivo <b>.zip</b> o <b>.7z</b> de tu proyecto:</p>
             <div class="flex-auto flex flex-col justify-center items-center w-full">
               <div class="max-w-full" [style.width]="txtSizeFile + 'px'">    
@@ -125,6 +125,43 @@
                 URL inválida.
               </span>
             </div>
+          </div>
+
+          <div class="border border-red-500 w-full mt-4">
+            <p class="text-center mb-4">Selecciona la <b>aplicación de negocio</b> a la que pertenece tu proyecto:</p>
+            <div class="flex-auto flex flex-col justify-center items-center w-full">
+              <p-select
+                  formControlName="idu_aplicacion_de_negocio"
+                  id="aplicacion-neg"
+                  [options]="businessAppsOps" 
+                  optionValue="idu_aplicacion"
+                  placeholder="Selecciona una aplicación"
+                  panelStyleClass="apps-panel"
+                  [style]="{ width : txtSizeFile + 'px' }"
+                  [showClear]="true"
+                  [filter]="true"
+                  filterPlaceholder="Buscar aplicación..."
+                  [filterBy]="'nom_app'" 
+                  size="large"
+                >
+                  <ng-template pTemplate="selectedItem" let-app>
+                    <div class="whitespace-normal break-words">
+                      {{ app?.nom_app}}
+                    </div>
+                  </ng-template>
+                  <ng-template let-app pTemplate="item">
+                    <div *ngIf="app">{{ app.nom_app }}</div>
+                    <div *ngIf="!app" class="text-color-secondary">Selecciona una aplicación</div>
+                  </ng-template>
+                </p-select>
+            </div>
+            @if(formFiles.get('idu_aplicacion_de_negocio')?.errors && formFiles.get('idu_aplicacion_de_negocio')?.touched){
+              <div class="flex-auto flex flex-col justify-center items-center w-full">
+                <span class="mt-1 text-red-500">
+                  Debes seleccionar una aplicación de negocio.
+                </span>
+              </div>
+            }
           </div>
         </section> 
         <!-- Panel Projecto zip/7z o github/gitlab-->

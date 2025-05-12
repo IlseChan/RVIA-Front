@@ -10,6 +10,7 @@ import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { ValidationService } from '@modules/shared/services/validation.service';
 import { Language, NumberAction } from '@modules/aplicaciones/interfaces';
+import { AppOrg } from '@modules/auth/interfaces';
 
 @Component({
   selector: 'form-sanitize',
@@ -56,6 +57,7 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   
   isLoading: boolean = true;
   lenguagesOps: Language[] = [];
+  businessAppsOps: AppOrg[] = [];
 
   activeIndex: number = 0;
   selectedValue: number = 1;
@@ -69,13 +71,13 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   NumberAction = NumberAction;
 
   ngOnInit(): void {
-    this.aplicacionesService.getLanguages()
-      .pipe(takeUntil(this.destroy$))
+    this.aplicacionesService.getBusinessApp()
+    .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (resp) => {
           if(resp){
             this.initForm();
-            this.lenguagesOps = resp;
+            this.businessAppsOps = resp;
             this.isLoading = false;
           }
         }
@@ -92,13 +94,13 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       
       architecSelected: new FormControl(null, Validators.required),
       language: new FormControl(null),
+      idu_aplicacion_de_negocio: new FormControl(null,[Validators.required]),
       pdfFile: new FormControl(null,[this.vldtnSrv.fileValidation('pdf')]),
       type:    new FormControl('zip',[Validators.required]),
       urlGit:  new FormControl(null,[this.vldtnSrv.isValidGitlabUrl()]),
       zipFile: new FormControl(null,[this.vldtnSrv.fileValidation('zip'),this.vldtnSrv.noWhitespaceValidation()]),
     });
   }
-
 
   triggerFileInput(type: string): void {
     if(type === 'zip') this.zipInput.nativeElement.click();
@@ -185,7 +187,6 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
     this.activeIndex += value;
   }
   
-
   cleanInput(type: string): void {    
     if(type === 'architec'){
       this.formFiles.patchValue({
@@ -232,8 +233,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       const zipValid = !formZip.errors && formZip.value !== null;
       const formGit = this.formFiles.controls['urlGit'];
       const gitValid = !formGit.errors && formGit.value !== null;
-    
-      return !(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid);
+      const bussinesApp = this.formFiles.controls['idu_aplicacion_de_negocio'];
+      return (!(opt === 'zip' && zipValid) && !(opt === 'git' && gitValid)) || !bussinesApp.value;
     }
 
     if(this.activeIndex === 3 && this.selectedValue === NumberAction.SANITIZECODE){
@@ -340,6 +341,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
       ...info,
       opt_archi
     }
+
+    console.log(info);
     
     this.aplicacionesService.saveProjectWitPDF(info)
       .pipe(takeUntil(this.destroy$))  

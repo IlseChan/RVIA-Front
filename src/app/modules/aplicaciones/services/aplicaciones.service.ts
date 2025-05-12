@@ -9,6 +9,7 @@ import { AppsSelectIA } from '@modules/herramientas/interfaces/appsSelectIA.inte
 import { Aplication, AplicationsData, AppsToUseSelect, ArquitecturaOpciones, 
   FormNewApp, Language, NumberAction, Opt_architec, OriginMethod, ResponseAddApp,
   StatusApp } from '../interfaces';
+import { AppOrg } from '@modules/auth/interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -177,6 +178,14 @@ export class AplicacionesService {
     );    
   }
 
+  getBusinessApp(): Observable<AppOrg[]> {
+    return this.http.get<AppOrg[]>(`${this.baseUrl}/apps-area`)
+    .pipe(
+      delay(1000),
+      catchError(error => this.handleError(error, OriginMethod.GETBUSINESSAPPS))
+    );    
+  }
+
   downloadFile(id: number, main: boolean, archi?: ArquitecturaOpciones | 0): Observable<Blob> {
     let url: string = '';
 
@@ -335,6 +344,7 @@ export class AplicacionesService {
     console.error(error);
     const errorsMessages = {
       GETAPPS: 'Error al cargar información', 
+      GETBUSINESSAPPS: 'Error al cargar información de aplicaciones de negocio.',
       GETCSVAPP: 'Error al cargar información del CSV',
       GETDOWNLOAD: 'Error al descargar el 7z',
       GETLANGUAGES: 'Ha ocurrido un error al cargar información. Inténtalo de nuevo.',
