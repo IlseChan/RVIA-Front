@@ -8,4 +8,5 @@ export interface FormNewApp {
     type:      string;
     urlGit:    string;
     zipFile:   File | null;
+    idu_aplicacion_de_negocio: number;
 }
