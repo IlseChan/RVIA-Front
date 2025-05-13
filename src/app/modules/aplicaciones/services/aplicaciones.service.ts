@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
@@ -16,6 +16,9 @@ import { AppOrg } from '@modules/auth/interfaces';
 })
 export class AplicacionesService {
   private readonly baseUrl = environment.baseURL;
+  private http = inject( HttpClient);
+  private notificationsService = inject( NotificationsService);
+
   changes: boolean = false;
 
   appPDFSubject = new BehaviorSubject<Aplication | null>(null);
@@ -26,10 +29,7 @@ export class AplicacionesService {
     total: -1 
   }
 
-  constructor(
-    private http: HttpClient,
-    private notificationsService: NotificationsService
-  ){}
+  private cacheBusinesApps = signal<AppOrg[]>([]);
 
   clearDataApps(): void {
     this.allApps.data = [];
@@ -179,9 +179,14 @@ export class AplicacionesService {
   }
 
   getBusinessApp(): Observable<AppOrg[]> {
+    if(this.cacheBusinesApps().length > 0){
+      return of(this.cacheBusinesApps());
+    }
+      
     return this.http.get<AppOrg[]>(`${this.baseUrl}/apps-area`)
     .pipe(
       delay(1000),
+      tap(positions => this.cacheBusinesApps.set(positions)),
       catchError(error => this.handleError(error, OriginMethod.GETBUSINESSAPPS))
     );    
   }
