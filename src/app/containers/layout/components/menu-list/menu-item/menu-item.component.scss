@@ -1,0 +1,13 @@
+ .menu-item {
+    color: #1c1c1c;
+    overflow: hidden;
+    text-overflow: ellipsis !important;
+    white-space: nowrap;
+    width: 100%;
+ 
+}
+
+.active {
+    background-color: var(--hover-rvia-primary-color) !important;
+    cursor: default !important;
+} 

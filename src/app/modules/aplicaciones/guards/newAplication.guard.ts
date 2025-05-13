@@ -1,4 +1,4 @@
-import { inject } from "@angular/core";
+import { inject, signal } from '@angular/core';
 import { Router } from "@angular/router";
 
 import { AuthService } from "@modules/auth/services/auth.service";
@@ -9,13 +9,13 @@ export const NewAplicationGuard = (): boolean => {
     const router = inject(Router);
     const authService = inject(AuthService);
 
-    const currentUser = authService.userLogged;
+    const currentUser = signal(authService.user());
      
-    if(!currentUser){
+    if(!currentUser()){
         router.navigate(['/auth/login']);
     }
 
-    if (currentUser && !validRol.includes(currentUser!.position.nom_rol)){
+    if (currentUser() && !validRol.includes(currentUser()?.position.nom_rol!)){
         router.navigate(['/apps/home']);
         return false;
     }

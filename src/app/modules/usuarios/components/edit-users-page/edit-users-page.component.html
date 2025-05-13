@@ -1,88 +1,262 @@
 <main class="m-2">
-    <section class="flex flex-column md:flex-row md:align-items-center justify-content-between">
-        <div class="flex flex-grow-1 align-items-center flex-basis-0">
-          <p-button 
-            label="Volver" 
+    <section class="flex flex-col md:flex-row md:items-center">
+        <div class="flex items-center mr-4">
+          <p-button
             icon="pi pi-arrow-left" 
             severity="secondary"
             [text]="true"
             (onClick)="back()" 
           />
         </div>
-        <div class="flex flex-grow-1 align-items-center justify-content-center md:justify-content-start">
-          <h1 class="txt-tiltle-color text-5xl my-0">Modificar usuario</h1>
+        <div class="flex items-center justify-center">
+          <h1 class="txt-title-color text-5xl my-0">Modificar usuario</h1>
         </div>
     </section>
-    
-    <div *ngIf="isLoading; else form" class="card flex justify-content-center my-6">
-        <p-progressSpinner ariaLabel="loading" />
-    </div>
-
-    <ng-template #form>
-        <section class="flex flex-column p-1 mt-2 md:p-4">
-            <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
-                <div class="field grid justify-content-center m-0 py-2">
-                    <p class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
-                       Número de empleado
-                    </p>
-                    <div class="col-12 md:col-3">
-                        <input
-                            placeholder="Ej. 90000000"
-                            class="w-full"
-                            pInputText id="num_empleado-edit"
-                            type="text" [disabled]="true" readonly
-                            [value]="originalUser.num_empleado"/>
-                    </div>
-                </div>
-                <div class="field grid justify-content-center m-0 py-2">
-                    <p class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
-                       Nombre completo
-                    </p>
-                    <div class="col-12 md:col-3">
-                        <div class="flex flex-column">
-                            <input
-                                class="w-full" placeholder="Nombre completo"
-                                [ngClass]="{'ng-invalid ng-dirty': isValidField('nom_usuario')}"
-                                pInputText id="nom_usuario-edit" 
-                                formControlName="nom_usuario" type="text"/>
-                            <small class="mt-3 text-red" *ngIf="isValidField('nom_usuario')">Nombre inválido</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="field grid justify-content-center m-0 py-2">
-                    <p class="col-12 my-2 md:col-fixed md:w-12rem md:my-auto md:text-right">
-                        Tipo de usuario
-                    </p>
-                    <div class="col-12 md:col-3">
-                        <p-dropdown
-                            id="position-edit"
-                            formControlName="idu_rol" 
-                            [options]="typesUsers"  
-                            optionLabel="nom_rol" 
-                            optionValue="idu_usuario"
-                            placeholder="Seleccionar rol"
-                            [style]="{width : '100%'}" 
-                        />
-                    </div>
-                </div>     
-            </form>
-            <div class="flex justify-content-evenly mt-5 py-2">
-                <p-button 
-                    type="button"
-                    (click)="onCancel()"
-                    label="Cancelar" 
-                    [outlined]="true"
-                    [disabled]="isUpdate"
-                />
-                <p-button 
-                    (click)="onSubmit()"
-                    type='submit'
-                    [loading]="isUpdate"
-                    [disabled]="userForm.invalid || !hasFormChanges || isUpdate"
-                    [label]="isUpdate ? 'Actualizando...' : 'Actualizar'" 
-                    styleClass="btn-rvia"
-                />
-            </div>
+    @if ( isLoading() ) {
+        <div class="card flex justify-center mt-12">
+            <span class=" loader"></span>
+        </div>
+    } @else {
+        <section class="mt-4 ml-6 text-gray-400 text-lg">
+            <p>Administra la información del usuario: <b>{{ originalUser()?.num_empleado }}</b></p>  
         </section>
-    </ng-template>
+        <div class="mt-2 border border-gray-300"></div>
+        <section class="px-10 ">
+            <p-tabs value="0">
+                <p-tablist class="text-xl">
+                    <p-tab value="0">Personal</p-tab>
+                    <p-tab value="1">Organización</p-tab>
+                </p-tablist>
+                <p-tabpanels>
+                    <p-tabpanel value="0">
+                        <section  class="my-10">
+                            <form [formGroup]="personalForm" novalidate>
+                                <div class="grid grid-cols-6 my-4 py-2">
+                                    <p class="text-lg col-start-1 col-end-3">
+                                    Número de empleado
+                                    </p>
+                                    <p class="text-lg col-start-3 col-end-5 txt-title-color font-bold">
+                                        {{ originalUser()?.num_empleado }}
+                                    </p>
+                                </div><!--num empleado-->
+                                <div class="mt-2 border border-gray-300"></div>
+                                <div class="grid grid-cols-6 my-4 py-2">
+                                    <p class="text-lg col-start-1 col-end-3">
+                                    Nombre usuario
+                                    </p>
+                                    <p class="text-lg col-start-3 col-end-5 txt-title-color font-bold">
+                                        {{ originalUser()?.nom_usuario }}
+                                    </p>
+                                </div><!--nombre usuario-->
+                                <div class="mt-2 border border-gray-300"></div>
+                                <div class="grid grid-cols-6 my-4 py-2">
+                                    <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                        Tipo de usuario
+                                    </p>
+                                    <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                        <p-select
+                                            formControlName="idu_rol"
+                                            id="user-type-reg"
+                                            [options]="typesUsers"  
+                                            optionLabel="nom_rol" 
+                                            optionValue="idu_usuario"
+                                            placeholder="-- Selecciona tu puesto --"
+                                            [showClear]="true"
+                                            [style]="{ width : '100%' }" 
+                                            size="large"
+                                        />
+                                        @if (isValidField('idu_rol')) {
+                                            <small class="mt-2 pl-2 text-red-500 text-left" > 
+                                                Debes seleccionar un tipo de usuario.
+                                            </small>
+                                        }
+                                    </div>
+                                </div><!--tipo usuario-->
+                            </form>
+                        </section><!--info panel personal-->
+                        <section class="flex gap-6 py-2">
+                            <p-button 
+                                (click)="onSubmit('P')"
+                                type='submit'
+                                [loading]="isUpdate()"
+                                [disabled]="personalForm.invalid || !hasFormChanges || isUpdate()"
+                                [label]="isUpdate() ? 'Actualizando...' : 'Actualizar'" 
+                                styleClass="btn-rvia"
+                                size="large"
+                            />
+                            <p-button 
+                                type="button"
+                                (click)="onCancel('P')"
+                                label="Cancelar" 
+                                [disabled]="isUpdate()"
+                                size="large"
+                                text="true"
+                            />
+                        </section><!--btns panel personal-->
+                    </p-tabpanel><!--panel personal-->
+                    
+                    <p-tabpanel value="1">
+                        <section  class="my-10">
+                            <form [formGroup]="organizationForm" novalidate>
+                                <div class="grid grid-cols-6 my-4 py-2">
+                                    <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                        Puesto
+                                    </p>
+                                    <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                        <p-select
+                                            formControlName="num_puesto"
+                                            id="position-edit-user"
+                                            [options]="positions()"  
+                                            optionLabel="nom_puesto" 
+                                            optionValue="idu_puesto"
+                                            placeholder="-- Selecciona tu puesto --"
+                                            [showClear]="true"
+                                            [style]="{ width : '100%' }" 
+                                            size="large"
+                                        />
+                                        @if (isValidFieldOrg('num_puesto')) {
+                                            <small class="mt-2 pl-2 text-red-500 text-left" > 
+                                                Debes seleccionar un puesto.
+                                            </small>
+                                        }
+                                    </div>
+                                </div><!--puesto-->
+                                <div class="mt-2 border border-gray-300"></div>
+                                <div class="grid grid-cols-6 my-4 py-2">
+                                    <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                        Aplicación
+                                    </p>
+                                    <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                        <p-select
+                                            formControlName="idu_aplicacion"
+                                            id="apps-edit-user"
+                                            [options]="infoOrg().aplicaciones"  
+                                            optionValue="idu_aplicacion"
+                                            optionLabel="nom_app"
+                                            placeholder="-- Selecciona una aplicación --"
+                                            [showClear]="true"
+                                            [style]="{ width : '100%' }" 
+                                            size="large"                                            
+                                            panelStyleClass="apps-panel"
+                                            [showClear]="true"
+                                            [filter]="true"
+                                            filterPlaceholder="Buscar aplicación..."
+                                            [filterBy]="'nom_app'" 
+                                        >
+                                            <ng-template pTemplate="selectedItem" let-app>
+                                              <div class="whitespace-normal break-words">
+                                                {{ app?.nom_app}}
+                                              </div>
+                                            </ng-template>
+                                            <ng-template let-app pTemplate="item">
+                                              <div *ngIf="app">{{ app.nom_app }}</div>
+                                              <div *ngIf="!app" class="text-color-secondary">Selecciona una aplicación</div>
+                                            </ng-template>
+                                          </p-select>
+                                        @if (isValidFieldOrg('idu_aplicacion')) {
+                                            <small class="mt-2 pl-2 text-red-500 text-left" > 
+                                                Debes seleccionar una aplicación.
+                                            </small>
+                                        }
+                                    </div>
+                                </div><!--aplicacion-->
+                                <div class="mt-2 border border-gray-300"></div>
+                                <div class="grid grid-cols-6 my-4 py-2">
+                                    <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                        Número de centro
+                                    </p>
+                                    <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                        <p-select
+                                            formControlName="num_centro"
+                                            id="num-centro-edit-user"
+                                            [options]="infoOrg().centros"   
+                                            optionValue="num_centro"
+                                            placeholder="-- Selecciona tu centro --"
+                                            [showClear]="true"
+                                            panelStyleClass="apps-panel"
+                                            [style]="{ width : '100%' }" 
+                                            [filter]="true"
+                                            filterPlaceholder="Buscar centro..." 
+                                            [filterBy]="'num_centro,nom_centro'"
+                                            size="large"
+                                        >
+                                            <ng-template pTemplate="selectedItem" let-centro >
+                                              <div class="whitespace-normal break-words">{{ centro?.num_centro }} - {{ centro?.nom_centro }}</div>
+                                            </ng-template>
+                                            <ng-template let-centro pTemplate="item">
+                                              <div *ngIf="centro" >{{ centro.num_centro }} - {{ centro.nom_centro }}</div>
+                                              <div *ngIf="!centro" class="text-color-secondary">Selecciona una centro</div>
+                                            </ng-template>
+                                          </p-select>
+                                        @if (isValidFieldOrg('num_centro')) {
+                                            <small class="mt-2 pl-2 text-red-500 text-left" > 
+                                                Debes seleccionar un centro.
+                                            </small>
+                                        }
+                                    </div>
+                                </div><!--num centro-->
+                                @if (!isDivisional()) {
+                                    <div class="mt-2 border border-gray-300"></div>
+                                    <div class="grid grid-cols-6 my-4 py-2">
+                                        <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                            {{ txtPosition() }}
+                                        </p>
+                                        <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                            <p-select
+                                                formControlName="num_encargado"
+                                                id="num_encargado-edit-user"
+                                                [options]="infoOrg().superiores"  
+                                                optionValue="num_empleado"
+                                                [placeholder]="'Selecciona a tu ' + txtPosition()"
+                                                [style]="{ width : '100%' }" 
+                                                panelStyleClass="apps-panel"
+                                                [showClear]="true"
+                                                [filter]="true"
+                                                [filterPlaceholder]="'Buscar ' + txtPosition()"
+                                                [filterBy]="'num_empleado,nom_empleado'"
+                                                size="large"
+                                            >
+                                                <ng-template pTemplate="selectedItem" let-encargado>
+                                                    <div>{{ encargado?.num_empleado }} - {{ encargado?.nom_empleado }}</div>
+                                                </ng-template>
+                                                <ng-template let-encargado pTemplate="item">
+                                                    <div *ngIf="encargado">{{ encargado.num_empleado }} - {{ encargado.nom_empleado }}</div>
+                                                    <div *ngIf="!encargado" class="text-color-secondary">Selecciona a tu {{ txtPosition() }}</div>
+                                                </ng-template>
+                                        </p-select>
+                                            @if (isValidFieldOrg('num_encargado')) {
+                                                <small class="mt-2 pl-2 text-red-500 text-left" > 
+                                                    Debes seleccionar encargado.
+                                                </small>
+                                            }
+                                        </div>
+                                    </div><!--input de encargado-->
+                                }                    
+                            </form>
+                        </section><!--info panel organizacion-->
+                        <section class="flex gap-6 py-2">
+                            <p-button 
+                                type='submit'
+                                label="Actualizar"
+                                [loading]="isUpdate()"
+                                [disabled]="organizationForm.invalid || !hasFormChangesOrg || isUpdate()"
+                                [label]="isUpdate() ? 'Actualizando...' : 'Actualizar'" 
+                                styleClass="btn-rvia"
+                                size="large"
+                                (onClick)="onSubmit('O')"
+                            />
+                            <p-button 
+                                type="button"
+                                (click)="onCancel('O')"
+                                label="Cancelar" 
+                                [disabled]="isUpdate()"
+                                size="large"
+                                text="true"
+                            />
+                        </section><!--btns panel organizacion-->
+                    </p-tabpanel><!--panel organización-->
+                </p-tabpanels>
+            </p-tabs>
+        </section>
+    }
 </main>

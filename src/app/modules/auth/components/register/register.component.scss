@@ -2,20 +2,12 @@
   background-color: #f5fbff; 
 }
 
-:host ::ng-deep .p-steps .p-steps-item .p-menuitem-link {
-  background-color: #f9f9f9 !important;
-}
-
-:host ::ng-deep .p-steps .p-steps-item.p-highlight .p-steps-number {
-  background: var(--rvia-primary-color);
-}
-
 .register-container {
   background-color: #f9f9f9;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
   .input-size {
-    min-height: 122px;
+    min-height: 128px;
   }
 }
 
@@ -28,14 +20,16 @@
   }
 }
 
-::ng-deep .apps-panel {
-  max-width: 20vw !important;
-  overflow-x: auto !important;
-  width: auto !important;
+:host ::ng-deep .p-steps-item-active .p-steps-item-label{
+  color: var(--rvia-primary-color);
 }
 
-::ng-deep .apps-panel .p-dropdown-item {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+:host ::ng-deep .p-steps-item-active .p-steps-item-number{
+  border-color: var(--rvia-primary-color);
+  background-color: var(--rvia-primary-color);
+  color: white;
+} 
+
+:host ::ng-deep .p-steps-item.p-disabled {
+  opacity: 0.2;
 }

@@ -2,7 +2,6 @@ import { Routes } from '@angular/router';
 import { SessionGuard } from '@modules/auth/guards/session.guard';
 import { UserAuthGuard } from '@modules/auth/guards/userAuthGuard.guard';
 import { LayoutComponent } from './containers/layout/layout.component';
-import { AdminGuard } from '@modules/usuarios/guards/adminGuard.guard';
 import { ToolsGuard } from '@modules/herramientas/guards/ToolsGuard.guard';
 
 export const routes: Routes = [
@@ -22,7 +21,6 @@ export const routes: Routes = [
             },
             {
                 path: 'users',
-                canActivate: [AdminGuard],
                 loadChildren: () => import('@modules/usuarios/usuarios.routes').then(m => m.usuariosRoutes)
             },
             {

@@ -1,4 +1,4 @@
-import { inject } from "@angular/core";
+import { inject, signal } from '@angular/core';
 import { Router } from "@angular/router";
 
 import { AuthService } from "@modules/auth/services/auth.service";
@@ -8,14 +8,14 @@ export const AdminGuard = (): boolean => {
     const router = inject(Router);
     const authService = inject(AuthService);
 
-    const currentUser = authService.userLogged;
+    const currentUser = signal(authService.user());
     
-    if (!currentUser) {
+    if (!currentUser()) {
         router.navigate(['/auth/login']);
         return false;
     }
    
-    if (currentUser.position.nom_rol === Nom_Rol.ADMINISTRADOR) {
+    if (currentUser()?.position.nom_rol === Nom_Rol.ADMINISTRADOR) {
         return true;
     }
     

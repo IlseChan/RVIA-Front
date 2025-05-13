@@ -6,14 +6,6 @@
     background: none;
     border: none;
   }
-
-  .user-info {
-    direction: rtl;
-
-    .separator {
-      direction: ltr;
-    }
-  }
 }
 
 .sidebar {
@@ -61,28 +53,6 @@
     }
   }
 
-  .menu-item {
-    color: #1c1c1c;
-    overflow: hidden;
-    text-overflow: ellipsis !important;
-    white-space: nowrap;
-    width: 100%;
-  }
-
-  ul li{
-    margin: 4px 0;
-
-    a {
-      text-decoration: none;
-      transition: background-color 0.3s ease;
-
-      &:hover {
-        background-color: var(--hover-rvia-primary-color);
-        cursor: pointer;
-      }
-    }
-  }
-
   .close-sidebar {
     align-self: flex-end;
     background: none;
@@ -100,11 +70,6 @@
       }
     }
   }
-}
-
-.active {
-  background-color: var(--hover-rvia-primary-color);
-  cursor: default !important;
 }
 
 .content {
@@ -145,7 +110,7 @@
   }
 }
 
-.generated-number {
-  font-size: 8px;
-  color: rgb(180, 174, 174);
+.core-version {
+  font-size: 9px;
+  color: var(--txt-color);
 }

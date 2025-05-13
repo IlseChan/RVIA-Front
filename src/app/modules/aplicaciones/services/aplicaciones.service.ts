@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { BehaviorSubject, catchError, delay, map, Observable, of, switchMap, tap, throwError } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
@@ -9,12 +9,16 @@ import { AppsSelectIA } from '@modules/herramientas/interfaces/appsSelectIA.inte
 import { Aplication, AplicationsData, AppsToUseSelect, ArquitecturaOpciones, 
   FormNewApp, Language, NumberAction, Opt_architec, OriginMethod, ResponseAddApp,
   StatusApp } from '../interfaces';
+import { AppOrg } from '@modules/auth/interfaces';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AplicacionesService {
   private readonly baseUrl = environment.baseURL;
+  private http = inject( HttpClient);
+  private notificationsService = inject( NotificationsService);
+
   changes: boolean = false;
 
   appPDFSubject = new BehaviorSubject<Aplication | null>(null);
@@ -25,10 +29,7 @@ export class AplicacionesService {
     total: -1 
   }
 
-  constructor(
-    private http: HttpClient,
-    private notificationsService: NotificationsService
-  ){}
+  private cacheBusinesApps = signal<AppOrg[]>([]);
 
   clearDataApps(): void {
     this.allApps.data = [];
@@ -177,8 +178,31 @@ export class AplicacionesService {
     );    
   }
 
-  downloadFile(id: number): Observable<Blob> {
-    return this.http.get(`${this.baseUrl}/applications/zip/${id}`,{ responseType: 'blob' })
+  getBusinessApp(): Observable<AppOrg[]> {
+    if(this.cacheBusinesApps().length > 0){
+      return of(this.cacheBusinesApps());
+    }
+      
+    return this.http.get<AppOrg[]>(`${this.baseUrl}/apps-area`)
+    .pipe(
+      delay(1000),
+      tap(positions => this.cacheBusinesApps.set(positions)),
+      catchError(error => this.handleError(error, OriginMethod.GETBUSINESSAPPS))
+    );    
+  }
+
+  downloadFile(id: number, main: boolean, archi?: ArquitecturaOpciones | 0): Observable<Blob> {
+    let url: string = '';
+
+    if(main){
+      url = `${this.baseUrl}/applications/zip/${id}`;
+    }else {
+      if(archi === ArquitecturaOpciones.DOC_CMPLT){
+        url = `${this.baseUrl}/applications/download-doc/${id}`;
+      }
+    }
+  
+    return this.http.get(url,{ responseType: 'blob' })
       .pipe(
         catchError(error => this.handleError(error, OriginMethod.GETDOWNLOAD))
       );
@@ -189,7 +213,8 @@ export class AplicacionesService {
     const formData = new FormData();
 
     formData.append('num_accion',form.action.toString()); 
-    formData.append('opc_arquitectura', JSON.stringify(form.opt_archi))
+    formData.append('opc_arquitectura', JSON.stringify(form.opt_archi));
+    formData.append('idu_aplicacion_de_negocio',form.idu_aplicacion_de_negocio.toString());
     
     if(form.action === NumberAction.MIGRATION){
       formData.append('opc_lenguaje',form.language.toString());
@@ -325,6 +350,7 @@ export class AplicacionesService {
     
     const errorsMessages = {
       GETAPPS: 'Error al cargar información', 
+      GETBUSINESSAPPS: 'Error al cargar información de aplicaciones de negocio.',
       GETCSVAPP: 'Error al cargar información del CSV',
       GETDOWNLOAD: 'Error al descargar el 7z',
       GETLANGUAGES: 'Ha ocurrido un error al cargar información. Inténtalo de nuevo.',

@@ -1,6 +1,6 @@
 <main class="m-2">
-    <section class="flex flex-column mb-4 pb-2 border-title">
-        <h1 class="txt-tiltle-color text-5xl my-0">Calificar código</h1> 
+    <section class="flex flex-col mb-4 pb-2 border-title">
+        <h1 class="txt-title-color text-5xl my-0">Calificar código</h1> 
     </section>
     <section class="text-justify vertical-align-middle mb-4">
         <p class="m-0">
@@ -9,13 +9,13 @@
         </p>
     </section>
     
-    <div *ngIf="isLoadingData" class="card flex justify-content-center my-6">
+    <!-- <div *ngIf="isLoadingData" class="card flex justify-center my-6">
         <p-progressSpinner ariaLabel="loading" />
-    </div>
+    </div> -->
 
     <section *ngIf="!isLoadingData"> 
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
-            <section class="flex flex-column align-items-center mb-3">
+            <section class="flex flex-col items-center mb-3">
                 <p>Selecciona el aplicativo a trabajar:</p>
                 <p-dropdown
                     id="select-apps"
@@ -33,8 +33,8 @@
                     Debes seleccionar una aplicación.
                 </span>
             </section>
-            <section *ngIf="form.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">
-                <div class="flex justify-content-center mt-4">
+            <section *ngIf="form.controls['idu_aplicacion'].value !== null" class="flex flex-col justify-center mb-4">
+                <div class="flex justify-center mt-4">
                     <p-button 
                         [label]="label"
                         [loading]="isRequest && label === 'Iniciando'"

@@ -1,13 +1,13 @@
 <main class="px-4 pb-4">
-    <div *ngIf="isLoadingData || app.checkmarx.length > 0; else formPDF" class="card flex justify-content-center my-6">
+    <!-- <div *ngIf="isLoadingData || app.checkmarx.length > 0; else formPDF" class="card flex justify-center my-6">
         <p-progressSpinner ariaLabel="loading" />
-    </div>
+    </div> -->
     
     <ng-template #formPDF>
-        <section class="flex flex-column justify-content-center">
+        <section class="flex flex-col justify-center">
             <p>Selecciona el archivo <b>.pdf</b> de las vulnerabilidades para el aplicativo <b>{{ app.nom_aplicacion }}.</b></p>
             <form [formGroup]="formFile" (ngSubmit)="onSubmit()">
-                <div class="flex-auto flex flex-column justify-content-center align-items-center"> 
+                <div class="flex-auto flex flex-col justify-center items-center"> 
                     <p-inputGroup class="mx-auto w-7 mt-4">
                         <button 
                             type="button" pButton 

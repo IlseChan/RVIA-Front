@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnDestroy, OnInit, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
 
 import { ConfirmationService } from 'primeng/api';
@@ -13,7 +13,7 @@ import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 @Component({
   selector: 'list-usuarios',
   standalone: true,
-  imports: [RouterLink, CommonModule, PrimeNGModule],
+  imports: [CommonModule, PrimeNGModule],
   templateUrl: './list-usuarios.component.html',
   styleUrls: ['./list-usuarios.component.scss'],
   providers: [ConfirmationService],
@@ -35,7 +35,7 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
   loadingDataPage: boolean = true;
   rowsPerPageOpts: number[] = [10,15,20];
 
-  userLogged!: Usuario | null;
+  userLogged = signal<Usuario | null>(null);
   constructor(
     private usuariosService: UsuariosService,
     private router: Router,
@@ -44,7 +44,7 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
   ){}
    
   ngOnInit(): void {
-    this.userLogged = this.authService.userLogged;
+    this.userLogged.set(this.authService.user());
     this.onGetUsuarios();
   }
   
@@ -75,7 +75,7 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
   }
 
   onDeleteUsuario(user: Usuario): void{
-    if(this.isDeleting || user.idu_usuario === this.userLogged?.idu_usuario) return;
+    if(this.isDeleting || user.idu_usuario === this.userLogged()?.idu_usuario) return;
 
     this.isDeleting = true; 
     this.idToDelete  = user.num_empleado;
@@ -89,6 +89,7 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
       acceptLabel: 'Sí, eliminar',
       rejectButtonStyleClass: 'p-button-outlined my-2',
       rejectLabel: 'No, cancelar',
+      closable: false,
       accept: () => {
         this.usuariosService.deleteUsuario(user)
           .pipe(

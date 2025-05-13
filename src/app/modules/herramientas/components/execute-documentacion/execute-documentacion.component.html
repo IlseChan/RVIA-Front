@@ -1,6 +1,6 @@
 <main class="m-2">
-    <section class="flex flex-column mb-4 pb-2 border-title">
-        <h1 class="txt-tiltle-color text-5xl my-0">Documentar proyecto</h1> 
+    <section class="flex flex-col mb-4 pb-2 border-title">
+        <h1 class="txt-title-color text-5xl my-0">Documentar proyecto</h1> 
     </section>
     <section class="text-justify vertical-align-middle mb-4">
         <p class="m-0">
@@ -9,28 +9,37 @@
         </p>
     </section>
     
-    <div *ngIf="isLoadingData" class="card flex justify-content-center my-6">
-        <p-progressSpinner ariaLabel="loading"></p-progressSpinner>
+    <div *ngIf="isLoadingData" class="card flex justify-center mt-12">
+        <span class=" loader"></span>
     </div>
 
     <section *ngIf="!isLoadingData"> 
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
             <!-- Sección para seleccionar el tipo de documentación -->
-            <section class="flex flex-column align-items-center mb-3">
-                <p>Selecciona el tipo de documentación:</p>
-                <div class="flex justify-content-center gap-3">
-                    <p-radioButton 
-                        name="tipo_documentacion"
-                        value="1"  
-                        label="Documentación completa"
-                        formControlName="tipo_documentacion">
-                    </p-radioButton>
-                    <p-radioButton 
-                        name="tipo_documentacion"
-                        value="2"  
-                        label="Documentación por código"
-                        formControlName="tipo_documentacion">
-                    </p-radioButton>
+            <section class="flex flex-col items-center mb-3">
+                <p class="mb-4">Selecciona el tipo de documentación:</p>
+                <div class="flex items-center justify-center gap-3">
+                    <div class="flex items-center gap-1">
+                        <p-radioButton 
+                            name="tipo_documentacion"
+                            value="1"
+                            inputId="radio-doc-com" 
+                            formControlName="tipo_documentacion"
+                            size="large"
+                        />
+                        <label for="radio-doc-com" class="">Documentación completa</label>
+                    </div>
+                    
+                    <div class="flex items-center gap-1">    
+                        <p-radioButton 
+                            name="tipo_documentacion"
+                            value="2"
+                            inputId="radio-doc-cod" 
+                            formControlName="tipo_documentacion"
+                            size="large"
+                        />
+                        <label for="radio-doc-cod" class="ml-1">Documentación por código</label>
+                    </div>
                 </div>
                 <span *ngIf="form.controls['tipo_documentacion'].errors && form.controls['tipo_documentacion'].touched"
                     class="font-italic text-red-500 mt-2">
@@ -39,8 +48,8 @@
             </section>
 
             <!-- Sección para seleccionar la aplicación -->
-            <section *ngIf="form.controls['tipo_documentacion'].value && appsOpcs.length > 0" class="flex flex-column align-items-center mb-3">
-                <p>Selecciona el aplicativo a trabajar:</p>
+            <section *ngIf="form.controls['tipo_documentacion'].value && appsOpcs.length > 0" class="flex flex-col items-center mb-3">
+                <p class="mb-4">Selecciona el aplicativo a trabajar:</p>
                 <p-dropdown
                     id="select-apps"
                     formControlName="idu_aplicacion"
@@ -59,8 +68,8 @@
             </section>
 
             <!-- Sección para el botón de enviar -->
-            <section *ngIf="form.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">
-                <div class="flex justify-content-center mt-4">
+            <section *ngIf="form.controls['idu_aplicacion'].value !== null" class="flex flex-col justify-center mb-4">
+                <div class="flex justify-center mt-4">
                     <p-button 
                         [label]="label"
                         [loading]="isRequest && label === 'Iniciando'"

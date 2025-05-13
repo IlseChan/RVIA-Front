@@ -21,6 +21,22 @@
   }
 }
 
-:host ::ng-deep .p-steps .p-steps-item.p-highlight .p-steps-number {
-  background: var(--rvia-primary-color);
+:host ::ng-deep .p-steps-item-active .p-steps-item-label{
+  color: var(--rvia-primary-color);
+}
+
+:host ::ng-deep .p-steps-item-active .p-steps-item-number{
+  border-color: var(--rvia-primary-color);
+  background-color: var(--rvia-primary-color);
+  color: white;
+} 
+
+:host ::ng-deep .p-steps-item.p-disabled {
+  opacity: 0.2;
+}
+
+::ng-deep .apps-panel {
+  max-width: 30vw !important;
+  overflow-x: auto !important;
+  width: auto !important;
 }

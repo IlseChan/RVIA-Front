@@ -1,6 +1,6 @@
 <main class="m-2">
-    <section class="flex flex-column mb-4 pb-2 border-title">
-        <h1 class="txt-tiltle-color text-5xl my-0">Recovery PDF</h1> 
+    <section class="flex flex-col mb-4 pb-2 border-title">
+        <h1 class="txt-title-color text-5xl my-0">Recovery PDF</h1> 
     </section>
     <section class="text-justify vertical-align-middle mb-4">
         <p class="m-0">
@@ -10,13 +10,13 @@
         <p>Este archivo se guardará dentro del registro de tu aplicación a sanitizar.</p>
     </section>
     
-    <div *ngIf="isLoadingData" class="card flex justify-content-center my-6">
+    <!-- <div *ngIf="isLoadingData" class="card flex justify-center my-6">
         <p-progressSpinner ariaLabel="loading" />
     </div>
-    
+     -->
     <div *ngIf="!isLoadingData && !showDownOpc"> 
         <form [formGroup]="formFile" (ngSubmit)="onSubmit()">
-            <section class="flex flex-column align-items-center mb-3">
+            <section class="flex flex-col items-center mb-3">
                 <p>Selecciona la aplicación de tu pdf:</p>
                 <p-dropdown
                     id="select-apps"
@@ -35,9 +35,9 @@
                     Debes seleccionar una aplicación.
                 </span>
             </section>
-            <section *ngIf="formFile.controls['idu_aplicacion'].value !== null" class="flex flex-column justify-content-center mb-4">
+            <section *ngIf="formFile.controls['idu_aplicacion'].value !== null" class="flex flex-col justify-center mb-4">
                 <p class="mt-0 text-center">Selecciona el archivo <b>.pdf</b> de vulnerabilidades a convertir:</p>
-                <div class="flex-auto flex flex-column justify-content-center align-items-center"> 
+                <div class="flex-auto flex flex-col justify-center items-center"> 
                     <p-inputGroup class="mx-auto w-3">
                         <button 
                             type="button" pButton 
@@ -64,7 +64,7 @@
                     <input id="input-pdf-csv" type="file" #file accept=".pdf" (change)="onFileSelected($event)" style="display: none;">
                 </div>
                 <div *ngIf="!formFile.controls['file'].errors && formFile.controls['file'].value && !isLoading" 
-                    class="flex justify-content-center gap-6 mt-6">
+                    class="flex justify-center gap-6 mt-6">
                     <p-button 
                         label="Cancelar" 
                         [link]="true"
@@ -83,7 +83,7 @@
         </form>
     </div>
 
-    <div *ngIf="showDownOpc" class="flex flex-column justify-content-center align-content-center">
+    <div *ngIf="showDownOpc" class="flex flex-col justify-center align-content-center">
         <p class="mx-auto my-0 text-5xl">¡Listo!</p>
         <span class="mx-auto my-4">
             <i class="pi pi-file-arrow-up text-7xl"></i>
@@ -91,7 +91,7 @@
         <p class="mx-auto">
             ¡Se ha generado el archivo <b>{{ infoDownloadFile.name }}</b>, se ha guardado y ya puedes descargarlo!
         </p>
-        <div class="flex flex-column justify-content-center align-items-center">
+        <div class="flex flex-col justify-center items-center">
             <p-button 
                 [label]="isDownload ? 'Descargando...' : 'Descargar'" 
                 icon="pi pi-download"

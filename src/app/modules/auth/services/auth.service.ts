@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { computed, Injectable, signal } from '@angular/core';
 import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
@@ -17,6 +17,18 @@ export class AuthService {
   private readonly baseUrl = environment.baseURL;
   private currentUser: Usuario | null = null;
 
+  private _user = signal<Usuario | null>(null);  
+  user =  computed(() => this._user());
+
+  fullName = computed(() => {
+    if(!this._user()) return 'Error'
+    
+    const { nom_usuario } = this._user()!;
+    const name = nom_usuario.split(' '); 
+    
+    return `${name[0]} ${name.at(-2)}`;
+  });
+
   constructor(
     private http: HttpClient, 
     private aplicacionesServices: AplicacionesService,
@@ -25,9 +37,9 @@ export class AuthService {
     private router: Router
   ) {}
 
-  get userLogged(): Usuario | null {
-    return this.currentUser;
-  }
+  setUser(user: Usuario) {
+    this._user.set(user);
+  } 
 
   registerUser(data: DataToRegister): Observable<Usuario> {
     const idu_rol = Idu_Rol.INVITADO; 
@@ -46,6 +58,7 @@ export class AuthService {
         const content = `¡Se ha registrado exitosamente el usuario ${user.num_empleado}!`
         this.notificationsService.successMessage(title,content);
       }),
+      tap((user) => this._user.set(user)),
       tap(() => this.router.navigate(['/apps/list-apps'])),
       catchError((error) => this.handleErrorMess(error, OriginMethod.POSTREGISTER))
     );
@@ -62,6 +75,7 @@ export class AuthService {
         if(this.currentUser.token)
           localStorage.setItem('token', this.currentUser.token)
       }),
+      tap((user) => this._user.set(user)),
       delay(1000),
       tap(() => this.router.navigate(['/apps/list-apps'])),
       catchError(e => throwError(() => e))
@@ -70,6 +84,7 @@ export class AuthService {
 
   logoutUser(): void {
     this.currentUser = null;
+    this._user.set(null);
     localStorage.removeItem('token');
     this.aplicacionesServices.clearDataApps();
     this.usuariosService.clearDataUsers();
@@ -81,6 +96,7 @@ export class AuthService {
       map((resp) => {
         if(resp){
           this.currentUser = resp;
+          this._user.set(resp);
           if(this.currentUser.token)
             localStorage.setItem('token', this.currentUser.token)
           return true;
@@ -106,20 +122,24 @@ export class AuthService {
   }
 
   private handleErrorMess(error: HttpErrorResponse, origin: OriginMethod, extra?: string | number) {
-    // console.log(error);
     const title = 'Error';
     if(error.status === 0){
       const errorMessage = 'No es posible conectar con el servidor, intentelo más tarde o contacte con el administrador.'
       this.notificationsService.errorMessage(title,errorMessage);
 
     }else if(error.status !== 401){
+
+      if(error.error?.message){
+        extra = error.error.message;
+      }
+
       const errorsMessages = {
         GETINFOORG: `Error al obtener información de aplicaciones, centros y encargados. Intentar más tarde.`,
         GETPOSITIONS: `Error al obtener los puestos. Intentar más tarde.`,
-        POSTREGISTER: `Error al registrar nuevo cuenta. Intentar más tarde.`,
+        POSTREGISTER: `Error al registrar nuevo cuenta. ${extra}. Intentar más tarde`,
       };
 
-      this.notificationsService.errorMessage(title,errorsMessages[origin]);
+      this.notificationsService.errorMessage(title,errorsMessages[origin],5000);
     }
   
     return throwError(() => 'ERROR ERROR ERROR');

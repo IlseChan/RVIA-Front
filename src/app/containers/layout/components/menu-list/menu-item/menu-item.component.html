@@ -1,0 +1,9 @@
+<li class="block"> 
+    <a 
+        routerLinkActive="active" 
+        [routerLink]="item().path"
+        class="text-base px-3 py-2 flex items-center rounded">
+        <i class="mr-2 text-sm txt-title-color" [ngClass]="item().icon"></i>
+        <span class="menu-item">{{ item().name }}</span> 
+    </a>
+</li>
