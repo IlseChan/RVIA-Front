@@ -8,12 +8,12 @@ import { AuthService } from '../../services/auth.service';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { termsAndConditions } from './termsandcond';
 import { ValidationService } from '@modules/shared/services/validation.service';
-import { AppOrg, Centro, Encargado, Position, PositionValues } from '@modules/auth/interfaces';
+import { Centro, Encargado, Position, PositionValues } from '@modules/auth/interfaces';
 
 @Component({
   selector: 'rvia-register',
   standalone: true,
-  imports: [ReactiveFormsModule, PrimeNGModule, NgFor, NgIf, CommonModule],
+  imports: [ReactiveFormsModule, PrimeNGModule, CommonModule],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
@@ -33,7 +33,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
   ];
   activeIndex: number = 0;
   positionsOpcs: Position[] = [];
-  appsOpc: AppOrg[] = [];
   centrosOpc: Centro[] = [];
   encargados: Encargado[] =  [];
 
@@ -71,7 +70,6 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   private initFormOrg(): void {
     this.registerFormOrg = new FormGroup({
-      idu_aplicacion: new FormControl(null, [Validators.required]),
       num_centro: new FormControl(null, [Validators.required,]),
       num_encargado: new FormControl(null),
       termAccepted: new FormControl(false, [Validators.requiredTrue])
@@ -88,14 +86,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
     this.authSrv.getInfoOrg(num_puesto)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(resp => {
-        if(resp){
-          this.appsOpc = [...resp.aplicaciones];
-          this.centrosOpc = [...resp.centros];
-          this.encargados = [...resp.superiores]; 
+      .subscribe(({ centros, superiores }) => {
+        if(centros && superiores){
+          this.centrosOpc = [...centros];
+          this.encargados = [...superiores]; 
         }
       });
-
   }
 
   private isValidFieldBase(form: FormGroup, field: string): boolean {

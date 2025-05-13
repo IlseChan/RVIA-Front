@@ -28,9 +28,11 @@
                   max="99999999"
                   size="large"
                 />
-                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('num_empleado')">
-                  Número de empleado inválido.
-                </small>
+                @if (isValidField('num_empleado')) {
+                  <small class="mt-2 pl-2 text-red">
+                    Número de empleado inválido.
+                  </small>
+                }
               </div>
             </div><!--Num empleado-->
             
@@ -48,9 +50,11 @@
                   type="text"
                   pSize="large"
                 />
-                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_correo')">
-                  El correo electrónico inválido.
-                </small>
+                @if (isValidField('nom_correo')) {
+                  <small class="mt-2 pl-2 text-red">
+                    El correo electrónico inválido.
+                  </small>
+                }
               </div>
             </div><!--Correo electronico-->
             
@@ -68,9 +72,11 @@
                   type="text"
                   pSize="large"
                 />
-                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_usuario')">
-                  Nombre de usuario inválido.
-                </small>
+                @if (isValidField('nom_usuario')) {
+                  <small class="mt-2 pl-2 text-red">
+                    Nombre de usuario inválido.
+                  </small>
+                }
               </div>
             </div><!-- Nombre usuario -->
   
@@ -104,9 +110,11 @@
                   autocomplete="off"
                   size="large"
                 />
-                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('nom_contrasena')">
-                  Contraseña inválida.
-                </small>
+                @if (isValidField('nom_contrasena')) {
+                  <small class="mt-2 pl-2 text-red">
+                    Contraseña inválida.
+                  </small>
+                }
               </div>
             </div><!-- Contraseña -->
             
@@ -127,9 +135,11 @@
                   autocomplete="off"
                   size="large"
                 />
-                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('confirmPassword')">
-                  Las contraseñas no coinciden.
-                </small>
+                @if (isValidField('confirmPassword')) {
+                  <small class="mt-2 pl-2 text-red">
+                    Las contraseñas no coinciden.
+                  </small>
+                }
               </div>
             </div><!--Confirmacion -->
             
@@ -149,9 +159,11 @@
                   [style]="{ width : '100%' }" 
                   size="large"
                 />
-                <small class="mt-2 pl-2 text-red" *ngIf="isValidField('num_puesto')"> 
-                  Debes seleccionar un puesto.
-                </small>
+                @if (isValidField('num_puesto')) {
+                  <small class="mt-2 pl-2 text-red"> 
+                    Debes seleccionar un puesto.
+                  </small>
+                }
               </div>
             </div><!--Puesto -->
           </section>
@@ -163,41 +175,6 @@
        @if (activeIndex === 1) {
          <form [formGroup]="registerFormOrg" novalidate>
           <section class="grid m-0 p-2">
-            <div class="field p-2 mb-0 input-size">
-              <p class="my-2 font-bold">
-                  Aplicación <span class="text-red">*</span>
-              </p>
-              <div class="flex flex-col">
-                <p-select
-                    formControlName="idu_aplicacion"
-                    id="aplicacion-reg"
-                    [options]="appsOpc" 
-                    optionValue="idu_aplicacion"
-                    optionLabel="nom_app"
-                    placeholder="Selecciona una aplicación"
-                    [style]="{ width : '100%' }"
-                    panelStyleClass="apps-panel"
-                    [showClear]="true"
-                    [filter]="true"
-                    filterPlaceholder="Buscar aplicación..."
-                    [filterBy]="'nom_app'" 
-                    size="large"
-                >
-                  <ng-template pTemplate="selectedItem" let-app>
-                    <div class="whitespace-normal break-words">
-                      {{ app?.nom_app}}
-                    </div>
-                  </ng-template>
-                  <ng-template let-app pTemplate="item">
-                    <div *ngIf="app">{{ app.nom_app }}</div>
-                    <div *ngIf="!app" class="text-color-secondary">Selecciona una aplicación</div>
-                  </ng-template>
-                </p-select>
-                <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('idu_aplicacion')">
-                  Debes seleccionar una aplicación.
-                </small>
-              </div>
-            </div><!--Aplicacion-->
             <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                   Número de centro <span class="text-red">*</span>
@@ -221,13 +198,18 @@
                     <div>{{ centro?.num_centro }} - {{ centro?.nom_centro }}</div>
                   </ng-template>
                   <ng-template let-centro pTemplate="item">
-                    <div *ngIf="centro">{{ centro.num_centro }} - {{ centro.nom_centro }}</div>
-                    <div *ngIf="!centro" class="text-color-secondary">Selecciona una centro</div>
+                    @if (centro) {
+                      <div>{{ centro.num_centro }} - {{ centro.nom_centro }}</div>
+                    }@else {
+                      <div class="text-color-secondary">Selecciona una centro</div>
+                    }
                   </ng-template>
                 </p-select>
-                <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('num_centro')">
-                  Debes seleccionar un centro.
-                </small>
+                @if(isValidFieldOrg('num_centro')){
+                  <small class="mt-2 pl-2 text-red">
+                    Debes seleccionar un centro.
+                  </small>
+                }
               </div>
             </div><!--Centro-->
             @if(isNotDivisional){
@@ -254,13 +236,19 @@
                       <div>{{ encargado?.num_empleado }} - {{ encargado?.nom_empleado }}</div>
                     </ng-template>
                     <ng-template let-encargado pTemplate="item">
-                      <div *ngIf="encargado">{{ encargado.num_empleado }} - {{ encargado.nom_empleado }}</div>
-                      <div *ngIf="!encargado" class="text-color-secondary">Selecciona a tu {{ txtPosition }}</div>
+                      @if(encargado){
+                        <div>{{ encargado.num_empleado }} - {{ encargado.nom_empleado }}</div>
+
+                      }@else {
+                        <div class="text-color-secondary">Selecciona a tu {{ txtPosition }}</div>
+                      }
                     </ng-template>
                   </p-select>
-                  <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('num_encargado')">
-                    Debes seleccionar un encargado.
-                  </small>
+                  @if (isValidFieldOrg('num_encargado')) {
+                    <small class="mt-2 pl-2 text-red">
+                      Debes seleccionar un encargado.
+                    </small>
+                  }
                 </div>
               </div><!--Encargado-->
             }
@@ -276,9 +264,11 @@
                   />
                   <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
                 </div>
-                <small class="mt-2 pl-2 text-red" *ngIf="isValidFieldOrg('termAccepted')">
-                  Debes aceptar los términos y condiciones.
-                </small>
+                @if (isValidFieldOrg('termAccepted')) {
+                  <small class="mt-2 pl-2 text-red">
+                    Debes aceptar los términos y condiciones.
+                  </small>
+                }
               </div>
             </div><!--T&C-->
           </section>
@@ -331,11 +321,13 @@
     [(visible)]="isShowTerms" 
     [style]="{ width: '50rem' }" 
     [breakpoints]="{ '1199px': '75vw', '575px': '90vw' }">
-      <div class="mb-2" *ngFor="let term of termsAndConditions">
-        <h3 class="text-lg font-bold mb-2">
-          {{ term.title }}
-        </h3>
-        <p [innerHTML]="term.content" class="leading-relaxed"></p>
-      </div>
+      @for (term of termsAndConditions; track $index) {
+        <div class="mb-2" >
+          <h3 class="text-lg font-bold mb-2">
+            {{ term.title }}
+          </h3>
+          <p [innerHTML]="term.content" class="leading-relaxed"></p>
+        </div>
+      }
   </p-dialog> <!--termimos-->
 </main>
