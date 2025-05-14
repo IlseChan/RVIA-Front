@@ -39,7 +39,6 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   organizationForm!: FormGroup;
   initalValuesOrganization = {
     num_puesto: null, 
-    idu_aplicacion: null,
     num_centro: null,
     num_encargado: null
   }
@@ -89,7 +88,6 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   
     this.organizationForm = this.fb.group({
       num_puesto: [user.num_puesto,[Validators.required]],
-      idu_aplicacion: [user.idu_aplicacion,[Validators.required]],
       num_centro: [user.num_centro,[Validators.required]],
       num_encargado: [user.num_encargado]
     });
@@ -108,8 +106,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
         this.organizationForm.patchValue({ num_encargado: null });
       }else {
         this.isDivisional.set(true);
-        this.organizationForm.patchValue({ num_encargado: null });
-        
+        this.organizationForm.patchValue({ num_encargado: null });        
       }
 
     });
