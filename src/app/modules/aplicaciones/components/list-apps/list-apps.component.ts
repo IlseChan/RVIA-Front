@@ -12,11 +12,12 @@ import { Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { downloandFile } from '@modules/shared/helpers/downloadFile';
 import { Aplication, ArquitecturaOpciones, NumberAction, StatusApp } from '@modules/aplicaciones/interfaces';
 import { RviaIconComponent } from '../rvia-icon/rvia-icon.component';
+import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.component';
 
 @Component({
   selector: 'list-apps',
   standalone: true,
-  imports: [CommonModule, RouterLink, PrimeNGModule, RviaIconComponent],
+  imports: [CommonModule, RouterLink, PrimeNGModule, RviaIconComponent, RviaLoaderComponent],
   templateUrl: './list-apps.component.html',
   styleUrls: ['./list-apps.component.scss'],
 })

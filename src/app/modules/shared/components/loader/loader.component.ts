@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'loader-rvia',
+  selector: 'rvia-loader',
   standalone: true,
   template: `
     <div class="card flex justify-center mt-12">
@@ -29,6 +29,6 @@ import { Component } from '@angular/core';
     }
   }`
 })
-export class LoaderComponent {
+export class RviaLoaderComponent {
 
 }

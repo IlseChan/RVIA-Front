@@ -8,11 +8,12 @@ import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { Idu_Rol, Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { PositionValues } from '@modules/auth/interfaces';
+import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.component';
 
 @Component({
   selector: 'edit-users-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
+  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule, RviaLoaderComponent],
   templateUrl: './edit-users-page.component.html',
   styleUrls: ['./edit-users-page.component.scss'],
 })

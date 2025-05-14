@@ -11,11 +11,12 @@ import { Usuario, UsuarioCmplt } from '@modules/usuarios/interfaces';
 import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { InfoDisplayComponent } from "../info-display/info-display.component";
 import { PositionValues } from '../../../auth/interfaces/PositionValues.enum';
+import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.component';
 
 @Component({
   selector: 'my-account-page',
   standalone: true,
-  imports: [PrimeNGModule, ReactiveFormsModule, NgClass, InfoDisplayComponent],
+  imports: [PrimeNGModule, ReactiveFormsModule, NgClass, InfoDisplayComponent, RviaLoaderComponent],
   templateUrl: './my-account-page.component.html',
   styleUrl: './my-account-page.component.scss'
 })

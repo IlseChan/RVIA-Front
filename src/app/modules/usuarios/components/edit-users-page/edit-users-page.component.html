@@ -13,9 +13,7 @@
         </div>
     </section>
     @if ( isLoading() ) {
-        <div class="card flex justify-center mt-12">
-            <span class=" loader"></span>
-        </div>
+        <rvia-loader />
     } @else {
         <section class="mt-4 ml-6 text-gray-400 text-lg">
             <p>Administra la información del usuario: <b>{{ originalUser()?.num_empleado }}</b></p>  

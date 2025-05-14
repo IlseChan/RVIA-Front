@@ -1,8 +1,6 @@
 <main class="m-2">
     @if ( isLoading() ) {
-        <div class="card flex justify-center mt-12">
-            <span class=" loader"></span>
-        </div>
+        <rvia-loader />
     } 
 
     @if ( !isLoading() && originalUser() ) {
