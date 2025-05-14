@@ -1,8 +1,6 @@
 <main class="m-2">
     @if ( isLoading() ) {
-        <div class="card flex justify-center mt-12">
-            <span class=" loader"></span>
-        </div>
+        <rvia-loader />
     } 
 
     @if ( !isLoading() && originalUser() ) {
@@ -112,7 +110,7 @@
                                                     size="large"
                                                 />
                                                 @if (isValidFieldCode('prevCode')) {
-                                                    <small class="mt-2 pl-2 text-red">
+                                                    <small class="mt-2 pl-2 text-red-500">
                                                         Contraseña inválida.
                                                     </small>
                                                 }
@@ -139,7 +137,7 @@
                                                     size="large"
                                                 />
                                                 @if (isValidFieldCode('newCode')) {
-                                                    <small class="mt-2 pl-2 text-red">
+                                                    <small class="mt-2 pl-2 text-red-500">
                                                         Contraseña inválida.
                                                     </small>
                                                 }
@@ -166,7 +164,7 @@
                                                     size="large"
                                                 />
                                                 @if (isValidFieldCode('newCodeConf')) {
-                                                    <small class="mt-2 pl-2 text-red">
+                                                    <small class="mt-2 pl-2 text-red-500">
                                                         Las contraseñas no coinciden.
                                                     </small>
                                                 }
@@ -226,11 +224,6 @@
                                 [value]="fullUser()?.puesto?.nom_puesto!"
                                 [wDivider]="true"
                             /><!--puesto-->
-                            <info-display 
-                                key="Aplicación"
-                                [value]="fullUser()?.aplicacion?.nom_app!"
-                                [wDivider]="true"
-                            /><!--aplicacion-->
                             <info-display 
                                 key="Centro"
                                 [value]="centerName"

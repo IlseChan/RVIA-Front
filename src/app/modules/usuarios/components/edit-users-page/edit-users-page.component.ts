@@ -8,11 +8,12 @@ import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { Idu_Rol, Nom_Rol, Usuario } from '@modules/usuarios/interfaces';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { PositionValues } from '@modules/auth/interfaces';
+import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.component';
 
 @Component({
   selector: 'edit-users-page',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
+  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule, RviaLoaderComponent],
   templateUrl: './edit-users-page.component.html',
   styleUrls: ['./edit-users-page.component.scss'],
 })
@@ -39,7 +40,6 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   organizationForm!: FormGroup;
   initalValuesOrganization = {
     num_puesto: null, 
-    idu_aplicacion: null,
     num_centro: null,
     num_encargado: null
   }
@@ -89,7 +89,6 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
   
     this.organizationForm = this.fb.group({
       num_puesto: [user.num_puesto,[Validators.required]],
-      idu_aplicacion: [user.idu_aplicacion,[Validators.required]],
       num_centro: [user.num_centro,[Validators.required]],
       num_encargado: [user.num_encargado]
     });
@@ -108,8 +107,7 @@ export class EditUsersPageComponent implements OnInit, OnDestroy {
         this.organizationForm.patchValue({ num_encargado: null });
       }else {
         this.isDivisional.set(true);
-        this.organizationForm.patchValue({ num_encargado: null });
-        
+        this.organizationForm.patchValue({ num_encargado: null });        
       }
 
     });

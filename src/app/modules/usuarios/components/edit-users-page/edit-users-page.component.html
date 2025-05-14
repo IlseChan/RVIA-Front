@@ -13,9 +13,7 @@
         </div>
     </section>
     @if ( isLoading() ) {
-        <div class="card flex justify-center mt-12">
-            <span class=" loader"></span>
-        </div>
+        <rvia-loader />
     } @else {
         <section class="mt-4 ml-6 text-gray-400 text-lg">
             <p>Administra la información del usuario: <b>{{ originalUser()?.num_empleado }}</b></p>  
@@ -121,45 +119,6 @@
                                         }
                                     </div>
                                 </div><!--puesto-->
-                                <div class="mt-2 border border-gray-300"></div>
-                                <div class="grid grid-cols-6 my-4 py-2">
-                                    <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
-                                        Aplicación
-                                    </p>
-                                    <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
-                                        <p-select
-                                            formControlName="idu_aplicacion"
-                                            id="apps-edit-user"
-                                            [options]="infoOrg().aplicaciones"  
-                                            optionValue="idu_aplicacion"
-                                            optionLabel="nom_app"
-                                            placeholder="-- Selecciona una aplicación --"
-                                            [showClear]="true"
-                                            [style]="{ width : '100%' }" 
-                                            size="large"                                            
-                                            panelStyleClass="apps-panel"
-                                            [showClear]="true"
-                                            [filter]="true"
-                                            filterPlaceholder="Buscar aplicación..."
-                                            [filterBy]="'nom_app'" 
-                                        >
-                                            <ng-template pTemplate="selectedItem" let-app>
-                                              <div class="whitespace-normal break-words">
-                                                {{ app?.nom_app}}
-                                              </div>
-                                            </ng-template>
-                                            <ng-template let-app pTemplate="item">
-                                              <div *ngIf="app">{{ app.nom_app }}</div>
-                                              <div *ngIf="!app" class="text-color-secondary">Selecciona una aplicación</div>
-                                            </ng-template>
-                                          </p-select>
-                                        @if (isValidFieldOrg('idu_aplicacion')) {
-                                            <small class="mt-2 pl-2 text-red-500 text-left" > 
-                                                Debes seleccionar una aplicación.
-                                            </small>
-                                        }
-                                    </div>
-                                </div><!--aplicacion-->
                                 <div class="mt-2 border border-gray-300"></div>
                                 <div class="grid grid-cols-6 my-4 py-2">
                                     <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">

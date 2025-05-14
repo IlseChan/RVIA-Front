@@ -9,11 +9,12 @@ import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
 import { HerramientasService } from '@modules/herramientas/services/herramientas.service';
 import { AppsToUseSelect } from '@modules/aplicaciones/interfaces';
+import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.component';
 
 @Component({
   selector: 'execute-documentacion',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule, NgIf],
+  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule, NgIf, RviaLoaderComponent],
   providers: [ConfirmationService],
   templateUrl: './execute-documentacion.component.html',
   styleUrls: ['./execute-documentacion.component.scss']
