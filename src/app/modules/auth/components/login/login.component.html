@@ -33,13 +33,17 @@
           size="large"
         />
       </div>
-      <div *ngIf="errorMessage" class="mb-2 text-red">{{ errorMessage }}</div>
+      @if (errorMessage) {
+        <div class="mb-2 text-red-700 text-center">
+          {{ errorMessage }}
+        </div>
+      }
       <div class="flex flex-col gap-6 mt-12">
         <p-button 
           [label]="isLogging ? 'Ingresando...' : 'Ingresar'" 
           styleClass="w-full"
           iconPos="right"
-          [disabled]="isLoginDisabled || isLogging" 
+          [disabled]="isLoginDisabled || isLogging" s
           (onClick)="onLogin()"
           size="large"
         />

@@ -23,14 +23,6 @@ body {
     line-height: normal !important;
 }
 
-.c-pointer{
-    cursor: pointer;
-}
-
-.text-red{
-    color: #ff0000;
-}
-
 .flex-basis-0{
     flex-basis: 0;
 }
@@ -72,23 +64,3 @@ p > b{
     color: var(--rvia-primary-color) !important;
     font-weight: bold;
 }
-
-.loader {
-    width: 80px;
-    height: 80px;
-    border: 6px solid var(--bg-sidebar);
-    border-bottom-color: var(--rvia-primary-color);
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-}
-
-@keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
-} 

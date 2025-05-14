@@ -8,10 +8,10 @@
             El listado de aplicaciones solo contempla aquellas aplicaciones cuyo proceso inicial <b>no</b> incluye la documentación.
         </p>
     </section>
-    
-    <div *ngIf="isLoadingData" class="card flex justify-center mt-12">
-        <span class=" loader"></span>
-    </div>
+
+    @if (isLoadingData) {
+        <rvia-loader />
+    }
 
     <section *ngIf="!isLoadingData"> 
         <form [formGroup]="form" (ngSubmit)="onSubmit()">

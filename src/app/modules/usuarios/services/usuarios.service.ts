@@ -26,7 +26,6 @@ export class UsuariosService {
 
   cachePositions = signal<Position[]>([]);
   cacheInfoOrg = signal<InfoOrg>({
-      aplicaciones: [],
       centros: [],
       superiores: [],
     });
@@ -109,7 +108,7 @@ export class UsuariosService {
   }
 
   getInfoOrg(idu_puesto: number): Observable<InfoOrg> {
-    if(this.cacheInfoOrg().aplicaciones.length > 0){
+    if(this.cacheInfoOrg().centros.length > 0){
       return of(this.cacheInfoOrg());
     }
 

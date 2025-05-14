@@ -1,12 +1,12 @@
 <main class="flex flex-col h-full w-full">
   <nav class="navbar flex justify-between items-center p-3">
-    <button class="hamburger txt-title-color c-pointer text-2xl" (click)="toggleSidebar()">
+    <button class="hamburger txt-title-color cursor-pointer text-2xl" (click)="toggleSidebar()">
       ☰
     </button>
     <user-badge />
   </nav>
   <nav class="sidebar fixed flex flex-col h-full text-white justify-between" [ngClass]="{'active': sidebarActive}">
-    <button class="close-sidebar txt-title-color text-2xl c-pointer py-3 px-2" (click)="closeSidebar()">
+    <button class="close-sidebar txt-title-color text-2xl cursor-pointer py-3 px-2" (click)="closeSidebar()">
       <i class="pi pi-arrow-left" style="font-size: 1.2rem;"></i>
     </button>
     <section class="flex flex-col p-2 sidebar-content mb-auto">
@@ -30,9 +30,7 @@
             [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
           </div>
           <menu-list menuName="Administrador" [menuItems]="menuAdmin" />
-          <div 
-            class="divider-rvia mb-2">
-          </div>
+          <div class="divider-rvia mb-2"></div>
         </div>
       }
       <menu-list menuName="Mi cuenta" [menuItems]="menuSettings" />
@@ -40,7 +38,7 @@
     <div class="logout-button p-2 pt-0 sidebar-logout">
       <div class="divider-rvia mb-2" [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''"></div>
       <button 
-        class="flex items-center justify-center text-white py-3 px-2 w-full text-base c-pointer rounded"
+        class="flex items-center justify-center text-white py-3 px-2 w-full text-base cursor-pointer rounded"
         (click)="logout()">
           <i class="pi pi-power-off mr-2"></i>
           <span class="ml-2">Cerrar sesión</span>

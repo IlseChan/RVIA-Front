@@ -9,11 +9,12 @@ import { UsuariosService } from '@modules/usuarios/services/usuarios.service';
 import { AuthService } from '@modules/auth/services/auth.service';
 import { Usuario } from '@modules/usuarios/interfaces';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
+import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.component';
 
 @Component({
   selector: 'list-usuarios',
   standalone: true,
-  imports: [CommonModule, PrimeNGModule],
+  imports: [CommonModule, PrimeNGModule, RviaLoaderComponent],
   templateUrl: './list-usuarios.component.html',
   styleUrls: ['./list-usuarios.component.scss'],
   providers: [ConfirmationService],

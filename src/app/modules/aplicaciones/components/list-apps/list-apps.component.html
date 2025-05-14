@@ -15,10 +15,10 @@
             </a>
         }
     </section>
-    
-    <div *ngIf="isLoading && user()!.position.nom_rol !== Nom_Rols.INVITADO" class="card flex justify-center mt-12">
-        <span class=" loader"></span>
-    </div>
+
+    @if (isLoading && user()!.position.nom_rol !== Nom_Rols.INVITADO) {
+        <rvia-loader />
+    }
 
     <div *ngIf="!isLoading && aplications.length === 0 || user()!.position.nom_rol === Nom_Rols.INVITADO" class="my-6">
         <h2 class="text-2xl font-bold text-center">
@@ -49,7 +49,7 @@
                                     {{ lastUpadate | date:'d \'de\' MMMM \'de\' yyyy, HH:mm:ss' }}
                                 </b>
                                 <span class="ml-1">
-                                    <i class="pi pi-refresh c-pointer" 
+                                    <i class="pi pi-refresh cursor-pointer" 
                                         pTooltip="Actualizar aplicaciones"
                                         tooltipPosition="right"
                                         tooltipStyleClass="text-sm"
@@ -115,11 +115,11 @@
                                     [numProcess]="3"
                                     [opcArquitectura]="app.opc_arquitectura[3]"
                                 /> <!-- Acción casos de prueba -->
-                                <rvia-icon
+                                <!-- <rvia-icon
                                     [status]="app.opc_estatus_calificar"
                                     [numProcess]="4"
                                     [opcArquitectura]="app.opc_arquitectura[4]"
-                                /> <!-- Acción calificacion -->
+                                />  --><!-- Acción calificacion -->
                             </div>
                         </td>
                         <!-- <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">

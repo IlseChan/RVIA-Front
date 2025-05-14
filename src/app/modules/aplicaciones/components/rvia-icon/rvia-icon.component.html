@@ -10,7 +10,7 @@
 <ng-template #process>
     <i 
         [class]="'icon-base pi ' + iconName + ' ' + infoIcon.sColor" 
-        [ngClass]="{'c-pointer': this.status === StatusApp.DONE}"
+        [ngClass]="{'cursor-pointer': this.status === StatusApp.DONE}"
         tooltipPosition="top"
         style="font-size: 1.6rem"
         [pTooltip]="tooltipContentMain"
