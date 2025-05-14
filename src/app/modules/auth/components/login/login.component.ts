@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
@@ -9,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [NgIf, FormsModule, PrimeNGModule],
+  imports: [FormsModule, PrimeNGModule],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss']
 })

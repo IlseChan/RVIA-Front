@@ -15,7 +15,7 @@
           <section class="grid grid-cols-1 md:grid-cols-2 p-2">
             <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
-                Número de empleado <span class="text-red">*</span>
+                Número de empleado <span class="text-red-500">*</span>
               </p>
               <div class="flex flex-col">
                 <p-inputNumber 
@@ -29,7 +29,7 @@
                   size="large"
                 />
                 @if (isValidField('num_empleado')) {
-                  <small class="mt-2 pl-2 text-red">
+                  <small class="mt-2 pl-2 text-red-500">
                     Número de empleado inválido.
                   </small>
                 }
@@ -38,7 +38,7 @@
             
             <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
-                Correo electrónico <span class="text-red">*</span>
+                Correo electrónico <span class="text-red-500">*</span>
               </p>
               <div class="flex flex-col">
                 <input
@@ -51,7 +51,7 @@
                   pSize="large"
                 />
                 @if (isValidField('nom_correo')) {
-                  <small class="mt-2 pl-2 text-red">
+                  <small class="mt-2 pl-2 text-red-500">
                     El correo electrónico inválido.
                   </small>
                 }
@@ -60,7 +60,7 @@
             
             <div class="field md:col-span-2 p-2 mb-0 input-size">
               <p class="my-2 font-bold">
-                  Nombre de usuario <span class="text-red">*</span>
+                  Nombre de usuario <span class="text-red-500">*</span>
               </p>
               <div class="flex flex-col">
                 <input
@@ -73,7 +73,7 @@
                   pSize="large"
                 />
                 @if (isValidField('nom_usuario')) {
-                  <small class="mt-2 pl-2 text-red">
+                  <small class="mt-2 pl-2 text-red-500">
                     Nombre de usuario inválido.
                   </small>
                 }
@@ -83,7 +83,7 @@
             <div class="field p-2 mb-0 input-size">
               <div class="flex items-center">
                 <p class="my-2 font-bold">
-                  Contraseña <span class="text-red">*</span>
+                  Contraseña <span class="text-red-500">*</span>
                 </p>
                 <p-badge
                   class="ml-1"
@@ -111,7 +111,7 @@
                   size="large"
                 />
                 @if (isValidField('nom_contrasena')) {
-                  <small class="mt-2 pl-2 text-red">
+                  <small class="mt-2 pl-2 text-red-500">
                     Contraseña inválida.
                   </small>
                 }
@@ -120,7 +120,7 @@
             
             <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
-                Confirmar contraseña <span class="text-red">*</span>
+                Confirmar contraseña <span class="text-red-500">*</span>
               </p>
               <div class="flex flex-col">
                 <p-password 
@@ -136,7 +136,7 @@
                   size="large"
                 />
                 @if (isValidField('confirmPassword')) {
-                  <small class="mt-2 pl-2 text-red">
+                  <small class="mt-2 pl-2 text-red-500">
                     Las contraseñas no coinciden.
                   </small>
                 }
@@ -145,7 +145,7 @@
             
             <div class="field p-2 mb-0 input-size" >
               <p class="my-2 font-bold">
-                  Puesto <span class="text-red">*</span>
+                  Puesto <span class="text-red-500">*</span>
               </p>
               <div class="flex flex-col">
                 <p-select
@@ -160,7 +160,7 @@
                   size="large"
                 />
                 @if (isValidField('num_puesto')) {
-                  <small class="mt-2 pl-2 text-red"> 
+                  <small class="mt-2 pl-2 text-red-500"> 
                     Debes seleccionar un puesto.
                   </small>
                 }
@@ -177,7 +177,7 @@
           <section class="grid m-0 p-2">
             <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
-                  Número de centro <span class="text-red">*</span>
+                  Número de centro <span class="text-red-500">*</span>
               </p>
               <div class="flex flex-col">
                 <p-select
@@ -206,7 +206,7 @@
                   </ng-template>
                 </p-select>
                 @if(isValidFieldOrg('num_centro')){
-                  <small class="mt-2 pl-2 text-red">
+                  <small class="mt-2 pl-2 text-red-500">
                     Debes seleccionar un centro.
                   </small>
                 }
@@ -215,7 +215,7 @@
             @if(isNotDivisional){
               <div class="field p-2 mb-0 input-size">
                 <p class="my-2 font-bold">
-                  Selecciona a tu {{ txtPosition }} <span class="text-red">*</span>
+                  Selecciona a tu {{ txtPosition }} <span class="text-red-500">*</span>
                 </p>
                 <div class="flex flex-col">
                   <p-select
@@ -245,7 +245,7 @@
                     </ng-template>
                   </p-select>
                   @if (isValidFieldOrg('num_encargado')) {
-                    <small class="mt-2 pl-2 text-red">
+                    <small class="mt-2 pl-2 text-red-500">
                       Debes seleccionar un encargado.
                     </small>
                   }
@@ -262,10 +262,10 @@
                     name="termAccepted" 
                     (click)="showTerms(true)"
                   />
-                  <p class="text-sm">He leído y acepto los <b class="c-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
+                  <p class="text-sm">He leído y acepto los <b class="cursor-pointer" (click)="showTerms()">Términos y condiciones de Servicio</b>.</p>
                 </div>
                 @if (isValidFieldOrg('termAccepted')) {
-                  <small class="mt-2 pl-2 text-red">
+                  <small class="mt-2 pl-2 text-red-500">
                     Debes aceptar los términos y condiciones.
                   </small>
                 }
@@ -311,7 +311,7 @@
 
     <p-divider />
     <div class="text-center mt-4 mb-0 p-0">
-      <p class="text-sm m-0">¿Ya tienes una cuenta? <b class="c-pointer" (click)="goToLogin()">Inicia sesión</b>.</p>
+      <p class="text-sm m-0">¿Ya tienes una cuenta? <b class="cursor-pointer" (click)="goToLogin()">Inicia sesión</b>.</p>
     </div>
   </section>
   

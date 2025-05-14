@@ -15,6 +15,7 @@
             </a>
         }
     </section>
+
     
     <div *ngIf="isLoading && user()!.position.nom_rol !== Nom_Rols.INVITADO" class="card flex justify-center mt-12">
         <span class=" loader"></span>
@@ -49,7 +50,7 @@
                                     {{ lastUpadate | date:'d \'de\' MMMM \'de\' yyyy, HH:mm:ss' }}
                                 </b>
                                 <span class="ml-1">
-                                    <i class="pi pi-refresh c-pointer" 
+                                    <i class="pi pi-refresh cursor-pointer" 
                                         pTooltip="Actualizar aplicaciones"
                                         tooltipPosition="right"
                                         tooltipStyleClass="text-sm"

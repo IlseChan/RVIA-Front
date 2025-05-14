@@ -48,13 +48,13 @@
                                 <a  pTooltip="Editar usuario" 
                                     tooltipPosition="left"  
                                     (click)="onEdit(user.idu_usuario)"
-                                    class="c-pointer icon-edit mr-3">
+                                    class="cursor-pointer icon-edit mr-3">
                                         <i class="pi pi-user-edit" style="font-size: 1.6rem"></i>
                                 </a>
                                 @if (userLogged()?.idu_usuario !== user.idu_usuario) {
                                     <a  pTooltip="Eliminar usuario" 
                                         (click)="onDeleteUsuario(user)"
-                                        class="c-pointer icon-del">
+                                        class="cursor-pointer icon-del">
                                             <i class="pi pi-trash" style="font-size: 1.6rem"></i>
                                     </a>
                                 } @else {
