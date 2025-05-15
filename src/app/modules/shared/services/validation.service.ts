@@ -12,8 +12,8 @@ export class ValidationService {
   private csvTypes = ['text/csv','application/csv','application/vnd.ms-excel'];
   
   private rgxUrlGit = /^(https?:\/\/)?(www\.)?(github|gitlab)\.com\/[\w.-]+\/[\w.-]+(-[\w.-]*)?\.git$/;
-  private rgxNameUser = /^[A-Za-zÁÉÍÓÚáéíóúÜüÑñ]{2,}(?: [A-Za-zÁÉÍÓÚáéíóúÜüÑñ]+){2,}$/;       
-  private rgxEmail = /^[A-Za-z0-9._%+-]+@coppel\.com$/;
+  private rgxNameUser = /^(?:[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:-[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)?|de|del|la|las|los|y)(?:\s+(?:[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:-[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)?|de|del|la|las|los|y)){1,}$/;       
+  private rgxEmail = /^[A-Za-z0-9._%+-]+@(coppel\.com|aforecoppel\.com|bancoppel\.com)$/;
   private rgxPass = /^(?=.*[A-ZÑ])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-zñÑ\d@$!%*?&#]{12,}$/;
 
   fileValidation(type:string): ValidatorFn {

@@ -16,118 +16,123 @@
         }
     </section>
 
-    @if (isLoading && user()!.position.nom_rol !== Nom_Rols.INVITADO) {
+    @if (isLoading()) {
         <rvia-loader />
     }
 
-    <div *ngIf="!isLoading && aplications.length === 0 || user()!.position.nom_rol === Nom_Rols.INVITADO" class="my-6">
-        <h2 class="text-2xl font-bold text-center">
-            ¡No hay aplicaciones para listar!
-        </h2>
-    </div>
-
-    <section *ngIf="!isLoading && aplications.length > 0" class="my-4">
-        <div class="card">
-            <p-table 
-                #dt2
-                dataKey="id"
-                [value]="aplications"
-                [paginator]="true"
-                [rows]="10"
-                [rowsPerPageOptions]="rowsPerPageOpts"
-                [totalRecords]="totalItems"
-                [loading]="loadingDataPage"
-                [globalFilterFields]="['idu_proyecto']"
-                [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }"
-            >
-                <ng-template pTemplate="caption">
-                    <div class="flex items-center">
-                        <div class="mr-auto">
-                            <p class="m-0 text-gray-500">
-                                Última actualización: 
-                                <b>
-                                    {{ lastUpadate | date:'d \'de\' MMMM \'de\' yyyy, HH:mm:ss' }}
-                                </b>
-                                <span class="ml-1">
-                                    <i class="pi pi-refresh cursor-pointer" 
-                                        pTooltip="Actualizar aplicaciones"
-                                        tooltipPosition="right"
-                                        tooltipStyleClass="text-sm"
-                                        style="font-size: 1.1rem"
-                                        (click)="refreshApps()">
-                                    </i>
-                                </span>   
-                            </p>
-                        </div>
-                        <div class="flex">
-                            <p-iconField iconPosition="left" class="ml-auto">
-                                <p-inputIcon>
-                                    <i class="pi pi-search"></i>
-                                </p-inputIcon>
-                                <input 
-                                    pInputText 
-                                    type="text" 
-                                    (input)="filtercustom($event)" 
-                                    placeholder="Búsqueda por ID proyecto"
-                                />
-                            </p-iconField>
-                        </div>
-                    </div>
-                </ng-template>
-                <ng-template pTemplate="header">
-                    <tr class="rvia-table-header">
-                        <th *ngFor="let col of colums">
-                            {{ col }}
-                        </th>
-                    </tr>
-                </ng-template>
-                <ng-template pTemplate="body" let-app let-index="rowIndex">
-                    <tr>
-                        <td>{{ index + 1 }}</td>
-                        <td>{{ app.idu_proyecto }}</td>
-                        <td *ngIf="user()!.position.nom_rol !== Nom_Rols.INVITADO && 
-                                   user()!.position.nom_rol !== Nom_Rols.USUARIO">
-                            {{ app.user.nom_usuario }}
-                        </td>
-                        <td>{{ app.nom_aplicacion }}</td>
-                        <td>
-                            <div class="flex gap-2">
-                                 <rvia-icon
-                                    mainProcess
-                                    [status]="app.applicationstatus.idu_estatus_aplicacion"
-                                    [numProcess]="app.num_accion"
-                                    [opcArquitectura]="false"
-                                    (click)="onDownloadFile(app)"
-                                /> <!-- Proceso principal No aplica, Ac, Sa, Mi,  -->
-                                <rvia-icon
-                                    [status]="app.opc_estatus_doc"
-                                    [numProcess]="1"
-                                    [opcArquitectura]="app.opc_arquitectura[1]"
-                                    (click)="onDownloadFile(app,false,ArquitecturaOpciones.DOC_CMPLT)"
-                                /> <!-- Acción documentación completa -->
-                                <rvia-icon
-                                    [status]="app.opc_estatus_doc_code"
-                                    [numProcess]="2"
-                                    [opcArquitectura]="app.opc_arquitectura[2]"
-                                /> <!-- Acción documentación por código -->
-                                <rvia-icon
-                                    [status]="app.opc_estatus_caso"
-                                    [numProcess]="3"
-                                    [opcArquitectura]="app.opc_arquitectura[3]"
-                                /> <!-- Acción casos de prueba -->
-                                <!-- <rvia-icon
-                                    [status]="app.opc_estatus_calificar"
-                                    [numProcess]="4"
-                                    [opcArquitectura]="app.opc_arquitectura[4]"
-                                />  --><!-- Acción calificacion -->
-                            </div>
-                        </td>
-                        <!-- <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
-                            {{ app.totalCost | currency:'USD':'symbol-narrow' }}
-                        </td> --> <!-- Columna de costos -->
-                    </tr>
-                </ng-template>
-            </p-table>
+    @if(!isLoading() && aplications.length === 0){
+        <div class="my-6">
+            <h2 class="text-2xl font-bold text-center">
+                ¡No hay aplicaciones para listar!
+            </h2>
         </div>
-    </section>
+    }
+
+    @if(!isLoading() && aplications.length > 0){
+        <section class="my-4">
+            <div class="card">
+                <p-table 
+                    #dt2
+                    dataKey="id"
+                    [value]="aplications"
+                    [paginator]="true"
+                    [rows]="10"
+                    [rowsPerPageOptions]="rowsPerPageOpts"
+                    [totalRecords]="totalItems"
+                    [loading]="loadingDataPage"
+                    [globalFilterFields]="['idu_proyecto']"
+                    [tableStyle]="{ 'min-width': '100%', 'width': 'auto' }"
+                >
+                    <ng-template pTemplate="caption">
+                        <div class="flex items-center">
+                            <div class="mr-auto">
+                                <p class="m-0 text-gray-500">
+                                    Última actualización: 
+                                    <b>
+                                        {{ lastUpadate() | date:'d \'de\' MMMM \'de\' yyyy, HH:mm:ss' }}
+                                    </b>
+                                    <span class="ml-1">
+                                        <i class="pi pi-refresh cursor-pointer" 
+                                            pTooltip="Actualizar aplicaciones"
+                                            tooltipPosition="right"
+                                            tooltipStyleClass="text-sm"
+                                            style="font-size: 1.1rem"
+                                            (click)="refreshApps()">
+                                        </i>
+                                    </span>   
+                                </p>
+                            </div>
+                            <div class="flex">
+                                <p-iconField iconPosition="left" class="ml-auto">
+                                    <p-inputIcon>
+                                        <i class="pi pi-search"></i>
+                                    </p-inputIcon>
+                                    <input 
+                                        pInputText 
+                                        type="text" 
+                                        (input)="filtercustom($event)" 
+                                        placeholder="Búsqueda por ID proyecto"
+                                    />
+                                </p-iconField>
+                            </div>
+                        </div>
+                    </ng-template>
+                    <ng-template pTemplate="header">
+                        <tr class="rvia-table-header">
+                            @for (col of colums; track $index) {
+                                <th>{{ col }}</th>
+                            }
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-app let-index="rowIndex">
+                        <tr>
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ app.idu_proyecto }}</td>
+                            @if (user()!.position.nom_rol !== Nom_Rols.INVITADO && user()!.position.nom_rol !== Nom_Rols.USUARIO) {
+                                <td>
+                                    {{ app.user.nom_usuario }}
+                                </td>
+                            }
+                            <td>{{ app.nom_aplicacion }}</td>
+                            <td>
+                                <div class="flex gap-2">
+                                    <rvia-icon
+                                        mainProcess
+                                        [status]="app.applicationstatus.idu_estatus_aplicacion"
+                                        [numProcess]="app.num_accion"
+                                        [opcArquitectura]="false"
+                                        (click)="onDownloadFile(app)"
+                                    /> <!-- Proceso principal No aplica, Act, San, Mig  -->
+                                    <rvia-icon
+                                        [status]="app.opc_estatus_doc"
+                                        [numProcess]="1"
+                                        [opcArquitectura]="app.opc_arquitectura[1]"
+                                        (click)="onDownloadFile(app,false,ArquitecturaOpciones.DOC_CMPLT)"
+                                    /> <!-- Acción documentación completa -->
+                                    <rvia-icon
+                                        [status]="app.opc_estatus_doc_code"
+                                        [numProcess]="2"
+                                        [opcArquitectura]="app.opc_arquitectura[2]"
+                                    /> <!-- Acción documentación por código -->
+                                    <rvia-icon
+                                        [status]="app.opc_estatus_caso"
+                                        [numProcess]="3"
+                                        [opcArquitectura]="app.opc_arquitectura[3]"
+                                    /> <!-- Acción casos de prueba -->
+                                    <!-- <rvia-icon
+                                        [status]="app.opc_estatus_calificar"
+                                        [numProcess]="4"
+                                        [opcArquitectura]="app.opc_arquitectura[4]"
+                                    />  --><!-- Acción calificacion -->
+                                </div>
+                            </td>
+                            <!-- <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
+                                {{ app.totalCost | currency:'USD':'symbol-narrow' }}
+                            </td> --> <!-- Columna de costos -->
+                        </tr>
+                    </ng-template>
+                </p-table>
+            </div>
+        </section>
+    }
 </main>
