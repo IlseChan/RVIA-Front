@@ -32,11 +32,11 @@
 } 
 
 :host ::ng-deep .p-steps-item.p-disabled {
-  opacity: 0.2;
+  opacity: 0.5;
 }
 
 ::ng-deep .apps-panel {
-  max-width: 30vw !important;
+  max-width: 35vw !important;
   overflow-x: auto !important;
   width: auto !important;
 }
