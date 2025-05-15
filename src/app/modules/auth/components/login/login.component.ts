@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { AuthService } from '../../services/auth.service';
+import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,9 @@ export class LoginComponent {
   isLoginDisabled: boolean = true;
   isLogging: boolean = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  private authService = inject(AuthService); 
+  private router = inject(Router);
+  private vldtnSrv = inject(ValidationService);
 
   onLogin(): void {
     if(this.isLogging) return;
@@ -57,7 +60,7 @@ export class LoginComponent {
   }
 
   private checkInputs(): void {
-    const passwordValid = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{12,}$/.test(this.password);
+    const passwordValid = this.vldtnSrv.passwordCheckRgx(this.password);
     const usernumberInt = parseInt(this.usernumber, 10);
     const usernumberValid = (usernumberInt > 90000000 && usernumberInt < 100000000);
 

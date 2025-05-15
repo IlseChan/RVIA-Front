@@ -1,5 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { CommonModule, NgFor, NgIf } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
@@ -9,11 +9,12 @@ import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { termsAndConditions } from './termsandcond';
 import { ValidationService } from '@modules/shared/services/validation.service';
 import { Centro, Encargado, Position, PositionValues } from '@modules/auth/interfaces';
+import { PasswordStrengthComponent } from '@modules/shared/components/password-strength/password-strength.component';
 
 @Component({
   selector: 'rvia-register',
   standalone: true,
-  imports: [ReactiveFormsModule, PrimeNGModule, CommonModule],
+  imports: [ReactiveFormsModule, PrimeNGModule, CommonModule, PasswordStrengthComponent],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.scss']
 })
