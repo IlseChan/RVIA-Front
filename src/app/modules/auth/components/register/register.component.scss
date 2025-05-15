@@ -7,7 +7,7 @@
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 
   .input-size {
-    min-height: 128px;
+    min-height: 134px;
   }
 }
 
@@ -31,5 +31,5 @@
 } 
 
 :host ::ng-deep .p-steps-item.p-disabled {
-  opacity: 0.2;
+  opacity: 0.5;
 }

@@ -23,7 +23,7 @@
                   inputId="num_empleado-reg"
                   [useGrouping]="false"
                   [style]="{ width : '100%' }"
-                  placeholder="Ej. 90000000"
+                  placeholder="Ej: 90000000"
                   min="0"
                   max="99999999"
                   size="large"
@@ -44,7 +44,7 @@
                 <input
                   formControlName="nom_correo"
                   autocomplete="off"
-                  placeholder="ejemplo@coppel.com"
+                  placeholder="Ej: ejemplo@coppel.com"
                   class="w-full"
                   pInputText id="email-reg"
                   type="text"
@@ -52,13 +52,13 @@
                 />
                 @if (isValidField('nom_correo')) {
                   <small class="mt-2 pl-2 text-red-500">
-                    El correo electrónico inválido.
+                    Dominios permitidos &#64;coppel.com, &#64;aforecoppel.com y &#64;bancoppel.com
                   </small>
                 }
               </div>
             </div><!--Correo electronico-->
             
-            <div class="field md:col-span-2 p-2 mb-0 input-size">
+            <div class="field p-2 mb-0 input-size">
               <p class="my-2 font-bold">
                   Nombre de usuario <span class="text-red-500">*</span>
               </p>
@@ -66,7 +66,7 @@
                 <input
                   formControlName="nom_usuario"
                   autocomplete="off"
-                  placeholder="Nombre completo"
+                  placeholder="Ej: Juan Pérez"
                   class="w-full"
                   pInputText id="username-reg"
                   type="text"
@@ -74,12 +74,36 @@
                 />
                 @if (isValidField('nom_usuario')) {
                   <small class="mt-2 pl-2 text-red-500">
-                    Nombre de usuario inválido.
+                    Por favor, escribe tu nombre completo (nombre y apellidos).
                   </small>
                 }
               </div>
             </div><!-- Nombre usuario -->
   
+            <div class="field p-2 mb-0 input-size" >
+              <p class="my-2 font-bold">
+                  Puesto <span class="text-red-500">*</span>
+              </p>
+              <div class="flex flex-col">
+                <p-select
+                  formControlName="num_puesto"
+                  id="position-reg"
+                  [options]="positionsOpcs"  
+                  optionLabel="nom_puesto" 
+                  optionValue="idu_puesto"
+                  placeholder="Selecciona tu puesto"
+                  [showClear]="true"
+                  [style]="{ width : '100%' }" 
+                  size="large"
+                />
+                @if (isValidField('num_puesto')) {
+                  <small class="mt-2 pl-2 text-red-500"> 
+                    Debes seleccionar un puesto.
+                  </small>
+                }
+              </div>
+            </div><!--Puesto -->
+
             <div class="field p-2 mb-0 input-size">
               <div class="flex items-center">
                 <p class="my-2 font-bold">
@@ -142,30 +166,6 @@
                 }
               </div>
             </div><!--Confirmacion -->
-            
-            <div class="field p-2 mb-0 input-size" >
-              <p class="my-2 font-bold">
-                  Puesto <span class="text-red-500">*</span>
-              </p>
-              <div class="flex flex-col">
-                <p-select
-                  formControlName="num_puesto"
-                  id="position-reg"
-                  [options]="positionsOpcs"  
-                  optionLabel="nom_puesto" 
-                  optionValue="idu_puesto"
-                  placeholder="Selecciona tu puesto"
-                  [showClear]="true"
-                  [style]="{ width : '100%' }" 
-                  size="large"
-                />
-                @if (isValidField('num_puesto')) {
-                  <small class="mt-2 pl-2 text-red-500"> 
-                    Debes seleccionar un puesto.
-                  </small>
-                }
-              </div>
-            </div><!--Puesto -->
           </section>
         </form>
        }

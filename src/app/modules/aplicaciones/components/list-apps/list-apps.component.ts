@@ -1,5 +1,5 @@
-import { Component, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Component, inject, OnDestroy, OnInit, signal, ViewChild } from '@angular/core';
+import { DatePipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { finalize, Subject, takeUntil } from 'rxjs';
 
@@ -17,7 +17,7 @@ import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.co
 @Component({
   selector: 'list-apps',
   standalone: true,
-  imports: [CommonModule, RouterLink, PrimeNGModule, RviaIconComponent, RviaLoaderComponent],
+  imports: [ RouterLink, PrimeNGModule, RviaIconComponent, RviaLoaderComponent, DatePipe],
   templateUrl: './list-apps.component.html',
   styleUrls: ['./list-apps.component.scss'],
 })
@@ -38,15 +38,12 @@ export class ListAppsComponent implements OnInit, OnDestroy {
 
   // colums: string[] = ['#', 'ID proyecto', 'Nombre', 'Proceso/Acciones', 'Costos']; //Con costos
   colums: string[] = ['#', 'ID proyecto', 'Nombre', 'Proceso/Acciones'];
-  isLoading: boolean = true;
+  isLoading = signal<boolean>(true);
+  isDownload = signal<boolean>(false);
+  lastUpadate = signal<string>('');
 
-  isDownload: boolean = false;
-  lastUpadate: string = '';
-
-  constructor(
-    private aplicacionService: AplicacionesService,
-    private authService: AuthService,
-  ) {}
+  private aplicacionService = inject(AplicacionesService);
+  private authService = inject(AuthService);
   
   ngOnInit(): void {
     this.user.set(this.authService.user());
@@ -66,11 +63,11 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   }
 
   onGetAplicaciones(): void {
-    this.isLoading = true;
-    this.lastUpadate = new Date().toString();
+    this.isLoading.set(true);
+    this.lastUpadate.set(new Date().toString());
     this.aplicacionService.getAplicaciones()
       .pipe(
-        finalize(() => this.isLoading = false),
+        finalize(() => this.isLoading.set(false)),
         takeUntil(this.destroy$)
       )
       .subscribe({
@@ -95,8 +92,25 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   }
 
   onDownloadFile(app: Aplication, main: boolean = true, archi: ArquitecturaOpciones | 0 = 0 ): void {    
-    this.isDownload = true;
+    if(this.isDownload()) return;
+    if (main && app.applicationstatus.idu_estatus_aplicacion !== StatusApp.DONE) {
+      return;
+    }
 
+    if (!main) {
+      if(archi === 0) return;
+      
+      const statusMap = {
+        [ArquitecturaOpciones.DOC_CMPLT]: app.opc_estatus_doc,
+        [ArquitecturaOpciones.DOC_CODE]: app.opc_estatus_doc_code,
+        [ArquitecturaOpciones.TEST_CASES]: app.opc_estatus_caso,
+        [ArquitecturaOpciones.EVALUATION]: app.opc_estatus_calificar,
+      };
+
+      if (statusMap[archi] !== StatusApp.DONE) return;
+    }
+    
+    this.isDownload.set(true);
     this.aplicacionService.downloadFile(app.idu_aplicacion,main,archi)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -108,10 +122,10 @@ export class ListAppsComponent implements OnInit, OnDestroy {
           }
 
           downloandFile(blob, fileName);
-          this.isDownload = false;
+          this.isDownload.set(false);
         },
         error: () => {
-          this.isDownload = false;
+          this.isDownload.set(false);
         }
       });
   }

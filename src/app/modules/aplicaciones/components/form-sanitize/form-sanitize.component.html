@@ -142,7 +142,7 @@
                        optionValue="idu_aplicacion"
                        placeholder="Selecciona una aplicación"
                        panelStyleClass="apps-panel"
-                       [style]="{ width : txtSizeFile + 'px' }"
+                       [style]="{ width : '40%' }"
                        [showClear]="true"
                        [filter]="true"
                        filterPlaceholder="Buscar aplicación..."
@@ -162,7 +162,7 @@
                  </div>
                  @if(formFiles.get('idu_aplicacion_de_negocio')?.errors && formFiles.get('idu_aplicacion_de_negocio')?.touched){
                     <div class="flex-auto flex flex-col justify-center items-center w-full">
-                      <span class="mt-1 text-red-500">
+                      <span class="mt-4 text-red-500">
                         Debes seleccionar una aplicación de negocio.
                       </span>
                     </div>
