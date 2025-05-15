@@ -26,7 +26,11 @@ export class AuthService {
     const { nom_usuario } = this._user()!;
     const name = nom_usuario.split(' '); 
     
-    return `${name[0]} ${name.at(-2)}`;
+    if(name.length <= 2){
+      return `${name[0]} ${name[1]}`;
+    }
+
+    return `${name[0]} ${name.at(-1)}`;
   });
 
   constructor(
