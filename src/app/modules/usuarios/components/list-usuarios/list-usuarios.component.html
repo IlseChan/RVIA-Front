@@ -3,42 +3,63 @@
         <h1 class="txt-title-color inline text-5xl my-0">Lista de usuarios</h1>
     </section>
     
-    @if (isLoading) {
+    @if (isLoading()) {
         <rvia-loader />
     }
     
-    @if (!isLoading && totalItems === 0) {
-        <div *ngIf="" class="my-6">
+    @if (!isLoading() && totalItems === 0) {
+        <div class="my-6">
             <h2 class="text-2xl font-bold text-center">
                 ¡No hay usuarios para listar!
             </h2>
         </div>
     }
     
-    @if(!isLoading && users.length > 0) {
+    @if(!isLoading() && allUsers.length > 0) {
         <section class="mt-4">
             <div class="card">
                 <p-table 
-                    [value]="users"
-                    [lazy]="true"
-                    (onLazyLoad)="loadData($event)"
+                    #usersTable
+                    dataKey="id"
+                    [value]="allUsers"
                     [paginator]="true"
-                    [rows]="10"
-                    [rowsPerPageOptions]="rowsPerPageOpts"
+                    [rows]="rowsPerPage()"
+                    [first]="cPage()"
+                    [rowsPerPageOptions]="rowsPerPageOpts()"
                     [totalRecords]="totalItems"
                     [loading]="loadingDataPage"
                     [tableStyle]="{'min-width': '40rem'}"
-                    [lazy]="true"
+                    [globalFilterFields]="['num_empleado','nom_usuario']"
+                    (onPage)="pageChange($event)"
                 >
+                    <ng-template pTemplate="caption">
+                        <div class="flex">
+                            <p-iconField iconPosition="left" class="ml-auto">
+                                <p-inputIcon>
+                                    <i class="pi pi-search"></i>
+                                </p-inputIcon>
+                                <input 
+                                    pInputText 
+                                    id="search-user-input"
+                                    type="text"
+                                    [(ngModel)]="filterValue" 
+                                    (ngModelChange)="filtercustom()"
+                                    placeholder="Búsqueda por # empleado"
+                                    pSize="large"
+                                    class="w-72"
+                                />
+                            </p-iconField>
+                        </div>
+                    </ng-template>
                     <ng-template pTemplate="header">
                         <tr class="rvia-table-header">
-                            <th *ngFor="let col of columns">
-                                {{ col }}
-                            </th>
+                            @for(col of columns(); track $index){
+                                <th>{{ col }}</th>
+                            } 
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-user let-index="rowIndex">
-                        <tr [ngClass]="{'deleting': isDeleting && user.num_empleado === idToDelete}">
+                        <tr [ngClass]="{'deleting': isDeleting() && user.num_empleado === idToDelete()}">
                             <td>{{ user.num_empleado }}</td>
                             <td>{{ user.nom_usuario }}</td>
                             <td>{{ user.position.nom_rol }}</td>
