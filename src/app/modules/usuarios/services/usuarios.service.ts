@@ -4,7 +4,7 @@ import { catchError, delay, map, Observable, of, tap, throwError } from 'rxjs';
 
 import { environment } from '../../../../environments/environment';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-import { FormNewPassword, OriginMethod, UsersData, Usuario, UsuarioCmplt } from '../interfaces';
+import { DataPagination, FormNewPassword, OriginMethod, UsersData, Usuario, UsuarioCmplt } from '../interfaces';
 import { InfoOrg, Position } from '@modules/auth/interfaces';
 import { Manager, RespManagers } from '../interfaces/respManagers.interface';
 
@@ -29,8 +29,14 @@ export class UsuariosService {
       centros: [],
       superiores: [],
     });
-  private cacheManagers = new Map<Number, Manager[]>();
-  
+  private cacheManagers = new Map<Number, Manager[]>();  
+  dataPagination = signal<DataPagination>({ 
+    filter: '',
+    page: 0, 
+    rows: 10, 
+    rowsPerPageOpts: [10,15,20],
+  });
+
   clearDataUsers(): void {
     this.allUsers.data = [];
     this.allUsers.total = -1;

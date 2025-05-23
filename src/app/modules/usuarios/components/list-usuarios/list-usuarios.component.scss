@@ -28,3 +28,8 @@
         }
     }
 }
+
+:host ::ng-deep .p-datatable-header {
+    background-color: transparent !important;
+    padding-inline: 0px;
+}
