@@ -50,8 +50,6 @@ export class ListUsuariosComponent implements OnInit, OnDestroy {
   }
 
   filtercustom(): void {
-    if(!this.filterValue) return;
-    
     this.usersTable.filterGlobal(this.filterValue, 'contains');
     this.usuariosService.dataPagination.update(
       data => ({...data, page: 0, filter: this.filterValue})
