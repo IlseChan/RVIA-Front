@@ -13,9 +13,9 @@
       <menu-list menuName="Menú" [menuItems]="menuSidebar" />
       <div 
         class="divider-rvia" 
-        [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''">
+        [ngClass]="userLogged()?.position?.nom_rol !== Nom_rol.ADMINISTRADOR ? 'mb-auto' : ''">
       </div>
-      @if (userLogged()?.position?.nom_rol !== Nom_rol.INVITADO) {
+      @if (userLogged()?.position?.nom_rol === Nom_rol.ADMINISTRADOR) {
         <menu-list [menuItems]="menuRvia"/>
         <div 
           class="divider-rvia mb-auto" 
@@ -36,7 +36,7 @@
       <menu-list menuName="Mi cuenta" [menuItems]="menuSettings" />
     </section>
     <div class="logout-button p-2 pt-0 sidebar-logout">
-      <div class="divider-rvia mb-2" [ngClass]="userLogged()?.position?.nom_rol === Nom_rol.INVITADO ? 'mb-auto' : ''"></div>
+      <div class="divider-rvia mb-2"></div>
       <button 
         class="flex items-center justify-center text-white py-3 px-2 w-full text-base cursor-pointer rounded"
         (click)="logout()">
