@@ -14,7 +14,8 @@ export class ValidationService {
   private rgxUrlGit = /^(https?:\/\/)?(www\.)?(github|gitlab)\.com\/[\w.-]+\/[\w.-]+(-[\w.-]*)?\.git$/;
   private rgxNameUser = /^(?:[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:-[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)?|de|del|la|las|los|y)(?:\s+(?:[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+(?:-[A-ZÁÉÍÓÚÑ][a-záéíóúñ]+)?|de|del|la|las|los|y)){1,}$/;       
   private rgxEmail = /^[A-Za-z0-9._%+-]+@(coppel\.com|aforecoppel\.com|bancoppel\.com)$/;
-  private rgxPass =  /^(?=.*[A-ZÑ])(?=.*\d)(?=.*[@$!%*?&#.])[A-Za-zñÑ\d@$!%*?&#.]{12,}$/
+  private rgxPass = /^(?=.*[A-ZÑ])(?=.*\d)(?=.*[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~])[A-Za-zñÑ\d!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]{12,}$/
+  rgxSpecialChar = /[!"#$%&'()*+,\-./:;<=>?@[\\\]^_`{|}~]/;
 
   fileValidation(type:string): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
