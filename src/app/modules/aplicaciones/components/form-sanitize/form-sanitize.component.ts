@@ -51,8 +51,8 @@ export class FormSanitizeComponent implements OnInit, OnDestroy {
   
   actionArchitec = [
     { txt: 'Generar documentación completa', form: 'archiDocOverOpt' },
-    { txt: 'Generar documentación por código', form: 'archiDocCodeOpt' },
-    { txt: 'Generar casos de pruebas', form: 'archiCasesOpt' },
+    // { txt: 'Generar documentación por código', form: 'archiDocCodeOpt' },
+    // { txt: 'Generar casos de pruebas', form: 'archiCasesOpt' },
     // { txt: 'Generar calificación de proyecto', form: 'archiRateOpt' },
   ];
   

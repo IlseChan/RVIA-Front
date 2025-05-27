@@ -1,6 +1,5 @@
-import { CommonModule, NgIf } from '@angular/common';
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subject, takeUntil, switchMap, tap } from 'rxjs';
 
 import { ConfirmationService } from 'primeng/api';
@@ -14,25 +13,25 @@ import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.co
 @Component({
   selector: 'execute-documentacion',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule, NgIf, RviaLoaderComponent],
+  imports: [ReactiveFormsModule, PrimeNGModule, RviaLoaderComponent],
   providers: [ConfirmationService],
   templateUrl: './execute-documentacion.component.html',
-  styleUrls: ['./execute-documentacion.component.scss']
 })
 export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
-  isLoadingData: boolean = false;
-  isRequest: boolean = false;
-  label: string = 'Iniciar';
+  isLoadingData = signal<boolean>(false);
+  isRequest = signal<boolean>(false);
+  label = computed<string>(() => {
+    return this.isRequest() ? 'Iniciando' : 'Iniciar';
+  });
 
   form!: FormGroup;
   appsOpcs: AppsToUseSelect[] = [];
-
-  constructor(
-    private aplicacionesService: AplicacionesService,
-    private herramientasService: HerramientasService,
-    private confirmationService: ConfirmationService
-  ) {}
+  
+  private fb = inject(FormBuilder);
+  private aplicacionesService = inject(AplicacionesService);
+  private herramientasService = inject(HerramientasService);
+  private confirmationService = inject(ConfirmationService);
 
   ngOnInit(): void {
     this.initForm();
@@ -40,9 +39,9 @@ export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
   }
 
   private initForm(): void {
-    this.form = new FormGroup({
-      idu_aplicacion: new FormControl(null, [Validators.required]),
-      tipo_documentacion: new FormControl(null, [Validators.required]), 
+    this.form = this.fb.group({
+      idu_aplicacion: [null, [Validators.required]],
+      tipo_documentacion: [null, [Validators.required]], 
     });
   }
 
@@ -50,12 +49,10 @@ export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
     this.form.get('tipo_documentacion')?.valueChanges
       .pipe(
         takeUntil(this.destroy$),
-        tap(() => this.isLoadingData = true),
+        tap(() => this.isLoadingData.set(true)),
         switchMap((tipo) => {
-          return this.getApps( + tipo);
+          return this.getApps( +tipo);
         })
-        
-
       )
       .subscribe({
         next: (apps) => {
@@ -64,21 +61,20 @@ export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
           } else {
             this.appsOpcs = [];
           }
-          this.isLoadingData = false;
+          this.isLoadingData.set(false);
         },
-        error: (error) => {
-          this.isLoadingData = false;
+        error: () => {
+          this.isLoadingData.set(false);
         }
       });
   }
 
-  private getApps(tipo: number) {
-    const appType = tipo === 1 ? 1 : 2;
-    return this.aplicacionesService.getSomeArchitecApps(appType);
+  private getApps(type: number) {
+    return this.aplicacionesService.getSomeArchitecApps(type);
   }
 
   onSubmit(): void {
-    if (this.form.invalid || this.isRequest) {
+    if (this.form.invalid || this.isRequest()) {
        this.form.markAllAsTouched();
        return;
     }
@@ -104,25 +100,24 @@ export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
           this.resetValues(); 
        }
     });
- }
-  executeDocumentacion(tipoDoc: string): void {
-    this.isRequest = true;
-    this.label = 'Iniciando'; 
+  }
+
+  executeDocumentacion(typeDoc: string): void {
+    if(this.isRequest()) return;
+    this.isRequest.set(true);
 
     const idu_aplicacion = this.form.controls['idu_aplicacion'].value;
 
-    this.herramientasService.startProcessDocumentationRVIA(idu_aplicacion, tipoDoc)
+    this.herramientasService.startProcessDocumentationRVIA(idu_aplicacion, typeDoc)
       .pipe(takeUntil(this.destroy$))    
       .subscribe({
         next: () => {
-          this.label = 'Iniciado'; 
           setTimeout(() => {
             this.reset();
           }, 1000);
         },
-        error: (error) => {
-          this.isRequest = false;
-          this.label = 'Iniciar';
+        error: () => {
+          this.isRequest.set(false);
         }
       });
   }
@@ -131,14 +126,12 @@ export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
     this.form.reset({
       tipo_documentacion: this.form.get('tipo_documentacion')?.value 
     });
-    this.isRequest = false;
-    this.label = 'Iniciar';
+    this.isRequest.set(false);
     this.appsOpcs = []; 
   }
 
   resetValues(): void {
-    this.isRequest = false;
-    this.label = 'Iniciar';
+    this.isRequest.set(false);
   }
 
   ngOnDestroy(): void {
