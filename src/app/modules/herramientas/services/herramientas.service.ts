@@ -4,12 +4,10 @@ import { HttpClient } from '@angular/common/http';
 
 import { environment } from '../../../../environments/environment';
 import { NotificationsService } from '@modules/shared/services/notifications.service';
-import { FormPDFtoCSV, OriginMethod } from '../interfaces/herramientas.interfaces';
 import { CheckmarxPDFCSV } from '@modules/shared/interfaces/checkmarx.interface';
 import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones.service';
-import { AppAddonsCall } from '../interfaces/appAddonsCall.interface';
-import { FormAddonCall } from '../interfaces/formAddonCall.interface';
 import { Aplication, ArquitecturaOpciones } from '@modules/aplicaciones/interfaces';
+import { AppAddonsCall, FormAddonCall, FormPDFtoCSV, OriginMethod, StartProcess } from '../interfaces';
 
 @Injectable({
   providedIn: 'root'
@@ -92,7 +90,7 @@ export class HerramientasService {
       );
   }
 
-  startProcessDocumentationRVIA(idu_aplicacion: number, tipoDoc: string): Observable<Aplication> {
+  startProcessDocumentationRVIA(idu_aplicacion: number, tipoDoc: string): Observable<StartProcess> {
     const body = { 
       opcArquitectura: tipoDoc === 'overview' 
       ? ArquitecturaOpciones.DOC_CMPLT 
@@ -100,11 +98,11 @@ export class HerramientasService {
     };
     const endpoint = tipoDoc === 'overview' ? 'documentation' : 'documentation-code';
 
-    return this.http.patch<Aplication>(`${this.baseUrl}/applications/${endpoint}/${idu_aplicacion}`, body)
+    return this.http.patch<StartProcess>(`${this.baseUrl}/applications/${endpoint}/${idu_aplicacion}`, body)
       .pipe(
-        tap((app) => {
+        tap(({ application }) => {
           const title = 'Proceso iniciado';
-          const content = `¡El proceso para documentar la aplicación ${app.nom_aplicacion} ha iniciado con éxito!`;
+          const content = `¡El proceso para documentar la aplicación ${application.nom_aplicacion} ha iniciado con éxito!`;
           this.notificationsService.successMessage(title, content);
         }),
         tap(() => this.aplicacionesService.changes = true),

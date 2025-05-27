@@ -138,7 +138,7 @@ export class AuthService {
       }
 
       const errorsMessages = {
-        GETINFOORG: `Error al obtener información de aplicaciones, centros y encargados. Intentar más tarde.`,
+        GETINFOORG: `Error al obtener información de centros y encargados. Intentar más tarde.`,
         GETPOSITIONS: `Error al obtener los puestos. Intentar más tarde.`,
         POSTREGISTER: `Error al registrar nuevo cuenta. ${extra}. Intentar más tarde`,
       };
