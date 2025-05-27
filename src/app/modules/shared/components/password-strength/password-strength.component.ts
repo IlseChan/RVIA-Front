@@ -1,6 +1,7 @@
 import { NgClass } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { AbstractControl } from '@angular/forms';
+import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
   selector: 'rvia-password-strength',
@@ -11,8 +12,9 @@ import { AbstractControl } from '@angular/forms';
 })
 export class PasswordStrengthComponent {
 
+  private vldtnSrvc = inject(ValidationService)
   control = input.required<AbstractControl>() ;
-
+  
   private get passwordValue(): string {
     return this.control()?.value || '';
   }
@@ -30,7 +32,7 @@ export class PasswordStrengthComponent {
   }
 
   hasSpecialChar(): boolean {
-    return /[@$!%*?&#.]/.test(this.passwordValue);
+    return this.vldtnSrvc.rgxSpecialChar.test(this.passwordValue);
   }
 
   hasMinLength(): boolean {
