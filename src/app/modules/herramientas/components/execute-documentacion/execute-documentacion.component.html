@@ -1,87 +1,106 @@
 <main class="m-2">
     <section class="flex flex-col mb-4 pb-2 border-title">
-        <h1 class="txt-title-color text-5xl my-0">Documentar proyecto</h1> 
+        <h1 class="txt-title-color text-5xl font-bold my-0">
+            Documentar proyecto
+        </h1> 
     </section>
-    <section class="text-justify vertical-align-middle mb-4">
+    <section class="text-justify vertical-align-middle mb-8">
         <p class="m-0">
-            Para iniciar el proceso de documentar tu proyecto, <b>selecciona el tipo de documentación</b> y luego <b>selecciona la aplicación</b> con la que se quiere trabajar.
-            El listado de aplicaciones solo contempla aquellas aplicaciones cuyo proceso inicial <b>no</b> incluye la documentación.
+            Para comenzar a documentar tu proyecto, <b>primero selecciona el tipo de documentación que deseas generar y luego elige la aplicación con la que vas a trabajar</b>.
+            Ten en cuenta que solo se mostrarán las aplicaciones que aún no han iniciado su proceso de documentación.
         </p>
     </section>
 
-    @if (isLoadingData) {
+    @if (isLoadingData()) {
         <rvia-loader />
     }
 
-    <section *ngIf="!isLoadingData"> 
-        <form [formGroup]="form" (ngSubmit)="onSubmit()">
-            <!-- Sección para seleccionar el tipo de documentación -->
-            <section class="flex flex-col items-center mb-3">
-                <p class="mb-4">Selecciona el tipo de documentación:</p>
-                <div class="flex items-center justify-center gap-3">
-                    <div class="flex items-center gap-1">
-                        <p-radioButton 
-                            name="tipo_documentacion"
-                            value="1"
-                            inputId="radio-doc-com" 
-                            formControlName="tipo_documentacion"
+    @if (!isLoadingData()) {
+        <section> 
+            <form [formGroup]="form" (ngSubmit)="onSubmit()">
+                <!-- Sección para seleccionar el tipo de documentación -->
+                <section class="flex flex-col items-center mb-6">
+                    <p class="mb-6">Selecciona el tipo de documentación:</p>
+                    <div class="flex items-center justify-center gap-3">
+                        <div class="flex items-center gap-2">
+                            <p-radioButton 
+                                name="tipo_documentacion"
+                                value="1"
+                                inputId="radio-doc-com" 
+                                formControlName="tipo_documentacion"
+                                size="large"
+                            />
+                            <label for="radio-doc-com" class="ml-1">Documentación completa</label>
+                        </div>
+                        
+                        <div class="flex items-center gap-1">    
+                            <p-radioButton 
+                                name="tipo_documentacion"
+                                value="2"
+                                inputId="radio-doc-cod" 
+                                formControlName="tipo_documentacion"
+                                size="large"
+                            />
+                            <label for="radio-doc-cod" class="ml-1">Documentación por código</label>
+                        </div>
+                    </div>
+                    @if (form.controls['tipo_documentacion'].errors && form.controls['tipo_documentacion'].touched) {
+                        <span class="font-italic text-red-500 mt-2">
+                            Debes seleccionar un tipo de documentación.
+                        </span>
+                    }
+                </section>
+    
+                <!-- Sección para seleccionar la aplicación -->
+                @if (form.controls['tipo_documentacion'].value && appsOpcs.length > 0) {
+                    <section class="flex flex-col items-center mb-3">
+                        <p class="mb-4">Selecciona el aplicativo a trabajar:</p>
+                        <p-select
+                            id="select-apps"
+                            formControlName="idu_aplicacion"
+                            optionLabel="name" 
+                            [options]="appsOpcs"  
+                            optionValue="value"
+                            placeholder="Selecciona una aplicación"
+                            [filter]="true"
+                            filterPlaceholder="Buscar aplicación..."
+                            [showClear]="true"
                             size="large"
                         />
-                        <label for="radio-doc-com" class="">Documentación completa</label>
-                    </div>
-                    
-                    <div class="flex items-center gap-1">    
-                        <p-radioButton 
-                            name="tipo_documentacion"
-                            value="2"
-                            inputId="radio-doc-cod" 
-                            formControlName="tipo_documentacion"
-                            size="large"
-                        />
-                        <label for="radio-doc-cod" class="ml-1">Documentación por código</label>
-                    </div>
-                </div>
-                <span *ngIf="form.controls['tipo_documentacion'].errors && form.controls['tipo_documentacion'].touched"
-                    class="font-italic text-red-500 mt-2">
-                    Debes seleccionar un tipo de documentación.
-                </span>
-            </section>
+                        @if (form.controls['idu_aplicacion'].errors && form.controls['idu_aplicacion'].touched){
+                            <span class="font-italic text-red-500 mt-2">
+                                Debes seleccionar una aplicación.
+                            </span>
+                        }
+                    </section>
+                }
 
-            <!-- Sección para seleccionar la aplicación -->
-            <section *ngIf="form.controls['tipo_documentacion'].value && appsOpcs.length > 0" class="flex flex-col items-center mb-3">
-                <p class="mb-4">Selecciona el aplicativo a trabajar:</p>
-                <p-dropdown
-                    id="select-apps"
-                    formControlName="idu_aplicacion"
-                    optionLabel="name"
-                    [options]="appsOpcs"
-                    optionValue="value"
-                    placeholder="Selecciona una app"
-                    [filter]="true"
-                    filterPlaceholder="Buscar aplicación..."
-                    [showClear]="true">
-                </p-dropdown>
-                <span *ngIf="form.controls['idu_aplicacion'].errors && form.controls['idu_aplicacion'].touched"
-                    class="font-italic text-red-500 mt-2">
-                    Debes seleccionar una aplicación.
-                </span>
-            </section>
-
-            <!-- Sección para el botón de enviar -->
-            <section *ngIf="form.controls['idu_aplicacion'].value !== null" class="flex flex-col justify-center mb-4">
-                <div class="flex justify-center mt-4">
-                    <p-button 
-                        [label]="label"
-                        [loading]="isRequest && label === 'Iniciando'"
-                        [disabled]="isRequest && label === 'Iniciado'" 
-                        severity="success" 
-                        icon="pi pi-check" 
-                        iconPos="right"
-                        type="submit">
-                    </p-button>
-                </div>
-            </section>
-        </form>
-    </section>    
+                @if (form.controls['tipo_documentacion'].value && appsOpcs.length === 0) {
+                    <div class="my-6">
+                        <h2 class="text-2xl font-bold text-center">
+                            ¡No hay aplicaciones para listar!
+                        </h2>
+                    </div>
+                }
+    
+                <!-- Sección para el botón de enviar -->
+                @if (form.controls['idu_aplicacion'].value !== null) {
+                    <section class="flex flex-col justify-center mb-4">
+                        <div class="flex justify-center mt-4">
+                            <p-button 
+                                [label]="label()"
+                                [loading]="isRequest() && label() === 'Iniciando'"
+                                [disabled]="isRequest() && label() === 'Iniciado'" 
+                                severity="success" 
+                                icon="pi pi-check" 
+                                iconPos="right"
+                                type="submit">
+                            </p-button>
+                        </div>
+                    </section>
+                }
+            </form>
+        </section>    
+    } 
     <p-confirmDialog></p-confirmDialog>
 </main>
