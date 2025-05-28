@@ -41,10 +41,10 @@
                                     [wDivider]="true"
                                 /><!--num empleado-->
                                 <div class="grid grid-cols-6 my-4 py-2">
-                                    <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                    <p class="text-lg col-start-1 col-end-3 flex items-center h-17">
                                         Nombre completo
                                     </p>
-                                    <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                    <div class="col-start-3 col-end-5 flex flex-col justify-center h-17">
                                          <input
                                             class="w-full" placeholder="Nombre completo"
                                             [ngClass]="{'ng-invalid ng-dirty': isValidField('nom_usuario')}"
@@ -92,10 +92,10 @@
                             <form [formGroup]="codeForm" novalidate class="flex"> 
                                 <div class="flex-1 mr-6">
                                     <div class="grid grid-cols-6 my-4 py-2">
-                                        <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                        <p class="text-lg col-start-1 col-end-3 flex items-center h-17">
                                             Contraseña actual
                                         </p>
-                                        <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                        <div class="col-start-3 col-end-5 flex flex-col justify-center h-17">
                                             <div class="flex flex-col">
                                                 <p-password 
                                                     formControlName="prevCode"
@@ -119,10 +119,10 @@
                                     </div><!--code actual-->
                                     <div class="mt-2 border border-gray-300"></div>
                                     <div class="grid grid-cols-6 my-4 py-2">
-                                        <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                        <p class="text-lg col-start-1 col-end-3 flex items-center h-17">
                                             Nueva contraseña
                                         </p>
-                                        <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                        <div class="col-start-3 col-end-5 flex flex-col justify-center h-17">
                                             <div class="flex flex-col">
                                                 <p-password 
                                                     formControlName="newCode"
@@ -146,10 +146,10 @@
                                     </div><!--nuevo code-->
                                     <div class="mt-2 border border-gray-300"></div>
                                     <div class="grid grid-cols-6 my-4 py-2">
-                                        <p class="text-lg col-start-1 col-end-3 flex items-center h-[4.25rem]">
+                                        <p class="text-lg col-start-1 col-end-3 flex items-center h-17">
                                             Confirma nueva contraseña
                                         </p>
-                                        <div class="col-start-3 col-end-5 flex flex-col justify-center h-[4.25rem]">
+                                        <div class="col-start-3 col-end-5 flex flex-col justify-center h-17">
                                             <div class="flex flex-col">
                                                 <p-password 
                                                     formControlName="newCodeConf"
@@ -174,7 +174,7 @@
                                 </div><!--campos contraseña-->
                                 <div class="p-4 my-auto border-2 rounded-lg border-gray-400 border-dashed">
                                     <div class="flex items-center gap-2 txt-title-color mb-4">
-                                        <i class="pi pi-info-circle !text-2xl"></i>
+                                        <i class="pi pi-info-circle text-2xl!"></i>
                                         <p class="text-3xl mt-auto font-bold">
                                             Recordatorio
                                         </p>
@@ -231,7 +231,7 @@
                             }
                             <div class="mt-20 text-center">
                                 <div class="p-4 inline-flex items-center gap-4 border-2 border-gray-300  border-dashed rounded-lg">
-                                    <i class="pi pi-info-circle !text-4xl txt-title-color"></i>
+                                    <i class="pi pi-info-circle text-4xl! txt-title-color"></i>
                                     <p class="text-lg text-gray-400">
                                         Esta información es de solo lectura. Si necesitas realizar algún cambio, por favor contacta al administrador.
                                     </p>

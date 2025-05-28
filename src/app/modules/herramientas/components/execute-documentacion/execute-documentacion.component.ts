@@ -87,7 +87,7 @@ export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
     this.confirmationService.confirm({
        message,
        header: 'Documentar Proyecto',
-       icon: 'pi pi-exclamation-triangle !text-3xl',
+       icon: 'pi pi-exclamation-triangle text-3xl!',
        acceptButtonStyleClass: 'p-button-success my-2',
        acceptLabel: 'Sí, continuar',
        rejectButtonStyleClass: 'p-button-outlined my-2',

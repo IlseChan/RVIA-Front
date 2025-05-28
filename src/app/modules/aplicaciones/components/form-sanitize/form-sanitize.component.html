@@ -25,7 +25,7 @@
           />
           <!-- Panel Accion del proyecto -->
           @if(activeIndex === 0){
-            <section class="stepper-panel h-[23rem] rounded surface-ground">
+            <section class="stepper-panel h-92 rounded surface-ground">
               <p class="mb-3">Selecciona la acción a realizar:</p>
               <div class="flex flex-col gap-6">
                 <div *ngFor="let opc of actionsOps" class="field-checkbox">
@@ -64,7 +64,7 @@
           
           <!-- Panel Tipo de proyecto -->
           @if(activeIndex === 1){
-            <section class="stepper-panel h-[23rem] rounded surface-ground">
+            <section class="stepper-panel h-92 rounded surface-ground">
               <p class="mb-4">Selecciona el tipo de proyecto que se subirá:</p>
               <div class="flex gap-6">
                 <div class="flex items-center mx-3 py-2 px-3" *ngFor="let option of radioOps">
@@ -88,7 +88,7 @@
   
           <!-- Panel Projecto zip/7z o github/gitlab-->
           @if (activeIndex === 2) {
-            <section class="stepper-panel h-[23rem] rounded surface-ground">
+            <section class="stepper-panel h-92 rounded surface-ground">
               @if (formFiles.get('type')?.value === 'zip') {
                 <div class="w-full">
                   <p class="text-center mb-4">Selecciona el archivo <b>.zip</b> o <b>.7z</b> de tu proyecto:</p>
@@ -173,7 +173,7 @@
           <!-- Panel Projecto zip/7z o github/gitlab-->
   
           <!-- Panel PDF -->
-          <section *ngIf="activeIndex === 3 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-[23rem] rounded surface-ground">
+          <section *ngIf="activeIndex === 3 && selectedValue === NumberAction.SANITIZECODE" class="stepper-panel h-92 rounded surface-ground">
             <div class="flex flex-col items-center justify-center w-full">
               <p class="mb-4">Puedes añadir el archivo <b>.pdf</b> de las vulnerabilidades de tu proyecto.</p>
               <div class="max-w-full" [style.width]="txtSizepdfFile + 'px'">
@@ -199,7 +199,7 @@
           <!-- Panel PDF -->
   
           <!-- Panel Arquitectura -->
-          <section  *ngIf="activeIndex === 3 && selectedValue === NumberAction.NONE" class="stepper-panel h-[23rem] rounded surface-ground justify-content-evenly gap-3">
+          <section  *ngIf="activeIndex === 3 && selectedValue === NumberAction.NONE" class="stepper-panel h-92 rounded surface-ground justify-content-evenly gap-3">
             <div class="flex flex-col justify-center items-center ">
               <div class="flex flex-col flex-grow-1 items-center justify-center">
                 <p class="mb-6">Selecciona los servicios que deseas generar:</p>
@@ -226,7 +226,7 @@
   
           <section *ngIf="(activeIndex === 4  && (selectedValue === NumberAction.NONE || selectedValue === NumberAction.SANITIZECODE)) ||
               (activeIndex === 3  && (selectedValue === NumberAction.UPDATECODE || selectedValue === NumberAction.MIGRATION) )" 
-            class="stepper-panel h-[23rem] rounded surface-ground">
+            class="stepper-panel h-92 rounded surface-ground">
             <p class="mb-6">Se subirá tu proyecto con los siguientes elementos: </p>
             <div class="flex flex-col gap-4">
               <p>Acción: <b>{{ projectAction  }}</b></p>

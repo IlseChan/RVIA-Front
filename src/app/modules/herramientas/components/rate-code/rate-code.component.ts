@@ -10,7 +10,7 @@ import { AppsToUseSelect } from '@modules/aplicaciones/interfaces';
 
 @Component({
     selector: 'rate-code',
-    imports: [NgIf, ReactiveFormsModule, NgFor, PrimeNGModule],
+    imports: [NgIf, ReactiveFormsModule, PrimeNGModule],
     templateUrl: './rate-code.component.html',
     styleUrls: ['./rate-code.component.scss']
 })
