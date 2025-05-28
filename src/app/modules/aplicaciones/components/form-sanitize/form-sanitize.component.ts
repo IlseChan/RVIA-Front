@@ -14,11 +14,10 @@ import { AppOrg } from '@modules/auth/interfaces';
 import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.component';
 
 @Component({
-  selector: 'form-sanitize',
-  standalone: true,
-  templateUrl: './form-sanitize.component.html',
-  styleUrls: ['./form-sanitize.component.scss'],
-  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule, RviaLoaderComponent]
+    selector: 'form-sanitize',
+    templateUrl: './form-sanitize.component.html',
+    styleUrls: ['./form-sanitize.component.scss'],
+    imports: [CommonModule, ReactiveFormsModule, PrimeNGModule, RviaLoaderComponent]
 })
 export class FormSanitizeComponent implements OnInit, OnDestroy {
   @ViewChild('zipInput', { static: false }) zipInput!: ElementRef;

@@ -11,11 +11,10 @@ import { downloandFile } from '@modules/shared/helpers/downloadFile';
 import { Aplication, AppsToUseSelect } from '@modules/aplicaciones/interfaces';
 
 @Component({
-  selector: 'pdf-to-csv-form',
-  standalone: true,
-  imports: [NgIf, ReactiveFormsModule,FormsModule,PrimeNGModule],
-  templateUrl: './pdf-to-csv-form.component.html',
-  styleUrls: ['./pdf-to-csv-form.component.scss']
+    selector: 'pdf-to-csv-form',
+    imports: [NgIf, ReactiveFormsModule, FormsModule, PrimeNGModule],
+    templateUrl: './pdf-to-csv-form.component.html',
+    styleUrls: ['./pdf-to-csv-form.component.scss']
 })
 export class PdfToCsvFormComponent implements OnInit, OnDestroy{
   @ViewChild('file', { static: false }) pdfInput !: ElementRef;

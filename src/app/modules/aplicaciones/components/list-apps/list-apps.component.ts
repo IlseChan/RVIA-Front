@@ -15,11 +15,10 @@ import { RviaIconComponent } from '../rvia-icon/rvia-icon.component';
 import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.component';
 
 @Component({
-  selector: 'list-apps',
-  standalone: true,
-  imports: [ RouterLink, PrimeNGModule, RviaIconComponent, RviaLoaderComponent, DatePipe],
-  templateUrl: './list-apps.component.html',
-  styleUrls: ['./list-apps.component.scss'],
+    selector: 'list-apps',
+    imports: [RouterLink, PrimeNGModule, RviaIconComponent, RviaLoaderComponent, DatePipe],
+    templateUrl: './list-apps.component.html',
+    styleUrls: ['./list-apps.component.scss']
 })
 export class ListAppsComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

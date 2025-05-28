@@ -11,11 +11,10 @@ import { AplicacionesService } from '@modules/aplicaciones/services/aplicaciones
 import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
-  selector: 'form-up-pdf',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
-  templateUrl: './form-up-pdf.component.html',
-  styleUrls: ['./form-up-pdf.component.scss']
+    selector: 'form-up-pdf',
+    imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
+    templateUrl: './form-up-pdf.component.html',
+    styleUrls: ['./form-up-pdf.component.scss']
 })
 export class FormUpPdfComponent implements OnInit, OnDestroy{
   @ViewChild('pdfFile', { static: false }) pdfFileInput!: ElementRef;

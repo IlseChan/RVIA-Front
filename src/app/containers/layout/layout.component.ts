@@ -14,11 +14,10 @@ import { UserBadgeComponent } from "./components/user-badge/user-badge.component
 import { MenuListComponent } from "./components/menu-list/menu-list.component";
 
 @Component({
-  selector: 'layout',
-  standalone: true,
-  imports: [CommonModule, RouterOutlet, DividerModule, UserBadgeComponent, MenuListComponent],
-  templateUrl: './layout.component.html',
-  styleUrls: ['./layout.component.scss']
+    selector: 'layout',
+    imports: [CommonModule, RouterOutlet, DividerModule, UserBadgeComponent, MenuListComponent],
+    templateUrl: './layout.component.html',
+    styleUrls: ['./layout.component.scss']
 })
 export class LayoutComponent implements OnInit, OnDestroy {
   userLogged = signal<Usuario | null>(null);

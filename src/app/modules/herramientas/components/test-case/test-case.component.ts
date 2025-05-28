@@ -11,12 +11,11 @@ import { HerramientasService } from '@modules/herramientas/services/herramientas
 import { AppsToUseSelect } from '@modules/aplicaciones/interfaces';
 
 @Component({
-  selector: 'test-case',  
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
-  providers: [ConfirmationService], 
-  templateUrl: './test-case.component.html', 
-  styleUrls: ['./test-case.component.scss'] 
+    selector: 'test-case',
+    imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
+    providers: [ConfirmationService],
+    templateUrl: './test-case.component.html',
+    styleUrls: ['./test-case.component.scss']
 })
 export class TestCaseComponent implements OnInit, OnDestroy { 
   private destroy$ = new Subject<void>();

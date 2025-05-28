@@ -11,11 +11,10 @@ import { AppsToUseSelect } from '@modules/aplicaciones/interfaces';
 import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.component';
 
 @Component({
-  selector: 'execute-documentacion',
-  standalone: true,
-  imports: [ReactiveFormsModule, PrimeNGModule, RviaLoaderComponent],
-  providers: [ConfirmationService],
-  templateUrl: './execute-documentacion.component.html',
+    selector: 'execute-documentacion',
+    imports: [ReactiveFormsModule, PrimeNGModule, RviaLoaderComponent],
+    providers: [ConfirmationService],
+    templateUrl: './execute-documentacion.component.html'
 })
 export class ExecuteDocumentacionComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

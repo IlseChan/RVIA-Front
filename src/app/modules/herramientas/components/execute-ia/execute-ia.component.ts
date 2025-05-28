@@ -10,11 +10,10 @@ import { AppsSelectIA, waitingOpc } from '@modules/herramientas/interfaces/appsS
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'execute-ia',
-  standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
-  templateUrl: './execute-ia.component.html',
-  styleUrls: ['./execute-ia.component.scss']
+    selector: 'execute-ia',
+    imports: [CommonModule, ReactiveFormsModule, PrimeNGModule],
+    templateUrl: './execute-ia.component.html',
+    styleUrls: ['./execute-ia.component.scss']
 })
 export class ExecuteIaComponent implements OnInit, OnDestroy{
   private destroy$ = new Subject<void>();

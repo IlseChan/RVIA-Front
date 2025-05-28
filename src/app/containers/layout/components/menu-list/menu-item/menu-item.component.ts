@@ -4,11 +4,10 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { NgClass } from '@angular/common';
 
 @Component({
-  selector: 'menu-item',
-  standalone: true,
-  imports: [RouterLink, RouterLinkActive,NgClass],
-  templateUrl: './menu-item.component.html',
-  styleUrl: './menu-item.component.scss'
+    selector: 'menu-item',
+    imports: [RouterLink, RouterLinkActive, NgClass],
+    templateUrl: './menu-item.component.html',
+    styleUrl: './menu-item.component.scss'
 })
 export class MenuItemComponent {
 
