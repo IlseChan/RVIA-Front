@@ -222,8 +222,8 @@
                                 [value]="centerName"
                                 [wDivider]="true"
                             /><!--centro-->
-
-                            @if(fullUser()?.puesto?.num_puesto !== positionValues.DIVISIONAL){
+                            
+                            @if(fullUser()?.puesto?.num_puesto != positionValues.DIVISIONAL){
                                 <info-display 
                                     key="Encargado"
                                     [value]="fullUser()?.encargado?.nom_empleado!"
