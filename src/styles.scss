@@ -1,7 +1,5 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@import "primeicons/primeicons.css";
+@use './app/scss/tailwind.css';
+@use "primeicons/primeicons.css";
 
 :root{
     --rvia-primary-color: #006fb9;
