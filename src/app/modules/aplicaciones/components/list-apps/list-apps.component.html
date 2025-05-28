@@ -112,7 +112,8 @@
                                     <rvia-icon
                                         [status]="app.opc_estatus_doc_code"
                                         [numProcess]="2"
-                                        [opcArquitectura]="app.opc_arquitectura[2]"
+                                        [opcArquitectura]="app.opc_arquitectura[ArquitecturaOpciones.DOC_CODE]"
+                                        (click)="onDownloadFile(app,false,ArquitecturaOpciones.DOC_CODE)"
                                     /> <!-- Acción documentación por código -->
                                     <rvia-icon
                                         [status]="app.opc_estatus_caso"

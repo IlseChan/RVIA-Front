@@ -119,8 +119,9 @@ export class ListAppsComponent implements OnInit, OnDestroy {
           
           if(archi === ArquitecturaOpciones.DOC_CMPLT){
             fileName = `doc_${fileName}`;
+          }else if(archi === ArquitecturaOpciones.DOC_CODE){
+            fileName = `dof_${fileName}`;
           }
-
           downloandFile(blob, fileName);
           this.isDownload.set(false);
         },
