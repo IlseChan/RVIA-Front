@@ -35,8 +35,7 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   loadingDataPage: boolean = true;
   rowsPerPageOpts: number[] = [10,15,20,25];
 
-  // colums: string[] = ['#', 'ID proyecto', 'Nombre', 'Proceso/Acciones', 'Costos']; //Con costos
-  colums: string[] = ['#', 'ID proyecto', 'Nombre', 'Proceso/Acciones'];
+  colums: string[] = ['#', 'ID proyecto', 'Subido el','Nombre', 'Proceso/Acciones'];
   isLoading = signal<boolean>(true);
   isDownload = signal<boolean>(false);
   lastUpadate = signal<string>('');
@@ -51,8 +50,11 @@ export class ListAppsComponent implements OnInit, OnDestroy {
   }
 
   setColumns(): void {
-    if (this.user && (this.user()?.position.nom_rol === Nom_Rol.ADMINISTRADOR || this.user()?.position.nom_rol === Nom_Rol.AUTORIZADOR)) {
-      this.colums.splice(2, 0, 'Usuario');
+    if(this.user()){
+      const rol =  this.user()?.position.nom_rol;
+      if (rol === Nom_Rol.ADMINISTRADOR || rol === Nom_Rol.AUTORIZADOR) {
+        this.colums.splice(3, 0, 'Usuario');
+      }
     }
   }
 
@@ -118,8 +120,9 @@ export class ListAppsComponent implements OnInit, OnDestroy {
           
           if(archi === ArquitecturaOpciones.DOC_CMPLT){
             fileName = `doc_${fileName}`;
+          }else if(archi === ArquitecturaOpciones.DOC_CODE){
+            fileName = `dof_${fileName}`;
           }
-
           downloandFile(blob, fileName);
           this.isDownload.set(false);
         },
