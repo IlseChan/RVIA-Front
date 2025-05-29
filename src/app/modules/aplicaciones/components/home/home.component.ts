@@ -5,18 +5,20 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   template: `
-  <div class="flex flex-col items-center p-5 h-full justify-center">
-    <img 
-        src="assets/images/logo-rvia.webp" 
-        alt="rvia-logo" 
-        class="img-rvia"
-    />
-    <h2 class="text-8xl m-0">Bienvenidos</h2>
-  </div>`,
+  <section class="h-full flex">
+    <div class="flex flex-1 flex-col items-center justify-center">
+      <img 
+          src="assets/images/logo-rvia.webp" 
+          alt="rvia-logo" 
+          class="img-rvia"
+      />
+      <h2 class="text-7xl m-0">Bienvenidos</h2>
+    </div>
+  </section>`,
   styles: [`
     .img-rvia {
-      max-width: 80%;
-      max-height: 80%;
+      width: 60%;
+      height: 60%;
       object-fit: contain;
     }
 
