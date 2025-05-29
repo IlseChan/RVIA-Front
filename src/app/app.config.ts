@@ -11,7 +11,7 @@ import { MessageService } from 'primeng/api';
 import { routes } from './app.routes';
 import { AuthInterceptor } from './helpers/interceptors/authToken.interceptor';
 import { UnauthInterceptor } from './helpers/interceptors/unauth.interceptor';
-import { RVIATHEME } from './rvia-theme';
+import { RVIATHEME } from './scss/rvia-theme';
 
 registerLocaleData(localeEsMX);
 

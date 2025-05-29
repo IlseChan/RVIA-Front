@@ -7,11 +7,10 @@ import { AuthService } from '../../services/auth.service';
 import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
-  selector: 'app-login',
-  standalone: true,
-  imports: [FormsModule, PrimeNGModule],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+    selector: 'app-login',
+    imports: [FormsModule, PrimeNGModule],
+    templateUrl: './login.component.html',
+    styleUrls: ['./login.component.scss']
 })
 export class LoginComponent {
   usernumber: string = '';

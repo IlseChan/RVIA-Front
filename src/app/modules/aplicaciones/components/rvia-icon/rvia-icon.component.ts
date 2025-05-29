@@ -4,11 +4,10 @@ import { CommonModule } from '@angular/common';
 import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 
 @Component({
-  selector: 'rvia-icon',
-  standalone: true,
-  imports: [ PrimeNGModule ,CommonModule ],
-  templateUrl: './rvia-icon.component.html',
-  styleUrl: './rvia-icon.component.scss'
+    selector: 'rvia-icon',
+    imports: [PrimeNGModule, CommonModule],
+    templateUrl: './rvia-icon.component.html',
+    styleUrl: './rvia-icon.component.scss'
 })
 export class RviaIconComponent implements OnInit{
 

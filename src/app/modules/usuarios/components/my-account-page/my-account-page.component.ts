@@ -15,11 +15,10 @@ import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.co
 import { PasswordStrengthComponent } from '@modules/shared/components/password-strength/password-strength.component';
 
 @Component({
-  selector: 'my-account-page',
-  standalone: true,
-  imports: [PrimeNGModule, ReactiveFormsModule, NgClass, InfoDisplayComponent, RviaLoaderComponent, PasswordStrengthComponent],
-  templateUrl: './my-account-page.component.html',
-  styleUrl: './my-account-page.component.scss'
+    selector: 'my-account-page',
+    imports: [PrimeNGModule, ReactiveFormsModule, NgClass, InfoDisplayComponent, RviaLoaderComponent, PasswordStrengthComponent],
+    templateUrl: './my-account-page.component.html',
+    styleUrl: './my-account-page.component.scss'
 })
 export class MyAccountPageComponent implements OnInit, OnDestroy {
   private router = inject(Router);

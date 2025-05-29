@@ -12,11 +12,10 @@ import { Centro, Encargado, Position, PositionValues } from '@modules/auth/inter
 import { PasswordStrengthComponent } from '@modules/shared/components/password-strength/password-strength.component';
 
 @Component({
-  selector: 'rvia-register',
-  standalone: true,
-  imports: [ReactiveFormsModule, PrimeNGModule, CommonModule, PasswordStrengthComponent],
-  templateUrl: './register.component.html',
-  styleUrls: ['./register.component.scss']
+    selector: 'rvia-register',
+    imports: [ReactiveFormsModule, PrimeNGModule, CommonModule, PasswordStrengthComponent],
+    templateUrl: './register.component.html',
+    styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

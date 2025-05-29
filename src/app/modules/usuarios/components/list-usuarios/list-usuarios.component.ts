@@ -14,12 +14,11 @@ import { PrimeNGModule } from '@modules/shared/prime/prime.module';
 import { RviaLoaderComponent } from '@modules/shared/components/loader/loader.component';
 
 @Component({
-  selector: 'list-usuarios',
-  standalone: true,
-  imports: [PrimeNGModule, RviaLoaderComponent, NgClass, FormsModule],
-  templateUrl: './list-usuarios.component.html',
-  styleUrls: ['./list-usuarios.component.scss'],
-  providers: [ConfirmationService],
+    selector: 'list-usuarios',
+    imports: [PrimeNGModule, RviaLoaderComponent, NgClass, FormsModule],
+    templateUrl: './list-usuarios.component.html',
+    styleUrls: ['./list-usuarios.component.scss'],
+    providers: [ConfirmationService]
 })
 export class ListUsuariosComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

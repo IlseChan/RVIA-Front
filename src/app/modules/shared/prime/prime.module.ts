@@ -7,7 +7,6 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { DialogModule } from 'primeng/dialog';
 import { DividerModule } from 'primeng/divider';
 import { DropdownModule } from 'primeng/dropdown';
-import { DynamicDialog } from 'primeng/dynamicdialog';
 import { IconFieldModule } from 'primeng/iconfield';
 import { InputGroupAddonModule } from 'primeng/inputgroupaddon';
 import { InputGroupModule } from 'primeng/inputgroup';
@@ -35,7 +34,6 @@ import { TooltipModule } from 'primeng/tooltip';
     DialogModule,
     DividerModule,
     DropdownModule,
-    DynamicDialog,
     IconFieldModule,
     InputGroupAddonModule,
     InputGroupModule,
@@ -61,7 +59,6 @@ import { TooltipModule } from 'primeng/tooltip';
     DialogModule,
     DividerModule,
     DropdownModule,
-    DynamicDialog,
     IconFieldModule,
     InputGroupAddonModule,
     InputGroupModule,

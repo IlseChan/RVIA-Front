@@ -4,11 +4,10 @@ import { AbstractControl } from '@angular/forms';
 import { ValidationService } from '@modules/shared/services/validation.service';
 
 @Component({
-  selector: 'rvia-password-strength',
-  standalone: true,
-  imports: [NgClass],
-  templateUrl: './password-strength.component.html',
-  styles: ``
+    selector: 'rvia-password-strength',
+    imports: [NgClass],
+    templateUrl: './password-strength.component.html',
+    styles: ``
 })
 export class PasswordStrengthComponent {
 

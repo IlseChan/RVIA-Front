@@ -5,11 +5,10 @@ import { MenuItem } from 'primeng/api';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'user-badge',
-  standalone: true,
-  imports: [PrimeNGModule],
-  templateUrl: './user-badge.component.html',
-  styles: ``
+    selector: 'user-badge',
+    imports: [PrimeNGModule],
+    templateUrl: './user-badge.component.html',
+    styles: ``
 })
 export class UserBadgeComponent {
 

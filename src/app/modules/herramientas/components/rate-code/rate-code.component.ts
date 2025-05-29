@@ -9,11 +9,10 @@ import { HerramientasService } from '@modules/herramientas/services/herramientas
 import { AppsToUseSelect } from '@modules/aplicaciones/interfaces';
 
 @Component({
-  selector: 'rate-code',
-  standalone: true,
-  imports: [NgIf,ReactiveFormsModule,NgFor, PrimeNGModule],
-  templateUrl: './rate-code.component.html',
-  styleUrls: ['./rate-code.component.scss']
+    selector: 'rate-code',
+    imports: [NgIf, ReactiveFormsModule, PrimeNGModule],
+    templateUrl: './rate-code.component.html',
+    styleUrls: ['./rate-code.component.scss']
 })
 export class RateCodeComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();

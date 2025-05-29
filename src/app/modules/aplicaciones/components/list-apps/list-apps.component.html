@@ -68,10 +68,12 @@
                                         <i class="pi pi-search"></i>
                                     </p-inputIcon>
                                     <input 
-                                        pInputText 
+                                        pInputText
+                                        id="search-app-input" 
                                         type="text" 
                                         (input)="filtercustom($event)" 
                                         placeholder="Búsqueda por ID proyecto"
+                                        class="w-64"
                                     />
                                 </p-iconField>
                             </div>
@@ -88,6 +90,7 @@
                         <tr>
                             <td>{{ index + 1 }}</td>
                             <td>{{ app.idu_proyecto }}</td>
+                            <td>{{ app.fec_creacion }} </td>
                             @if (user()!.position.nom_rol !== Nom_Rols.INVITADO && user()!.position.nom_rol !== Nom_Rols.USUARIO) {
                                 <td>
                                     {{ app.user.nom_usuario }}
@@ -112,7 +115,8 @@
                                     <rvia-icon
                                         [status]="app.opc_estatus_doc_code"
                                         [numProcess]="2"
-                                        [opcArquitectura]="app.opc_arquitectura[2]"
+                                        [opcArquitectura]="app.opc_arquitectura[ArquitecturaOpciones.DOC_CODE]"
+                                        (click)="onDownloadFile(app,false,ArquitecturaOpciones.DOC_CODE)"
                                     /> <!-- Acción documentación por código -->
                                     <rvia-icon
                                         [status]="app.opc_estatus_caso"
@@ -126,9 +130,6 @@
                                     />  --><!-- Acción calificacion -->
                                 </div>
                             </td>
-                            <!-- <td *ngIf="user!.position.nom_rol !== Nom_Rols.INVITADO">
-                                {{ app.totalCost | currency:'USD':'symbol-narrow' }}
-                            </td> --> <!-- Columna de costos -->
                         </tr>
                     </ng-template>
                 </p-table>
